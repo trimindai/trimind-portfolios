@@ -1,0 +1,32 @@
+{
+  "id": "medical",
+  "name": "Medical",
+  "description": "Clinically precise, trust-first template for healthcare professionals — designed for hospital credential submissions and peer referrals.",
+  "category": "healthcare",
+  "targetProfessions": ["Medical Doctor", "Surgeon", "Specialist Physician", "Dentist", "Pharmacist", "Nurse Practitioner", "Healthcare Administrator", "Radiologist", "Cardiologist", "Pediatrician"],
+  "colors": {
+    "bg": "#0f2942",
+    "bgDeep": "#091d31",
+    "bgCard": "rgba(15, 41, 66, 0.75)",
+    "primary": "#0891b2",
+    "primaryGlow": "rgba(8, 145, 178, 0.3)",
+    "primaryDim": "rgba(8, 145, 178, 0.1)",
+    "secondary": "#0e7490",
+    "secondaryDim": "rgba(14, 116, 144, 0.1)",
+    "accent": "#ef4444",
+    "accentNote": "Red used ONLY for Active License badges — never decorative",
+    "text": "#e2e8f0",
+    "textSecondary": "#94a3b8",
+    "textTertiary": "#4a6080",
+    "border": "rgba(8, 145, 178, 0.1)"
+  },
+  "fonts": {
+    "heading": "DM Sans",
+    "body": "Inter",
+    "googleFontsUrl": "https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap"
+  },
+  "sections": ["hero", "specializations", "experience", "research-publications", "hospital-affiliations", "licenses-certifications", "education", "impact-stats", "contact"],
+  "specialSections": ["specializations", "research-publications", "hospital-affiliations", "licenses-certifications", "impact-stats"],
+  "features": ["medical-specializations-icon-grid", "research-publications-citation-cards", "doi-pubmed-links", "hospital-affiliations-with-status", "masked-license-numbers-unmasked-in-print", "board-certification-badges", "impact-stats-counter-animation", "whatsapp-business-contact", "appointment-booking-link", "circle-photo-with-teal-ring", "no-hover-transforms-clinical-precision"],
+  "designNotes": "The Medical template deliberately suppresses every pattern that reads as trendy — no bold transforms, no staggered animations, no asymmetric layouts. DM Sans at heavier weights delivers authoritative density. Deep Medical Blue (#0f2942) grounds the page in institutional healthcare. Clinical Teal (#0891b2) appears only on interactive targets. Accent red (#ef4444) is rationed to one use case — active license status badges — giving it the weight of a certification stamp."
+}

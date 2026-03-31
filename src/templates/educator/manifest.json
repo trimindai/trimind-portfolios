@@ -1,0 +1,34 @@
+{
+  "id": "educator",
+  "name": "Educator",
+  "description": "Warm, scholarly portfolio for university professors, teachers, trainers, and academic researchers — built for GCC academic job market with APA citations and teaching philosophy.",
+  "category": "education",
+  "targetProfessions": ["University Professor", "School Teacher", "Corporate Trainer", "Academic Researcher", "Education Administrator", "Curriculum Developer", "Department Head", "Instructional Designer", "PhD Candidate"],
+  "colors": {
+    "bg": "#1a1a3e",
+    "bgDeep": "#12122a",
+    "bgCard": "rgba(26, 26, 70, 0.55)",
+    "primary": "#f59e0b",
+    "primaryGlow": "rgba(245, 158, 11, 0.30)",
+    "primaryDim": "rgba(245, 158, 11, 0.10)",
+    "secondary": "#6b8f71",
+    "secondaryDim": "rgba(107, 143, 113, 0.10)",
+    "accent": "#fef3c7",
+    "text": "#f0ece4",
+    "textSecondary": "#a89b82",
+    "textTertiary": "#6b5f4a",
+    "border": "rgba(245, 158, 11, 0.07)"
+  },
+  "fonts": {
+    "heading": "Cormorant Garamond",
+    "body": "DM Sans",
+    "mono": "JetBrains Mono",
+    "headingRTL": "Noto Serif Arabic",
+    "bodyRTL": "Tajawal",
+    "googleFontsUrl": "https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700&display=swap"
+  },
+  "sections": ["hero", "teaching-philosophy", "skills", "courses-taught", "experience", "research-publications", "academic-achievements", "conference-presentations", "student-testimonials", "education", "contact"],
+  "specialSections": ["teaching-philosophy", "courses-taught", "research-publications", "academic-achievements", "student-testimonials", "conference-presentations"],
+  "features": ["cormorant-garamond-scholarly-headings", "noto-serif-arabic-rtl", "teaching-philosophy-blockquote-with-pillars", "courses-taught-grid-level-badges", "apa7-citation-format", "publication-filter-tabs", "doi-links-monospace", "abstract-toggle", "academic-achievements-timeline", "student-testimonials-masonry", "conference-type-badges", "orcid-google-scholar-researchgate-links", "office-hours-display", "thesis-advisor-in-education", "40s-slow-contemplative-orb-drift", "static-hero-name-no-animation", "700ms-gentle-scroll-reveal", "print-academic-cv-style"],
+  "designNotes": "The Educator template channels the warmth of a well-loved library — deep indigo backgrounds evoke late-night academic work, amber accents provide the inviting glow of a reading lamp, and sage hints ground the palette in growth. Cormorant Garamond headings bring timeless authority that academic hiring committees immediately recognize. Publications, teaching philosophy, and course history are first-class citizens, making this suited for faculty applications, tenure dossiers, and conference profiles across the GCC higher education market."
+}

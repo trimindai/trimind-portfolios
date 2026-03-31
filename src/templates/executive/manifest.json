@@ -1,0 +1,31 @@
+{
+  "id": "executive",
+  "name": "Executive",
+  "description": "Luxury, prestige-driven portfolio for C-suite leaders, board members, and senior consultants — styled after premium annual reports.",
+  "category": "leadership",
+  "targetProfessions": ["CEO", "CFO", "COO", "Managing Director", "Managing Partner", "Board Member", "Non-Executive Director", "Senior Consultant", "Vice President", "General Manager", "Regional Director", "Country Manager", "Government Advisor"],
+  "colors": {
+    "bg": "#0a1628",
+    "bgDeep": "#060e1a",
+    "bgCard": "rgba(10, 20, 42, 0.65)",
+    "primary": "#c9a84c",
+    "primaryGlow": "rgba(201, 168, 76, 0.30)",
+    "primaryDim": "rgba(201, 168, 76, 0.10)",
+    "secondary": "#f5f0e8",
+    "secondaryDim": "rgba(245, 240, 232, 0.08)",
+    "accent": "#8fa8c8",
+    "text": "#f5f0e8",
+    "textSecondary": "#a09880",
+    "textTertiary": "#5c5445",
+    "border": "rgba(201, 168, 76, 0.08)"
+  },
+  "fonts": {
+    "heading": "Playfair Display",
+    "body": "DM Sans",
+    "googleFontsUrl": "https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,800;1,400;1,600&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&display=swap"
+  },
+  "sections": ["hero", "philosophy", "achievements", "experience", "board-memberships", "speaking", "education", "contact"],
+  "specialSections": ["philosophy", "achievements", "board-memberships", "speaking"],
+  "features": ["playfair-display-italic-hero", "monogram-portrait-placeholder", "leadership-philosophy-with-roman-numerals", "oversized-impact-numbers", "count-up-animation", "board-memberships-L-shaped-corner-accent", "speaking-event-type-pills", "executive-closing-statement", "50s-ultra-slow-ambient-orbs", "80px-sparse-grid", "zero-flash-animations"],
+  "designNotes": "The Executive template draws its visual DNA from premium financial publications and sovereign wealth fund annual reports. Playfair Display italic headings lend an editorial gravitas that sans-serif-only templates cannot replicate. Deep Navy (#0a1628) is cooler and darker than corporate, creating a boardroom atmosphere where Rich Gold (#c9a84c) functions as a single prestige signal. Every animation is calibrated to feel inevitable — 50s orb drift, 3px hover lift at 400ms, and Philosophy reveals through opacity alone."
+}

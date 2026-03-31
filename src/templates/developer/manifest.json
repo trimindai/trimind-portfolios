@@ -1,0 +1,35 @@
+{
+  "id": "developer",
+  "name": "Developer",
+  "description": "Terminal-aesthetic portfolio for software engineers, DevOps engineers, and data scientists — GitHub profile meets VS Code dark theme.",
+  "category": "technology",
+  "targetProfessions": ["Software Engineer", "Full Stack Developer", "Frontend Developer", "Backend Developer", "DevOps Engineer", "SRE", "Cloud Architect", "Data Scientist", "ML Engineer", "AI Engineer", "Mobile Developer", "CTO", "VP Engineering", "Engineering Manager", "Technical Lead"],
+  "colors": {
+    "bg": "#0d1117",
+    "bgDeep": "#010409",
+    "bgCard": "rgba(13, 17, 23, 0.80)",
+    "bgTerminal": "rgba(1, 4, 9, 0.92)",
+    "primary": "#39d353",
+    "primaryGlow": "rgba(57, 211, 83, 0.25)",
+    "primaryDim": "rgba(57, 211, 83, 0.10)",
+    "secondary": "#58a6ff",
+    "secondaryDim": "rgba(88, 166, 255, 0.10)",
+    "accent": "#f78166",
+    "accentYellow": "#e3b341",
+    "accentPurple": "#bc8cff",
+    "text": "#e6edf3",
+    "textSecondary": "#8b949e",
+    "textTertiary": "#484f58",
+    "border": "rgba(48, 54, 61, 0.80)"
+  },
+  "fonts": {
+    "heading": "JetBrains Mono",
+    "body": "Inter",
+    "mono": "JetBrains Mono",
+    "googleFontsUrl": "https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=Inter:wght@300;400;500;600;700;800&display=swap"
+  },
+  "sections": ["hero", "tech-stack", "experience", "open-source", "projects", "github-activity", "education", "contact"],
+  "specialSections": ["tech-stack", "open-source", "github-activity"],
+  "features": ["typewriter-hero-name-80ms", "blinking-terminal-cursor", "terminal-block-with-traffic-lights", "whoami-command-hero", "comment-syntax-bio-wrapper", "double-slash-section-titles", "tech-stack-proficiency-dots-5-level", "github-contribution-heatmap-52x7", "heatmap-hover-tooltips", "open-source-repo-cards-with-language-dots", "syntax-highlighted-code-snippets-no-library", "terminal-contact-cli-output", "experience-bullets-with-terminal-prompt", "scanline-crt-overlay", "static-radial-glows-no-animated-orbs", "tight-40px-grid-vscode-inspired", "150ms-fastest-hover", "code-blocks-locked-ltr-in-rtl"],
+  "designNotes": "The Developer template feels like a well-maintained README rendered as a personal page. JetBrains Mono dominates interactive and structural elements (hero, section titles, prompts, metrics) while Inter handles prose — the same cognitive split developers live in between editor and browser. The GitHub contribution heatmap is 364 static HTML divs with zero JS dependency for visuals, making it print-safe and instantly recognizable to technical reviewers. Terminal aesthetic is disciplined: traffic-light dots, '> ' prompts, '// ' prefixes, and '#' category markers appear only in structurally appropriate contexts."
+}

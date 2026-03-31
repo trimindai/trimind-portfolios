@@ -1,0 +1,37 @@
+{
+  "id": "creative",
+  "name": "Creative",
+  "description": "Bold, high-energy portfolio for photographers, videographers, content creators, YouTubers, and artists — large visual showcase, social proof stats, and animated gradient identity.",
+  "category": "creative",
+  "targetProfessions": ["Photographer", "Videographer", "Content Creator", "YouTuber", "Social Media Manager", "Visual Artist", "Musician", "Motion Designer", "Podcast Host", "Influencer", "Brand Strategist"],
+  "colors": {
+    "bg": "#0a0a0a",
+    "bgDeep": "#050505",
+    "bgCard": "rgba(18, 18, 18, 0.70)",
+    "primary": "#ec4899",
+    "primaryGlow": "rgba(236, 72, 153, 0.40)",
+    "primaryDim": "rgba(236, 72, 153, 0.12)",
+    "secondary": "#06b6d4",
+    "secondaryGlow": "rgba(6, 182, 212, 0.35)",
+    "secondaryDim": "rgba(6, 182, 212, 0.12)",
+    "accent": "#facc15",
+    "accentGlow": "rgba(250, 204, 21, 0.30)",
+    "accentDim": "rgba(250, 204, 21, 0.10)",
+    "text": "#f5f5f5",
+    "textSecondary": "#a3a3a3",
+    "textTertiary": "#525252",
+    "border": "rgba(236, 72, 153, 0.08)",
+    "gradientHero": "linear-gradient(135deg, #ec4899 0%, #06b6d4 50%, #facc15 100%)"
+  },
+  "fonts": {
+    "heading": "Syne",
+    "body": "Inter",
+    "headingRTL": "Cairo",
+    "bodyRTL": "Tajawal",
+    "googleFontsUrl": "https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700;800&display=swap"
+  },
+  "sections": ["hero", "social-stats", "portfolio-showcase", "content-categories", "brands-worked-with", "skills", "experience", "behind-the-scenes", "education", "contact"],
+  "specialSections": ["portfolio-showcase", "social-stats", "brands-worked-with", "content-categories", "behind-the-scenes"],
+  "features": ["animated-gradient-hero-name-4s-loop", "syne-800-bold-geometric", "portfolio-masonry-3col-grid", "fullscreen-lightbox-viewer", "video-thumbnail-with-qr-in-print", "portfolio-category-filter", "social-stats-count-up-1800ms", "platform-cards-with-engagement-rate", "brand-logo-infinite-marquee", "grayscale-to-color-logo-hover", "marquee-rtl-reverse", "content-categories-pill-grid", "behind-the-scenes-two-col", "spring-overshoot-card-hover", "28s-fastest-orb-drift", "noise-texture-overlay", "scroll-parallax-orbs", "print-media-kit-style", "3-color-variants"],
+  "designNotes": "The Creative template makes no apologies for being loud — near-black backgrounds create a gallery void that lets visual work breathe, while the hot pink / electric blue / neon yellow triad delivers the visual punch that stops a scroll in the GCC social media landscape. The animated gradient hero name is the signature: an infinitely cycling Syne 800-weight headline that communicates personality before a single word is processed. Print output functions as a media kit with portfolio thumbnails, static brand logos, and QR codes for video content."
+}

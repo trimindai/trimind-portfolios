@@ -1,0 +1,163 @@
+{
+  "common": {
+    "appName": "بورتفوليو برو",
+    "getStarted": "ابدأ الآن",
+    "signIn": "تسجيل الدخول",
+    "signUp": "إنشاء حساب",
+    "dashboard": "لوحة التحكم",
+    "preview": "معاينة",
+    "publish": "نشر",
+    "save": "حفظ",
+    "cancel": "إلغاء",
+    "next": "التالي",
+    "previous": "السابق",
+    "delete": "حذف",
+    "edit": "تعديل",
+    "loading": "جاري التحميل...",
+    "draft": "مسودة",
+    "published": "منشور",
+    "paid": "مدفوع"
+  },
+  "landing": {
+    "hero": {
+      "title": "أنشئ بورتفوليو احترافي",
+      "subtitle": "تميّز ببورتفوليو مذهل. اختر قالبًا، أدخل بياناتك، وانشر في دقائق.",
+      "cta": "أنشئ بورتفوليو",
+      "browse": "تصفح القوالب"
+    },
+    "features": {
+      "title": "كل ما تحتاجه",
+      "templates": {
+        "title": "قوالب احترافية",
+        "description": "اختر من قوالب مصممة بعناية لتناسب مجالك المهني."
+      },
+      "bilingual": {
+        "title": "عربي وإنجليزي",
+        "description": "دعم كامل للغتين مع تخطيط عربي من اليمين لليسار."
+      },
+      "pdf": {
+        "title": "تحميل PDF ورمز QR",
+        "description": "حمّل بورتفوليو كـ PDF مع رمز QR يربط بموقعك المباشر."
+      },
+      "hosted": {
+        "title": "رابط مستضاف",
+        "description": "احصل على رابط خاص لبورتفوليو يمكنك مشاركته مع أي شخص."
+      }
+    },
+    "templates": {
+      "title": "قوالب لكل مهنة",
+      "subtitle": "مصممة خصيصًا للمحترفين في الخليج"
+    },
+    "pricing": {
+      "title": "سعر بسيط",
+      "subtitle": "دفعة واحدة. بدون اشتراكات.",
+      "price": "٥ د.ك",
+      "perPortfolio": "لكل بورتفوليو",
+      "includes": [
+        "رابط بورتفوليو مستضاف",
+        "تحميل PDF مع رمز QR",
+        "دعم العربية والإنجليزية",
+        "ألوان وخطوط مخصصة",
+        "تخطيط محسّن للطباعة"
+      ]
+    },
+    "cta": {
+      "title": "جاهز لإنشاء بورتفوليو؟",
+      "subtitle": "انضم لآلاف المحترفين الذين يتميزون مع بورتفوليو برو.",
+      "button": "ابدأ الآن"
+    }
+  },
+  "dashboard": {
+    "title": "بورتفوليوهاتي",
+    "empty": "لم تنشئ أي بورتفوليو بعد.",
+    "createNew": "إنشاء بورتفوليو جديد",
+    "lastEdited": "آخر تعديل"
+  },
+  "builder": {
+    "pickTemplate": "اختر قالبًا",
+    "steps": {
+      "basics": "المعلومات الأساسية",
+      "experience": "الخبرات",
+      "skills": "المهارات",
+      "projects": "المشاريع",
+      "education": "التعليم والشهادات",
+      "customize": "التخصيص"
+    },
+    "basics": {
+      "fullName": "الاسم الكامل",
+      "title": "المسمى الوظيفي",
+      "subtitle": "العنوان الفرعي",
+      "bio": "نبذة عنك",
+      "location": "الموقع",
+      "email": "البريد الإلكتروني",
+      "phone": "الهاتف",
+      "website": "الموقع الإلكتروني",
+      "linkedin": "رابط LinkedIn",
+      "github": "رابط GitHub",
+      "photo": "الصورة الشخصية",
+      "metrics": "الأرقام الرئيسية",
+      "metricValue": "القيمة",
+      "metricLabel": "التسمية"
+    },
+    "experience": {
+      "title": "المسمى الوظيفي",
+      "company": "الشركة",
+      "startDate": "تاريخ البدء",
+      "endDate": "تاريخ الانتهاء",
+      "description": "الوصف",
+      "highlights": "أبرز الإنجازات",
+      "addExperience": "إضافة خبرة"
+    },
+    "skills": {
+      "category": "اسم الفئة",
+      "items": "المهارات",
+      "addCategory": "إضافة فئة مهارات"
+    },
+    "projects": {
+      "title": "اسم المشروع",
+      "description": "الوصف",
+      "technologies": "التقنيات",
+      "link": "رابط المشروع",
+      "featured": "مشروع مميز",
+      "addProject": "إضافة مشروع"
+    },
+    "education": {
+      "degree": "الدرجة العلمية",
+      "institution": "المؤسسة التعليمية",
+      "year": "السنة",
+      "addEducation": "إضافة تعليم",
+      "certName": "اسم الشهادة",
+      "certIssuer": "الجهة المانحة",
+      "certYear": "السنة",
+      "addCert": "إضافة شهادة",
+      "language": "اللغة",
+      "level": "مستوى الإتقان",
+      "addLanguage": "إضافة لغة"
+    },
+    "customize": {
+      "primaryColor": "اللون الأساسي",
+      "accentColor": "اللون المميز",
+      "fontFamily": "نوع الخط"
+    }
+  },
+  "preview": {
+    "desktop": "سطح المكتب",
+    "tablet": "تابلت",
+    "mobile": "جوال",
+    "print": "معاينة الطباعة",
+    "watermark": "معاينة فقط — ادفع للنشر",
+    "backToEdit": "العودة للتعديل"
+  },
+  "publish": {
+    "title": "انشر بورتفوليو",
+    "chooseSlug": "اختر رابطك",
+    "slugPrefix": "trimindportfolios.com/p/",
+    "available": "متاح!",
+    "taken": "مستخدم مسبقًا",
+    "payAndPublish": "ادفع وانشر",
+    "price": "٥ د.ك",
+    "published": "بورتفوليو منشور!",
+    "visitSite": "زيارة البورتفوليو",
+    "copyUrl": "نسخ الرابط"
+  }
+}

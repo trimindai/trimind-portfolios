@@ -1,0 +1,43 @@
+{
+  "id": "corporate",
+  "name": "Corporate",
+  "description": "HR-first portfolio for corporate professionals — finance, accounting, banking, law, HR, and business management. Designed around how recruiters actually evaluate candidates: credentials as proof, quantified achievements as the portfolio, endorsements as social proof.",
+  "category": "business",
+  "targetProfessions": ["Financial Analyst", "Accountant", "Auditor", "HR Manager", "Business Manager", "Investment Analyst", "Budget Analyst", "Treasury Manager", "Risk Analyst", "Compliance Officer", "Lawyer", "Administrative Manager"],
+  "colors": {
+    "bg": "#F8FAFC",
+    "bgWarm": "#F1F5F9",
+    "bgWhite": "#FFFFFF",
+    "primary": "#0F172A",
+    "secondary": "#1E3A8A",
+    "accent": "#A16207",
+    "accentWarm": "#CA8A04",
+    "text": "#020617",
+    "textSecondary": "#475569",
+    "textTertiary": "#94A3B8",
+    "border": "#E2E8F0",
+    "muted": "#E8ECF1"
+  },
+  "fonts": {
+    "heading": "Playfair Display",
+    "body": "Inter",
+    "googleFontsUrl": "https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,500;1,600&family=Inter:wght@300;400;500;600;700&display=swap"
+  },
+  "sections": ["hero", "credentials", "value-proposition", "experience", "impact-stories", "competencies", "education", "professional-profile", "endorsements", "contact"],
+  "features": [
+    "light-mode-institutional",
+    "trust-authority-style",
+    "hero-inline-contact",
+    "nationality-visa-display",
+    "credential-trust-bar",
+    "value-proposition-block",
+    "company-name-prominent-timeline",
+    "impact-stories-star-format",
+    "competency-tags-grouped",
+    "endorsement-quotes",
+    "gold-rule-dividers",
+    "print-pdf-qr",
+    "rtl-ready"
+  ],
+  "designNotes": "The Corporate template is designed around HR evaluation patterns, not visual aesthetics. Research shows recruiters spend 6 seconds scanning: job title, company names, numbers, and credentials — in that order. The template puts all four above the fold. Certifications are elevated to a trust bar immediately after the hero (they ARE the skill proof for desk jobs). 'Projects' is replaced by 'Impact Stories' using anonymized STAR format — because corporate professionals' best work is internal and confidential. Endorsements from managers provide social proof that desk workers otherwise lack. Skill bars are removed (meaningless self-assessment) in favor of grouped competency tags. Every experience bullet must contain a quantified metric. The template itself demonstrates the candidate's communication and presentation skills."
+}

@@ -1,0 +1,32 @@
+{
+  "id": "designer",
+  "name": "Designer",
+  "description": "Bold, portfolio-forward template for creative professionals — built around visual work and process storytelling.",
+  "category": "creative",
+  "targetProfessions": ["UI/UX Designer", "Graphic Designer", "Brand Designer", "Architect", "Interior Designer", "Art Director", "Creative Director", "Illustrator", "Visual Designer", "Motion Designer"],
+  "colors": {
+    "bg": "#121212",
+    "bgDeep": "#0a0a0a",
+    "bgCard": "rgba(26, 26, 26, 0.7)",
+    "primary": "#ff6b6b",
+    "primaryGlow": "rgba(255, 107, 107, 0.35)",
+    "primaryDim": "rgba(255, 107, 107, 0.1)",
+    "secondary": "#a78bfa",
+    "secondaryDim": "rgba(167, 139, 250, 0.1)",
+    "accent": "#fafafa",
+    "text": "#fafafa",
+    "textSecondary": "#a0a0a0",
+    "textTertiary": "#606060",
+    "border": "rgba(255, 107, 107, 0.08)"
+  },
+  "fonts": {
+    "heading": "Space Grotesk",
+    "body": "Inter",
+    "mono": "JetBrains Mono",
+    "googleFontsUrl": "https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap"
+  },
+  "sections": ["hero", "portfolio-gallery", "skills", "design-process", "experience", "tools-software", "education", "contact"],
+  "specialSections": ["portfolio-gallery", "design-process", "tools-software"],
+  "features": ["masonry-gallery-grid", "gallery-category-filter", "design-process-4-step-timeline", "tools-proficiency-grid", "svg-name-underline-animation", "role-typewriter-cycling", "image-zoom-hover", "dribbble-behance-cards"],
+  "designNotes": "The Designer template uses bold display typography (Space Grotesk at extreme weights) against a charcoal canvas to let portfolio imagery command attention. Coral (#ff6b6b) drives all interactive energy while lavender (#a78bfa) provides a complementary secondary accent, giving the palette a distinctly creative, non-corporate feeling. The asymmetric gallery grid is the centrepiece — it breaks conventional equal-column layouts."
+}
