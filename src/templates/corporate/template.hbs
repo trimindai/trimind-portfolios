@@ -681,33 +681,21 @@ a { text-decoration: none; color: inherit; }
     word-break: break-all;
 }
 
-/* ═══ SAVE SECTION ═══ */
-.save-section {
-    padding: 40px 0;
-    background: var(--bg-warm);
-    border-top: 1px solid var(--border);
-    text-align: center;
+/* ═══ FLOATING SAVE PDF ═══ */
+.save-float {
+    position: fixed; bottom: 24px; right: 24px; z-index: 999;
 }
-.save-pdf-btn {
-    display: inline-flex; align-items: center; gap: 8px;
-    padding: 14px 32px; border-radius: 10px;
+.save-pdf-float {
+    display: flex; align-items: center; gap: 8px;
+    padding: 12px 24px; border-radius: 100px;
     background: var(--navy); color: #fff;
-    font-size: 0.9rem; font-weight: 600;
+    font-size: 0.82rem; font-weight: 600;
     font-family: var(--font-body);
     border: none; cursor: pointer;
-    box-shadow: var(--shadow-md);
+    box-shadow: 0 4px 20px rgba(15,23,42,0.3);
     transition: all 200ms var(--ease);
 }
-.save-pdf-btn:hover { background: #1E293B; transform: translateY(-2px); box-shadow: var(--shadow-lg); }
-.lang-toggle-btn {
-    padding: 12px 24px; border-radius: 10px;
-    background: transparent; color: var(--text-sub);
-    font-size: 0.85rem; font-weight: 500;
-    font-family: var(--font-body);
-    border: 1.5px solid var(--border-strong); cursor: pointer;
-    transition: all 200ms var(--ease);
-}
-.lang-toggle-btn:hover { border-color: var(--gold); color: var(--navy); }
+.save-pdf-float:hover { background: #1E293B; transform: translateY(-2px); box-shadow: 0 8px 30px rgba(15,23,42,0.4); }
 
 /* ═══ FOOTER ═══ */
 footer {
@@ -1498,17 +1486,12 @@ footer a:hover { border-color: var(--gold-warm); }
     <p>Scan to view online portfolio</p>
 </div>
 
-<!-- Save PDF & Language Toggle -->
-<div class="save-section no-print">
-    <div class="container" style="display:flex; justify-content:center; align-items:center; gap:16px; flex-wrap:wrap;">
-        <button class="save-pdf-btn" onclick="window.print()">
-            <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" style="width:20px;height:20px;"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3"/></svg>
-            Save as PDF
-        </button>
-        <button class="lang-toggle-btn" onclick="document.documentElement.dir = document.documentElement.dir === 'rtl' ? 'ltr' : 'rtl'; this.textContent = document.documentElement.dir === 'rtl' ? 'English' : 'عربي';">
-            {{#if isRTL}}English{{else}}عربي{{/if}}
-        </button>
-    </div>
+<!-- Save PDF (floating) -->
+<div class="save-float no-print">
+    <button class="save-pdf-float" onclick="window.print()">
+        <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" style="width:18px;height:18px;"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3"/></svg>
+        Save PDF
+    </button>
 </div>
 
 <footer>

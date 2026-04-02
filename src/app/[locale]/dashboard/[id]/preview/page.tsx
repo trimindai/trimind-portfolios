@@ -6,9 +6,10 @@ import { api } from "@convex/_generated/api";
 import { Id } from "@convex/_generated/dataModel";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
-import { useState, useMemo } from "react";
-import { Monitor, Tablet, Smartphone, ArrowLeft } from "lucide-react";
+import { useState, useMemo, useRef } from "react";
+import { Monitor, Tablet, Smartphone, ArrowLeft, Download } from "lucide-react";
 import PreviewFrame from "@/components/preview/PreviewFrame";
+import type { PreviewFrameHandle } from "@/components/preview/PreviewFrame";
 import { toPortfolioData } from "@/lib/portfolio-data";
 
 type DeviceMode = "desktop" | "tablet" | "mobile";
@@ -19,6 +20,7 @@ export default function PreviewPage() {
   const locale = (params.locale as string) || "en";
   const t = useTranslations("preview");
   const tc = useTranslations("common");
+  const previewRef = useRef<PreviewFrameHandle>(null);
 
   const portfolio = useQuery(api.portfolios.get, {
     id: id as Id<"portfolios">,
@@ -60,7 +62,6 @@ export default function PreviewPage() {
     <div className="flex h-screen flex-col bg-slate-950">
       {/* Top toolbar */}
       <div className="flex items-center justify-between border-b border-slate-800 bg-slate-900 px-4 py-3">
-        {/* Left: Back to Edit */}
         <Link
           href={`/dashboard/${id}/edit`}
           className="flex items-center gap-2 text-sm text-slate-400 transition-colors hover:text-white"
@@ -69,7 +70,6 @@ export default function PreviewPage() {
           {t("backToEdit")}
         </Link>
 
-        {/* Center: Device toggles */}
         <div className="flex items-center gap-1 rounded-lg bg-slate-800/50 p-1">
           {devices.map(({ mode, icon: Icon, label }) => (
             <button
@@ -88,7 +88,6 @@ export default function PreviewPage() {
           ))}
         </div>
 
-        {/* Right: Publish button */}
         <Link
           href={`/dashboard/${id}/publish`}
           className="rounded-lg bg-emerald-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-emerald-500"
@@ -98,10 +97,19 @@ export default function PreviewPage() {
       </div>
 
       {/* Preview area */}
-      <div className="flex-1 overflow-hidden">
+      <div className="flex-1 overflow-hidden relative">
         {portfolioData && (
-          <PreviewFrame portfolioData={portfolioData} deviceMode={deviceMode} />
+          <PreviewFrame ref={previewRef} portfolioData={portfolioData} deviceMode={deviceMode} />
         )}
+
+        {/* Floating Save PDF button */}
+        <button
+          onClick={() => previewRef.current?.print()}
+          className="fixed bottom-6 right-6 z-50 flex items-center gap-2 rounded-full bg-emerald-600 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-emerald-600/25 hover:bg-emerald-500 hover:shadow-emerald-500/30 transition-all hover:-translate-y-0.5"
+        >
+          <Download className="h-4 w-4" />
+          Save PDF / Print
+        </button>
       </div>
     </div>
   );
