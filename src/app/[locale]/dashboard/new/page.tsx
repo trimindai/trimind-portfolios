@@ -1,7 +1,7 @@
 "use client";
 
 import { useMutation } from "convex/react";
-import { api } from "../../../../../convex/_generated/api";
+import { api } from "@convex/_generated/api";
 import { useDashboard } from "@/contexts/DashboardContext";
 import { useEffect, useState } from "react";
 
@@ -18,7 +18,7 @@ export default function NewPortfolioPage() {
       try {
         // Create draft portfolio
         const portfolioId = await createPortfolio({
-          userId,
+          userId: userId ?? undefined,
           templateId: "corporate",
           locale: "en",
           name: "My Portfolio",
@@ -32,7 +32,7 @@ export default function NewPortfolioPage() {
         // Create pending payment record
         await createPayment({
           portfolioId,
-          userId,
+          userId: userId ?? undefined,
           amount: 5,
           currency: "KWD",
         });

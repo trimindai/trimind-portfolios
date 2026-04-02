@@ -1,7 +1,7 @@
 "use client";
 
 import { useQuery, useMutation } from "convex/react";
-import { api } from "../../../../convex/_generated/api";
+import { api } from "@convex/_generated/api";
 import { useDashboard } from "@/contexts/DashboardContext";
 import { useRouter } from "@/i18n/navigation";
 import { Link } from "@/i18n/navigation";

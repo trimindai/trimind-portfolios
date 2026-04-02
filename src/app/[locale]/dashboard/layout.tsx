@@ -2,10 +2,10 @@
 
 import { useUser, SignOutButton } from "@clerk/nextjs";
 import { useMutation, useQuery } from "convex/react";
-import { api } from "../../../../convex/_generated/api";
+import { api } from "@convex/_generated/api";
 import { useEffect, useState } from "react";
 import { DashboardContext } from "@/contexts/DashboardContext";
-import { Id } from "../../../../convex/_generated/dataModel";
+import { Id } from "@convex/_generated/dataModel";
 
 export default function DashboardLayout({
   children,

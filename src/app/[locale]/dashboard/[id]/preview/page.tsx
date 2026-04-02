@@ -2,8 +2,8 @@
 
 import { useParams } from "next/navigation";
 import { useQuery } from "convex/react";
-import { api } from "../../../../../../convex/_generated/api";
-import { Id } from "../../../../../../convex/_generated/dataModel";
+import { api } from "@convex/_generated/api";
+import { Id } from "@convex/_generated/dataModel";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { useState, useMemo } from "react";

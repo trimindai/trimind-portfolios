@@ -44,7 +44,7 @@ export function ExperienceStep({ data, onChange }: ExperienceStepProps) {
             <TextareaField
               label="Highlights (one per line)"
               value={(item.highlights || []).join("\n")}
-              onChange={(v) => update({ highlights: v.split("\n").filter(Boolean) })}
+              onChange={(v) => update({ highlights: v.split("\n").filter(Boolean) as string[] })}
               placeholder="Reduced costs by 18%&#10;Led team of 6 analysts"
               rows={3}
             />

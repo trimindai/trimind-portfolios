@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { Loader2, Printer } from "lucide-react";
 
 interface PreviewFrameProps {
-  portfolioData: Record<string, unknown>;
+  portfolioData: Record<string, any>;
   deviceMode: "desktop" | "tablet" | "mobile";
 }
 
