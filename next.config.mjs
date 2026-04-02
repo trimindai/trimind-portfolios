@@ -10,6 +10,13 @@ const nextConfig = {
   typescript: {
     ignoreBuildErrors: true,
   },
+  webpack: (config) => {
+    config.module.rules.push({
+      test: /\.hbs$/,
+      type: "asset/source",
+    });
+    return config;
+  },
 };
 
 export default withNextIntl(nextConfig);
