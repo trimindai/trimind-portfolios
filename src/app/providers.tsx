@@ -1,5 +1,6 @@
 "use client";
 
+import { ClerkProvider } from "@clerk/nextjs";
 import { ConvexProvider, ConvexReactClient } from "convex/react";
 import { ReactNode } from "react";
 
@@ -8,5 +9,9 @@ const convex = new ConvexReactClient(
 );
 
 export function Providers({ children }: { children: ReactNode }) {
-  return <ConvexProvider client={convex}>{children}</ConvexProvider>;
+  return (
+    <ClerkProvider>
+      <ConvexProvider client={convex}>{children}</ConvexProvider>
+    </ClerkProvider>
+  );
 }

@@ -1,11 +1,20 @@
-import createMiddleware from "next-intl/middleware";
+import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
+import createIntlMiddleware from "next-intl/middleware";
 import { routing } from "./i18n/routing";
 
-export default createMiddleware(routing);
+const intlMiddleware = createIntlMiddleware(routing);
+
+const isProtectedRoute = createRouteMatcher([
+  "/:locale/dashboard(.*)",
+]);
+
+export default clerkMiddleware(async (auth, req) => {
+  if (isProtectedRoute(req)) {
+    await auth.protect();
+  }
+  return intlMiddleware(req);
+});
 
 export const config = {
-  matcher: [
-    // Match all pathnames except /api, /p (published portfolios), /_next, /favicon.ico, etc.
-    "/((?!api|p|_next|_vercel|favicon.ico|.*\\..*).*)",
-  ],
+  matcher: ["/((?!_next|_vercel|favicon.ico|.*\\..*).*)" ],
 };

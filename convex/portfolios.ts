@@ -1,24 +1,39 @@
 import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
 
+const basicsValidator = v.object({
+  fullName: v.string(),
+  title: v.string(),
+  subtitle: v.optional(v.string()),
+  bio: v.optional(v.string()),
+  valueProposition: v.optional(v.string()),
+  location: v.optional(v.string()),
+  nationality: v.optional(v.string()),
+  visaStatus: v.optional(v.string()),
+  email: v.string(),
+  phone: v.optional(v.string()),
+  website: v.optional(v.string()),
+  linkedin: v.optional(v.string()),
+  github: v.optional(v.string()),
+  photoUrl: v.optional(v.string()),
+});
+
+const customizationValidator = v.optional(
+  v.object({
+    primaryColor: v.optional(v.string()),
+    accentColor: v.optional(v.string()),
+    fontFamily: v.optional(v.string()),
+    hiddenSections: v.optional(v.array(v.string())),
+  })
+);
+
 export const create = mutation({
   args: {
+    userId: v.optional(v.id("users")),
     templateId: v.string(),
     locale: v.union(v.literal("en"), v.literal("ar")),
     name: v.string(),
-    basics: v.object({
-      fullName: v.string(),
-      title: v.string(),
-      subtitle: v.optional(v.string()),
-      bio: v.optional(v.string()),
-      location: v.optional(v.string()),
-      email: v.string(),
-      phone: v.optional(v.string()),
-      website: v.optional(v.string()),
-      linkedin: v.optional(v.string()),
-      github: v.optional(v.string()),
-      photoUrl: v.optional(v.string()),
-    }),
+    basics: basicsValidator,
   },
   handler: async (ctx, args) => {
     const now = Date.now();
@@ -34,21 +49,7 @@ export const create = mutation({
 export const update = mutation({
   args: {
     id: v.id("portfolios"),
-    basics: v.optional(
-      v.object({
-        fullName: v.string(),
-        title: v.string(),
-        subtitle: v.optional(v.string()),
-        bio: v.optional(v.string()),
-        location: v.optional(v.string()),
-        email: v.string(),
-        phone: v.optional(v.string()),
-        website: v.optional(v.string()),
-        linkedin: v.optional(v.string()),
-        github: v.optional(v.string()),
-        photoUrl: v.optional(v.string()),
-      })
-    ),
+    basics: v.optional(basicsValidator),
     metrics: v.optional(
       v.array(v.object({ value: v.string(), label: v.string() }))
     ),
@@ -65,12 +66,7 @@ export const update = mutation({
       )
     ),
     skills: v.optional(
-      v.array(
-        v.object({
-          category: v.string(),
-          items: v.array(v.string()),
-        })
-      )
+      v.array(v.object({ category: v.string(), items: v.array(v.string()) }))
     ),
     projects: v.optional(
       v.array(
@@ -108,17 +104,52 @@ export const update = mutation({
     languages: v.optional(
       v.array(v.object({ name: v.string(), level: v.string() }))
     ),
-    customization: v.optional(
-      v.object({
-        primaryColor: v.optional(v.string()),
-        accentColor: v.optional(v.string()),
-        fontFamily: v.optional(v.string()),
-      })
+    endorsements: v.optional(
+      v.array(
+        v.object({
+          quote: v.string(),
+          name: v.string(),
+          title: v.string(),
+          company: v.string(),
+        })
+      )
     ),
+    professionalAffiliations: v.optional(
+      v.array(
+        v.object({
+          name: v.string(),
+          role: v.optional(v.string()),
+        })
+      )
+    ),
+    continuousDevelopment: v.optional(
+      v.array(
+        v.object({
+          name: v.string(),
+          provider: v.optional(v.string()),
+          year: v.optional(v.string()),
+        })
+      )
+    ),
+    customization: customizationValidator,
   },
   handler: async (ctx, { id, ...fields }) => {
     await ctx.db.patch(id, {
       ...fields,
+      lastEditedAt: Date.now(),
+    });
+  },
+});
+
+export const markPaid = mutation({
+  args: {
+    id: v.id("portfolios"),
+    paymentId: v.string(),
+  },
+  handler: async (ctx, { id, paymentId }) => {
+    await ctx.db.patch(id, {
+      status: "paid",
+      paymentId,
       lastEditedAt: Date.now(),
     });
   },
