@@ -1,9 +1,12 @@
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import { Link } from "@/i18n/navigation";
 
 export default function LandingPage() {
   const t = useTranslations("landing");
   const tc = useTranslations("common");
+  const locale = useLocale();
+  const otherLocale = locale === "en" ? "ar" : "en";
+  const otherLabel = locale === "en" ? "عربي" : "English";
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 text-white">
@@ -14,6 +17,12 @@ export default function LandingPage() {
             {tc("appName")}
           </span>
           <div className="flex items-center gap-4">
+            <a
+              href={`/${otherLocale}`}
+              className="text-sm text-slate-400 hover:text-white transition-colors border border-slate-700 rounded px-2.5 py-1"
+            >
+              {otherLabel}
+            </a>
             <Link
               href="/sign-in"
               className="text-sm text-slate-300 hover:text-white transition-colors"
@@ -85,30 +94,32 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Templates Preview */}
+      {/* Template Preview */}
       <section id="templates" className="py-24 px-6">
-        <div className="mx-auto max-w-6xl text-center">
+        <div className="mx-auto max-w-4xl text-center">
           <h2 className="text-3xl font-bold sm:text-4xl">
-            {t("templates.title")}
+            Corporate Portfolio Template
           </h2>
-          <p className="mt-4 text-slate-400">{t("templates.subtitle")}</p>
-          <div className="mt-16 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {TEMPLATES.map((tmpl) => (
-              <div
-                key={tmpl.id}
-                className="group relative overflow-hidden rounded-xl border border-slate-800 bg-slate-900/50 transition-all hover:border-emerald-600/50"
-              >
-                <div className="aspect-[4/3] bg-slate-800 flex items-center justify-center text-slate-600">
-                  <span className="text-4xl">{tmpl.emoji}</span>
-                </div>
-                <div className="p-4">
-                  <h3 className="font-semibold">{tmpl.name}</h3>
-                  <p className="mt-1 text-sm text-slate-400">
-                    {tmpl.description}
-                  </p>
-                </div>
+          <p className="mt-4 text-slate-400">Designed for professionals in Finance, Accounting, HR, Business, Law, and more.</p>
+          <div className="mt-12 rounded-2xl border border-slate-800 bg-slate-900/50 overflow-hidden">
+            <div className="aspect-[16/9] bg-slate-800 flex items-center justify-center">
+              <iframe
+                src="https://corporate-three-pink.vercel.app/"
+                className="w-full h-full border-0 pointer-events-none"
+                title="Corporate Template Preview"
+              />
+            </div>
+            <div className="p-6 text-start">
+              <h3 className="text-xl font-semibold">Corporate Portfolio</h3>
+              <p className="mt-2 text-sm text-slate-400">
+                Navy &amp; gold institutional design. Hero with metrics, career timeline, impact stories, credentials bar, endorsements, and print-optimized PDF with QR code. Fully customizable colors and fonts.
+              </p>
+              <div className="mt-4 flex flex-wrap gap-2">
+                {["Custom Colors", "PDF Export", "Arabic + English", "Print Ready", "QR Code", "Mobile Responsive"].map((tag) => (
+                  <span key={tag} className="text-xs bg-emerald-600/10 text-emerald-400 rounded-full px-3 py-1">{tag}</span>
+                ))}
               </div>
-            ))}
+            </div>
           </div>
         </div>
       </section>
@@ -117,29 +128,27 @@ export default function LandingPage() {
       <section className="py-24 px-6">
         <div className="mx-auto max-w-md text-center">
           <h2 className="text-3xl font-bold sm:text-4xl">
-            {t("pricing.title")}
+            Simple Pricing
           </h2>
-          <p className="mt-4 text-slate-400">{t("pricing.subtitle")}</p>
+          <p className="mt-4 text-slate-400">One-time payment. No subscriptions.</p>
           <div className="mt-12 rounded-2xl border border-emerald-600/30 bg-slate-900/80 p-8">
             <div className="text-5xl font-bold text-emerald-500">
-              {t("pricing.price")}
+              $4.99
             </div>
-            <div className="mt-1 text-slate-400">{t("pricing.perPortfolio")}</div>
+            <div className="mt-1 text-slate-400">per portfolio</div>
             <ul className="mt-8 space-y-3 text-start text-sm">
-              {(t.raw("pricing.includes") as string[]).map(
-                (item: string, i: number) => (
-                  <li key={i} className="flex items-center gap-2">
-                    <span className="text-emerald-500">&#10003;</span>
-                    {item}
-                  </li>
-                )
-              )}
+              <li className="flex items-center gap-2"><span className="text-emerald-500">&#10003;</span> Hosted portfolio URL</li>
+              <li className="flex items-center gap-2"><span className="text-emerald-500">&#10003;</span> PDF download with QR code</li>
+              <li className="flex items-center gap-2"><span className="text-emerald-500">&#10003;</span> Arabic &amp; English support</li>
+              <li className="flex items-center gap-2"><span className="text-emerald-500">&#10003;</span> Custom colors &amp; fonts</li>
+              <li className="flex items-center gap-2"><span className="text-emerald-500">&#10003;</span> Print-optimized layout</li>
+              <li className="flex items-center gap-2"><span className="text-emerald-500">&#10003;</span> Profile photo upload</li>
             </ul>
             <Link
               href="/dashboard/new"
               className="mt-8 block rounded-lg bg-emerald-600 py-3 text-center font-semibold hover:bg-emerald-500 transition-colors"
             >
-              {t("cta.button")}
+              Get Started
             </Link>
           </div>
         </div>
@@ -169,47 +178,3 @@ function FeatureIcon({ feature }: { feature: string }) {
   );
 }
 
-const TEMPLATES = [
-  {
-    id: "corporate",
-    name: "Corporate",
-    emoji: "\uD83C\uDFE2",
-    description: "Accounting, Finance, Business Management, HR",
-  },
-  {
-    id: "executive",
-    name: "Executive",
-    emoji: "\uD83D\uDC54",
-    description: "C-Suite, Directors, Consultants",
-  },
-  {
-    id: "developer",
-    name: "Developer",
-    emoji: "\uD83D\uDCBB",
-    description: "Software Engineers, IT, DevOps",
-  },
-  {
-    id: "designer",
-    name: "Designer",
-    emoji: "\uD83C\uDFA8",
-    description: "UI/UX, Graphic Design, Architecture",
-  },
-  {
-    id: "medical",
-    name: "Medical",
-    emoji: "\u2695\uFE0F",
-    description: "Doctors, Pharmacists, Healthcare",
-  },
-  {
-    id: "educator",
-    name: "Educator",
-    emoji: "\uD83D\uDCDA",
-    description: "Teachers, Professors, Trainers",
-  },
-  {
-    id: "creative",
-    name: "Creative",
-    emoji: "\uD83D\uDCF7",
-    description: "Photographers, Content Creators, Artists",
-  },
-];

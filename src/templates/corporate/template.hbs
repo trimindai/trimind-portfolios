@@ -1157,9 +1157,9 @@ footer a:hover { border-color: var(--gold-warm); }
 {{/unless}}
 {{/if}}
 
-<!-- 3. VALUE PROPOSITION -->
-{{#if basics.valueProposition}}
+<!-- 3. VALUE PROPOSITION / PROFESSIONAL SUMMARY -->
 {{#unless (isHidden "value-proposition")}}
+{{#if basics.valueProposition}}
 <section class="section value-prop">
     <div class="container">
         <div class="value-prop-inner">
@@ -1167,13 +1167,31 @@ footer a:hover { border-color: var(--gold-warm); }
             <p class="value-prop-text rv rv-d1">
                 {{{basics.valueProposition}}}
             </p>
+            {{#if basics.bio}}
+            <p class="value-prop-text rv rv-d2" style="margin-top: 16px;">
+                {{{basics.bio}}}
+            </p>
+            {{/if}}
         </div>
     </div>
 </section>
-
 <div class="container"><div class="gold-rule"></div></div>
-{{/unless}}
+{{else}}
+{{#if basics.bio}}
+<section class="section value-prop">
+    <div class="container">
+        <div class="value-prop-inner">
+            <div class="section-label rv" style="justify-content: center;">Professional Summary</div>
+            <p class="value-prop-text rv rv-d1">
+                {{{basics.bio}}}
+            </p>
+        </div>
+    </div>
+</section>
+<div class="container"><div class="gold-rule"></div></div>
 {{/if}}
+{{/if}}
+{{/unless}}
 
 <!-- 4. CAREER TRAJECTORY -->
 {{#if experience}}

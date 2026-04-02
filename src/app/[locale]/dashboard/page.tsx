@@ -39,7 +39,7 @@ export default function DashboardPage() {
           lifetime access.
         </p>
         <div className="rounded-2xl border border-emerald-600/30 bg-slate-900/80 p-8 max-w-sm w-full text-center">
-          <div className="text-5xl font-bold text-emerald-500">5 KWD</div>
+          <div className="text-5xl font-bold text-emerald-500">$4.99</div>
           <div className="mt-1 text-slate-400">One-time payment</div>
           <ul className="mt-6 space-y-2 text-start text-sm text-slate-300">
             <li className="flex items-center gap-2">
@@ -64,7 +64,7 @@ export default function DashboardPage() {
             disabled={loading}
             className="mt-6 w-full rounded-lg bg-emerald-600 py-3 font-semibold text-white hover:bg-emerald-500 transition-colors disabled:opacity-50"
           >
-            {loading ? "Processing..." : "Get Started — 5 KWD"}
+            {loading ? "Processing..." : "Get Started — $4.99"}
           </button>
         </div>
       </div>

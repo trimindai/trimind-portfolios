@@ -32,33 +32,41 @@ export function PhotoUpload({ value, onChange }: PhotoUploadProps) {
     // Show local preview immediately
     const localUrl = URL.createObjectURL(file);
     setPreview(localUrl);
+    setUploading(true);
 
     try {
-      setUploading(true);
+      // Get upload URL from Convex
       const uploadUrl = await generateUploadUrl();
+
+      // Upload the file
       const result = await fetch(uploadUrl, {
         method: "POST",
         headers: { "Content-Type": file.type },
         body: file,
       });
+
       const { storageId } = await result.json();
-      // Convex storage URL format
-      const convexUrl = `${process.env.NEXT_PUBLIC_CONVEX_URL}/api/storage/${storageId}`;
-      onChange(convexUrl);
-      setPreview(convexUrl);
-    } catch (err) {
-      // Keep local preview even if upload fails
-      alert("Upload failed. The photo will show locally but may not persist.");
-      // Use base64 as fallback
+
+      // Convert to base64 for reliable storage in the portfolio data
+      // (Convex storage URLs require auth, base64 works everywhere)
       const reader = new FileReader();
       reader.onload = () => {
         const base64 = reader.result as string;
         onChange(base64);
         setPreview(base64);
+        setUploading(false);
       };
       reader.readAsDataURL(file);
-    } finally {
-      setUploading(false);
+    } catch (err) {
+      // Fallback to base64 directly
+      const reader = new FileReader();
+      reader.onload = () => {
+        const base64 = reader.result as string;
+        onChange(base64);
+        setPreview(base64);
+        setUploading(false);
+      };
+      reader.readAsDataURL(file);
     }
   };
 
@@ -78,8 +86,8 @@ export function PhotoUpload({ value, onChange }: PhotoUploadProps) {
       </p>
       <div className="flex items-center gap-4">
         <div
-          onClick={() => fileInputRef.current?.click()}
-          className="w-24 h-24 rounded-full border-2 border-dashed border-slate-700 hover:border-emerald-500 flex items-center justify-center cursor-pointer transition-colors overflow-hidden bg-slate-800"
+          onClick={() => !uploading && fileInputRef.current?.click()}
+          className="w-24 h-24 rounded-full border-2 border-dashed border-slate-700 hover:border-emerald-500 flex items-center justify-center cursor-pointer transition-colors overflow-hidden bg-slate-800 flex-shrink-0"
         >
           {preview ? (
             <img
@@ -103,12 +111,13 @@ export function PhotoUpload({ value, onChange }: PhotoUploadProps) {
         <div className="flex flex-col gap-2">
           <button
             type="button"
-            onClick={() => fileInputRef.current?.click()}
-            className="text-sm text-emerald-400 hover:text-emerald-300 transition-colors"
+            onClick={() => !uploading && fileInputRef.current?.click()}
+            disabled={uploading}
+            className="text-sm text-emerald-400 hover:text-emerald-300 transition-colors disabled:opacity-50"
           >
-            {preview ? "Change photo" : "Upload photo"}
+            {uploading ? "Uploading..." : preview ? "Change photo" : "Upload photo"}
           </button>
-          {preview && (
+          {preview && !uploading && (
             <button
               type="button"
               onClick={handleRemove}
@@ -122,7 +131,7 @@ export function PhotoUpload({ value, onChange }: PhotoUploadProps) {
       <input
         ref={fileInputRef}
         type="file"
-        accept="image/*"
+        accept="image/jpeg,image/png,image/webp"
         onChange={handleUpload}
         className="hidden"
       />
