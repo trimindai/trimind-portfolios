@@ -157,6 +157,7 @@ export default defineSchema({
         accentColor: v.optional(v.string()),
         bgColor: v.optional(v.string()),
         fontFamily: v.optional(v.string()),
+        bodyFont: v.optional(v.string()),
         hiddenSections: v.optional(v.array(v.string())),
       })
     ),

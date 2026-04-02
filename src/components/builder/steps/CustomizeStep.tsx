@@ -7,11 +7,24 @@ interface CustomizeStepProps {
   onChange: (updates: any) => void;
 }
 
-const FONT_OPTIONS = [
+const HEADING_FONTS = [
+  { value: "Inter", label: "Inter (Clean Modern)" },
   { value: "Playfair Display", label: "Playfair Display (Classic Serif)" },
-  { value: "DM Sans", label: "DM Sans (Modern Sans)" },
-  { value: "Cormorant Garamond", label: "Cormorant Garamond (Elegant)" },
-  { value: "Space Grotesk", label: "Space Grotesk (Geometric)" },
+  { value: "DM Sans", label: "DM Sans (Geometric Sans)" },
+  { value: "Raleway", label: "Raleway (Elegant Sans)" },
+  { value: "Merriweather", label: "Merriweather (Readable Serif)" },
+  { value: "Lora", label: "Lora (Contemporary Serif)" },
+  { value: "Source Sans 3", label: "Source Sans 3 (Professional)" },
+  { value: "Space Grotesk", label: "Space Grotesk (Tech)" },
+  { value: "Cormorant Garamond", label: "Cormorant Garamond (Luxury)" },
+];
+
+const BODY_FONTS = [
+  { value: "Inter", label: "Inter (Default)" },
+  { value: "DM Sans", label: "DM Sans" },
+  { value: "Source Sans 3", label: "Source Sans 3" },
+  { value: "Raleway", label: "Raleway" },
+  { value: "Lora", label: "Lora" },
 ];
 
 const COLOR_PRESETS = [
@@ -69,6 +82,7 @@ export function CustomizeStep({ data, onChange }: CustomizeStepProps) {
         onChange={(url) => onChange({ basics: { ...data.basics, photoUrl: url } })}
       />
 
+      {/* Colors */}
       <div>
         <h3 className="text-lg font-medium text-white mb-3">Color Scheme</h3>
         <p className="text-sm text-slate-400 mb-4">Pick a preset or customize individual colors.</p>
@@ -93,27 +107,17 @@ export function CustomizeStep({ data, onChange }: CustomizeStepProps) {
 
         <div className="grid grid-cols-3 gap-6">
           <div>
-            <label className="text-sm font-medium text-slate-300 mb-2 block">Primary Color</label>
+            <label className="text-sm font-medium text-slate-300 mb-2 block">Primary</label>
             <div className="flex items-center gap-3">
-              <input
-                type="color"
-                value={customization.primaryColor || "#0F172A"}
-                onChange={(e) => updateCustomization("primaryColor", e.target.value)}
-                className="w-12 h-12 rounded-lg border border-slate-700 cursor-pointer bg-transparent"
-              />
+              <input type="color" value={customization.primaryColor || "#0F172A"} onChange={(e) => updateCustomization("primaryColor", e.target.value)} className="w-12 h-12 rounded-lg border border-slate-700 cursor-pointer bg-transparent" />
               <span className="text-xs text-slate-500 font-mono">{customization.primaryColor || "#0F172A"}</span>
             </div>
             <p className="text-xs text-slate-600 mt-1">Headlines, nav</p>
           </div>
           <div>
-            <label className="text-sm font-medium text-slate-300 mb-2 block">Accent Color</label>
+            <label className="text-sm font-medium text-slate-300 mb-2 block">Accent</label>
             <div className="flex items-center gap-3">
-              <input
-                type="color"
-                value={customization.accentColor || "#A16207"}
-                onChange={(e) => updateCustomization("accentColor", e.target.value)}
-                className="w-12 h-12 rounded-lg border border-slate-700 cursor-pointer bg-transparent"
-              />
+              <input type="color" value={customization.accentColor || "#A16207"} onChange={(e) => updateCustomization("accentColor", e.target.value)} className="w-12 h-12 rounded-lg border border-slate-700 cursor-pointer bg-transparent" />
               <span className="text-xs text-slate-500 font-mono">{customization.accentColor || "#A16207"}</span>
             </div>
             <p className="text-xs text-slate-600 mt-1">Links, badges</p>
@@ -121,12 +125,7 @@ export function CustomizeStep({ data, onChange }: CustomizeStepProps) {
           <div>
             <label className="text-sm font-medium text-slate-300 mb-2 block">Background</label>
             <div className="flex items-center gap-3">
-              <input
-                type="color"
-                value={customization.bgColor || "#F8FAFC"}
-                onChange={(e) => updateCustomization("bgColor", e.target.value)}
-                className="w-12 h-12 rounded-lg border border-slate-700 cursor-pointer bg-transparent"
-              />
+              <input type="color" value={customization.bgColor || "#F8FAFC"} onChange={(e) => updateCustomization("bgColor", e.target.value)} className="w-12 h-12 rounded-lg border border-slate-700 cursor-pointer bg-transparent" />
               <span className="text-xs text-slate-500 font-mono">{customization.bgColor || "#F8FAFC"}</span>
             </div>
             <p className="text-xs text-slate-600 mt-1">Page background</p>
@@ -134,28 +133,56 @@ export function CustomizeStep({ data, onChange }: CustomizeStepProps) {
         </div>
       </div>
 
+      {/* Fonts */}
       <div>
-        <h3 className="text-lg font-medium text-white mb-3">Font Family</h3>
-        <select
-          value={customization.fontFamily || "Playfair Display"}
-          onChange={(e) => updateCustomization("fontFamily", e.target.value)}
-          className="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2.5 text-white focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 outline-none transition-colors"
-        >
-          {FONT_OPTIONS.map((f) => (
-            <option key={f.value} value={f.value}>{f.label}</option>
-          ))}
-        </select>
+        <h3 className="text-lg font-medium text-white mb-3">Typography</h3>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label className="text-sm font-medium text-slate-300 mb-1.5 block">Heading Font</label>
+            <select
+              value={customization.fontFamily || "Inter"}
+              onChange={(e) => updateCustomization("fontFamily", e.target.value)}
+              className="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2.5 text-white focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 outline-none transition-colors"
+            >
+              {HEADING_FONTS.map((f) => (
+                <option key={f.value} value={f.value}>{f.label}</option>
+              ))}
+            </select>
+            <p className="text-xs text-slate-600 mt-1">Name, section titles</p>
+          </div>
+          <div>
+            <label className="text-sm font-medium text-slate-300 mb-1.5 block">Body Font</label>
+            <select
+              value={customization.bodyFont || "Inter"}
+              onChange={(e) => updateCustomization("bodyFont", e.target.value)}
+              className="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2.5 text-white focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 outline-none transition-colors"
+            >
+              {BODY_FONTS.map((f) => (
+                <option key={f.value} value={f.value}>{f.label}</option>
+              ))}
+            </select>
+            <p className="text-xs text-slate-600 mt-1">Paragraphs, descriptions</p>
+          </div>
+        </div>
+        {/* Font preview */}
+        <div className="mt-4 bg-slate-800/50 border border-slate-700 rounded-lg p-4">
+          <p className="text-xs text-slate-500 mb-2">Preview</p>
+          <p style={{ fontFamily: `'${customization.fontFamily || "Inter"}', sans-serif` }} className="text-lg text-white font-semibold">
+            {data.basics?.fullName || "Your Name Here"}
+          </p>
+          <p style={{ fontFamily: `'${customization.bodyFont || "Inter"}', sans-serif` }} className="text-sm text-slate-400 mt-1">
+            {data.basics?.title || "Your Professional Title"}
+          </p>
+        </div>
       </div>
 
+      {/* Section Visibility */}
       <div>
         <h3 className="text-lg font-medium text-white mb-3">Section Visibility</h3>
-        <p className="text-sm text-slate-400 mb-4">Uncheck sections you want to hide from your portfolio.</p>
+        <p className="text-sm text-slate-400 mb-4">Uncheck sections you want to hide.</p>
         <div className="grid grid-cols-2 gap-1">
           {SECTIONS.map((section) => (
-            <label
-              key={section.id}
-              className="flex items-center gap-3 py-2 px-3 rounded-lg hover:bg-slate-800/50 cursor-pointer transition-colors"
-            >
+            <label key={section.id} className="flex items-center gap-3 py-2 px-3 rounded-lg hover:bg-slate-800/50 cursor-pointer transition-colors">
               <input
                 type="checkbox"
                 checked={!hiddenSections.includes(section.id)}
