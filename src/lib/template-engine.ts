@@ -96,11 +96,25 @@ Handlebars.registerHelper("gt", function (a: number, b: number) {
   return a > b;
 });
 
+Handlebars.registerHelper("json", function (context: any) {
+  return new Handlebars.SafeString(JSON.stringify(context || {}));
+});
+
 let compiledTemplate: Handlebars.TemplateDelegate | null = null;
 
-export function renderCorporateTemplate(data: PortfolioData): string {
+export function renderCorporateTemplate(data: PortfolioData & { contentAr?: any }): string {
   if (!compiledTemplate) {
     compiledTemplate = Handlebars.compile(templateSource as string);
   }
-  return compiledTemplate(data);
+
+  // Prepare Arabic data for the template's JS toggle
+  const templateData: any = { ...data };
+  if (data.contentAr) {
+    templateData.contentArJson = JSON.stringify(data.contentAr);
+    templateData.enBasicsJson = JSON.stringify(data.basics || {});
+    templateData.enMetricsJson = JSON.stringify(data.metrics || []);
+    templateData.enExperienceJson = JSON.stringify(data.experience || []);
+  }
+
+  return compiledTemplate(templateData);
 }

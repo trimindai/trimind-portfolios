@@ -134,6 +134,7 @@ export const update = mutation({
       )
     ),
     customization: customizationValidator,
+    contentAr: v.optional(v.string()),
   },
   handler: async (ctx, { id, ...fields }) => {
     await ctx.db.patch(id, {

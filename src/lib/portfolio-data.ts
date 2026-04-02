@@ -1,14 +1,16 @@
 import type { PortfolioData } from "./template-engine";
 
-/**
- * Converts a Convex portfolio document into the PortfolioData format
- * expected by the template engine.
- */
 export function toPortfolioData(
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   portfolio: any,
   locale: string
-): PortfolioData {
+): PortfolioData & { contentAr?: any } {
+  let contentAr = null;
+  try {
+    if (portfolio.contentAr) {
+      contentAr = JSON.parse(portfolio.contentAr);
+    }
+  } catch {}
+
   return {
     basics: portfolio.basics,
     metrics: portfolio.metrics,
@@ -25,5 +27,6 @@ export function toPortfolioData(
     locale,
     isRTL: locale === "ar",
     portfolioUrl: `https://portfolio-trimind.com/p/${portfolio.slug || "preview"}`,
+    contentAr,
   };
 }

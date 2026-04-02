@@ -162,6 +162,7 @@ export default defineSchema({
       })
     ),
 
+    contentAr: v.optional(v.string()),
     generatedHtml: v.optional(v.string()),
     paymentId: v.optional(v.string()),
     publishedAt: v.optional(v.number()),

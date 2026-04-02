@@ -681,7 +681,20 @@ a { text-decoration: none; color: inherit; }
     word-break: break-all;
 }
 
-/* ═══ (Save PDF handled by parent app) ═══ */
+/* ═══ LANGUAGE TOGGLE ═══ */
+.lang-float {
+    position: fixed; bottom: 24px; left: 24px; z-index: 999;
+}
+.lang-btn {
+    padding: 10px 20px; border-radius: 100px;
+    background: var(--navy); color: #fff;
+    font-size: 0.82rem; font-weight: 600;
+    font-family: var(--font-body);
+    border: none; cursor: pointer;
+    box-shadow: 0 4px 20px rgba(15,23,42,0.3);
+    transition: all 200ms var(--ease);
+}
+.lang-btn:hover { background: #1E293B; transform: translateY(-2px); }
 
 /* ═══ FOOTER ═══ */
 footer {
@@ -1473,6 +1486,14 @@ footer a:hover { border-color: var(--gold-warm); }
 </div>
 
 
+{{#if contentAr}}
+<div class="lang-float no-print">
+    <button class="lang-btn" id="langToggle" onclick="toggleLang()">
+        عربي
+    </button>
+</div>
+{{/if}}
+
 <footer>
     <div class="container">
         <p>Built with <a href="https://portfolio-trimind.com" target="_blank" rel="noopener">Portfolio TriMind</a></p>
@@ -1544,6 +1565,67 @@ if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
         el.style.transform = 'none';
     });
 }
+
+/* Language Toggle */
+{{#if contentAr}}
+var currentLang = 'en';
+var arData = {{{contentArJson}}};
+var enData = {
+    basics: {{{enBasicsJson}}},
+    metrics: {{{enMetricsJson}}},
+    experience: {{{enExperienceJson}}}
+};
+
+function toggleLang() {
+    currentLang = currentLang === 'en' ? 'ar' : 'en';
+    var d = currentLang === 'ar' ? arData : enData;
+    var btn = document.getElementById('langToggle');
+    btn.textContent = currentLang === 'ar' ? 'English' : 'عربي';
+    document.documentElement.dir = currentLang === 'ar' ? 'rtl' : 'ltr';
+    document.documentElement.lang = currentLang;
+
+    // Swap text content
+    if (d.basics) {
+        var nameEl = document.querySelector('.hero-name');
+        if (nameEl && d.basics.fullName) nameEl.textContent = d.basics.fullName;
+        var titleEl = document.querySelector('.hero-title');
+        if (titleEl && d.basics.title) titleEl.textContent = d.basics.title;
+        var locEl = document.querySelector('.hero-location');
+        if (locEl && d.basics.location) {
+            var svg = locEl.querySelector('svg');
+            locEl.textContent = '';
+            if (svg) locEl.appendChild(svg);
+            locEl.appendChild(document.createTextNode(' ' + d.basics.location + (d.basics.nationality ? ' · ' + d.basics.nationality : '')));
+        }
+        var vpEl = document.querySelector('.value-prop-text');
+        if (vpEl && (d.basics.valueProposition || d.basics.bio)) {
+            vpEl.textContent = d.basics.valueProposition || d.basics.bio || '';
+        }
+    }
+    if (d.metrics && d.metrics.length) {
+        document.querySelectorAll('.metric').forEach(function(el, i) {
+            if (d.metrics[i]) {
+                var valEl = el.querySelector('.metric-val');
+                var lblEl = el.querySelector('.metric-label');
+                if (valEl) valEl.textContent = d.metrics[i].value;
+                if (lblEl) lblEl.textContent = d.metrics[i].label;
+            }
+        });
+    }
+    if (d.experience && d.experience.length) {
+        document.querySelectorAll('.tl-item').forEach(function(el, i) {
+            if (d.experience[i]) {
+                var titleEl = el.querySelector('.tl-role');
+                var compEl = el.querySelector('.tl-company');
+                var descEl = el.querySelector('.tl-desc');
+                if (titleEl) titleEl.textContent = d.experience[i].title;
+                if (compEl) compEl.textContent = d.experience[i].company;
+                if (descEl) descEl.textContent = d.experience[i].description || '';
+            }
+        });
+    }
+}
+{{/if}}
 </script>
 </body>
 </html>
