@@ -9,8 +9,8 @@ interface TextareaFieldProps {
   placeholder?: string;
   rows?: number;
   hint?: string;
-  aiEnhance?: boolean;
-  aiContext?: string;
+  writingTips?: string[];
+  templates?: Array<{ label: string; text: string }>;
 }
 
 export function TextareaField({
@@ -20,42 +20,54 @@ export function TextareaField({
   placeholder,
   rows = 3,
   hint,
-  aiEnhance,
-  aiContext,
+  writingTips,
+  templates,
 }: TextareaFieldProps) {
-  const [enhancing, setEnhancing] = useState(false);
-
-  const handleAIEnhance = async () => {
-    if (!value.trim()) return;
-    setEnhancing(true);
-    try {
-      const res = await fetch("/api/ai/enhance", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ text: value, context: aiContext || label, field: "long" }),
-      });
-      const data = await res.json();
-      if (data.enhanced) onChange(data.enhanced);
-    } catch {}
-    setEnhancing(false);
-  };
+  const [showTips, setShowTips] = useState(false);
+  const charCount = (value || "").length;
 
   return (
     <div>
       <div className="flex items-center justify-between mb-1.5">
         <label className="text-sm font-medium text-slate-300">{label}</label>
-        {aiEnhance && value && (
-          <button
-            type="button"
-            onClick={handleAIEnhance}
-            disabled={enhancing}
-            className="text-xs text-amber-400 hover:text-amber-300 transition-colors disabled:opacity-50"
-          >
-            {enhancing ? "Enhancing..." : "✦ AI Enhance"}
-          </button>
-        )}
+        <div className="flex items-center gap-3">
+          {writingTips && (
+            <button
+              type="button"
+              onClick={() => setShowTips(!showTips)}
+              className="text-xs text-amber-400 hover:text-amber-300 transition-colors"
+            >
+              {showTips ? "Hide tips" : "Writing tips"}
+            </button>
+          )}
+          <span className="text-xs text-slate-600">{charCount}</span>
+        </div>
       </div>
       {hint && <p className="text-xs text-slate-500 mb-1.5">{hint}</p>}
+      {showTips && writingTips && (
+        <div className="mb-2 bg-amber-950/20 border border-amber-900/30 rounded-lg p-3 text-xs text-amber-300/80 space-y-1">
+          {writingTips.map((tip, i) => (
+            <p key={i}>• {tip}</p>
+          ))}
+        </div>
+      )}
+      {templates && templates.length > 0 && !value && (
+        <div className="mb-2">
+          <p className="text-xs text-slate-500 mb-1.5">Quick start with a template:</p>
+          <div className="flex flex-wrap gap-1.5">
+            {templates.map((t, i) => (
+              <button
+                key={i}
+                type="button"
+                onClick={() => onChange(t.text)}
+                className="text-xs bg-slate-800 border border-slate-700 rounded px-2 py-1 text-slate-400 hover:text-emerald-400 hover:border-emerald-600 transition-colors"
+              >
+                {t.label}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
       <textarea
         value={value || ""}
         onChange={(e) => onChange(e.target.value)}

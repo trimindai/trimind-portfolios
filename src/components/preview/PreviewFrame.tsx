@@ -120,7 +120,7 @@ export default function PreviewFrame({
               className="h-full w-full border-0 bg-white"
               style={{ minHeight: "calc(100vh - 120px)" }}
               title="Portfolio Preview"
-              sandbox="allow-same-origin allow-popups allow-scripts"
+              sandbox="allow-same-origin allow-popups allow-scripts allow-modals"
             />
           </div>
         )}

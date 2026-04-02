@@ -16,26 +16,17 @@ export function ExperienceStep({ data, onChange }: ExperienceStepProps) {
     <div className="space-y-6">
       <div>
         <h2 className="text-xl font-semibold text-white">Work Experience</h2>
-        <p className="text-sm text-slate-400 mt-1">
-          List your positions starting with the most recent. Focus on <strong className="text-slate-300">results and impact</strong>, not just duties.
-        </p>
+        <p className="text-sm text-slate-400 mt-1">Most recent first. Focus on <strong className="text-slate-300">results and impact</strong>.</p>
       </div>
 
-      <div className="bg-slate-800/30 border border-slate-700/50 rounded-lg p-4 text-sm text-slate-400">
-        <strong className="text-amber-400">Pro tip:</strong> Use the STAR format for highlights — Situation, Task, Action, Result. Quantify results with numbers wherever possible (e.g., &quot;Reduced costs by 18%&quot; instead of &quot;Reduced costs&quot;).
+      <div className="bg-slate-800/30 border border-amber-900/30 rounded-lg p-4 text-sm text-amber-300/80">
+        <strong>Power words for achievements:</strong> Led, Delivered, Reduced, Increased, Automated, Designed, Launched, Optimized, Managed, Generated, Saved, Streamlined, Transformed, Negotiated
       </div>
 
       <DynamicList
         items={experience}
         onChange={(items) => onChange({ experience: items })}
-        createEmpty={() => ({
-          title: "",
-          company: "",
-          startDate: "",
-          endDate: "",
-          description: "",
-          highlights: [],
-        })}
+        createEmpty={() => ({ title: "", company: "", startDate: "", endDate: "", description: "", highlights: [] })}
         maxItems={10}
         addLabel="Add Position"
         renderItem={(item, _, update) => (
@@ -52,10 +43,13 @@ export function ExperienceStep({ data, onChange }: ExperienceStepProps) {
               label="Role Description"
               value={item.description || ""}
               onChange={(v) => update({ description: v })}
-              placeholder="Brief description of your role and responsibilities..."
+              placeholder="Brief description of your role scope..."
               rows={2}
-              aiEnhance
-              aiContext={`role description for ${item.title || "this position"} at ${item.company || "this company"}. Make it concise, impactful, and focused on scope and responsibility. Use strong action verbs.`}
+              writingTips={[
+                "Describe scope: team size, budget, departments",
+                "Mention who you reported to or collaborated with",
+                "Keep it to 1-2 sentences",
+              ]}
             />
             <TextareaField
               label="Key Achievements (one per line)"
@@ -63,9 +57,13 @@ export function ExperienceStep({ data, onChange }: ExperienceStepProps) {
               onChange={(v) => update({ highlights: v.split("\n").filter(Boolean) as string[] })}
               placeholder="Reduced operational costs by 18% through process optimization&#10;Led cross-functional team of 6 analysts&#10;Delivered $1.2B risk framework ahead of schedule"
               rows={4}
-              hint="Start each line with a strong action verb. Include numbers and percentages."
-              aiEnhance
-              aiContext={`achievement bullets for ${item.title || "a professional"} at ${item.company || "a company"}. Transform these into powerful, quantified achievement statements that sell the candidate to hiring managers. Use strong action verbs like Led, Delivered, Reduced, Increased, Automated, Designed. Add metrics and numbers where plausible.`}
+              hint="Start each line with a power verb. Add % and $ numbers."
+              writingTips={[
+                "Formula: [Action verb] + [what you did] + [result with numbers]",
+                "Bad: 'Responsible for reports' → Good: 'Delivered 50+ monthly reports reducing decision time by 30%'",
+                "Bad: 'Worked on budgets' → Good: 'Managed $15M annual budget, achieving 12% cost savings'",
+                "Include: percentages, dollar amounts, team sizes, time saved",
+              ]}
             />
           </div>
         )}

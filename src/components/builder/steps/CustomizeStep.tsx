@@ -14,6 +14,15 @@ const FONT_OPTIONS = [
   { value: "Space Grotesk", label: "Space Grotesk (Geometric)" },
 ];
 
+const COLOR_PRESETS = [
+  { name: "Corporate Navy", primary: "#0F172A", accent: "#A16207", bg: "#F8FAFC" },
+  { name: "Ocean Blue", primary: "#1E3A5F", accent: "#0891B2", bg: "#F0F9FF" },
+  { name: "Forest Green", primary: "#14532D", accent: "#CA8A04", bg: "#F0FDF4" },
+  { name: "Royal Purple", primary: "#3B0764", accent: "#A855F7", bg: "#FAF5FF" },
+  { name: "Warm Charcoal", primary: "#292524", accent: "#DC2626", bg: "#FAFAF9" },
+  { name: "Midnight", primary: "#0C0A09", accent: "#F59E0B", bg: "#FFFFFF" },
+];
+
 const SECTIONS = [
   { id: "credentials", label: "Credentials Bar" },
   { id: "value-proposition", label: "Value Proposition" },
@@ -33,6 +42,17 @@ export function CustomizeStep({ data, onChange }: CustomizeStepProps) {
     onChange({ customization: { ...customization, [field]: value } });
   };
 
+  const applyPreset = (preset: typeof COLOR_PRESETS[0]) => {
+    onChange({
+      customization: {
+        ...customization,
+        primaryColor: preset.primary,
+        accentColor: preset.accent,
+        bgColor: preset.bg,
+      },
+    });
+  };
+
   const toggleSection = (sectionId: string) => {
     const hidden = hiddenSections.includes(sectionId)
       ? hiddenSections.filter((s: string) => s !== sectionId)
@@ -42,53 +62,74 @@ export function CustomizeStep({ data, onChange }: CustomizeStepProps) {
 
   return (
     <div className="space-y-8">
-      <h2 className="text-xl font-semibold text-white">Customize</h2>
+      <h2 className="text-xl font-semibold text-white">Customize Your Portfolio</h2>
 
       <PhotoUpload
         value={data.basics?.photoUrl || ""}
-        onChange={(url) =>
-          onChange({ basics: { ...data.basics, photoUrl: url } })
-        }
+        onChange={(url) => onChange({ basics: { ...data.basics, photoUrl: url } })}
       />
 
       <div>
-        <h3 className="text-lg font-medium text-white mb-4">Colors</h3>
-        <div className="grid grid-cols-2 gap-6">
+        <h3 className="text-lg font-medium text-white mb-3">Color Scheme</h3>
+        <p className="text-sm text-slate-400 mb-4">Pick a preset or customize individual colors.</p>
+
+        <div className="grid grid-cols-3 sm:grid-cols-6 gap-2 mb-6">
+          {COLOR_PRESETS.map((preset) => (
+            <button
+              key={preset.name}
+              type="button"
+              onClick={() => applyPreset(preset)}
+              className="group rounded-lg border border-slate-700 hover:border-emerald-500 p-2 transition-colors text-center"
+            >
+              <div className="flex gap-1 justify-center mb-1.5">
+                <div className="w-4 h-4 rounded-full border border-slate-600" style={{ backgroundColor: preset.primary }} />
+                <div className="w-4 h-4 rounded-full border border-slate-600" style={{ backgroundColor: preset.accent }} />
+                <div className="w-4 h-4 rounded-full border border-slate-600" style={{ backgroundColor: preset.bg }} />
+              </div>
+              <span className="text-[10px] text-slate-500 group-hover:text-slate-300">{preset.name}</span>
+            </button>
+          ))}
+        </div>
+
+        <div className="grid grid-cols-3 gap-6">
           <div>
-            <label className="text-sm font-medium text-slate-300 mb-2 block">
-              Primary Color
-            </label>
+            <label className="text-sm font-medium text-slate-300 mb-2 block">Primary Color</label>
             <div className="flex items-center gap-3">
               <input
                 type="color"
                 value={customization.primaryColor || "#0F172A"}
-                onChange={(e) =>
-                  updateCustomization("primaryColor", e.target.value)
-                }
-                className="w-12 h-12 rounded-lg border border-slate-700 cursor-pointer"
+                onChange={(e) => updateCustomization("primaryColor", e.target.value)}
+                className="w-12 h-12 rounded-lg border border-slate-700 cursor-pointer bg-transparent"
               />
-              <span className="text-sm text-slate-400">
-                {customization.primaryColor || "#0F172A"}
-              </span>
+              <span className="text-xs text-slate-500 font-mono">{customization.primaryColor || "#0F172A"}</span>
             </div>
+            <p className="text-xs text-slate-600 mt-1">Headlines, nav</p>
           </div>
           <div>
-            <label className="text-sm font-medium text-slate-300 mb-2 block">
-              Accent Color
-            </label>
+            <label className="text-sm font-medium text-slate-300 mb-2 block">Accent Color</label>
             <div className="flex items-center gap-3">
               <input
                 type="color"
                 value={customization.accentColor || "#A16207"}
-                onChange={(e) =>
-                  updateCustomization("accentColor", e.target.value)
-                }
-                className="w-12 h-12 rounded-lg border border-slate-700 cursor-pointer"
+                onChange={(e) => updateCustomization("accentColor", e.target.value)}
+                className="w-12 h-12 rounded-lg border border-slate-700 cursor-pointer bg-transparent"
               />
-              <span className="text-sm text-slate-400">
-                {customization.accentColor || "#A16207"}
-              </span>
+              <span className="text-xs text-slate-500 font-mono">{customization.accentColor || "#A16207"}</span>
             </div>
+            <p className="text-xs text-slate-600 mt-1">Links, badges</p>
+          </div>
+          <div>
+            <label className="text-sm font-medium text-slate-300 mb-2 block">Background</label>
+            <div className="flex items-center gap-3">
+              <input
+                type="color"
+                value={customization.bgColor || "#F8FAFC"}
+                onChange={(e) => updateCustomization("bgColor", e.target.value)}
+                className="w-12 h-12 rounded-lg border border-slate-700 cursor-pointer bg-transparent"
+              />
+              <span className="text-xs text-slate-500 font-mono">{customization.bgColor || "#F8FAFC"}</span>
+            </div>
+            <p className="text-xs text-slate-600 mt-1">Page background</p>
           </div>
         </div>
       </div>
@@ -101,21 +142,15 @@ export function CustomizeStep({ data, onChange }: CustomizeStepProps) {
           className="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2.5 text-white focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 outline-none transition-colors"
         >
           {FONT_OPTIONS.map((f) => (
-            <option key={f.value} value={f.value}>
-              {f.label}
-            </option>
+            <option key={f.value} value={f.value}>{f.label}</option>
           ))}
         </select>
       </div>
 
       <div>
-        <h3 className="text-lg font-medium text-white mb-3">
-          Section Visibility
-        </h3>
-        <p className="text-sm text-slate-400 mb-4">
-          Uncheck sections you want to hide.
-        </p>
-        <div className="space-y-2">
+        <h3 className="text-lg font-medium text-white mb-3">Section Visibility</h3>
+        <p className="text-sm text-slate-400 mb-4">Uncheck sections you want to hide from your portfolio.</p>
+        <div className="grid grid-cols-2 gap-1">
           {SECTIONS.map((section) => (
             <label
               key={section.id}

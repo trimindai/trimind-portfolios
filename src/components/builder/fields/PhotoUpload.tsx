@@ -12,6 +12,7 @@ interface PhotoUploadProps {
 export function PhotoUpload({ value, onChange }: PhotoUploadProps) {
   const generateUploadUrl = useMutation(api.storage.generateUploadUrl);
   const [uploading, setUploading] = useState(false);
+  const [preview, setPreview] = useState<string>(value || "");
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -23,6 +24,15 @@ export function PhotoUpload({ value, onChange }: PhotoUploadProps) {
       return;
     }
 
+    if (!file.type.startsWith("image/")) {
+      alert("Please upload an image file");
+      return;
+    }
+
+    // Show local preview immediately
+    const localUrl = URL.createObjectURL(file);
+    setPreview(localUrl);
+
     try {
       setUploading(true);
       const uploadUrl = await generateUploadUrl();
@@ -32,13 +42,30 @@ export function PhotoUpload({ value, onChange }: PhotoUploadProps) {
         body: file,
       });
       const { storageId } = await result.json();
-      const url = `${process.env.NEXT_PUBLIC_CONVEX_URL}/api/storage/${storageId}`;
-      onChange(url);
-    } catch {
-      alert("Upload failed. Please try again.");
+      // Convex storage URL format
+      const convexUrl = `${process.env.NEXT_PUBLIC_CONVEX_URL}/api/storage/${storageId}`;
+      onChange(convexUrl);
+      setPreview(convexUrl);
+    } catch (err) {
+      // Keep local preview even if upload fails
+      alert("Upload failed. The photo will show locally but may not persist.");
+      // Use base64 as fallback
+      const reader = new FileReader();
+      reader.onload = () => {
+        const base64 = reader.result as string;
+        onChange(base64);
+        setPreview(base64);
+      };
+      reader.readAsDataURL(file);
     } finally {
       setUploading(false);
     }
+  };
+
+  const handleRemove = () => {
+    onChange("");
+    setPreview("");
+    if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
   return (
@@ -46,21 +73,51 @@ export function PhotoUpload({ value, onChange }: PhotoUploadProps) {
       <label className="text-sm font-medium text-slate-300 mb-1.5 block">
         Profile Photo
       </label>
-      <div
-        onClick={() => fileInputRef.current?.click()}
-        className="border border-dashed border-slate-700 hover:border-emerald-500 rounded-lg p-6 text-center cursor-pointer transition-colors"
-      >
-        {value ? (
-          <img
-            src={value}
-            alt="Profile"
-            className="w-24 h-24 rounded-full object-cover mx-auto"
-          />
-        ) : (
-          <div className="text-slate-500">
-            {uploading ? "Uploading..." : "Click to upload photo"}
-          </div>
-        )}
+      <p className="text-xs text-slate-500 mb-2">
+        Square photo works best. Max 5MB. JPG or PNG.
+      </p>
+      <div className="flex items-center gap-4">
+        <div
+          onClick={() => fileInputRef.current?.click()}
+          className="w-24 h-24 rounded-full border-2 border-dashed border-slate-700 hover:border-emerald-500 flex items-center justify-center cursor-pointer transition-colors overflow-hidden bg-slate-800"
+        >
+          {preview ? (
+            <img
+              src={preview}
+              alt="Profile"
+              className="w-full h-full object-cover"
+            />
+          ) : (
+            <div className="text-center">
+              {uploading ? (
+                <div className="animate-spin h-6 w-6 border-2 border-emerald-500 border-t-transparent rounded-full mx-auto" />
+              ) : (
+                <svg className="w-8 h-8 text-slate-500 mx-auto" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M6.827 6.175A2.31 2.31 0 0 1 5.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 0 0-1.134-.175 2.31 2.31 0 0 1-1.64-1.055l-.822-1.316a2.192 2.192 0 0 0-1.736-1.039 48.774 48.774 0 0 0-5.232 0 2.192 2.192 0 0 0-1.736 1.039l-.821 1.316Z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 12.75a4.5 4.5 0 1 1-9 0 4.5 4.5 0 0 1 9 0Z" />
+                </svg>
+              )}
+            </div>
+          )}
+        </div>
+        <div className="flex flex-col gap-2">
+          <button
+            type="button"
+            onClick={() => fileInputRef.current?.click()}
+            className="text-sm text-emerald-400 hover:text-emerald-300 transition-colors"
+          >
+            {preview ? "Change photo" : "Upload photo"}
+          </button>
+          {preview && (
+            <button
+              type="button"
+              onClick={handleRemove}
+              className="text-sm text-red-400 hover:text-red-300 transition-colors"
+            >
+              Remove
+            </button>
+          )}
+        </div>
       </div>
       <input
         ref={fileInputRef}

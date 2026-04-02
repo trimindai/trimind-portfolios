@@ -155,6 +155,7 @@ export default defineSchema({
       v.object({
         primaryColor: v.optional(v.string()),
         accentColor: v.optional(v.string()),
+        bgColor: v.optional(v.string()),
         fontFamily: v.optional(v.string()),
         hiddenSections: v.optional(v.array(v.string())),
       })

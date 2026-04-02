@@ -10,8 +10,7 @@ interface TextFieldProps {
   required?: boolean;
   type?: string;
   hint?: string;
-  aiEnhance?: boolean;
-  aiContext?: string;
+  examples?: string[];
 }
 
 export function TextField({
@@ -22,25 +21,9 @@ export function TextField({
   required,
   type = "text",
   hint,
-  aiEnhance,
-  aiContext,
+  examples,
 }: TextFieldProps) {
-  const [enhancing, setEnhancing] = useState(false);
-
-  const handleAIEnhance = async () => {
-    if (!value.trim()) return;
-    setEnhancing(true);
-    try {
-      const res = await fetch("/api/ai/enhance", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ text: value, context: aiContext || label, field: "short" }),
-      });
-      const data = await res.json();
-      if (data.enhanced) onChange(data.enhanced);
-    } catch {}
-    setEnhancing(false);
-  };
+  const [showExamples, setShowExamples] = useState(false);
 
   return (
     <div>
@@ -49,18 +32,31 @@ export function TextField({
           {label}
           {required && <span className="text-red-400 ml-1">*</span>}
         </label>
-        {aiEnhance && value && (
+        {examples && examples.length > 0 && (
           <button
             type="button"
-            onClick={handleAIEnhance}
-            disabled={enhancing}
-            className="text-xs text-amber-400 hover:text-amber-300 transition-colors disabled:opacity-50"
+            onClick={() => setShowExamples(!showExamples)}
+            className="text-xs text-emerald-400 hover:text-emerald-300 transition-colors"
           >
-            {enhancing ? "Enhancing..." : "✦ AI Enhance"}
+            {showExamples ? "Hide examples" : "See examples"}
           </button>
         )}
       </div>
       {hint && <p className="text-xs text-slate-500 mb-1.5">{hint}</p>}
+      {showExamples && examples && (
+        <div className="mb-2 flex flex-wrap gap-1.5">
+          {examples.map((ex, i) => (
+            <button
+              key={i}
+              type="button"
+              onClick={() => { onChange(ex); setShowExamples(false); }}
+              className="text-xs bg-slate-800 border border-slate-700 rounded px-2 py-1 text-slate-400 hover:text-emerald-400 hover:border-emerald-600 transition-colors"
+            >
+              {ex}
+            </button>
+          ))}
+        </div>
+      )}
       <input
         type={type}
         value={value || ""}

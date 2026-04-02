@@ -1033,6 +1033,11 @@ footer a:hover { border-color: var(--gold-warm); }
     --gold-border: {{customization.accentColor}}2e;
 }
 {{/if}}
+{{#if customization.bgColor}}
+:root {
+    --bg: {{customization.bgColor}};
+}
+{{/if}}
 {{#if customization.fontFamily}}
 :root {
     --font-head: '{{customization.fontFamily}}', Georgia, serif;
