@@ -53,7 +53,7 @@ export async function GET(req: NextRequest) {
       });
 
       return NextResponse.redirect(
-        new URL("/en/dashboard?success=true", req.url)
+        new URL(`/en/dashboard/${portfolioId}/edit`, req.url)
       );
     }
 
