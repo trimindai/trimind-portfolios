@@ -1486,13 +1486,15 @@ footer a:hover { border-color: var(--gold-warm); }
 </div>
 
 
-{{#if contentAr}}
+<!-- Language Toggle -->
 <div class="lang-float no-print">
-    <button class="lang-btn" id="langToggle" onclick="toggleLang()">
+    <button class="lang-btn" id="langToggle" onclick="switchToArabic()">
         عربي
     </button>
 </div>
-{{/if}}
+
+<!-- Google Translate (hidden) -->
+<div id="google_translate_element" style="display:none;"></div>
 
 <footer>
     <div class="container">
@@ -1566,66 +1568,63 @@ if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
     });
 }
 
-/* Language Toggle */
-{{#if contentAr}}
-var currentLang = 'en';
-var arData = {{{contentArJson}}};
-var enData = {
-    basics: {{{enBasicsJson}}},
-    metrics: {{{enMetricsJson}}},
-    experience: {{{enExperienceJson}}}
-};
+/* Google Translate Integration */
+var isArabic = false;
 
-function toggleLang() {
-    currentLang = currentLang === 'en' ? 'ar' : 'en';
-    var d = currentLang === 'ar' ? arData : enData;
+function googleTranslateElementInit() {
+    new google.translate.TranslateElement({
+        pageLanguage: 'en',
+        includedLanguages: 'en,ar',
+        layout: google.translate.TranslateElement.InlineLayout.NONE,
+        autoDisplay: false
+    }, 'google_translate_element');
+}
+
+function switchToArabic() {
     var btn = document.getElementById('langToggle');
-    btn.textContent = currentLang === 'ar' ? 'English' : 'عربي';
-    document.documentElement.dir = currentLang === 'ar' ? 'rtl' : 'ltr';
-    document.documentElement.lang = currentLang;
-
-    // Swap text content
-    if (d.basics) {
-        var nameEl = document.querySelector('.hero-name');
-        if (nameEl && d.basics.fullName) nameEl.textContent = d.basics.fullName;
-        var titleEl = document.querySelector('.hero-title');
-        if (titleEl && d.basics.title) titleEl.textContent = d.basics.title;
-        var locEl = document.querySelector('.hero-location');
-        if (locEl && d.basics.location) {
-            var svg = locEl.querySelector('svg');
-            locEl.textContent = '';
-            if (svg) locEl.appendChild(svg);
-            locEl.appendChild(document.createTextNode(' ' + d.basics.location + (d.basics.nationality ? ' · ' + d.basics.nationality : '')));
+    if (!isArabic) {
+        // Trigger Google Translate to Arabic
+        var sel = document.querySelector('.goog-te-combo');
+        if (sel) {
+            sel.value = 'ar';
+            sel.dispatchEvent(new Event('change'));
         }
-        var vpEl = document.querySelector('.value-prop-text');
-        if (vpEl && (d.basics.valueProposition || d.basics.bio)) {
-            vpEl.textContent = d.basics.valueProposition || d.basics.bio || '';
+        document.documentElement.dir = 'rtl';
+        btn.textContent = 'English';
+        isArabic = true;
+    } else {
+        // Switch back to English
+        var frame = document.querySelector('.goog-te-banner-frame');
+        if (frame) {
+            var innerDoc = frame.contentDocument || frame.contentWindow.document;
+            var restoreBtn = innerDoc.querySelector('.goog-close-link');
+            if (restoreBtn) restoreBtn.click();
         }
-    }
-    if (d.metrics && d.metrics.length) {
-        document.querySelectorAll('.metric').forEach(function(el, i) {
-            if (d.metrics[i]) {
-                var valEl = el.querySelector('.metric-val');
-                var lblEl = el.querySelector('.metric-label');
-                if (valEl) valEl.textContent = d.metrics[i].value;
-                if (lblEl) lblEl.textContent = d.metrics[i].label;
-            }
-        });
-    }
-    if (d.experience && d.experience.length) {
-        document.querySelectorAll('.tl-item').forEach(function(el, i) {
-            if (d.experience[i]) {
-                var titleEl = el.querySelector('.tl-role');
-                var compEl = el.querySelector('.tl-company');
-                var descEl = el.querySelector('.tl-desc');
-                if (titleEl) titleEl.textContent = d.experience[i].title;
-                if (compEl) compEl.textContent = d.experience[i].company;
-                if (descEl) descEl.textContent = d.experience[i].description || '';
-            }
-        });
+        // Also try the cookie method
+        document.cookie = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+        document.cookie = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=.' + location.hostname;
+        document.documentElement.dir = 'ltr';
+        btn.textContent = 'عربي';
+        isArabic = false;
+        // Reload to fully restore English
+        if (document.querySelector('.goog-te-combo')) {
+            var sel = document.querySelector('.goog-te-combo');
+            sel.value = 'en';
+            sel.dispatchEvent(new Event('change'));
+        }
     }
 }
-{{/if}}
 </script>
+<script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+<style>
+/* Hide Google Translate bar and branding */
+.goog-te-banner-frame { display: none !important; }
+body { top: 0 !important; }
+.goog-te-gadget { font-size: 0 !important; }
+.skiptranslate { display: none !important; }
+.goog-te-spinner-pos { display: none !important; }
+#goog-gt-tt { display: none !important; }
+.goog-text-highlight { background: none !important; box-shadow: none !important; }
+</style>
 </body>
 </html>

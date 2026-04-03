@@ -29,36 +29,17 @@ export function BuilderForm({ portfolioId, initialData }: BuilderFormProps) {
   const [currentStep, setCurrentStep] = useState(0);
   const [formData, setFormData] = useState(initialData);
   const [saving, setSaving] = useState(false);
-
-  // Arabic content stored as parsed JSON
-  const [contentAr, setContentAr] = useState<any>(() => {
-    try {
-      return initialData.contentAr ? JSON.parse(initialData.contentAr) : {};
-    } catch {
-      return {};
-    }
-  });
-
-  const [editLang, setEditLang] = useState<"en" | "ar">("en");
   const updatePortfolio = useMutation(api.portfolios.update);
 
   const handleChange = useCallback((updates: any) => {
     setFormData((prev: any) => ({ ...prev, ...updates }));
   }, []);
 
-  const handleArChange = useCallback((updates: any) => {
-    setContentAr((prev: any) => ({ ...prev, ...updates }));
-  }, []);
-
   const save = async () => {
     setSaving(true);
     try {
-      const { _id, _creationTime, status, slug, generatedHtml, paymentId, publishedAt, createdAt, lastEditedAt, userId, templateId, name, locale, contentAr: _ca, ...fields } = formData;
-      await updatePortfolio({
-        id: portfolioId,
-        ...fields,
-        contentAr: JSON.stringify(contentAr),
-      });
+      const { _id, _creationTime, status, slug, generatedHtml, paymentId, publishedAt, createdAt, lastEditedAt, userId, templateId, name, locale, contentAr, ...fields } = formData;
+      await updatePortfolio({ id: portfolioId, ...fields });
     } catch (e) {
       console.error("Save failed:", e);
     }
@@ -111,14 +92,7 @@ export function BuilderForm({ portfolioId, initialData }: BuilderFormProps) {
 
       {/* Step content */}
       <div className="bg-slate-900/50 border border-slate-800 rounded-xl p-6 mb-6">
-        <StepComponent
-          data={formData}
-          onChange={handleChange}
-          contentAr={contentAr}
-          onArChange={handleArChange}
-          editLang={editLang}
-          onLangChange={setEditLang}
-        />
+        <StepComponent data={formData} onChange={handleChange} />
       </div>
 
       {/* Navigation */}

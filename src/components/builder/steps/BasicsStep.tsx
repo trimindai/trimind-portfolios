@@ -3,143 +3,101 @@
 import { TextField } from "../fields/TextField";
 import { TextareaField } from "../fields/TextareaField";
 import { DynamicList } from "../fields/DynamicList";
-import { LanguageToggle } from "../fields/LanguageToggle";
 
 interface BasicsStepProps {
   data: any;
   onChange: (updates: any) => void;
-  contentAr?: any;
-  onArChange?: (updates: any) => void;
-  editLang?: "en" | "ar";
-  onLangChange?: (lang: "en" | "ar") => void;
+  [key: string]: any;
 }
 
-export function BasicsStep({ data, onChange, contentAr = {}, onArChange, editLang = "en", onLangChange }: BasicsStepProps) {
+export function BasicsStep({ data, onChange }: BasicsStepProps) {
   const basics = data.basics || {};
-  const basicsAr = contentAr.basics || {};
   const metrics = data.metrics || [];
-  const metricsAr = contentAr.metrics || [];
-  const isAr = editLang === "ar";
 
   const updateBasics = (field: string, value: string) => {
-    if (isAr) {
-      onArChange?.({ basics: { ...basicsAr, [field]: value } });
-    } else {
-      onChange({ basics: { ...basics, [field]: value } });
-    }
+    onChange({ basics: { ...basics, [field]: value } });
   };
-
-  const currentBasics = isAr ? basicsAr : basics;
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h2 className="text-xl font-semibold text-white">Basic Information</h2>
-          <p className="text-sm text-slate-400 mt-1">
-            {isAr ? "أدخل معلوماتك باللغة العربية" : "Fill in your core professional identity."}
-          </p>
-        </div>
+      <div>
+        <h2 className="text-xl font-semibold text-white">Basic Information</h2>
+        <p className="text-sm text-slate-400 mt-1">Fill in your core professional identity. The published portfolio will have an auto-translate button for Arabic.</p>
       </div>
 
-      {onLangChange && <LanguageToggle lang={editLang} onChange={onLangChange} />}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <TextField label="Full Name" value={basics.fullName} onChange={(v) => updateBasics("fullName", v)} required placeholder="Sarah Al-Rashidi" hint="As it appears on your official documents" />
+        <TextField label="Professional Title" value={basics.title} onChange={(v) => updateBasics("title", v)} required placeholder="Senior Financial Analyst" hint="Your current or target role" examples={["Senior Financial Analyst", "Software Engineer", "Marketing Director", "UX Designer", "Project Manager"]} />
+      </div>
 
-      <div className={isAr ? "text-right" : ""} dir={isAr ? "rtl" : "ltr"}>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <TextField label={isAr ? "الاسم الكامل" : "Full Name"} value={currentBasics.fullName} onChange={(v) => updateBasics("fullName", v)} required placeholder={isAr ? "سارة الرشيدي" : "Sarah Al-Rashidi"} />
-          <TextField label={isAr ? "المسمى الوظيفي" : "Professional Title"} value={currentBasics.title} onChange={(v) => updateBasics("title", v)} required placeholder={isAr ? "محلل مالي أول" : "Senior Financial Analyst"} />
+      <TextField label="Subtitle / Tagline" value={basics.subtitle} onChange={(v) => updateBasics("subtitle", v)} placeholder="Transforming data into strategic insights" hint="A one-liner that captures your professional brand" examples={["Transforming complex data into actionable insights", "Building scalable solutions for enterprise challenges", "Driving growth through strategic innovation"]} />
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <TextField label="Email" value={basics.email} onChange={(v) => updateBasics("email", v)} required type="email" placeholder="email@example.com" />
+        <TextField label="Phone" value={basics.phone} onChange={(v) => updateBasics("phone", v)} placeholder="+965 1234 5678" />
+      </div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <TextField label="Location" value={basics.location} onChange={(v) => updateBasics("location", v)} placeholder="Kuwait City, Kuwait" />
+        <TextField label="Nationality" value={basics.nationality} onChange={(v) => updateBasics("nationality", v)} placeholder="Kuwaiti National" />
+      </div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <TextField label="LinkedIn URL" value={basics.linkedin} onChange={(v) => updateBasics("linkedin", v)} placeholder="linkedin.com/in/yourname" />
+        <TextField label="Website" value={basics.website} onChange={(v) => updateBasics("website", v)} placeholder="yourwebsite.com" />
+      </div>
+
+      <TextareaField
+        label="Professional Summary"
+        value={basics.bio}
+        onChange={(v) => updateBasics("bio", v)}
+        placeholder="Write 2-3 sentences about your expertise and career highlights..."
+        hint="Focus on achievements and impact, not just job duties."
+        rows={3}
+        writingTips={[
+          "Start with your years of experience and core expertise",
+          "Mention 2-3 specific achievements with numbers",
+          "Use strong verbs: led, delivered, transformed, optimized",
+        ]}
+        templates={[
+          { label: "Finance", text: "Results-driven financial analyst with [X]+ years of experience in corporate finance, investment analysis, and risk management. Proven track record of delivering data-driven insights that have influenced over $[X] in strategic decisions." },
+          { label: "Tech", text: "Full-stack engineer with [X]+ years building scalable applications. Led teams of [X] and delivered solutions serving [X]+ users." },
+          { label: "General", text: "Accomplished professional with [X]+ years of experience in [field]. Known for [key strength] and delivering measurable results including [achievement]." },
+        ]}
+      />
+
+      <TextareaField
+        label="Value Proposition"
+        value={basics.valueProposition}
+        onChange={(v) => updateBasics("valueProposition", v)}
+        placeholder="What unique value do you bring to employers?"
+        hint="Your elevator pitch — why should they hire YOU?"
+        rows={4}
+        writingTips={[
+          "Answer: What problem do you solve better than anyone?",
+          "Include your unique combination of skills",
+          "Quantify your impact where possible",
+        ]}
+      />
+
+      <div>
+        <div className="flex items-center justify-between mb-3">
+          <h3 className="text-lg font-medium text-white">Key Metrics</h3>
+          <span className="text-xs text-slate-500">Numbers that prove impact</span>
         </div>
-
-        <div className="mt-4">
-          <TextField label={isAr ? "العنوان الفرعي" : "Subtitle / Tagline"} value={currentBasics.subtitle} onChange={(v) => updateBasics("subtitle", v)} placeholder={isAr ? "تحويل البيانات إلى رؤى استراتيجية" : "Transforming data into strategic insights"} />
-        </div>
-
-        {!isAr && (
-          <>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
-              <TextField label="Email" value={basics.email} onChange={(v) => onChange({ basics: { ...basics, email: v } })} required type="email" placeholder="email@example.com" />
-              <TextField label="Phone" value={basics.phone} onChange={(v) => onChange({ basics: { ...basics, phone: v } })} placeholder="+965 1234 5678" />
+        <DynamicList
+          items={metrics}
+          onChange={(items) => onChange({ metrics: items })}
+          createEmpty={() => ({ value: "", label: "" })}
+          maxItems={4}
+          addLabel="Add Metric"
+          renderItem={(item, _, update) => (
+            <div className="grid grid-cols-2 gap-3">
+              <TextField label="Value" value={item.value} onChange={(v) => update({ value: v })} placeholder="10+" examples={["10+", "$2.4B", "35+", "6", "98%"]} />
+              <TextField label="Label" value={item.label} onChange={(v) => update({ label: v })} placeholder="Years Experience" examples={["Years Experience", "Projects Delivered", "Clients Served", "Certifications"]} />
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
-              <TextField label="Location" value={basics.location} onChange={(v) => onChange({ basics: { ...basics, location: v } })} placeholder="Kuwait City, Kuwait" />
-              <TextField label="Nationality" value={basics.nationality} onChange={(v) => onChange({ basics: { ...basics, nationality: v } })} placeholder="Kuwaiti National" />
-            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
-              <TextField label="LinkedIn URL" value={basics.linkedin} onChange={(v) => onChange({ basics: { ...basics, linkedin: v } })} placeholder="linkedin.com/in/yourname" />
-              <TextField label="Website" value={basics.website} onChange={(v) => onChange({ basics: { ...basics, website: v } })} placeholder="yourwebsite.com" />
-            </div>
-          </>
-        )}
-
-        {isAr && (
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
-            <TextField label="الموقع" value={basicsAr.location} onChange={(v) => onArChange?.({ basics: { ...basicsAr, location: v } })} placeholder="مدينة الكويت" />
-            <TextField label="الجنسية" value={basicsAr.nationality} onChange={(v) => onArChange?.({ basics: { ...basicsAr, nationality: v } })} placeholder="كويتي" />
-          </div>
-        )}
-
-        <div className="mt-4">
-          <TextareaField
-            label={isAr ? "الملخص المهني" : "Professional Summary"}
-            value={isAr ? (basicsAr.bio || "") : (basics.bio || "")}
-            onChange={(v) => updateBasics("bio", v)}
-            placeholder={isAr ? "اكتب ملخصاً موجزاً عن خبرتك المهنية..." : "Write 2-3 sentences about your expertise..."}
-            rows={3}
-            writingTips={isAr ? undefined : [
-              "Start with years of experience and core expertise",
-              "Mention 2-3 specific achievements with numbers",
-              "Use strong verbs: led, delivered, transformed, optimized",
-            ]}
-          />
-        </div>
-
-        <div className="mt-4">
-          <TextareaField
-            label={isAr ? "عرض القيمة" : "Value Proposition"}
-            value={isAr ? (basicsAr.valueProposition || "") : (basics.valueProposition || "")}
-            onChange={(v) => updateBasics("valueProposition", v)}
-            placeholder={isAr ? "ما القيمة الفريدة التي تقدمها؟" : "What unique value do you bring?"}
-            rows={4}
-          />
-        </div>
-
-        {!isAr && (
-          <div className="mt-6">
-            <h3 className="text-lg font-medium text-white mb-3">Key Metrics</h3>
-            <DynamicList
-              items={metrics}
-              onChange={(items) => onChange({ metrics: items })}
-              createEmpty={() => ({ value: "", label: "" })}
-              maxItems={4}
-              addLabel="Add Metric"
-              renderItem={(item, _, update) => (
-                <div className="grid grid-cols-2 gap-3">
-                  <TextField label="Value" value={item.value} onChange={(v) => update({ value: v })} placeholder="10+" />
-                  <TextField label="Label" value={item.label} onChange={(v) => update({ label: v })} placeholder="Years Experience" />
-                </div>
-              )}
-            />
-          </div>
-        )}
-
-        {isAr && (
-          <div className="mt-6">
-            <h3 className="text-lg font-medium text-white mb-3">المقاييس الرئيسية</h3>
-            <DynamicList
-              items={metricsAr.length ? metricsAr : metrics.map((m: any) => ({ value: m.value, label: "" }))}
-              onChange={(items) => onArChange?.({ metrics: items })}
-              createEmpty={() => ({ value: "", label: "" })}
-              maxItems={4}
-              addLabel="إضافة مقياس"
-              renderItem={(item, _, update) => (
-                <div className="grid grid-cols-2 gap-3">
-                  <TextField label="القيمة" value={item.value} onChange={(v) => update({ value: v })} placeholder="١٠+" />
-                  <TextField label="التسمية" value={item.label} onChange={(v) => update({ label: v })} placeholder="سنوات خبرة" />
-                </div>
-              )}
-            />
-          </div>
-        )}
+          )}
+        />
       </div>
     </div>
   );
