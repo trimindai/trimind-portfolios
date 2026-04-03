@@ -133,9 +133,9 @@ export default function LandingPage() {
           <p className="mt-4 text-slate-400">One-time payment. No subscriptions.</p>
           <div className="mt-12 rounded-2xl border border-emerald-600/30 bg-slate-900/80 p-8">
             <div className="text-5xl font-bold text-emerald-500">
-              $4.99
+              1.500 KD
             </div>
-            <div className="mt-1 text-slate-400">per portfolio</div>
+            <div className="mt-1 text-slate-400">per portfolio (~$5 USD)</div>
             <ul className="mt-8 space-y-3 text-start text-sm">
               <li className="flex items-center gap-2"><span className="text-emerald-500">&#10003;</span> Hosted portfolio URL</li>
               <li className="flex items-center gap-2"><span className="text-emerald-500">&#10003;</span> PDF download with QR code</li>

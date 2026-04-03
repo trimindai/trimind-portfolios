@@ -20,8 +20,8 @@ export async function POST(req: NextRequest) {
         },
         body: JSON.stringify({
           PaymentMethodId: 2,
-          InvoiceValue: 4.99,
-          CurrencyIso: "USD",
+          InvoiceValue: 1.5,
+          CurrencyIso: "KWD",
           CallBackUrl: `${process.env.NEXT_PUBLIC_APP_URL}/api/myfatoorah/callback`,
           ErrorUrl: `${process.env.NEXT_PUBLIC_APP_URL}/api/myfatoorah/callback`,
           CustomerName: userName || "Customer",

@@ -36,8 +36,8 @@ export default function NewPortfolioPage() {
         await createPayment({
           portfolioId,
           userId: userId ?? undefined,
-          amount: 4.99,
-          currency: "USD",
+          amount: 1.5,
+          currency: "KWD",
         });
 
         // Initiate MyFatoorah payment
