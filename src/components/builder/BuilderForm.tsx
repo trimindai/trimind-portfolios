@@ -6,6 +6,7 @@ import { api } from "@convex/_generated/api";
 import { Id } from "@convex/_generated/dataModel";
 import { BasicsStep } from "./steps/BasicsStep";
 import { ExperienceStep } from "./steps/ExperienceStep";
+import { AchievementsStep } from "./steps/AchievementsStep";
 import { SkillsStep } from "./steps/SkillsStep";
 import { EducationStep } from "./steps/EducationStep";
 import { EndorsementsStep } from "./steps/EndorsementsStep";
@@ -14,6 +15,7 @@ import { CustomizeStep } from "./steps/CustomizeStep";
 const STEPS = [
   { name: "Basics", component: BasicsStep },
   { name: "Experience", component: ExperienceStep },
+  { name: "Achievements", component: AchievementsStep },
   { name: "Skills", component: SkillsStep },
   { name: "Education", component: EducationStep },
   { name: "Endorsements", component: EndorsementsStep },
