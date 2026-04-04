@@ -1,5 +1,6 @@
 import { useTranslations, useLocale } from "next-intl";
 import { Link } from "@/i18n/navigation";
+import { AdminLink } from "@/components/AdminLink";
 
 export default function LandingPage() {
   const t = useTranslations("landing");
@@ -17,6 +18,7 @@ export default function LandingPage() {
             {tc("appName")}
           </span>
           <div className="flex items-center gap-4">
+            <AdminLink />
             <a
               href={`/${otherLocale}`}
               className="text-sm text-slate-400 hover:text-white transition-colors border border-slate-700 rounded px-2.5 py-1"
