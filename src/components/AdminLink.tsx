@@ -3,7 +3,7 @@
 import { useUser } from "@clerk/nextjs";
 import { Link } from "@/i18n/navigation";
 
-const ADMIN_EMAIL = "trimindai@trimindai.com";
+const ADMIN_EMAILS = ["trimindai@trimindai.com", "90dalal@gmail.com"];
 
 export function AdminLink() {
   const { user, isLoaded } = useUser();
@@ -11,7 +11,7 @@ export function AdminLink() {
   if (!isLoaded || !user) return null;
 
   const email = user.primaryEmailAddress?.emailAddress;
-  if (email !== ADMIN_EMAIL) return null;
+  if (!email || !ADMIN_EMAILS.includes(email)) return null;
 
   return (
     <Link

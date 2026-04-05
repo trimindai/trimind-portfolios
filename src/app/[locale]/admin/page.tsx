@@ -6,7 +6,7 @@ import { api } from "@convex/_generated/api";
 import { useState } from "react";
 import { Link } from "@/i18n/navigation";
 
-const ADMIN_EMAIL = "trimindai@trimindai.com";
+const ADMIN_EMAILS = ["trimindai@trimindai.com", "90dalal@gmail.com"];
 
 type Tab = "overview" | "users" | "portfolios" | "payments";
 
@@ -28,7 +28,7 @@ export default function AdminPage() {
   }
 
   const email = user?.primaryEmailAddress?.emailAddress;
-  if (email !== ADMIN_EMAIL) {
+  if (!email || !ADMIN_EMAILS.includes(email)) {
     return (
       <div className="min-h-screen bg-slate-950 flex flex-col items-center justify-center">
         <p className="text-red-400 text-lg mb-4">Access Denied</p>
