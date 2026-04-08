@@ -6,11 +6,14 @@ import { useDashboard } from "@/contexts/DashboardContext";
 import { useUser } from "@clerk/nextjs";
 import { useEffect, useState } from "react";
 
+const FREE_ACCESS_EMAILS = ["fivemlord12@gmail.com"];
+
 export default function NewPortfolioPage() {
   const { userId } = useDashboard();
   const { user } = useUser();
   const createPortfolio = useMutation(api.portfolios.create);
   const createPayment = useMutation(api.payments.create);
+  const markPaid = useMutation(api.portfolios.markPaid);
   const [error, setError] = useState("");
   const [details, setDetails] = useState("");
 
@@ -19,6 +22,9 @@ export default function NewPortfolioPage() {
 
     async function initiate() {
       try {
+        const userEmail = user?.primaryEmailAddress?.emailAddress || "";
+        const hasFreeAccess = FREE_ACCESS_EMAILS.includes(userEmail);
+
         // Create draft portfolio
         const portfolioId = await createPortfolio({
           userId: userId ?? undefined,
@@ -28,9 +34,19 @@ export default function NewPortfolioPage() {
           basics: {
             fullName: user?.fullName || "",
             title: "",
-            email: user?.primaryEmailAddress?.emailAddress || "",
+            email: userEmail,
           },
         });
+
+        // Free access — skip payment, go straight to builder
+        if (hasFreeAccess) {
+          await markPaid({
+            id: portfolioId,
+            paymentId: "free-access",
+          });
+          window.location.href = `/en/dashboard/${portfolioId}/edit`;
+          return;
+        }
 
         // Create pending payment record
         await createPayment({
@@ -46,7 +62,7 @@ export default function NewPortfolioPage() {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             portfolioId,
-            userEmail: user?.primaryEmailAddress?.emailAddress || "",
+            userEmail,
             userName: user?.fullName || "Customer",
           }),
         });
@@ -88,7 +104,7 @@ export default function NewPortfolioPage() {
   return (
     <div className="flex flex-col items-center justify-center py-20">
       <div className="animate-spin h-8 w-8 border-2 border-emerald-500 border-t-transparent rounded-full mb-4" />
-      <p className="text-slate-400">Redirecting to payment...</p>
+      <p className="text-slate-400">Setting up your portfolio...</p>
     </div>
   );
 }
