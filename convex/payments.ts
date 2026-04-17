@@ -7,6 +7,7 @@ export const create = mutation({
     userId: v.optional(v.id("users")),
     amount: v.number(),
     currency: v.string(),
+    myfatoorahInvoiceId: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
     return await ctx.db.insert("payments", {

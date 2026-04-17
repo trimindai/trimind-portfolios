@@ -1,69 +1,88 @@
 import { NextRequest, NextResponse } from "next/server";
+import { getPaymentStatus } from "@/lib/myfatoorah";
 import { convexClient } from "@/lib/convex";
 import { api } from "@convex/_generated/api";
+import { Id } from "@convex/_generated/dataModel";
+
+const PRICE_KWD = 1.5;
 
 export async function GET(req: NextRequest) {
-  try {
-    const paymentId = req.nextUrl.searchParams.get("paymentId");
+  const paymentId = req.nextUrl.searchParams.get("paymentId");
+  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || req.nextUrl.origin;
 
-    if (!paymentId) {
-      return NextResponse.redirect(
-        new URL("/en/dashboard?error=missing_payment", req.url)
-      );
-    }
-
-    // Verify payment with MyFatoorah
-    const response = await fetch(
-      `${process.env.MYFATOORAH_BASE_URL}/v2/GetPaymentStatus`,
-      {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${process.env.MYFATOORAH_API_KEY}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          Key: paymentId,
-          KeyType: "PaymentId",
-        }),
-      }
+  if (!paymentId) {
+    return NextResponse.redirect(
+      new URL("/en/dashboard?error=missing_payment", baseUrl)
     );
+  }
 
-    const data = await response.json();
+  try {
+    const status = await getPaymentStatus(paymentId);
 
-    if (data.IsSuccess && data.Data.InvoiceStatus === "Paid") {
-      const invoiceId = String(data.Data.InvoiceId);
-      const portfolioId = data.Data.UserDefinedField;
+    // Parse UserDefinedField we set at initiate: "portfolioId:locale"
+    const [portfolioId, localeRaw] = (
+      status.Data?.UserDefinedField || ""
+    ).split(":");
+    const locale = localeRaw === "ar" ? "ar" : "en";
 
-      // Mark payment completed in Convex
-      const payment = await convexClient.query(api.payments.getByPortfolio, {
-        portfolioId,
-      });
+    if (!status.IsSuccess || status.Data.InvoiceStatus !== "Paid") {
+      const dest = portfolioId
+        ? `/${locale}/dashboard/${portfolioId}/preview?error=payment_failed`
+        : `/${locale}/dashboard?error=payment_failed`;
+      return NextResponse.redirect(new URL(dest, baseUrl));
+    }
 
-      if (payment) {
-        await convexClient.mutation(api.payments.markCompleted, {
-          id: payment._id,
-          myfatoorahInvoiceId: invoiceId,
-        });
-      }
-
-      // Mark portfolio as paid
-      await convexClient.mutation(api.portfolios.markPaid, {
-        id: portfolioId,
-        paymentId: invoiceId,
-      });
-
+    if (!portfolioId) {
       return NextResponse.redirect(
-        new URL(`/en/dashboard/${portfolioId}/edit`, req.url)
+        new URL(`/${locale}/dashboard?error=invalid_payment_data`, baseUrl)
       );
     }
+
+    const invoiceId = String(status.Data.InvoiceId);
+
+    // Idempotent lookup by invoice id
+    const existing = await convexClient.query(api.payments.getByInvoice, {
+      myfatoorahInvoiceId: invoiceId,
+    });
+
+    if (existing?.status === "completed") {
+      return NextResponse.redirect(
+        new URL(
+          `/${locale}/dashboard/${portfolioId}/publish?success=1`,
+          baseUrl
+        )
+      );
+    }
+
+    // Verify amount matches (allow 1% tolerance for FX rounding)
+    if (status.Data.InvoiceValue < PRICE_KWD * 0.99) {
+      return NextResponse.redirect(
+        new URL(
+          `/${locale}/dashboard/${portfolioId}/preview?error=amount_mismatch`,
+          baseUrl
+        )
+      );
+    }
+
+    if (existing) {
+      await convexClient.mutation(api.payments.markCompleted, {
+        id: existing._id,
+        myfatoorahInvoiceId: invoiceId,
+      });
+    }
+
+    await convexClient.mutation(api.portfolios.markPaid, {
+      id: portfolioId as Id<"portfolios">,
+      paymentId: invoiceId,
+    });
 
     return NextResponse.redirect(
-      new URL("/en/dashboard?error=payment_failed", req.url)
+      new URL(`/${locale}/dashboard/${portfolioId}/publish?success=1`, baseUrl)
     );
   } catch (error) {
     console.error("MyFatoorah callback error:", error);
     return NextResponse.redirect(
-      new URL("/en/dashboard?error=payment_error", req.url)
+      new URL("/en/dashboard?error=verification_failed", baseUrl)
     );
   }
 }

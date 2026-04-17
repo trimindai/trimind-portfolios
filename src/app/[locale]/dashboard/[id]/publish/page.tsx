@@ -60,6 +60,23 @@ export default function PublishPage() {
     }
   }, [portfolio, slugInitialized]);
 
+  // Surface payment errors returned via query string from the callback
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const params = new URLSearchParams(window.location.search);
+    const err = params.get("error");
+    if (err) {
+      const map: Record<string, string> = {
+        payment_failed: "Payment was not completed. Please try again.",
+        amount_mismatch: "Payment amount did not match. Please try again.",
+        payment_cancelled: "Payment was cancelled.",
+        verification_failed:
+          "Could not verify payment. If you were charged, contact support.",
+      };
+      setError(map[err] || "Payment error. Please try again.");
+    }
+  }, []);
+
   // Check if already published
   useEffect(() => {
     if (portfolio?.status === "published" && portfolio.slug) {
@@ -91,7 +108,28 @@ export default function PublishPage() {
     setError(null);
 
     try {
-      // Generate HTML
+      // Draft → pay first. The MyFatoorah hosted invoice will redirect
+      // back to /api/myfatoorah/callback, which marks the portfolio paid.
+      if (portfolio.status === "draft") {
+        const payRes = await fetch("/api/myfatoorah/initiate", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            portfolioId: id,
+            locale,
+          }),
+        });
+
+        const payData = await payRes.json();
+        if (!payRes.ok || !payData.paymentUrl) {
+          throw new Error(payData.error || "Failed to start payment");
+        }
+
+        window.location.href = payData.paymentUrl;
+        return;
+      }
+
+      // Paid → generate HTML and publish
       const portfolioData = toPortfolioData(portfolio, locale);
       const res = await fetch("/api/generate", {
         method: "POST",
@@ -102,7 +140,6 @@ export default function PublishPage() {
       if (!res.ok) throw new Error("Failed to generate portfolio HTML");
       const { html } = await res.json();
 
-      // Publish via Convex mutation
       await publishMutation({
         id: id as Id<"portfolios">,
         slug,
@@ -112,7 +149,9 @@ export default function PublishPage() {
       setPublished(true);
     } catch (err) {
       setError(
-        err instanceof Error ? err.message : "Publishing failed. Please try again."
+        err instanceof Error
+          ? err.message
+          : "Publishing failed. Please try again."
       );
     } finally {
       setPublishing(false);
@@ -146,25 +185,6 @@ export default function PublishPage() {
     return (
       <div className="flex min-h-screen items-center justify-center bg-slate-950">
         <p className="text-slate-400">Portfolio not found.</p>
-      </div>
-    );
-  }
-
-  // Guard: must be paid or published
-  if (portfolio.status === "draft") {
-    return (
-      <div className="flex min-h-screen items-center justify-center bg-slate-950">
-        <div className="max-w-md rounded-xl border border-slate-800 bg-slate-900 p-8 text-center">
-          <p className="text-slate-300">
-            You need to complete payment before publishing.
-          </p>
-          <Link
-            href={`/dashboard/${id}/preview`}
-            className="mt-4 inline-block rounded-lg bg-emerald-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-emerald-500"
-          >
-            Back to Preview
-          </Link>
-        </div>
       </div>
     );
   }
@@ -308,10 +328,14 @@ export default function PublishPage() {
             {publishing ? (
               <>
                 <Loader2 className="h-4 w-4 animate-spin" />
-                Publishing...
+                {portfolio.status === "draft"
+                  ? "Redirecting to payment..."
+                  : "Publishing..."}
               </>
-            ) : (
+            ) : portfolio.status === "draft" ? (
               t("payAndPublish")
+            ) : (
+              tc("publish")
             )}
           </button>
         </div>
