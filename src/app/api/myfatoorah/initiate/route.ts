@@ -4,8 +4,7 @@ import { sendPayment } from "@/lib/myfatoorah";
 import { convexClient } from "@/lib/convex";
 import { api } from "@convex/_generated/api";
 import { Id } from "@convex/_generated/dataModel";
-
-const PRICE_KWD = 1.5;
+import { PRICE_KWD } from "@/lib/pricing";
 
 export async function POST(req: NextRequest) {
   try {
@@ -23,6 +22,27 @@ export async function POST(req: NextRequest) {
     }
 
     const locale = rawLocale === "ar" ? "ar" : "en";
+
+    // Double-pay guard: if a completed payment already exists for this
+    // portfolio but the portfolio wasn't marked paid (e.g. markPaid failed
+    // after the callback), reconcile instead of starting a second invoice.
+    const existingPayment = await convexClient.query(
+      api.payments.getByPortfolio,
+      { portfolioId: portfolioId as Id<"portfolios"> }
+    );
+    if (
+      existingPayment?.status === "completed" &&
+      existingPayment.myfatoorahInvoiceId
+    ) {
+      await convexClient.mutation(api.portfolios.markPaid, {
+        id: portfolioId as Id<"portfolios">,
+        paymentId: existingPayment.myfatoorahInvoiceId,
+      });
+      return NextResponse.json({
+        alreadyPaid: true,
+        paymentId: existingPayment.myfatoorahInvoiceId,
+      });
+    }
 
     const user = await currentUser();
     const email = user?.emailAddresses?.[0]?.emailAddress || "";

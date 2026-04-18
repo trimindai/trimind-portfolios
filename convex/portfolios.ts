@@ -150,6 +150,12 @@ export const markPaid = mutation({
     paymentId: v.string(),
   },
   handler: async (ctx, { id, paymentId }) => {
+    const portfolio = await ctx.db.get(id);
+    if (!portfolio) throw new Error("Portfolio not found");
+    // Idempotent: if already paid/published, do nothing.
+    if (portfolio.status === "paid" || portfolio.status === "published") {
+      return;
+    }
     await ctx.db.patch(id, {
       status: "paid",
       paymentId,
@@ -193,6 +199,15 @@ export const publish = mutation({
     generatedHtml: v.string(),
   },
   handler: async (ctx, { id, slug, generatedHtml }) => {
+    const portfolio = await ctx.db.get(id);
+    if (!portfolio) throw new Error("Portfolio not found");
+
+    // Payment gate: only paid (or already-published re-publish) portfolios
+    // may be published. Prevents publish-without-pay by direct mutation call.
+    if (portfolio.status !== "paid" && portfolio.status !== "published") {
+      throw new Error("Portfolio is not paid");
+    }
+
     const existing = await ctx.db
       .query("portfolios")
       .withIndex("by_slug", (q) => q.eq("slug", slug))

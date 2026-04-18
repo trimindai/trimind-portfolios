@@ -121,12 +121,19 @@ export default function PublishPage() {
         });
 
         const payData = await payRes.json();
-        if (!payRes.ok || !payData.paymentUrl) {
+        if (!payRes.ok) {
           throw new Error(payData.error || "Failed to start payment");
         }
 
-        window.location.href = payData.paymentUrl;
-        return;
+        // Reconciled: a completed payment already existed and the portfolio
+        // was just marked paid server-side — fall through to publish.
+        if (!payData.alreadyPaid) {
+          if (!payData.paymentUrl) {
+            throw new Error("Failed to start payment");
+          }
+          window.location.href = payData.paymentUrl;
+          return;
+        }
       }
 
       // Paid → generate HTML and publish

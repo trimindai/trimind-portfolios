@@ -3,8 +3,7 @@ import { getPaymentStatus } from "@/lib/myfatoorah";
 import { convexClient } from "@/lib/convex";
 import { api } from "@convex/_generated/api";
 import { Id } from "@convex/_generated/dataModel";
-
-const PRICE_KWD = 1.5;
+import { PRICE_KWD, PRICE_TOLERANCE } from "@/lib/pricing";
 
 export async function GET(req: NextRequest) {
   const paymentId = req.nextUrl.searchParams.get("paymentId");
@@ -55,7 +54,7 @@ export async function GET(req: NextRequest) {
     }
 
     // Verify amount matches (allow 1% tolerance for FX rounding)
-    if (status.Data.InvoiceValue < PRICE_KWD * 0.99) {
+    if (status.Data.InvoiceValue < PRICE_KWD * PRICE_TOLERANCE) {
       return NextResponse.redirect(
         new URL(
           `/${locale}/dashboard/${portfolioId}/preview?error=amount_mismatch`,
