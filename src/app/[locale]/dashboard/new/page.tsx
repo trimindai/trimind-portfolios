@@ -2,32 +2,25 @@
 
 import { useMutation } from "convex/react";
 import { api } from "@convex/_generated/api";
-import { useDashboard } from "@/contexts/DashboardContext";
 import { useUser } from "@clerk/nextjs";
 import { useEffect, useState } from "react";
 
-const FREE_ACCESS_EMAILS = ["fivemlord12@gmail.com"];
-
 export default function NewPortfolioPage() {
-  const { userId } = useDashboard();
-  const { user } = useUser();
+  const { user, isLoaded } = useUser();
+  // create() now derives userId from the session — no client-supplied userId.
   const createPortfolio = useMutation(api.portfolios.create);
-  const createPayment = useMutation(api.payments.create);
-  const markPaid = useMutation(api.portfolios.markPaid);
   const [error, setError] = useState("");
   const [details, setDetails] = useState("");
 
   useEffect(() => {
-    if (!userId) return;
+    if (!isLoaded || !user) return;
 
     async function initiate() {
       try {
         const userEmail = user?.primaryEmailAddress?.emailAddress || "";
-        const hasFreeAccess = FREE_ACCESS_EMAILS.includes(userEmail);
 
-        // Create draft portfolio
+        // Create draft portfolio (Convex enforces auth; no userId arg).
         const portfolioId = await createPortfolio({
-          userId: userId ?? undefined,
           templateId: "corporate",
           locale: "en",
           name: "My Portfolio",
@@ -38,37 +31,32 @@ export default function NewPortfolioPage() {
           },
         });
 
-        // Free access — skip payment, go straight to builder
-        if (hasFreeAccess) {
-          await markPaid({
-            id: portfolioId,
-            paymentId: "free-access",
-          });
+        // Try free-access first. The endpoint silently returns 403 if not
+        // eligible — then we fall through to paid flow.
+        const freeRes = await fetch("/api/free-access", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ portfolioId }),
+        });
+        if (freeRes.ok) {
           window.location.href = `/en/dashboard/${portfolioId}/edit`;
           return;
         }
 
-        // Create pending payment record
-        await createPayment({
-          portfolioId,
-          userId: userId ?? undefined,
-          amount: 1.5,
-          currency: "KWD",
-        });
-
-        // Initiate MyFatoorah payment
+        // Initiate MyFatoorah payment. Server-side route now also creates
+        // the pending payment record (frontend can no longer write payments).
         const res = await fetch("/api/myfatoorah/initiate", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            portfolioId,
-            userEmail,
-            userName: user?.fullName || "Customer",
-          }),
+          body: JSON.stringify({ portfolioId, locale: "en" }),
         });
 
         const data = await res.json();
 
+        if (data.alreadyPaid) {
+          window.location.href = `/en/dashboard/${portfolioId}/edit`;
+          return;
+        }
         if (data.paymentUrl) {
           window.location.href = data.paymentUrl;
         } else {
@@ -82,14 +70,16 @@ export default function NewPortfolioPage() {
     }
 
     initiate();
-  }, [userId]);
+  }, [isLoaded, user]);
 
   if (error) {
     return (
       <div className="flex flex-col items-center justify-center py-20">
         <p className="text-red-400 mb-4">{error}</p>
         {details && (
-          <p className="text-xs text-slate-500 mb-4 max-w-md text-center break-all">{details}</p>
+          <p className="text-xs text-slate-500 mb-4 max-w-md text-center break-all">
+            {details}
+          </p>
         )}
         <a
           href="/en/dashboard"

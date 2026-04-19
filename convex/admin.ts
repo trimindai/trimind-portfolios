@@ -1,25 +1,30 @@
 import { query } from "./_generated/server";
+import { requireAdmin } from "./auth";
 
 export const getAllUsers = query({
   handler: async (ctx) => {
+    await requireAdmin(ctx);
     return await ctx.db.query("users").order("desc").collect();
   },
 });
 
 export const getAllPortfolios = query({
   handler: async (ctx) => {
+    await requireAdmin(ctx);
     return await ctx.db.query("portfolios").order("desc").collect();
   },
 });
 
 export const getAllPayments = query({
   handler: async (ctx) => {
+    await requireAdmin(ctx);
     return await ctx.db.query("payments").order("desc").collect();
   },
 });
 
 export const getStats = query({
   handler: async (ctx) => {
+    await requireAdmin(ctx);
     const users = await ctx.db.query("users").collect();
     const portfolios = await ctx.db.query("portfolios").collect();
     const payments = await ctx.db.query("payments").collect();

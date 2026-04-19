@@ -1,18 +1,15 @@
 "use client";
 
-import { useQuery, useMutation } from "convex/react";
+import { useQuery } from "convex/react";
 import { api } from "@convex/_generated/api";
 import { useDashboard } from "@/contexts/DashboardContext";
-import { useRouter } from "@/i18n/navigation";
 import { Link } from "@/i18n/navigation";
 import { useState } from "react";
 
 export default function DashboardPage() {
   const { userId } = useDashboard();
-  const portfolios = useQuery(
-    api.portfolios.listByUser,
-    userId ? { userId } : "skip"
-  );
+  // listByUser now auto-filters to the authenticated user — no userId arg.
+  const portfolios = useQuery(api.portfolios.listByUser, {});
   const [loading, setLoading] = useState(false);
 
   const handleNewPortfolio = async () => {

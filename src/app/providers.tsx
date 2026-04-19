@@ -1,7 +1,8 @@
 "use client";
 
-import { ClerkProvider } from "@clerk/nextjs";
-import { ConvexProvider, ConvexReactClient } from "convex/react";
+import { ClerkProvider, useAuth } from "@clerk/nextjs";
+import { ConvexReactClient } from "convex/react";
+import { ConvexProviderWithClerk } from "convex/react-clerk";
 import { ReactNode } from "react";
 
 const convex = new ConvexReactClient(
@@ -11,7 +12,14 @@ const convex = new ConvexReactClient(
 export function Providers({ children }: { children: ReactNode }) {
   return (
     <ClerkProvider>
-      <ConvexProvider client={convex}>{children}</ConvexProvider>
+      {/*
+        ConvexProviderWithClerk forwards the Clerk session JWT (from the
+        "convex" template) to every Convex call, enabling
+        ctx.auth.getUserIdentity() in mutations/queries.
+      */}
+      <ConvexProviderWithClerk client={convex} useAuth={useAuth}>
+        {children}
+      </ConvexProviderWithClerk>
     </ClerkProvider>
   );
 }

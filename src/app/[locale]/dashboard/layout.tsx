@@ -14,21 +14,23 @@ export default function DashboardLayout({
 }) {
   const { user, isLoaded } = useUser();
   const upsertUser = useMutation(api.users.upsertFromClerk);
+  const currentUser = useQuery(api.users.getCurrent);
   const [convexUserId, setConvexUserId] = useState<Id<"users"> | null>(null);
   const [synced, setSynced] = useState(false);
 
   useEffect(() => {
+    // Identity is now derived from the Clerk JWT inside the mutation —
+    // no need (and not allowed) to send clerkId from the client.
     if (isLoaded && user) {
-      upsertUser({
-        clerkId: user.id,
-        email: user.primaryEmailAddress?.emailAddress || "",
-        name: user.fullName || undefined,
-      }).then((id) => {
+      upsertUser({}).then((id) => {
         setConvexUserId(id);
         setSynced(true);
       });
     }
   }, [isLoaded, user]);
+
+  // Fall back to currentUser query result if upsert hasn't completed yet.
+  const userId = convexUserId ?? currentUser?._id ?? null;
 
   if (!isLoaded || !synced) {
     return (
@@ -39,7 +41,7 @@ export default function DashboardLayout({
   }
 
   return (
-    <DashboardContext.Provider value={{ userId: convexUserId }}>
+    <DashboardContext.Provider value={{ userId }}>
       <div className="min-h-screen bg-slate-950">
         <header className="border-b border-slate-800 bg-slate-950/80 backdrop-blur-md">
           <div className="mx-auto max-w-7xl flex items-center justify-between px-6 py-4">

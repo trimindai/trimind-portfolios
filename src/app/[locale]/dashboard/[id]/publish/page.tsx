@@ -85,19 +85,21 @@ export default function PublishPage() {
     }
   }, [portfolio]);
 
-  // Slug availability check
-  const existingPortfolio = useQuery(
-    api.portfolios.getBySlug,
+  // Slug availability check — uses isSlugTaken which inspects ALL
+  // portfolios (drafts + published). getBySlug is for public viewing only
+  // and won't see unpublished portfolios.
+  const slugTaken = useQuery(
+    api.portfolios.isSlugTaken,
     slug.length >= 2 ? { slug } : "skip"
   );
 
   const slugAvailable = useMemo(() => {
     if (slug.length < 2) return null;
-    if (existingPortfolio === undefined) return null; // loading
-    if (existingPortfolio === null) return true; // available
-    // It's available if it's the same portfolio
-    return existingPortfolio._id === id;
-  }, [existingPortfolio, id, slug]);
+    if (slugTaken === undefined) return null; // loading
+    if (slugTaken === null) return true; // available
+    // It's available if it's the same portfolio (re-publishing).
+    return slugTaken.ownerPortfolioId === id;
+  }, [slugTaken, id, slug]);
 
   const portfolioUrl = `https://portfolio-trimind.com/p/${slug}`;
 

@@ -1,5 +1,6 @@
 import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
+import { requireUser, requireOwner, verifyServerSecret } from "./auth";
 
 const basicsValidator = v.object({
   fullName: v.string(),
@@ -31,16 +32,18 @@ const customizationValidator = v.optional(
 
 export const create = mutation({
   args: {
-    userId: v.optional(v.id("users")),
     templateId: v.string(),
     locale: v.union(v.literal("en"), v.literal("ar")),
     name: v.string(),
     basics: basicsValidator,
   },
   handler: async (ctx, args) => {
+    // Auth: derive userId from session, never trust client.
+    const user = await requireUser(ctx);
     const now = Date.now();
     return await ctx.db.insert("portfolios", {
       ...args,
+      userId: user._id,
       status: "draft",
       lastEditedAt: now,
       createdAt: now,
@@ -137,6 +140,8 @@ export const update = mutation({
     contentAr: v.optional(v.string()),
   },
   handler: async (ctx, { id, ...fields }) => {
+    // Auth + ownership: caller must own this portfolio.
+    await requireOwner(ctx, id);
     await ctx.db.patch(id, {
       ...fields,
       lastEditedAt: Date.now(),
@@ -144,12 +149,20 @@ export const update = mutation({
   },
 });
 
+/**
+ * Server-only: marks a portfolio as paid after a verified MyFatoorah callback
+ * OR after a verified free-access grant. NOT callable from the browser.
+ *
+ * Caller must pass INTERNAL_API_SECRET (matches process.env.INTERNAL_API_SECRET).
+ */
 export const markPaid = mutation({
   args: {
     id: v.id("portfolios"),
     paymentId: v.string(),
+    serverSecret: v.string(),
   },
-  handler: async (ctx, { id, paymentId }) => {
+  handler: async (ctx, { id, paymentId, serverSecret }) => {
+    verifyServerSecret(serverSecret);
     const portfolio = await ctx.db.get(id);
     if (!portfolio) throw new Error("Portfolio not found");
     // Idempotent: if already paid/published, do nothing.
@@ -167,26 +180,58 @@ export const markPaid = mutation({
 export const get = query({
   args: { id: v.id("portfolios") },
   handler: async (ctx, { id }) => {
+    // Returns the portfolio only if the caller owns it.
+    // Public viewing happens through `getBySlug` for published portfolios.
+    await requireOwner(ctx, id);
     return await ctx.db.get(id);
   },
 });
 
+/**
+ * Public: returns a published portfolio by slug. Used by /p/[slug].
+ * Only returns portfolios that have been actually published — drafts and paid
+ * (but unpublished) portfolios are invisible.
+ */
 export const getBySlug = query({
   args: { slug: v.string() },
   handler: async (ctx, { slug }) => {
-    return await ctx.db
+    const portfolio = await ctx.db
       .query("portfolios")
       .withIndex("by_slug", (q) => q.eq("slug", slug))
       .first();
+    if (!portfolio || portfolio.status !== "published") return null;
+    return portfolio;
+  },
+});
+
+/**
+ * Authenticated: check if a slug is taken (by ANY portfolio, including drafts).
+ * Used by the publish form to validate slug availability before payment.
+ *
+ * Returns the owning portfolio's `_id` if taken, or null if free. We never
+ * return the full portfolio doc — only enough to let the caller detect
+ * "this is mine" vs "someone else has it".
+ */
+export const isSlugTaken = query({
+  args: { slug: v.string() },
+  handler: async (ctx, { slug }) => {
+    await requireUser(ctx);
+    const portfolio = await ctx.db
+      .query("portfolios")
+      .withIndex("by_slug", (q) => q.eq("slug", slug))
+      .first();
+    return portfolio ? { ownerPortfolioId: portfolio._id } : null;
   },
 });
 
 export const listByUser = query({
-  args: { userId: v.id("users") },
-  handler: async (ctx, { userId }) => {
+  args: {},
+  handler: async (ctx) => {
+    // Always returns ONLY the caller's portfolios — never accept a userId arg.
+    const user = await requireUser(ctx);
     return await ctx.db
       .query("portfolios")
-      .withIndex("by_user", (q) => q.eq("userId", userId))
+      .withIndex("by_user", (q) => q.eq("userId", user._id))
       .order("desc")
       .collect();
   },
@@ -199,11 +244,31 @@ export const publish = mutation({
     generatedHtml: v.string(),
   },
   handler: async (ctx, { id, slug, generatedHtml }) => {
-    const portfolio = await ctx.db.get(id);
-    if (!portfolio) throw new Error("Portfolio not found");
+    // Auth + ownership.
+    const { portfolio } = await requireOwner(ctx, id);
 
-    // Payment gate: only paid (or already-published re-publish) portfolios
-    // may be published. Prevents publish-without-pay by direct mutation call.
+    // Slug shape: lowercase letters, digits, hyphens, 3-40 chars.
+    if (!/^[a-z0-9](?:[a-z0-9-]{1,38}[a-z0-9])?$/.test(slug)) {
+      throw new Error(
+        "Invalid slug. Use 3-40 lowercase letters, digits, or hyphens."
+      );
+    }
+    // Reserved slugs that collide with app routes.
+    const reserved = new Set([
+      "admin",
+      "api",
+      "dashboard",
+      "sign-in",
+      "sign-up",
+      "p",
+      "privacy",
+      "terms",
+      "refund",
+      "templates",
+    ]);
+    if (reserved.has(slug)) throw new Error("Slug is reserved");
+
+    // Payment gate: only paid (or already-published re-publish) may publish.
     if (portfolio.status !== "paid" && portfolio.status !== "published") {
       throw new Error("Portfolio is not paid");
     }
@@ -230,6 +295,7 @@ export const publish = mutation({
 export const remove = mutation({
   args: { id: v.id("portfolios") },
   handler: async (ctx, { id }) => {
+    await requireOwner(ctx, id);
     await ctx.db.delete(id);
   },
 });

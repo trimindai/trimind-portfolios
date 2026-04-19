@@ -1,7 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth, currentUser } from "@clerk/nextjs/server";
 import { sendPayment } from "@/lib/myfatoorah";
-import { convexClient } from "@/lib/convex";
+import {
+  convexClient,
+  convexClientForUser,
+  serverSecret,
+} from "@/lib/convex";
 import { api } from "@convex/_generated/api";
 import { Id } from "@convex/_generated/dataModel";
 import { PRICE_KWD } from "@/lib/pricing";
@@ -13,20 +17,44 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { portfolioId, locale: rawLocale } = await req.json();
+    const body = await req.json().catch(() => ({}));
+    const portfolioId = body?.portfolioId as string | undefined;
+    const rawLocale = body?.locale as string | undefined;
     if (!portfolioId) {
       return NextResponse.json(
         { error: "Missing portfolioId" },
         { status: 400 }
       );
     }
-
     const locale = rawLocale === "ar" ? "ar" : "en";
 
-    // Double-pay guard: if a completed payment already exists for this
-    // portfolio but the portfolio wasn't marked paid (e.g. markPaid failed
-    // after the callback), reconcile instead of starting a second invoice.
-    const existingPayment = await convexClient.query(
+    // Ownership: re-fetch portfolio AS the authenticated user. Convex
+    // `portfolios.get` enforces ownership and throws otherwise — so a user
+    // cannot initiate payment for another user's portfolio.
+    const userClient = await convexClientForUser();
+    let portfolio;
+    try {
+      portfolio = await userClient.query(api.portfolios.get, {
+        id: portfolioId as Id<"portfolios">,
+      });
+    } catch {
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+    }
+    if (!portfolio) {
+      return NextResponse.json({ error: "Portfolio not found" }, { status: 404 });
+    }
+
+    // Already-paid short-circuit (idempotent if user double-clicks).
+    if (portfolio.status === "paid" || portfolio.status === "published") {
+      return NextResponse.json({
+        alreadyPaid: true,
+        paymentId: portfolio.paymentId,
+      });
+    }
+
+    // Double-pay guard: reconcile if a completed payment exists but the
+    // portfolio wasn't marked paid (e.g. markPaid failed after callback).
+    const existingPayment = await userClient.query(
       api.payments.getByPortfolio,
       { portfolioId: portfolioId as Id<"portfolios"> }
     );
@@ -37,6 +65,7 @@ export async function POST(req: NextRequest) {
       await convexClient.mutation(api.portfolios.markPaid, {
         id: portfolioId as Id<"portfolios">,
         paymentId: existingPayment.myfatoorahInvoiceId,
+        serverSecret: serverSecret(),
       });
       return NextResponse.json({
         alreadyPaid: true,
@@ -70,12 +99,15 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Persist pending payment with the MyFatoorah invoice id for later lookup
+    // Persist the pending payment server-side (frontend can no longer write
+    // payment rows directly).
     await convexClient.mutation(api.payments.create, {
       portfolioId: portfolioId as Id<"portfolios">,
+      userId: portfolio.userId ?? undefined,
       amount: PRICE_KWD,
       currency: "KWD",
       myfatoorahInvoiceId: String(result.Data.InvoiceId),
+      serverSecret: serverSecret(),
     });
 
     return NextResponse.json({ paymentUrl: result.Data.InvoiceURL });

@@ -57,13 +57,26 @@ export default function LandingPage() {
             >
               {t("hero.cta")}
             </Link>
-            <a
-              href="#templates"
+            <Link
+              href="/templates"
               className="rounded-lg border border-slate-700 px-8 py-3 text-lg font-semibold text-slate-300 hover:bg-slate-800 transition-colors"
             >
               {t("hero.browse")}
+            </Link>
+            <a
+              href="https://corporate-three-pink.vercel.app/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-sm text-emerald-400 hover:text-emerald-300 transition-colors underline underline-offset-4"
+            >
+              {locale === "ar" ? "شاهد عرضًا مباشرًا ←" : "See a live demo →"}
             </a>
           </div>
+          <p className="mt-6 text-xs text-slate-500">
+            {locale === "ar"
+              ? "بدون اشتراك. ضمان استرداد ٧ أيام."
+              : "No subscription. 7-day money-back guarantee."}
+          </p>
         </div>
       </section>
 
@@ -96,14 +109,24 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Template Preview */}
+      {/* Template Preview — featured corporate + grid of all */}
       <section id="templates" className="py-24 px-6">
-        <div className="mx-auto max-w-4xl text-center">
-          <h2 className="text-3xl font-bold sm:text-4xl">
-            Corporate Portfolio Template
-          </h2>
-          <p className="mt-4 text-slate-400">Designed for professionals in Finance, Accounting, HR, Business, Law, and more.</p>
-          <div className="mt-12 rounded-2xl border border-slate-800 bg-slate-900/50 overflow-hidden">
+        <div className="mx-auto max-w-6xl">
+          <div className="text-center">
+            <h2 className="text-3xl font-bold sm:text-4xl">
+              {locale === "ar"
+                ? "قوالب لكل مهنة"
+                : "Templates for every profession"}
+            </h2>
+            <p className="mt-4 text-slate-400">
+              {locale === "ar"
+                ? "سبعة قوالب مصممة بعناية — اختر ما يناسب مجالك."
+                : "Seven hand-crafted templates — pick the one that fits your field."}
+            </p>
+          </div>
+
+          {/* Featured corporate preview */}
+          <div className="mt-12 rounded-2xl border border-slate-800 bg-slate-900/50 overflow-hidden max-w-4xl mx-auto">
             <div className="aspect-[16/9] bg-slate-800 flex items-center justify-center">
               <iframe
                 src="https://corporate-three-pink.vercel.app/"
@@ -112,16 +135,83 @@ export default function LandingPage() {
               />
             </div>
             <div className="p-6 text-start">
-              <h3 className="text-xl font-semibold">Corporate Portfolio</h3>
+              <div className="flex items-center justify-between gap-4">
+                <h3 className="text-xl font-semibold">Corporate Portfolio</h3>
+                <span className="text-[10px] uppercase tracking-wider font-semibold rounded-full bg-emerald-500/20 text-emerald-300 px-2 py-1">
+                  {locale === "ar" ? "متاح الآن" : "Available now"}
+                </span>
+              </div>
               <p className="mt-2 text-sm text-slate-400">
-                Navy &amp; gold institutional design. Hero with metrics, career timeline, impact stories, credentials bar, endorsements, and print-optimized PDF with QR code. Fully customizable colors and fonts.
+                {locale === "ar"
+                  ? "تصميم مؤسسي بلون كحلي وذهبي. هيرو بمؤشرات، الجدول الزمني، قصص الأثر، الاعتمادات، التوصيات، وPDF جاهز للطباعة."
+                  : "Navy & gold institutional design. Hero with metrics, career timeline, impact stories, credentials, endorsements, and print-optimized PDF with QR code."}
               </p>
               <div className="mt-4 flex flex-wrap gap-2">
-                {["Custom Colors", "PDF Export", "Arabic + English", "Print Ready", "QR Code", "Mobile Responsive"].map((tag) => (
-                  <span key={tag} className="text-xs bg-emerald-600/10 text-emerald-400 rounded-full px-3 py-1">{tag}</span>
+                {[
+                  locale === "ar" ? "ألوان مخصصة" : "Custom Colors",
+                  "PDF Export",
+                  locale === "ar" ? "عربي + إنجليزي" : "Arabic + English",
+                  "Print Ready",
+                  "QR Code",
+                  locale === "ar" ? "متجاوب" : "Mobile Responsive",
+                ].map((tag) => (
+                  <span
+                    key={tag}
+                    className="text-xs bg-emerald-600/10 text-emerald-400 rounded-full px-3 py-1"
+                  >
+                    {tag}
+                  </span>
                 ))}
               </div>
+              <div className="mt-6 flex flex-wrap gap-3">
+                <a
+                  href="https://corporate-three-pink.vercel.app/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="rounded-lg border border-slate-700 px-4 py-2 text-sm hover:bg-slate-800 transition-colors"
+                >
+                  {locale === "ar" ? "افتح المعاينة" : "Open live preview"}
+                </a>
+                <Link
+                  href="/dashboard/new"
+                  className="rounded-lg bg-emerald-600 px-4 py-2 text-sm font-medium hover:bg-emerald-500 transition-colors"
+                >
+                  {locale === "ar" ? "استخدم هذا القالب" : "Use this template"}
+                </Link>
+              </div>
             </div>
+          </div>
+
+          {/* Other templates teaser */}
+          <div className="mt-12 text-center">
+            <p className="text-sm uppercase tracking-wider text-slate-500">
+              {locale === "ar" ? "وقريبًا" : "Coming soon"}
+            </p>
+            <div className="mt-4 flex flex-wrap items-center justify-center gap-2">
+              {[
+                "Executive",
+                "Creative",
+                "Designer",
+                "Developer",
+                "Medical",
+                "Educator",
+              ].map((name) => (
+                <span
+                  key={name}
+                  className="rounded-full border border-slate-700 bg-slate-900/40 px-4 py-1.5 text-sm text-slate-300"
+                >
+                  {name}
+                </span>
+              ))}
+            </div>
+            <Link
+              href="/templates"
+              className="mt-8 inline-block text-sm text-emerald-400 hover:text-emerald-300 transition-colors"
+            >
+              {locale === "ar"
+                ? "تصفح كل القوالب ←"
+                : "Browse all templates →"}
+            </Link>
           </div>
         </div>
       </section>
@@ -156,9 +246,180 @@ export default function LandingPage() {
         </div>
       </section>
 
+      {/* FAQ */}
+      <section className="py-24 px-6">
+        <div className="mx-auto max-w-3xl">
+          <h2 className="text-center text-3xl font-bold sm:text-4xl">
+            {locale === "ar" ? "أسئلة شائعة" : "Frequently asked questions"}
+          </h2>
+          <div className="mt-12 space-y-4">
+            {(locale === "ar"
+              ? [
+                  {
+                    q: "هل يحتاج البورتفوليو إلى تجديد سنوي؟",
+                    a: "لا. الدفعة لمرة واحدة فقط. يبقى البورتفوليو منشورًا طالما الخدمة نشطة، بدون أي رسوم متكررة.",
+                  },
+                  {
+                    q: "هل يمكنني التعديل بعد النشر؟",
+                    a: "نعم. عدّل المحتوى متى شئت من لوحة التحكم — التحديثات تظهر فورًا على الرابط العام.",
+                  },
+                  {
+                    q: "ما طرق الدفع المتاحة؟",
+                    a: "كل بطاقات K-Net، Visa، Mastercard، وApple Pay عبر MyFatoorah — البوابة المعتمدة في الكويت.",
+                  },
+                  {
+                    q: "هل يوجد ضمان استرداد؟",
+                    a: "نعم. ٧ أيام، كامل المبلغ، بدون أسئلة. اقرأ سياسة الاسترداد.",
+                  },
+                  {
+                    q: "هل بياناتي آمنة؟",
+                    a: "نعم. المصادقة عبر Clerk، التشفير في النقل والتخزين، والوصول محصور بمالك الحساب فقط.",
+                  },
+                  {
+                    q: "هل يدعم اللغة العربية؟",
+                    a: "نعم — اللغة العربية مدعومة بالكامل مع تصميم RTL أصيل في كل قالب.",
+                  },
+                ]
+              : [
+                  {
+                    q: "Do I need to renew yearly?",
+                    a: "No. The payment is one-time. Your portfolio stays live for as long as the service is active — no recurring fees.",
+                  },
+                  {
+                    q: "Can I edit after publishing?",
+                    a: "Yes. Edit your content anytime from the dashboard — changes appear instantly on your public URL.",
+                  },
+                  {
+                    q: "Which payment methods are accepted?",
+                    a: "All K-Net cards, Visa, Mastercard, and Apple Pay via MyFatoorah — Kuwait's licensed payment gateway.",
+                  },
+                  {
+                    q: "Is there a refund guarantee?",
+                    a: "Yes. 7 days, full refund, no questions asked. See our Refund Policy.",
+                  },
+                  {
+                    q: "Is my data secure?",
+                    a: "Yes. Authentication via Clerk, encryption in transit and at rest, and strict per-owner access control on every record.",
+                  },
+                  {
+                    q: "Does it support Arabic?",
+                    a: "Fully — every template ships with proper RTL Arabic layouts, not a translation overlay.",
+                  },
+                ]
+            ).map((item, i) => (
+              <details
+                key={i}
+                className="group rounded-xl border border-slate-800 bg-slate-900/50 p-5 open:bg-slate-900/80 transition-colors"
+              >
+                <summary className="cursor-pointer list-none flex items-center justify-between gap-4 font-medium">
+                  <span>{item.q}</span>
+                  <span className="text-emerald-500 transition-transform group-open:rotate-45 text-xl leading-none">
+                    +
+                  </span>
+                </summary>
+                <p className="mt-3 text-sm text-slate-400 leading-relaxed">
+                  {item.a}
+                </p>
+              </details>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* Footer */}
-      <footer className="border-t border-slate-800 py-8 text-center text-sm text-slate-500">
-        &copy; {new Date().getFullYear()} Portfolio Pro by TriMind
+      <footer className="border-t border-slate-800 mt-12">
+        <div className="mx-auto max-w-7xl px-6 py-12 grid gap-8 sm:grid-cols-2 md:grid-cols-4">
+          <div>
+            <div className="text-lg font-bold">{tc("appName")}</div>
+            <p className="mt-2 text-sm text-slate-500">
+              {locale === "ar"
+                ? "بورتفوليو احترافي بدفعة واحدة."
+                : "Professional portfolios for a one-time fee."}
+            </p>
+          </div>
+          <nav aria-label={locale === "ar" ? "المنتج" : "Product"}>
+            <h3 className="text-sm font-semibold text-slate-300">
+              {locale === "ar" ? "المنتج" : "Product"}
+            </h3>
+            <ul className="mt-3 space-y-2 text-sm text-slate-500">
+              <li>
+                <Link
+                  href="/templates"
+                  className="hover:text-white transition-colors"
+                >
+                  {locale === "ar" ? "القوالب" : "Templates"}
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/dashboard/new"
+                  className="hover:text-white transition-colors"
+                >
+                  {locale === "ar" ? "ابدأ" : "Get started"}
+                </Link>
+              </li>
+              <li>
+                <a
+                  href="https://corporate-three-pink.vercel.app/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-white transition-colors"
+                >
+                  {locale === "ar" ? "عرض مباشر" : "Live demo"}
+                </a>
+              </li>
+            </ul>
+          </nav>
+          <nav aria-label={locale === "ar" ? "قانوني" : "Legal"}>
+            <h3 className="text-sm font-semibold text-slate-300">
+              {locale === "ar" ? "قانوني" : "Legal"}
+            </h3>
+            <ul className="mt-3 space-y-2 text-sm text-slate-500">
+              <li>
+                <Link
+                  href="/privacy"
+                  className="hover:text-white transition-colors"
+                >
+                  {locale === "ar" ? "الخصوصية" : "Privacy"}
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/terms"
+                  className="hover:text-white transition-colors"
+                >
+                  {locale === "ar" ? "الشروط" : "Terms"}
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/refund"
+                  className="hover:text-white transition-colors"
+                >
+                  {locale === "ar" ? "الاسترداد" : "Refund Policy"}
+                </Link>
+              </li>
+            </ul>
+          </nav>
+          <nav aria-label={locale === "ar" ? "تواصل" : "Contact"}>
+            <h3 className="text-sm font-semibold text-slate-300">
+              {locale === "ar" ? "تواصل" : "Contact"}
+            </h3>
+            <ul className="mt-3 space-y-2 text-sm text-slate-500">
+              <li>
+                <a
+                  href="mailto:support@portfolio-trimind.com"
+                  className="hover:text-white transition-colors"
+                >
+                  support@portfolio-trimind.com
+                </a>
+              </li>
+            </ul>
+          </nav>
+        </div>
+        <div className="border-t border-slate-800/60 py-6 text-center text-xs text-slate-600">
+          &copy; {new Date().getFullYear()} Portfolio Pro by TriMind
+        </div>
       </footer>
     </div>
   );
