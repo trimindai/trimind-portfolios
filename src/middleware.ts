@@ -7,6 +7,7 @@ const intlMiddleware = createIntlMiddleware(routing);
 
 const isProtectedRoute = createRouteMatcher([
   "/:locale/dashboard(.*)",
+  "/:locale/admin(.*)",
 ]);
 
 const isApiRoute = (req: NextRequest) =>

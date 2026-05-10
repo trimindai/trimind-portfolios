@@ -49,6 +49,30 @@ export async function requireOwner(
 }
 
 /**
+ * Like requireOwner, but also allows admins to access any portfolio.
+ * Use this for endpoints where admin override is desired.
+ */
+export async function requireAdminOrOwner(
+  ctx: QueryCtx | MutationCtx,
+  portfolioId: Id<"portfolios">
+): Promise<{ user: Doc<"users">; portfolio: Doc<"portfolios">; isAdmin: boolean }> {
+  const user = await requireUser(ctx);
+  const portfolio = await ctx.db.get(portfolioId);
+  if (!portfolio) throw new Error("Portfolio not found");
+
+  const allowed = (process.env.ADMIN_EMAILS || "")
+    .split(",")
+    .map((e) => e.trim().toLowerCase())
+    .filter(Boolean);
+  const isAdmin = allowed.includes(user.email.toLowerCase());
+
+  if (!isAdmin && portfolio.userId !== user._id) {
+    throw new Error("Forbidden: not portfolio owner");
+  }
+  return { user, portfolio, isAdmin };
+}
+
+/**
  * Requires the authenticated user to be on the admin allowlist.
  * Allowlist comes from the Convex env var ADMIN_EMAILS (comma-separated).
  */

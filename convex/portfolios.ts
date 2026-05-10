@@ -1,6 +1,6 @@
 import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
-import { requireUser, requireOwner, verifyServerSecret } from "./auth";
+import { requireUser, requireOwner, requireAdminOrOwner, verifyServerSecret } from "./auth";
 
 const basicsValidator = v.object({
   fullName: v.string(),
@@ -140,8 +140,8 @@ export const update = mutation({
     contentAr: v.optional(v.string()),
   },
   handler: async (ctx, { id, ...fields }) => {
-    // Auth + ownership: caller must own this portfolio.
-    await requireOwner(ctx, id);
+    // Auth + ownership: caller must own this portfolio (admins can edit any).
+    await requireAdminOrOwner(ctx, id);
     await ctx.db.patch(id, {
       ...fields,
       lastEditedAt: Date.now(),
@@ -180,9 +180,9 @@ export const markPaid = mutation({
 export const get = query({
   args: { id: v.id("portfolios") },
   handler: async (ctx, { id }) => {
-    // Returns the portfolio only if the caller owns it.
+    // Returns the portfolio only if the caller owns it (or is admin).
     // Public viewing happens through `getBySlug` for published portfolios.
-    await requireOwner(ctx, id);
+    await requireAdminOrOwner(ctx, id);
     return await ctx.db.get(id);
   },
 });
@@ -244,8 +244,8 @@ export const publish = mutation({
     generatedHtml: v.string(),
   },
   handler: async (ctx, { id, slug, generatedHtml }) => {
-    // Auth + ownership.
-    const { portfolio } = await requireOwner(ctx, id);
+    // Auth + ownership (admins can publish any portfolio).
+    const { portfolio, isAdmin } = await requireAdminOrOwner(ctx, id);
 
     // Slug shape: lowercase letters, digits, hyphens, 3-40 chars.
     if (!/^[a-z0-9](?:[a-z0-9-]{1,38}[a-z0-9])?$/.test(slug)) {
@@ -269,7 +269,8 @@ export const publish = mutation({
     if (reserved.has(slug)) throw new Error("Slug is reserved");
 
     // Payment gate: only paid (or already-published re-publish) may publish.
-    if (portfolio.status !== "paid" && portfolio.status !== "published") {
+    // Admins can bypass the payment gate.
+    if (!isAdmin && portfolio.status !== "paid" && portfolio.status !== "published") {
       throw new Error("Portfolio is not paid");
     }
 
@@ -295,7 +296,7 @@ export const publish = mutation({
 export const remove = mutation({
   args: { id: v.id("portfolios") },
   handler: async (ctx, { id }) => {
-    await requireOwner(ctx, id);
+    await requireAdminOrOwner(ctx, id);
     await ctx.db.delete(id);
   },
 });

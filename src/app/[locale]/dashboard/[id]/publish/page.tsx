@@ -16,7 +16,10 @@ import {
   Loader2,
   CheckCircle2,
 } from "lucide-react";
+import { useUser } from "@clerk/nextjs";
 import { toPortfolioData } from "@/lib/portfolio-data";
+
+const ADMIN_EMAILS = ["trimindai@trimindai.com", "90dalal@gmail.com"];
 
 function slugify(name: string): string {
   return name
@@ -34,6 +37,11 @@ export default function PublishPage() {
   const locale = (params.locale as string) || "en";
   const t = useTranslations("publish");
   const tc = useTranslations("common");
+
+  const { user: clerkUser } = useUser();
+  const isAdmin = ADMIN_EMAILS.includes(
+    clerkUser?.primaryEmailAddress?.emailAddress || ""
+  );
 
   const portfolio = useQuery(api.portfolios.get, {
     id: id as Id<"portfolios">,
@@ -110,9 +118,8 @@ export default function PublishPage() {
     setError(null);
 
     try {
-      // Draft → pay first. The MyFatoorah hosted invoice will redirect
-      // back to /api/myfatoorah/callback, which marks the portfolio paid.
-      if (portfolio.status === "draft") {
+      // Draft → pay first (admins skip payment entirely).
+      if (portfolio.status === "draft" && !isAdmin) {
         const payRes = await fetch("/api/myfatoorah/initiate", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -337,11 +344,11 @@ export default function PublishPage() {
             {publishing ? (
               <>
                 <Loader2 className="h-4 w-4 animate-spin" />
-                {portfolio.status === "draft"
+                {portfolio.status === "draft" && !isAdmin
                   ? "Redirecting to payment..."
                   : "Publishing..."}
               </>
-            ) : portfolio.status === "draft" ? (
+            ) : portfolio.status === "draft" && !isAdmin ? (
               t("payAndPublish")
             ) : (
               tc("publish")

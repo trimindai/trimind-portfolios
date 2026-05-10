@@ -1,4 +1,5 @@
-import { query } from "./_generated/server";
+import { query, mutation } from "./_generated/server";
+import { v } from "convex/values";
 import { requireAdmin } from "./auth";
 
 export const getAllUsers = query({
@@ -70,5 +71,51 @@ export const getStats = query({
       revenueByDay,
       signupsByDay,
     };
+  },
+});
+
+export const markPortfolioPaid = mutation({
+  args: { id: v.id("portfolios") },
+  handler: async (ctx, { id }) => {
+    await requireAdmin(ctx);
+    const portfolio = await ctx.db.get(id);
+    if (!portfolio) throw new Error("Portfolio not found");
+    if (portfolio.status === "paid" || portfolio.status === "published") return;
+    await ctx.db.patch(id, {
+      status: "paid",
+      paymentId: "admin-grant",
+      lastEditedAt: Date.now(),
+    });
+  },
+});
+
+export const deletePortfolio = mutation({
+  args: { id: v.id("portfolios") },
+  handler: async (ctx, { id }) => {
+    await requireAdmin(ctx);
+    const portfolio = await ctx.db.get(id);
+    if (!portfolio) throw new Error("Portfolio not found");
+    // Also delete related payments
+    const payments = await ctx.db
+      .query("payments")
+      .withIndex("by_portfolio", (q) => q.eq("portfolioId", id))
+      .collect();
+    for (const p of payments) {
+      await ctx.db.delete(p._id);
+    }
+    await ctx.db.delete(id);
+  },
+});
+
+export const updatePortfolioStatus = mutation({
+  args: {
+    id: v.id("portfolios"),
+    status: v.union(v.literal("draft"), v.literal("paid"), v.literal("published")),
+  },
+  handler: async (ctx, { id, status }) => {
+    await requireAdmin(ctx);
+    const portfolio = await ctx.db.get(id);
+    if (!portfolio) throw new Error("Portfolio not found");
+    await ctx.db.patch(id, { status, lastEditedAt: Date.now() });
   },
 });

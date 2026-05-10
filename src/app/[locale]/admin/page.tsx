@@ -1,8 +1,9 @@
 "use client";
 
 import { useUser } from "@clerk/nextjs";
-import { useQuery } from "convex/react";
+import { useQuery, useMutation } from "convex/react";
 import { api } from "@convex/_generated/api";
+import { Id } from "@convex/_generated/dataModel";
 import { useState } from "react";
 import { Link } from "@/i18n/navigation";
 
@@ -196,6 +197,18 @@ function UsersTab({ users }: { users: any[] }) {
 
 function PortfoliosTab({ portfolios, users }: { portfolios: any[]; users: any[] }) {
   const userMap = new Map(users.map((u) => [u._id, u]));
+  const markPaid = useMutation(api.admin.markPortfolioPaid);
+  const deletePortfolio = useMutation(api.admin.deletePortfolio);
+  const [confirmDelete, setConfirmDelete] = useState<string | null>(null);
+
+  const handleMarkPaid = async (id: Id<"portfolios">) => {
+    await markPaid({ id });
+  };
+
+  const handleDelete = async (id: Id<"portfolios">) => {
+    await deletePortfolio({ id });
+    setConfirmDelete(null);
+  };
 
   return (
     <div className="bg-slate-900/50 border border-slate-800 rounded-xl overflow-hidden">
@@ -227,9 +240,62 @@ function PortfoliosTab({ portfolios, users }: { portfolios: any[]; users: any[] 
                 <td className="px-4 py-3 text-slate-400 font-mono text-xs">{p.slug || "—"}</td>
                 <td className="px-4 py-3 text-slate-400">{new Date(p.lastEditedAt).toLocaleDateString()}</td>
                 <td className="px-4 py-3">
-                  {p.slug && (
-                    <a href={`/p/${p.slug}`} target="_blank" rel="noopener" className="text-emerald-400 hover:text-emerald-300 text-xs">View</a>
-                  )}
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <Link
+                      href={`/dashboard/${p._id}/edit`}
+                      className="text-blue-400 hover:text-blue-300 text-xs"
+                    >
+                      Edit
+                    </Link>
+                    <Link
+                      href={`/dashboard/${p._id}/preview`}
+                      className="text-slate-400 hover:text-slate-300 text-xs"
+                    >
+                      Preview
+                    </Link>
+                    {p.slug && (
+                      <a href={`/p/${p.slug}`} target="_blank" rel="noopener" className="text-emerald-400 hover:text-emerald-300 text-xs">View</a>
+                    )}
+                    {p.status === "draft" && (
+                      <button
+                        onClick={() => handleMarkPaid(p._id)}
+                        className="text-amber-400 hover:text-amber-300 text-xs"
+                      >
+                        Mark Paid
+                      </button>
+                    )}
+                    {(p.status === "paid" && !p.slug) && (
+                      <Link
+                        href={`/dashboard/${p._id}/publish`}
+                        className="text-emerald-400 hover:text-emerald-300 text-xs"
+                      >
+                        Publish
+                      </Link>
+                    )}
+                    {confirmDelete === p._id ? (
+                      <span className="flex items-center gap-1">
+                        <button
+                          onClick={() => handleDelete(p._id)}
+                          className="text-red-500 hover:text-red-400 text-xs font-medium"
+                        >
+                          Confirm
+                        </button>
+                        <button
+                          onClick={() => setConfirmDelete(null)}
+                          className="text-slate-500 hover:text-slate-400 text-xs"
+                        >
+                          Cancel
+                        </button>
+                      </span>
+                    ) : (
+                      <button
+                        onClick={() => setConfirmDelete(p._id)}
+                        className="text-red-400 hover:text-red-300 text-xs"
+                      >
+                        Delete
+                      </button>
+                    )}
+                  </div>
                 </td>
               </tr>
             );
