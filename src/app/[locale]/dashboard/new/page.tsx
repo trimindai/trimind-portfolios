@@ -4,9 +4,11 @@ import { useMutation } from "convex/react";
 import { api } from "@convex/_generated/api";
 import { useUser } from "@clerk/nextjs";
 import { useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
 
 export default function NewPortfolioPage() {
   const { user, isLoaded } = useUser();
+  const searchParams = useSearchParams();
   // create() now derives userId from the session — no client-supplied userId.
   const createPortfolio = useMutation(api.portfolios.create);
   const [error, setError] = useState("");
@@ -20,8 +22,9 @@ export default function NewPortfolioPage() {
         const userEmail = user?.primaryEmailAddress?.emailAddress || "";
 
         // Create draft portfolio (Convex enforces auth; no userId arg).
+        const templateId = searchParams.get("template") || "corporate";
         const portfolioId = await createPortfolio({
-          templateId: "corporate",
+          templateId,
           locale: "en",
           name: "My Portfolio",
           basics: {

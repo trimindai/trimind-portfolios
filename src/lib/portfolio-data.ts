@@ -24,6 +24,7 @@ export function toPortfolioData(
     professionalAffiliations: portfolio.professionalAffiliations,
     continuousDevelopment: portfolio.continuousDevelopment,
     customization: portfolio.customization,
+    templateId: portfolio.templateId,
     locale,
     isRTL: locale === "ar",
     portfolioUrl: `https://portfolio-trimind.com/p/${portfolio.slug || "preview"}`,

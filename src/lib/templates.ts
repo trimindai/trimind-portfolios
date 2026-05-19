@@ -6,7 +6,7 @@ import creative from "@/templates/creative/manifest.json";
 import designer from "@/templates/designer/manifest.json";
 import developer from "@/templates/developer/manifest.json";
 import educator from "@/templates/educator/manifest.json";
-import executive from "@/templates/executive/manifest.json";
+import engineer from "@/templates/engineer/manifest.json";
 import medical from "@/templates/medical/manifest.json";
 
 export type TemplateManifest = {
@@ -22,6 +22,7 @@ export type TemplateManifest = {
 // Templates without a demo URL render a styled placeholder card.
 const DEMO_URLS: Record<string, string | undefined> = {
   corporate: "https://corporate-three-pink.vercel.app/",
+  engineer: "/templates/engineer/index.html",
 };
 
 export type Template = TemplateManifest & {
@@ -32,7 +33,7 @@ export type Template = TemplateManifest & {
 export const TEMPLATES: Template[] = (
   [
     corporate,
-    executive,
+    engineer,
     creative,
     designer,
     developer,
@@ -42,9 +43,9 @@ export const TEMPLATES: Template[] = (
 ).map((m) => ({
   ...m,
   demoUrl: DEMO_URLS[m.id],
-  // Flag "available" templates — corporate is live, others are coming soon.
+  // Flag "available" templates — corporate and engineer are live, others are coming soon.
   // Flip these on as their builders ship.
-  available: m.id === "corporate",
+  available: m.id === "corporate" || m.id === "engineer",
 }));
 
 export function getTemplate(id: string): Template | undefined {

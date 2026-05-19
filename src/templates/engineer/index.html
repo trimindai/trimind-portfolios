@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bader Mohammad — Industrial Engineer</title>
+<meta name="description" content="Industrial Engineer based in Kuwait, Alshuhada. Industrial Engineering graduate with a strong foundation in simulation, optimization, and project management tools.">
+<meta name="theme-color" content="#1e3a5f">
+<meta property="og:title" content="Bader Mohammad | Industrial Engineer">
+<meta property="og:description" content="Industrial Engineering graduate with a strong foundation in simulation, optimization, and project management tools. Passionate about smart manufacturing and process improvement.">
+<meta property="og:type" content="website">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --steel: #1e3a5f; --steel-light: rgba(30, 58, 95, 0.08); --steel-medium: rgba(30, 58, 95, 0.15);
+  --orange: #f97316; --orange-light: rgba(249, 115, 22, 0.08);
+  --sky: #0ea5e9; --sky-light: rgba(14, 165, 233, 0.08);
+  --bg: #f4f4f5; --bg-deep: #e4e4e7; --bg-card: #ffffff;
+  --text: #18181b; --text-secondary: #52525b; --text-tertiary: #a1a1aa;
+  --border: rgba(30, 58, 95, 0.08); --border-strong: rgba(30, 58, 95, 0.15);
+  --font-head: 'Space Grotesk', system-ui, sans-serif;
+  --font-body: 'Inter', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+  --r: 12px; --r-sm: 8px;
+  --shadow-sm: 0 1px 2px rgba(24,24,27,0.04);
+  --shadow-md: 0 4px 12px rgba(24,24,27,0.06);
+  --shadow-lg: 0 8px 30px rgba(24,24,27,0.08);
+  --ease: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+html { scroll-behavior: smooth; font-size: 16px; }
+body { font-family: var(--font-body); background: var(--bg); color: var(--text); line-height: 1.65; -webkit-font-smoothing: antialiased; }
+a { text-decoration: none; color: inherit; }
+img { max-width: 100%; display: block; }
+.scroll-bar { position: fixed; top: 0; left: 0; height: 3px; z-index: 10001; background: linear-gradient(90deg, var(--orange), var(--sky)); width: 0%; }
+.nav { position: fixed; top: 0; left: 0; right: 0; z-index: 1000; padding: 16px 40px; display: flex; justify-content: space-between; align-items: center; background: rgba(244,244,245,0.9); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-bottom: 1px solid transparent; transition: all 250ms var(--ease); }
+.nav.scrolled { padding: 12px 40px; border-bottom-color: var(--border-strong); box-shadow: var(--shadow-sm); }
+.nav-brand { font-family: var(--font-head); font-weight: 700; font-size: 1.1rem; color: var(--steel); letter-spacing: -0.02em; }
+.nav-brand span { color: var(--orange); }
+.nav-links { display: flex; gap: 28px; align-items: center; }
+.nav-links a { color: var(--text-secondary); font-size: 0.8rem; font-weight: 500; letter-spacing: 0.04em; text-transform: uppercase; transition: color 200ms; cursor: pointer; }
+.nav-links a:hover { color: var(--steel); }
+.nav-cta { background: var(--steel); color: #fff; padding: 8px 18px; border-radius: var(--r-sm); font-size: 0.78rem; font-weight: 600; letter-spacing: 0.03em; transition: all 200ms var(--ease); }
+.nav-cta:hover { background: var(--orange); transform: translateY(-1px); }
+.hero { min-height: 100vh; display: flex; align-items: center; padding: 120px 40px 80px; position: relative; overflow: hidden; }
+.hero-grid { position: absolute; inset: 0; background-image: linear-gradient(var(--border) 1px, transparent 1px), linear-gradient(90deg, var(--border) 1px, transparent 1px); background-size: 60px 60px; opacity: 0.5; pointer-events: none; }
+.hero-accent { position: absolute; right: -10%; top: -10%; width: 600px; height: 600px; background: radial-gradient(circle, var(--orange-light) 0%, transparent 70%); pointer-events: none; }
+.hero-inner { max-width: 1200px; margin: 0 auto; width: 100%; display: grid; grid-template-columns: 1fr 320px; gap: 60px; align-items: center; }
+.hero-label { display: inline-flex; align-items: center; gap: 8px; font-family: var(--font-mono); font-size: 0.75rem; color: var(--orange); background: var(--orange-light); padding: 6px 14px; border-radius: 100px; margin-bottom: 20px; font-weight: 500; }
+.hero-label::before { content: ''; width: 8px; height: 8px; background: var(--orange); border-radius: 50%; animation: pulse 2s infinite; }
+@keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+.hero h1 { font-family: var(--font-head); font-size: 3.6rem; font-weight: 700; line-height: 1.1; letter-spacing: -0.03em; color: var(--text); }
+.hero h1 span { color: var(--steel); }
+.hero-subtitle { font-size: 1.25rem; color: var(--text-secondary); margin-top: 16px; font-weight: 400; line-height: 1.5; }
+.hero-contact { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 28px; }
+.hero-contact a { display: inline-flex; align-items: center; gap: 8px; padding: 10px 18px; border-radius: var(--r-sm); font-size: 0.85rem; font-weight: 500; border: 1px solid var(--border-strong); color: var(--text-secondary); background: var(--bg-card); transition: all 200ms var(--ease); }
+.hero-contact a:hover { border-color: var(--steel); color: var(--steel); box-shadow: var(--shadow-md); transform: translateY(-1px); }
+.hero-contact a.primary { background: var(--steel); color: #fff; border-color: var(--steel); }
+.hero-contact a.primary:hover { background: var(--orange); border-color: var(--orange); }
+.hero-photo { position: relative; }
+.hero-photo-placeholder { width: 280px; height: 280px; border-radius: var(--r); object-fit: cover; box-shadow: var(--shadow-lg); border: 2px solid var(--bg-card); background: linear-gradient(135deg, var(--steel-light), var(--orange-light)); display: flex; align-items: center; justify-content: center; font-family: var(--font-head); font-size: 4rem; font-weight: 700; color: var(--steel); }
+.hero-photo::before { content: ''; position: absolute; inset: -12px; border-radius: calc(var(--r) + 12px); border: 2px dashed var(--border-strong); z-index: -1; }
+.section { padding: 80px 40px; max-width: 1100px; margin: 0 auto; }
+.section-header { display: flex; align-items: baseline; gap: 16px; margin-bottom: 40px; }
+.section-header h2 { font-family: var(--font-head); font-size: 1.8rem; font-weight: 700; color: var(--text); letter-spacing: -0.02em; }
+.section-line { flex: 1; height: 1px; background: var(--border-strong); position: relative; top: -2px; }
+.section-line::after { content: ''; position: absolute; left: 0; top: -1px; width: 40px; height: 3px; background: var(--orange); border-radius: 2px; }
+.section-number { font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-tertiary); }
+.about-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 40px; align-items: start; }
+.about-text { font-size: 1.05rem; color: var(--text-secondary); line-height: 1.75; }
+.about-text p + p { margin-top: 16px; }
+.about-meta { display: flex; flex-direction: column; gap: 16px; }
+.about-meta-item { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--r); padding: 18px 20px; box-shadow: var(--shadow-sm); }
+.about-meta-item .label { font-family: var(--font-mono); font-size: 0.7rem; text-transform: uppercase; color: var(--text-tertiary); letter-spacing: 0.08em; margin-bottom: 6px; }
+.about-meta-item .value { font-family: var(--font-head); font-size: 1.1rem; font-weight: 600; color: var(--steel); }
+.project-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--r); padding: 28px; margin-bottom: 20px; box-shadow: var(--shadow-sm); transition: all 250ms var(--ease); position: relative; overflow: hidden; }
+.project-card:hover { box-shadow: var(--shadow-lg); transform: translateY(-2px); border-color: var(--steel-medium); }
+.project-card::before { content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%; background: linear-gradient(180deg, var(--orange), var(--sky)); }
+.project-header { display: flex; justify-content: space-between; align-items: start; gap: 16px; margin-bottom: 12px; }
+.project-header h3 { font-family: var(--font-head); font-size: 1.25rem; font-weight: 600; color: var(--text); }
+.project-link { font-size: 0.8rem; color: var(--sky); font-weight: 500; display: inline-flex; align-items: center; gap: 4px; }
+.project-link:hover { text-decoration: underline; }
+.project-desc { color: var(--text-secondary); font-size: 0.95rem; line-height: 1.65; }
+.project-tech { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+.project-tech span { font-family: var(--font-mono); font-size: 0.72rem; background: var(--steel-light); color: var(--steel); padding: 5px 10px; border-radius: 100px; font-weight: 500; }
+.project-metrics { display: flex; gap: 24px; margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border); }
+.project-metrics .metric strong { font-family: var(--font-head); font-size: 1.1rem; color: var(--steel); display: block; }
+.project-metrics .metric span { font-size: 0.78rem; color: var(--text-tertiary); }
+.timeline { position: relative; padding-left: 28px; }
+.timeline::before { content: ''; position: absolute; left: 6px; top: 8px; bottom: 8px; width: 2px; background: var(--border-strong); }
+.timeline-item { position: relative; padding-bottom: 32px; }
+.timeline-item:last-child { padding-bottom: 0; }
+.timeline-item::before { content: ''; position: absolute; left: -26px; top: 6px; width: 12px; height: 12px; border-radius: 50%; background: var(--bg-card); border: 2px solid var(--orange); box-shadow: 0 0 0 4px var(--orange-light); }
+.timeline-header { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+.timeline-header h3 { font-family: var(--font-head); font-size: 1.1rem; font-weight: 600; color: var(--text); }
+.timeline-header .company { font-size: 0.9rem; color: var(--steel); font-weight: 500; }
+.timeline-date { font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-tertiary); background: var(--steel-light); padding: 3px 10px; border-radius: 100px; }
+.timeline-desc { margin-top: 8px; color: var(--text-secondary); font-size: 0.92rem; line-height: 1.6; }
+.timeline-highlights { margin-top: 10px; list-style: none; }
+.timeline-highlights li { font-size: 0.88rem; color: var(--text-secondary); padding: 4px 0; padding-left: 18px; position: relative; }
+.timeline-highlights li::before { content: '→'; position: absolute; left: 0; color: var(--orange); font-weight: 600; }
+.skills-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
+.skill-category { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--r); padding: 22px; box-shadow: var(--shadow-sm); }
+.skill-category h4 { font-family: var(--font-head); font-size: 0.95rem; font-weight: 600; color: var(--steel); margin-bottom: 14px; text-transform: uppercase; letter-spacing: 0.04em; }
+.skill-list { display: flex; flex-wrap: wrap; gap: 8px; }
+.skill-tag { font-size: 0.82rem; background: var(--bg); color: var(--text-secondary); padding: 6px 12px; border-radius: var(--r-sm); border: 1px solid var(--border); font-weight: 500; transition: all 150ms; }
+.skill-tag:hover { background: var(--steel-light); color: var(--steel); border-color: var(--steel-medium); }
+.edu-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--r); padding: 24px; display: flex; gap: 20px; align-items: start; box-shadow: var(--shadow-sm); margin-bottom: 16px; }
+.edu-icon { width: 48px; height: 48px; border-radius: var(--r-sm); background: linear-gradient(135deg, var(--steel-light), var(--sky-light)); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.edu-icon svg { width: 22px; height: 22px; color: var(--steel); }
+.edu-content h3 { font-family: var(--font-head); font-size: 1.1rem; font-weight: 600; color: var(--text); }
+.edu-content .institution { font-size: 0.92rem; color: var(--steel); font-weight: 500; margin-top: 2px; }
+.edu-content .year { font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-tertiary); margin-top: 6px; }
+.edu-content .desc { font-size: 0.88rem; color: var(--text-secondary); margin-top: 8px; line-height: 1.55; }
+.cert-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 16px; }
+.cert-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--r); padding: 18px; box-shadow: var(--shadow-sm); transition: all 200ms; }
+.cert-card:hover { box-shadow: var(--shadow-md); border-color: var(--steel-medium); }
+.cert-card h4 { font-family: var(--font-head); font-size: 0.95rem; font-weight: 600; color: var(--text); }
+.cert-card p { font-size: 0.82rem; color: var(--text-secondary); margin-top: 4px; }
+.cert-card .year { font-family: var(--font-mono); font-size: 0.7rem; color: var(--orange); margin-top: 8px; }
+.contact-section { background: linear-gradient(135deg, var(--steel) 0%, #0f172a 100%); color: #fff; padding: 80px 40px; }
+.contact-inner { max-width: 1100px; margin: 0 auto; }
+.contact-section h2 { font-family: var(--font-head); font-size: 2rem; font-weight: 700; margin-bottom: 8px; }
+.contact-section .subtitle { color: rgba(255,255,255,0.65); font-size: 1.05rem; margin-bottom: 32px; }
+.contact-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 16px; }
+.contact-item { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.08); border-radius: var(--r); padding: 20px; transition: all 200ms; }
+.contact-item:hover { background: rgba(255,255,255,0.1); transform: translateY(-2px); }
+.contact-item .label { font-family: var(--font-mono); font-size: 0.68rem; text-transform: uppercase; color: rgba(255,255,255,0.5); letter-spacing: 0.08em; margin-bottom: 6px; }
+.contact-item .value { font-size: 0.95rem; font-weight: 500; color: #fff; word-break: break-word; }
+.contact-item a.value:hover { color: var(--orange); }
+.footer { text-align: center; padding: 28px 40px; font-size: 0.78rem; color: var(--text-tertiary); border-top: 1px solid var(--border); }
+@media print {
+  .nav, .scroll-bar, .hero-contact { display: none !important; }
+  .hero { min-height: auto; padding: 40px 0; }
+  .section { padding: 30px 0; }
+  .contact-section { background: #1e3a5f !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .project-card, .skill-category, .edu-card, .cert-card, .timeline-item::before { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+}
+@media (max-width: 900px) {
+  .hero-inner { grid-template-columns: 1fr; text-align: center; }
+  .hero-photo { order: -1; justify-self: center; }
+  .hero h1 { font-size: 2.6rem; }
+  .about-grid { grid-template-columns: 1fr; }
+  .nav-links { display: none; }
+}
+@media (max-width: 600px) {
+  .hero { padding: 100px 20px 60px; }
+  .section { padding: 60px 20px; }
+  .hero h1 { font-size: 2.2rem; }
+  .contact-section { padding: 60px 20px; }
+  .nav { padding: 14px 20px; }
+}
+</style>
+</head>
+<body>
+
+<div class="scroll-bar" id="scrollBar"></div>
+
+<nav class="nav" id="nav">
+  <div class="nav-brand">Bader Mohammad<span>.</span></div>
+  <div class="nav-links">
+    <a href="#about">Profile</a>
+    <a href="#projects">Projects</a>
+    <a href="#skills">Skills</a>
+    <a href="#education">Education</a>
+    <a href="#contact" class="nav-cta">Contact</a>
+  </div>
+</nav>
+
+<section class="hero" id="hero">
+  <div class="hero-grid"></div>
+  <div class="hero-accent"></div>
+  <div class="hero-inner">
+    <div>
+      <div class="hero-label">Industrial Engineer</div>
+      <h1>Bader Mohammad<span>.</span></h1>
+      <p class="hero-subtitle">Industrial Engineering graduate with a strong foundation in simulation, optimization, and project management tools. Passionate about smart manufacturing and process improvement.</p>
+      <div class="hero-contact">
+        <a href="mailto:Bkhaled.bbe@gmail.com" class="primary">Email Me</a>
+        <a href="tel:+96594011662">+965 94011662</a>
+      </div>
+    </div>
+    <div class="hero-photo">
+      <div class="hero-photo-placeholder">B</div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="about">
+  <div class="section-header">
+    <span class="section-number">01</span>
+    <h2>Technical Profile</h2>
+    <div class="section-line"></div>
+  </div>
+  <div class="about-grid">
+    <div class="about-text">
+      <p><strong style="color:var(--steel);">Industrial Engineering graduate with a strong foundation in simulation, optimization, and project management tools. Passionate about smart manufacturing and process improvement.</strong></p>
+      <p>I am skilled at analyzing various components of manufacturing processes — schedules, flows, and specifications — to discover new ways to improve efficiency. I design and implement control systems ensuring that all products meet quality standards, and I advise clients regarding product specifications. I bring strong problem-solving, critical thinking, and project planning capabilities to every engagement.</p>
+    </div>
+    <div class="about-meta">
+      <div class="about-meta-item">
+        <div class="label">Location</div>
+        <div class="value">Kuwait, Alshuhada</div>
+      </div>
+      <div class="about-meta-item">
+        <div class="label">Phone</div>
+        <div class="value">+965 94011662</div>
+      </div>
+      <div class="about-meta-item">
+        <div class="label">GPA</div>
+        <div class="value">3.83 / 4.0</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="projects" style="background:var(--bg-deep); border-radius:var(--r) var(--r) 0 0; max-width:100%; padding-left:40px; padding-right:40px;">
+  <div style="max-width:1100px; margin:0 auto;">
+    <div class="section-header">
+      <span class="section-number">02</span>
+      <h2>Projects</h2>
+      <div class="section-line"></div>
+    </div>
+    <article class="project-card">
+      <div class="project-header">
+        <div>
+          <h3>Smart Manufacturing of OSU Creamery</h3>
+        </div>
+      </div>
+      <p class="project-desc">A comprehensive smart manufacturing initiative for the Oregon State University Creamery. The project involved analyzing production workflows, implementing simulation models using Arena Rockwell Software, and optimizing scheduling and resource allocation to improve overall equipment effectiveness (OEE) and reduce waste.</p>
+      <div class="project-tech">
+        <span>Arena Rockwell</span>
+        <span>Simulation</span>
+        <span>Process Optimization</span>
+        <span>Quality Control</span>
+        <span>MATLAB</span>
+      </div>
+      <div class="project-metrics">
+        <div class="metric"><strong>OSU</strong><span>Institution</span></div>
+        <div class="metric"><strong>2024</strong><span>Graduation Year</span></div>
+      </div>
+    </article>
+  </div>
+</section>
+
+<section class="section" id="skills" style="background:var(--bg-deep); border-radius:0; max-width:100%; padding-left:40px; padding-right:40px;">
+  <div style="max-width:1100px; margin:0 auto;">
+    <div class="section-header">
+      <span class="section-number">03</span>
+      <h2>Technical Skills</h2>
+      <div class="section-line"></div>
+    </div>
+    <div class="skills-grid">
+      <div class="skill-category">
+        <h4>Software & Tools</h4>
+        <div class="skill-list">
+          <span class="skill-tag">Microsoft Office</span>
+          <span class="skill-tag">Arena Rockwell</span>
+          <span class="skill-tag">LINGO</span>
+          <span class="skill-tag">Minitab</span>
+          <span class="skill-tag">MATLAB</span>
+          <span class="skill-tag">Jack Software</span>
+          <span class="skill-tag">Microsoft Project</span>
+          <span class="skill-tag">Simulation</span>
+        </div>
+      </div>
+      <div class="skill-category">
+        <h4>Hard Skills</h4>
+        <div class="skill-list">
+          <span class="skill-tag">Process Analysis</span>
+          <span class="skill-tag">Quality Control</span>
+          <span class="skill-tag">Cost Analysis</span>
+          <span class="skill-tag">Project Planning</span>
+          <span class="skill-tag">Data Analysis</span>
+          <span class="skill-tag">Problem Solving</span>
+          <span class="skill-tag">Critical Thinking</span>
+          <span class="skill-tag">Quality Management</span>
+        </div>
+      </div>
+      <div class="skill-category">
+        <h4>Personal Skills</h4>
+        <div class="skill-list">
+          <span class="skill-tag">Presentation</span>
+          <span class="skill-tag">Communication</span>
+          <span class="skill-tag">Time Management</span>
+          <span class="skill-tag">Teamwork</span>
+          <span class="skill-tag">Decision Making</span>
+          <span class="skill-tag">Stress Management</span>
+          <span class="skill-tag">Interpersonal</span>
+          <span class="skill-tag">Eager to Learn</span>
+        </div>
+      </div>
+      <div class="skill-category">
+        <h4>Languages</h4>
+        <div class="skill-list">
+          <span class="skill-tag">Arabic — Native</span>
+          <span class="skill-tag">English — Fluent</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="education" style="background:var(--bg-deep); border-radius:0; max-width:100%; padding-left:40px; padding-right:40px;">
+  <div style="max-width:1100px; margin:0 auto;">
+    <div class="section-header">
+      <span class="section-number">04</span>
+      <h2>Education</h2>
+      <div class="section-line"></div>
+    </div>
+    <div class="edu-card">
+      <div class="edu-icon">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M4.26 10.147a60.436 60.436 0 00-.491 6.347A48.627 48.627 0 0112 20.904a48.627 48.627 0 018.232-4.41 60.46 60.46 0 00-.491-6.347m-15.482 0a50.57 50.57 0 00-2.658-.813A59.905 59.905 0 0112 3.493a59.902 59.902 0 0110.499 5.84 50.552 50.552 0 00-2.658.813m-15.482 0A50.55 50.55 0 0112 13.489a50.55 50.55 0 0111.364-2.342M12 3.493v18"/></svg>
+      </div>
+      <div class="edu-content">
+        <h3>Master of Business Management</h3>
+        <div class="institution">Cardiff University</div>
+        <div class="year">2025</div>
+      </div>
+    </div>
+    <div class="edu-card">
+      <div class="edu-icon">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M4.26 10.147a60.436 60.436 0 00-.491 6.347A48.627 48.627 0 0112 20.904a48.627 48.627 0 018.232-4.41 60.46 60.46 0 00-.491-6.347m-15.482 0a50.57 50.57 0 00-2.658-.813A59.905 59.905 0 0112 3.493a59.902 59.902 0 0110.499 5.84 50.552 50.552 0 00-2.658.813m-15.482 0A50.55 50.55 0 0112 13.489a50.55 50.55 0 0111.364-2.342M12 3.493v18"/></svg>
+      </div>
+      <div class="edu-content">
+        <h3>Bachelor of Industrial Engineering</h3>
+        <div class="institution">Oregon State University</div>
+        <div class="year">2024 — GPA: 3.83</div>
+        <p class="desc">Graduated with high academic achievement. Coursework focused on simulation, optimization, operations research, and quality management systems.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="contact-section" id="contact">
+  <div class="contact-inner">
+    <h2>Let's build something together.</h2>
+    <p class="subtitle">Open to opportunities in industrial engineering, process improvement, and smart manufacturing.</p>
+    <div class="contact-grid">
+      <div class="contact-item">
+        <div class="label">Email</div>
+        <a href="mailto:Bkhaled.bbe@gmail.com" class="value">Bkhaled.bbe@gmail.com</a>
+      </div>
+      <div class="contact-item">
+        <div class="label">Phone</div>
+        <a href="tel:+96594011662" class="value">+965 94011662</a>
+      </div>
+      <div class="contact-item">
+        <div class="label">Location</div>
+        <div class="value">Kuwait, Alshuhada</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  &copy; Bader Mohammad — Industrial Engineer. Built with Portfolio Pro.
+</footer>
+
+<script>
+(function() {
+  var nav = document.getElementById('nav');
+  var bar = document.getElementById('scrollBar');
+  function onScroll() {
+    var y = window.scrollY || window.pageYOffset;
+    var h = document.documentElement.scrollHeight - window.innerHeight;
+    bar.style.width = (h > 0 ? (y / h * 100) : 0) + '%';
+    nav.classList.toggle('scrolled', y > 40);
+  }
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+})();
+</script>
+
+</body>
+</html>

@@ -6,7 +6,7 @@ type PageProps = { params: Promise<{ locale: string }> };
 export const metadata = {
   title: "Portfolio Templates — Portfolio Pro",
   description:
-    "Seven profession-specific portfolio templates: Corporate, Executive, Creative, Designer, Developer, Medical, Educator.",
+    "Seven profession-specific portfolio templates: Corporate, Engineer, Creative, Designer, Developer, Medical, Educator.",
 };
 
 export default async function TemplatesPage({ params }: PageProps) {
@@ -136,7 +136,7 @@ export default async function TemplatesPage({ params }: PageProps) {
                   )}
                   {tpl.available ? (
                     <Link
-                      href="/dashboard/new"
+                      href={`/dashboard/new?template=${tpl.id}`}
                       className="flex-1 text-center rounded-lg bg-emerald-600 px-3 py-2 text-sm font-medium hover:bg-emerald-500 transition-colors"
                     >
                       {t.use}

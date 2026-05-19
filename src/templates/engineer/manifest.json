@@ -1,0 +1,79 @@
+{
+  "id": "engineer",
+  "name": "Engineer",
+  "description": "Technical, project-forward portfolio for engineering professionals — electrical, mechanical, civil, industrial, and chemical engineers. Built around project showcases, technical competencies, and precision presentation.",
+  "category": "technology",
+  "targetProfessions": [
+    "Electrical Engineer",
+    "Mechanical Engineer",
+    "Civil Engineer",
+    "Industrial Engineer",
+    "Chemical Engineer",
+    "Petroleum Engineer",
+    "Structural Engineer",
+    "Project Engineer",
+    "Field Engineer",
+    "Design Engineer",
+    "Process Engineer",
+    "Quality Engineer",
+    "Maintenance Engineer",
+    "Instrumentation Engineer",
+    "Power Systems Engineer"
+  ],
+  "colors": {
+    "bg": "#f4f4f5",
+    "bgDeep": "#e4e4e7",
+    "bgCard": "#ffffff",
+    "primary": "#1e3a5f",
+    "primaryGlow": "rgba(30, 58, 95, 0.25)",
+    "primaryDim": "rgba(30, 58, 95, 0.08)",
+    "secondary": "#f97316",
+    "secondaryGlow": "rgba(249, 115, 22, 0.25)",
+    "secondaryDim": "rgba(249, 115, 22, 0.08)",
+    "accent": "#0ea5e9",
+    "accentDim": "rgba(14, 165, 233, 0.08)",
+    "text": "#18181b",
+    "textSecondary": "#52525b",
+    "textTertiary": "#a1a1aa",
+    "border": "rgba(30, 58, 95, 0.08)",
+    "borderStrong": "rgba(30, 58, 95, 0.15)"
+  },
+  "fonts": {
+    "heading": "Space Grotesk",
+    "body": "Inter",
+    "mono": "JetBrains Mono",
+    "headingRTL": "Noto Sans Arabic",
+    "bodyRTL": "Tajawal",
+    "googleFontsUrl": "https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap"
+  },
+  "sections": [
+    "hero",
+    "technical-profile",
+    "projects",
+    "experience",
+    "technical-skills",
+    "certifications",
+    "education",
+    "contact"
+  ],
+  "specialSections": [
+    "technical-profile",
+    "projects",
+    "technical-skills",
+    "certifications"
+  ],
+  "features": [
+    "technical-hero-with-project-count",
+    "project-cards-with-tech-stack-tags",
+    "experience-timeline-with-company-badges",
+    "technical-skills-grid-with-proficiency-bars",
+    "certification-badge-grid",
+    "engineering-blueprint-accent-lines",
+    "orange-cta-buttons",
+    "code-snippet-style-project-descriptions",
+    "responsive-project-gallery",
+    "print-optimized-with-qr",
+    "rtl-ready"
+  ],
+  "designNotes": "The Engineer template draws from technical documentation and engineering blueprint aesthetics. Deep Steel Blue (#1e3a5f) conveys trust and technical authority, while Safety Orange (#f97316) highlights CTAs and key metrics — the same color used on construction sites and industrial equipment. Sky Blue (#0ea5e9) provides a calm accent for secondary elements. The layout prioritizes PROJECTS above all else, because engineering hiring managers want to see what you built. Each project card includes a tech-stack tag row, problem/solution structure, and measurable outcomes. Experience uses a timeline with company badges. Skills are shown as grouped categories with proficiency indicators (not self-reported percentages, but tiered: Proficient / Advanced / Expert). Certifications get prominent badge treatment. The overall feel is that of a well-organized technical specification document — precise, scannable, and credible."
+}

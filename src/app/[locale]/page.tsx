@@ -189,7 +189,7 @@ export default function LandingPage() {
             </p>
             <div className="mt-4 flex flex-wrap items-center justify-center gap-2">
               {[
-                "Executive",
+                "Engineer",
                 "Creative",
                 "Designer",
                 "Developer",

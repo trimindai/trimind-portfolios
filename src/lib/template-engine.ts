@@ -1,6 +1,8 @@
 import Handlebars from "handlebars";
 // @ts-ignore - webpack asset/source loader
-import templateSource from "@/templates/corporate/template.hbs";
+import corporateTemplateSource from "@/templates/corporate/template.hbs";
+// @ts-ignore - webpack asset/source loader
+import engineerTemplateSource from "@/templates/engineer/template.hbs";
 
 export interface PortfolioData {
   basics: {
@@ -63,6 +65,7 @@ export interface PortfolioData {
     fontFamily?: string;
     hiddenSections?: string[];
   };
+  templateId?: string;
   locale: string;
   isRTL: boolean;
   portfolioUrl: string;
@@ -100,14 +103,10 @@ Handlebars.registerHelper("json", function (context: any) {
   return new Handlebars.SafeString(JSON.stringify(context || {}));
 });
 
-let compiledTemplate: Handlebars.TemplateDelegate | null = null;
+let compiledCorporateTemplate: Handlebars.TemplateDelegate | null = null;
+let compiledEngineerTemplate: Handlebars.TemplateDelegate | null = null;
 
-export function renderCorporateTemplate(data: PortfolioData & { contentAr?: any }): string {
-  if (!compiledTemplate) {
-    compiledTemplate = Handlebars.compile(templateSource as string);
-  }
-
-  // Prepare Arabic data for the template's JS toggle
+function prepareTemplateData(data: PortfolioData & { contentAr?: any }) {
   const templateData: any = { ...data };
   if (data.contentAr) {
     templateData.contentArJson = JSON.stringify(data.contentAr);
@@ -115,6 +114,19 @@ export function renderCorporateTemplate(data: PortfolioData & { contentAr?: any 
     templateData.enMetricsJson = JSON.stringify(data.metrics || []);
     templateData.enExperienceJson = JSON.stringify(data.experience || []);
   }
+  return templateData;
+}
 
-  return compiledTemplate(templateData);
+export function renderCorporateTemplate(data: PortfolioData & { contentAr?: any }): string {
+  if (!compiledCorporateTemplate) {
+    compiledCorporateTemplate = Handlebars.compile(corporateTemplateSource as string);
+  }
+  return compiledCorporateTemplate(prepareTemplateData(data));
+}
+
+export function renderEngineerTemplate(data: PortfolioData & { contentAr?: any }): string {
+  if (!compiledEngineerTemplate) {
+    compiledEngineerTemplate = Handlebars.compile(engineerTemplateSource as string);
+  }
+  return compiledEngineerTemplate(prepareTemplateData(data));
 }
