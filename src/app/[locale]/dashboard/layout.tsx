@@ -6,6 +6,7 @@ import { api } from "@convex/_generated/api";
 import { useEffect, useState } from "react";
 import { DashboardContext } from "@/contexts/DashboardContext";
 import { Id } from "@convex/_generated/dataModel";
+import { AdminLink } from "@/components/AdminLink";
 
 export default function DashboardLayout({
   children,
@@ -50,6 +51,7 @@ export default function DashboardLayout({
               Portfolio Pro
             </span>
             <div className="flex items-center gap-4">
+              <AdminLink />
               <span className="text-sm text-slate-400">
                 {user?.fullName || user?.primaryEmailAddress?.emailAddress}
               </span>
