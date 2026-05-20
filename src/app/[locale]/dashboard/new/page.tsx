@@ -37,38 +37,15 @@ export default function NewPortfolioPage() {
           },
         });
 
-        // Try free-access first. The endpoint silently returns 403 if not
-        // eligible — then we fall through to paid flow.
-        const freeRes = await fetch("/api/free-access", {
+        // Try free-access silently (for admin/allowlisted emails).
+        fetch("/api/free-access", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ portfolioId }),
-        });
-        if (freeRes.ok) {
-          window.location.href = `/${locale}/dashboard/${portfolioId}/edit`;
-          return;
-        }
+        }).catch(() => {});
 
-        // Initiate MyFatoorah payment. Server-side route now also creates
-        // the pending payment record (frontend can no longer write payments).
-        const res = await fetch("/api/myfatoorah/initiate", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ portfolioId, locale }),
-        });
-
-        const data = await res.json();
-
-        if (data.alreadyPaid) {
-          window.location.href = `/${locale}/dashboard/${portfolioId}/edit`;
-          return;
-        }
-        if (data.paymentUrl) {
-          window.location.href = data.paymentUrl;
-        } else {
-          setError(data.error || "Failed to initiate payment");
-          setDetails(JSON.stringify(data));
-        }
+        // Go straight to the editor — payment happens at publish time.
+        window.location.href = `/${locale}/dashboard/${portfolioId}/edit`;
       } catch (err: any) {
         setError("Something went wrong. Please try again.");
         setDetails(err?.message || String(err));

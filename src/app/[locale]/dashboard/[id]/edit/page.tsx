@@ -33,17 +33,6 @@ export default function EditPage({
     );
   }
 
-  if (portfolio.status === "draft") {
-    return (
-      <div className="text-center text-slate-400 py-20">
-        Payment required to access the builder.
-        <a href={`/${locale}/dashboard`} className="text-emerald-400 ml-2">
-          Go to Dashboard
-        </a>
-      </div>
-    );
-  }
-
   return (
     <BuilderForm
       portfolioId={portfolio._id}
