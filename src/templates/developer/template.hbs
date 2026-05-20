@@ -1,0 +1,972 @@
+<!DOCTYPE html>
+<html lang="{{locale}}" dir="{{#if isRTL}}rtl{{else}}ltr{{/if}}">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{{basics.fullName}} — {{basics.title}}</title>
+<meta name="description" content="{{basics.title}}{{#if basics.location}} based in {{basics.location}}{{/if}}.{{#if basics.subtitle}} {{basics.subtitle}}{{/if}}">
+<meta name="theme-color" content="#0d1117">
+<meta property="og:title" content="{{basics.fullName}} | {{basics.title}}">
+<meta property="og:description" content="{{#if basics.subtitle}}{{basics.subtitle}}{{else}}{{basics.title}}{{#if basics.location}} based in {{basics.location}}{{/if}}{{/if}}">
+<meta property="og:type" content="website">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* ══════════════════════════════════════════════════════
+   DEVELOPER PORTFOLIO — Terminal / GitHub Dark Aesthetic
+   GitHub-dark meets VS Code. JetBrains Mono + Inter.
+   ══════════════════════════════════════════════════════ */
+
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --font-head: 'JetBrains Mono', monospace;
+  --font-mono: 'JetBrains Mono', monospace;
+  --font-body: 'Inter', system-ui, sans-serif;
+  --bg: #0d1117;
+  --bg-deep: #010409;
+  --bg-card: rgba(13, 17, 23, 0.80);
+  --bg-terminal: rgba(1, 4, 9, 0.92);
+  --green: #39d353;
+  --green-glow: rgba(57, 211, 83, 0.25);
+  --green-dim: rgba(57, 211, 83, 0.10);
+  --blue: #58a6ff;
+  --blue-dim: rgba(88, 166, 255, 0.10);
+  --yellow: #e3b341;
+  --purple: #bc8cff;
+  --orange: #f78166;
+  --text: #e6edf3;
+  --text-secondary: #8b949e;
+  --text-tertiary: #484f58;
+  --border: rgba(48, 54, 61, 0.80);
+  --radius: 8px;
+}
+
+html { scroll-behavior: smooth; font-size: 16px; }
+body {
+  font-family: var(--font-body);
+  background: var(--bg-deep);
+  color: var(--text);
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+}
+a { text-decoration: none; color: inherit; }
+img { max-width: 100%; display: block; }
+
+/* ═══ ANIMATIONS ═══ */
+@keyframes typing {
+  from { width: 0; }
+  to { width: 100%; }
+}
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes glowPulse {
+  0%, 100% { box-shadow: 0 0 12px var(--green-glow); }
+  50% { box-shadow: 0 0 24px var(--green-glow), 0 0 48px rgba(57, 211, 83, 0.08); }
+}
+
+/* ═══ LAYOUT ═══ */
+.container { max-width: 1060px; margin: 0 auto; padding: 0 40px; }
+.section { padding: 80px 0; }
+.section-rule {
+  height: 1px; max-width: 1060px; margin: 0 auto;
+  background: linear-gradient(90deg, transparent, var(--border) 20%, var(--border) 80%, transparent);
+}
+
+/* Section title — // comment syntax */
+.section-title {
+  font-family: var(--font-mono);
+  font-size: 0.78rem; font-weight: 500;
+  color: var(--text-tertiary);
+  letter-spacing: 0.04em;
+  margin-bottom: 32px;
+  display: flex; align-items: center; gap: 10px;
+}
+.section-title::before { content: '//'; color: var(--green); font-weight: 700; }
+.section-title span { color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.10em; }
+
+/* ═══ HEADER / NAV ═══ */
+.nav {
+  position: sticky; top: 0; z-index: 1000;
+  background: rgba(1, 4, 9, 0.85);
+  backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  padding: 0 40px;
+}
+.nav-inner {
+  max-width: 1060px; margin: 0 auto;
+  display: flex; align-items: center; justify-content: space-between;
+  height: 52px;
+}
+.nav-brand {
+  font-family: var(--font-mono); font-size: 0.88rem; font-weight: 600;
+  color: var(--green);
+}
+.nav-brand .prompt { color: var(--text-tertiary); }
+.nav-links { display: flex; align-items: center; gap: 24px; }
+.nav-links a {
+  font-family: var(--font-mono); font-size: 0.75rem; font-weight: 400;
+  color: var(--text-secondary); transition: color 150ms;
+}
+.nav-links a:hover { color: var(--green); }
+.nav-social { display: flex; align-items: center; gap: 12px; }
+.nav-social a {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 32px; height: 32px; color: var(--text-secondary); transition: color 150ms;
+}
+.nav-social a:hover { color: var(--text); }
+.nav-social svg { width: 18px; height: 18px; }
+.nav-toggle {
+  display: none; background: none; border: none; cursor: pointer; padding: 4px;
+}
+.nav-toggle span {
+  display: block; width: 20px; height: 1.5px; background: var(--text-secondary);
+  margin: 4px 0; transition: all 150ms;
+}
+
+/* ══════════════════════════════════════════════════════
+   1. HERO — Terminal window with typewriter effect
+   ══════════════════════════════════════════════════════ */
+.hero { padding: 60px 0 40px; }
+
+.terminal {
+  background: var(--bg-terminal);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  animation: glowPulse 4s ease-in-out 2s infinite;
+}
+
+/* Traffic light dots */
+.terminal-bar {
+  display: flex; align-items: center; gap: 8px;
+  padding: 12px 16px;
+  background: rgba(22, 27, 34, 0.90);
+  border-bottom: 1px solid var(--border);
+}
+.dot { width: 12px; height: 12px; border-radius: 50%; }
+.dot-red { background: #ff5f56; }
+.dot-yellow { background: #ffbd2e; }
+.dot-green { background: #27c93f; }
+.terminal-title {
+  flex: 1; text-align: center;
+  font-family: var(--font-mono); font-size: 0.72rem;
+  color: var(--text-tertiary);
+}
+
+.terminal-body { padding: 28px 24px; }
+
+/* whoami prompt line */
+.prompt-line {
+  display: flex; align-items: center; gap: 8px;
+  font-family: var(--font-mono); font-size: 0.82rem;
+  margin-bottom: 20px; color: var(--text-secondary);
+}
+.prompt-symbol { color: var(--green); font-weight: 700; }
+.prompt-cmd { color: var(--blue); }
+
+/* Typewriter name */
+.typewriter-wrap {
+  display: inline-block; max-width: fit-content;
+  margin-bottom: 8px;
+}
+.typewriter-name {
+  font-family: var(--font-mono);
+  font-size: clamp(1.8rem, 4vw, 2.8rem);
+  font-weight: 700; color: var(--text);
+  white-space: nowrap; overflow: hidden;
+  border-right: 3px solid var(--green);
+  animation: typing 1.8s steps(24, end) 0.5s both, blink 0.75s step-end 2.3s infinite;
+  line-height: 1.3; letter-spacing: -0.02em;
+}
+
+.hero-title {
+  font-family: var(--font-mono); font-size: 1rem; font-weight: 400;
+  color: var(--blue); margin-bottom: 20px;
+}
+.hero-title::before { content: '$ '; color: var(--text-tertiary); }
+
+/* Bio as comment lines */
+.hero-bio {
+  font-family: var(--font-mono); font-size: 0.82rem;
+  color: var(--text-tertiary); line-height: 1.8;
+  margin-bottom: 24px; max-width: 640px;
+}
+.hero-bio p::before { content: '// '; color: var(--green); font-weight: 500; }
+
+/* Metrics row */
+.hero-metrics {
+  display: flex; gap: 32px; flex-wrap: wrap;
+  padding-top: 20px; border-top: 1px solid var(--border);
+}
+.hero-metric {
+  display: flex; flex-direction: column;
+}
+.hero-metric-val {
+  font-family: var(--font-mono); font-size: 1.3rem; font-weight: 700;
+  color: var(--green); line-height: 1;
+}
+.hero-metric-label {
+  font-family: var(--font-mono); font-size: 0.65rem;
+  color: var(--text-tertiary); margin-top: 4px;
+  text-transform: uppercase; letter-spacing: 0.06em;
+}
+
+/* ══════════════════════════════════════════════════════
+   2. TECH STACK / SKILLS — Grid with proficiency dots
+   ══════════════════════════════════════════════════════ */
+.skills-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
+}
+.skill-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 24px;
+}
+.skill-category {
+  font-family: var(--font-mono); font-size: 0.72rem; font-weight: 600;
+  color: var(--yellow); text-transform: uppercase;
+  letter-spacing: 0.10em; margin-bottom: 16px;
+  display: flex; align-items: center; gap: 8px;
+}
+.skill-category::before { content: '#'; color: var(--text-tertiary); }
+.skill-list { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+.skill-item {
+  display: flex; align-items: center; justify-content: space-between;
+  font-size: 0.85rem; color: var(--text-secondary);
+}
+.skill-dots { display: flex; gap: 4px; }
+.skill-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--text-tertiary);
+}
+.skill-dot.filled { background: var(--green); }
+
+/* ══════════════════════════════════════════════════════
+   3. PROJECTS — Repo-style cards
+   ══════════════════════════════════════════════════════ */
+.projects-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+}
+.project-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 24px;
+  display: flex; flex-direction: column;
+  transition: border-color 150ms;
+}
+.project-card:hover { border-color: var(--text-tertiary); }
+
+.project-header {
+  display: flex; align-items: center; gap: 8px;
+  margin-bottom: 12px;
+}
+.project-icon {
+  width: 18px; height: 18px; color: var(--text-secondary); flex-shrink: 0;
+}
+.project-name {
+  font-family: var(--font-mono); font-size: 0.92rem; font-weight: 600;
+  color: var(--blue);
+}
+
+.project-desc {
+  font-size: 0.85rem; color: var(--text-secondary);
+  line-height: 1.65; flex: 1; margin-bottom: 16px;
+}
+
+.project-footer {
+  display: flex; align-items: center; justify-content: space-between;
+  flex-wrap: wrap; gap: 10px;
+}
+.project-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+.project-lang {
+  display: inline-flex; align-items: center; gap: 5px;
+  font-family: var(--font-mono); font-size: 0.70rem;
+  color: var(--text-secondary);
+}
+.lang-dot {
+  width: 10px; height: 10px; border-radius: 50%;
+}
+.lang-dot-green { background: var(--green); }
+.lang-dot-blue { background: var(--blue); }
+.lang-dot-yellow { background: var(--yellow); }
+.lang-dot-purple { background: var(--purple); }
+.lang-dot-orange { background: var(--orange); }
+
+.project-link {
+  font-family: var(--font-mono); font-size: 0.72rem; font-weight: 500;
+  color: var(--blue); display: inline-flex; align-items: center; gap: 4px;
+  transition: color 150ms;
+}
+.project-link:hover { color: var(--green); }
+.project-link svg { width: 14px; height: 14px; }
+
+/* ══════════════════════════════════════════════════════
+   4. EXPERIENCE — Terminal prompt style
+   ══════════════════════════════════════════════════════ */
+.experience-list { display: flex; flex-direction: column; gap: 24px; }
+
+.exp-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 24px;
+}
+.exp-prompt {
+  font-family: var(--font-mono); font-size: 0.78rem;
+  color: var(--text-tertiary); margin-bottom: 8px;
+}
+.exp-prompt .dollar { color: var(--green); font-weight: 700; }
+.exp-prompt .cmd { color: var(--blue); }
+
+.exp-role {
+  font-family: var(--font-mono); font-size: 1.05rem; font-weight: 600;
+  color: var(--text); margin-bottom: 4px;
+}
+.exp-company {
+  font-family: var(--font-mono); font-size: 0.85rem;
+  color: var(--orange); margin-bottom: 4px;
+}
+.exp-date {
+  font-family: var(--font-mono); font-size: 0.72rem;
+  color: var(--text-tertiary); margin-bottom: 12px;
+}
+
+.exp-desc {
+  font-size: 0.85rem; color: var(--text-secondary);
+  line-height: 1.7;
+}
+.exp-highlights { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+.exp-highlight {
+  font-size: 0.85rem; color: var(--text-secondary);
+  padding-left: 16px; position: relative; line-height: 1.65;
+}
+.exp-highlight::before {
+  content: '>'; position: absolute; left: 0; top: 0;
+  font-family: var(--font-mono); color: var(--green);
+  font-weight: 700; font-size: 0.82rem;
+}
+
+/* ══════════════════════════════════════════════════════
+   5. EDUCATION — Minimal cards with green accent
+   ══════════════════════════════════════════════════════ */
+.edu-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+}
+.edu-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--green);
+  border-radius: var(--radius);
+  padding: 20px 24px;
+}
+.edu-degree {
+  font-family: var(--font-mono); font-size: 0.92rem; font-weight: 600;
+  color: var(--text); margin-bottom: 4px;
+}
+.edu-institution {
+  font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 4px;
+}
+.edu-year {
+  font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-tertiary);
+}
+.edu-desc {
+  font-size: 0.80rem; color: var(--text-tertiary); margin-top: 8px; line-height: 1.6;
+}
+
+/* ══════════════════════════════════════════════════════
+   6. CERTIFICATIONS — Badge-style cards
+   ══════════════════════════════════════════════════════ */
+.certs-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 14px;
+}
+.cert-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 18px 20px;
+  display: flex; align-items: center; gap: 14px;
+  transition: border-color 150ms;
+}
+.cert-card:hover { border-color: var(--yellow); }
+.cert-badge {
+  width: 40px; height: 40px; border-radius: 8px;
+  background: rgba(227, 179, 65, 0.10);
+  border: 1px solid rgba(227, 179, 65, 0.25);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.cert-badge svg { width: 20px; height: 20px; color: var(--yellow); }
+.cert-info {}
+.cert-name {
+  font-family: var(--font-mono); font-size: 0.82rem; font-weight: 600;
+  color: var(--text); line-height: 1.3;
+}
+.cert-issuer {
+  font-size: 0.72rem; color: var(--text-tertiary); margin-top: 2px;
+}
+
+/* ══════════════════════════════════════════════════════
+   7. ENDORSEMENTS
+   ══════════════════════════════════════════════════════ */
+.endorsements-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+}
+.endorsement-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 24px;
+}
+.endorsement-quote {
+  font-size: 0.88rem; color: var(--text-secondary);
+  line-height: 1.75; font-style: italic; margin-bottom: 16px;
+}
+.endorsement-quote::before {
+  content: '"'; font-family: var(--font-mono); font-size: 1.6rem;
+  color: var(--purple); line-height: 1; display: block; margin-bottom: 6px;
+}
+.endorsement-author {
+  border-top: 1px solid var(--border); padding-top: 12px;
+}
+.endorsement-name {
+  font-family: var(--font-mono); font-size: 0.82rem; font-weight: 600; color: var(--text);
+}
+.endorsement-role {
+  font-size: 0.72rem; color: var(--text-tertiary);
+}
+
+/* ══════════════════════════════════════════════════════
+   8. LANGUAGES
+   ══════════════════════════════════════════════════════ */
+.languages-list {
+  display: flex; flex-wrap: wrap; gap: 12px;
+}
+.lang-badge {
+  display: flex; align-items: center; gap: 8px;
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 10px 16px;
+}
+.lang-badge-name {
+  font-family: var(--font-mono); font-size: 0.82rem; font-weight: 500; color: var(--text);
+}
+.lang-badge-level {
+  font-family: var(--font-mono); font-size: 0.65rem;
+  color: var(--text-tertiary); background: var(--green-dim);
+  padding: 2px 8px; border-radius: 100px;
+}
+
+/* ══════════════════════════════════════════════════════
+   9. CONTACT — Terminal output footer
+   ══════════════════════════════════════════════════════ */
+.contact-section {
+  background: var(--bg-terminal);
+  border-top: 1px solid var(--border);
+  padding: 48px 0;
+}
+.contact-terminal {
+  font-family: var(--font-mono); font-size: 0.82rem;
+  display: flex; flex-direction: column; gap: 8px;
+}
+.contact-line {
+  display: flex; align-items: center; gap: 8px;
+  color: var(--text-secondary);
+}
+.contact-line .dollar { color: var(--green); font-weight: 700; }
+.contact-line .cmd { color: var(--blue); }
+.contact-line .output { color: var(--text); }
+.contact-line a {
+  color: var(--blue); transition: color 150ms;
+}
+.contact-line a:hover { color: var(--green); }
+
+.footer-copy {
+  margin-top: 32px; padding-top: 20px;
+  border-top: 1px solid var(--border);
+  font-family: var(--font-mono); font-size: 0.68rem;
+  color: var(--text-tertiary);
+}
+
+/* ══════════════════════════════════════════════════════
+   RESPONSIVE
+   ══════════════════════════════════════════════════════ */
+@media (max-width: 768px) {
+  .nav { padding: 0 20px; }
+  .nav-links { display: none; }
+  .nav-toggle { display: flex; flex-direction: column; }
+  .nav-links.open { display: flex; flex-direction: column; position: absolute; top: 100%; left: 0; right: 0; background: rgba(1, 4, 9, 0.95); backdrop-filter: blur(12px); padding: 16px 20px; gap: 0; border-bottom: 1px solid var(--border); }
+  .nav-links.open a { display: block; padding: 10px 0; }
+  .container { padding: 0 20px; }
+  .section { padding: 48px 0; }
+  .hero { padding: 32px 0 24px; }
+  .terminal-body { padding: 20px 16px; }
+  .typewriter-name { font-size: 1.5rem; }
+  .hero-metrics { gap: 20px; }
+  .skills-grid { grid-template-columns: 1fr; }
+  .projects-grid { grid-template-columns: 1fr; }
+  .edu-grid { grid-template-columns: 1fr; }
+  .certs-grid { grid-template-columns: 1fr; }
+  .endorsements-grid { grid-template-columns: 1fr; }
+  .contact-line { flex-wrap: wrap; font-size: 0.75rem; }
+}
+
+@media (max-width: 480px) {
+  .typewriter-name { font-size: 1.2rem; }
+  .hero-title { font-size: 0.85rem; }
+  .hero-bio { font-size: 0.75rem; }
+  .hero-metrics { flex-direction: column; gap: 14px; }
+}
+
+/* ══════════════════════════════════════════════════════
+   PRINT
+   ══════════════════════════════════════════════════════ */
+@media print {
+  @page { margin: 0.5in; size: A4; }
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+  body { background: #fff !important; color: #111 !important; }
+  .nav, .nav-toggle { display: none !important; }
+  .terminal { box-shadow: none !important; animation: none !important; border-color: #ccc !important; }
+  .terminal-bar { background: #f0f0f0 !important; }
+  .terminal-body { background: #fafafa !important; }
+  .typewriter-name {
+    animation: none !important;
+    width: auto !important; border-right: none !important;
+    color: #111 !important;
+  }
+  .hero-title { color: #333 !important; }
+  .hero-bio p::before { color: #666 !important; }
+  .section { padding: 24px 0 !important; }
+  .section-rule { background: #ddd !important; }
+  .skill-card, .project-card, .exp-card, .edu-card, .cert-card,
+  .endorsement-card, .lang-badge {
+    background: #fff !important; border-color: #ddd !important;
+    break-inside: avoid !important; page-break-inside: avoid !important;
+  }
+  .contact-section { background: #fafafa !important; border-color: #ddd !important; }
+  .section-title::before { color: #333 !important; }
+  a { color: #111 !important; }
+}
+
+/* ══════════════════════════════════════════════════════
+   RTL — Keep code blocks LTR
+   ══════════════════════════════════════════════════════ */
+[dir="rtl"] .terminal-body,
+[dir="rtl"] .prompt-line,
+[dir="rtl"] .typewriter-name,
+[dir="rtl"] .hero-title,
+[dir="rtl"] .hero-bio,
+[dir="rtl"] .contact-terminal,
+[dir="rtl"] .exp-prompt,
+[dir="rtl"] .skill-category,
+[dir="rtl"] .project-name,
+[dir="rtl"] .cert-name,
+[dir="rtl"] .edu-year,
+[dir="rtl"] .nav-brand {
+  direction: ltr;
+  text-align: left;
+}
+[dir="rtl"] .section-title { direction: rtl; }
+[dir="rtl"] .section-title::before { content: '//'; }
+[dir="rtl"] .exp-highlight { padding-left: 0; padding-right: 16px; }
+[dir="rtl"] .exp-highlight::before { left: auto; right: 0; }
+[dir="rtl"] .edu-card { border-left: 1px solid var(--border); border-right: 3px solid var(--green); }
+</style>
+{{#if customization}}
+<style>
+{{#if customization.primaryColor}}
+:root { --text: {{customization.primaryColor}}; }
+{{/if}}
+{{#if customization.accentColor}}
+:root {
+  --green: {{customization.accentColor}};
+  --green-glow: {{customization.accentColor}}40;
+  --green-dim: {{customization.accentColor}}1a;
+}
+{{/if}}
+{{#if customization.bgColor}}
+:root { --bg-deep: {{customization.bgColor}}; --bg: {{customization.bgColor}}; }
+{{/if}}
+</style>
+{{/if}}
+</head>
+<body>
+
+<!-- ═══ NAV ═══ -->
+<nav class="nav">
+  <div class="nav-inner">
+    <div class="nav-brand"><span class="prompt">~/</span>{{basics.fullName}}</div>
+    <div class="nav-links">
+      {{#if skills}}<a href="#skills">stack</a>{{/if}}
+      {{#if projects}}<a href="#projects">projects</a>{{/if}}
+      {{#if experience}}<a href="#experience">experience</a>{{/if}}
+      {{#if education}}<a href="#education">education</a>{{/if}}
+      <a href="#contact">contact</a>
+    </div>
+    <div class="nav-social">
+      {{#if basics.github}}
+      <a href="{{basics.github}}" target="_blank" rel="noopener" aria-label="GitHub">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
+      </a>
+      {{/if}}
+      {{#if basics.linkedin}}
+      <a href="{{basics.linkedin}}" target="_blank" rel="noopener" aria-label="LinkedIn">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+      </a>
+      {{/if}}
+    </div>
+    <button class="nav-toggle" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<!-- ═══ 1. HERO ═══ -->
+<section class="hero">
+  <div class="container">
+    <div class="terminal">
+      <div class="terminal-bar">
+        <span class="dot dot-red"></span>
+        <span class="dot dot-yellow"></span>
+        <span class="dot dot-green"></span>
+        <span class="terminal-title">{{basics.fullName}} -- portfolio</span>
+      </div>
+      <div class="terminal-body">
+        <div class="prompt-line">
+          <span class="prompt-symbol">></span>
+          <span class="prompt-cmd">whoami</span>
+        </div>
+
+        <div class="typewriter-wrap">
+          <div class="typewriter-name">{{basics.fullName}}</div>
+        </div>
+
+        <div class="hero-title">{{basics.title}}</div>
+
+        {{#if basics.bio}}
+        <div class="hero-bio">
+          <p>{{basics.bio}}</p>
+        </div>
+        {{else}}
+          {{#if basics.valueProposition}}
+          <div class="hero-bio">
+            <p>{{basics.valueProposition}}</p>
+          </div>
+          {{/if}}
+        {{/if}}
+
+        {{#if basics.valueProposition}}
+          {{#if basics.bio}}
+          <div class="hero-bio">
+            <p>{{basics.valueProposition}}</p>
+          </div>
+          {{/if}}
+        {{/if}}
+
+        {{#if metrics}}
+        <div class="hero-metrics">
+          {{#each metrics}}
+          <div class="hero-metric">
+            <div class="hero-metric-val">{{this.value}}</div>
+            <div class="hero-metric-label">{{this.label}}</div>
+          </div>
+          {{/each}}
+        </div>
+        {{/if}}
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ 2. TECH STACK / SKILLS ═══ -->
+{{#if skills}}
+{{#unless (isHidden "tech-stack")}}
+<div class="section-rule"></div>
+<section class="section" id="skills">
+  <div class="container">
+    <div class="section-title"><span>Tech Stack</span></div>
+    <div class="skills-grid">
+      {{#each skills}}
+      <div class="skill-card">
+        <div class="skill-category">{{this.category}}</div>
+        <ul class="skill-list">
+          {{#each this.items}}
+          <li class="skill-item">
+            <span>{{this}}</span>
+            <span class="skill-dots">
+              <span class="skill-dot filled"></span>
+              <span class="skill-dot filled"></span>
+              <span class="skill-dot filled"></span>
+              <span class="skill-dot filled"></span>
+              <span class="skill-dot"></span>
+            </span>
+          </li>
+          {{/each}}
+        </ul>
+      </div>
+      {{/each}}
+    </div>
+  </div>
+</section>
+{{/unless}}
+{{/if}}
+
+<!-- ═══ 3. PROJECTS ═══ -->
+{{#if projects}}
+{{#unless (isHidden "projects")}}
+<div class="section-rule"></div>
+<section class="section" id="projects">
+  <div class="container">
+    <div class="section-title"><span>Projects</span></div>
+    <div class="projects-grid">
+      {{#each projects}}
+      <div class="project-card">
+        <div class="project-header">
+          <svg class="project-icon" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12.75V12A2.25 2.25 0 0 1 4.5 9.75h15A2.25 2.25 0 0 1 21.75 12v.75m-8.69-6.44-2.12-2.12a1.5 1.5 0 0 0-1.061-.44H4.5A2.25 2.25 0 0 0 2.25 6v12a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18V9a2.25 2.25 0 0 0-2.25-2.25h-5.379a1.5 1.5 0 0 1-1.06-.44Z"/></svg>
+          <span class="project-name">{{this.title}}</span>
+        </div>
+        {{#if this.description}}
+        <p class="project-desc">{{this.description}}</p>
+        {{/if}}
+        <div class="project-footer">
+          {{#if this.technologies}}
+          <div class="project-tags">
+            {{#each this.technologies}}
+            <span class="project-lang">
+              <span class="lang-dot lang-dot-green"></span>
+              {{this}}
+            </span>
+            {{/each}}
+          </div>
+          {{/if}}
+          {{#if this.link}}
+          <a href="{{this.link}}" target="_blank" rel="noopener" class="project-link">
+            <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 0 0 3 8.25v10.5A2.25 2.25 0 0 0 5.25 21h10.5A2.25 2.25 0 0 0 18 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25"/></svg>
+            view
+          </a>
+          {{/if}}
+        </div>
+      </div>
+      {{/each}}
+    </div>
+  </div>
+</section>
+{{/unless}}
+{{/if}}
+
+<!-- ═══ 4. EXPERIENCE ═══ -->
+{{#if experience}}
+{{#unless (isHidden "experience")}}
+<div class="section-rule"></div>
+<section class="section" id="experience">
+  <div class="container">
+    <div class="section-title"><span>Experience</span></div>
+    <div class="experience-list">
+      {{#each experience}}
+      <div class="exp-card">
+        <div class="exp-prompt">
+          <span class="dollar">$</span> <span class="cmd">cat</span> experience/{{@index}}.log
+        </div>
+        <div class="exp-role">{{this.title}}</div>
+        <div class="exp-company">{{this.company}}</div>
+        <div class="exp-date">{{this.startDate}} — {{#if this.endDate}}{{this.endDate}}{{else}}Present{{/if}}</div>
+        {{#if this.highlights}}
+        <ul class="exp-highlights">
+          {{#each this.highlights}}
+          <li class="exp-highlight">{{this}}</li>
+          {{/each}}
+        </ul>
+        {{else if this.description}}
+        <p class="exp-desc">{{this.description}}</p>
+        {{/if}}
+      </div>
+      {{/each}}
+    </div>
+  </div>
+</section>
+{{/unless}}
+{{/if}}
+
+<!-- ═══ 5. EDUCATION ═══ -->
+{{#if education}}
+{{#unless (isHidden "education")}}
+<div class="section-rule"></div>
+<section class="section" id="education">
+  <div class="container">
+    <div class="section-title"><span>Education</span></div>
+    <div class="edu-grid">
+      {{#each education}}
+      <div class="edu-card">
+        <div class="edu-degree">{{this.degree}}</div>
+        <div class="edu-institution">{{this.institution}}</div>
+        <div class="edu-year">{{this.year}}</div>
+        {{#if this.description}}
+        <div class="edu-desc">{{this.description}}</div>
+        {{/if}}
+      </div>
+      {{/each}}
+    </div>
+  </div>
+</section>
+{{/unless}}
+{{/if}}
+
+<!-- ═══ 6. CERTIFICATIONS ═══ -->
+{{#if certifications}}
+{{#unless (isHidden "certifications")}}
+<div class="section-rule"></div>
+<section class="section" id="certifications">
+  <div class="container">
+    <div class="section-title"><span>Certifications</span></div>
+    <div class="certs-grid">
+      {{#each certifications}}
+      <div class="cert-card">
+        <div class="cert-badge">
+          <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 0 1-1.043 3.296 3.745 3.745 0 0 1-3.296 1.043A3.745 3.745 0 0 1 12 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 0 1-3.296-1.043 3.745 3.745 0 0 1-1.043-3.296A3.745 3.745 0 0 1 3 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 0 1 1.043-3.296 3.746 3.746 0 0 1 3.296-1.043A3.746 3.746 0 0 1 12 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 0 1 3.296 1.043 3.746 3.746 0 0 1 1.043 3.296A3.745 3.745 0 0 1 21 12Z"/></svg>
+        </div>
+        <div class="cert-info">
+          <div class="cert-name">{{this.name}}</div>
+          {{#if this.issuer}}<div class="cert-issuer">{{this.issuer}}</div>{{/if}}
+        </div>
+      </div>
+      {{/each}}
+    </div>
+  </div>
+</section>
+{{/unless}}
+{{/if}}
+
+<!-- ═══ 7. ENDORSEMENTS ═══ -->
+{{#if endorsements}}
+{{#unless (isHidden "endorsements")}}
+<div class="section-rule"></div>
+<section class="section" id="endorsements">
+  <div class="container">
+    <div class="section-title"><span>Endorsements</span></div>
+    <div class="endorsements-grid">
+      {{#each endorsements}}
+      <div class="endorsement-card">
+        <div class="endorsement-quote">{{this.quote}}</div>
+        <div class="endorsement-author">
+          <div class="endorsement-name">{{this.name}}</div>
+          <div class="endorsement-role">{{this.title}}{{#if this.company}}, {{this.company}}{{/if}}</div>
+        </div>
+      </div>
+      {{/each}}
+    </div>
+  </div>
+</section>
+{{/unless}}
+{{/if}}
+
+<!-- ═══ LANGUAGES ═══ -->
+{{#if languages}}
+{{#unless (isHidden "languages")}}
+<div class="section-rule"></div>
+<section class="section" id="languages">
+  <div class="container">
+    <div class="section-title"><span>Languages</span></div>
+    <div class="languages-list">
+      {{#each languages}}
+      <div class="lang-badge">
+        <span class="lang-badge-name">{{this.name}}</span>
+        <span class="lang-badge-level">{{this.level}}</span>
+      </div>
+      {{/each}}
+    </div>
+  </div>
+</section>
+{{/unless}}
+{{/if}}
+
+<!-- ═══ 8. CONTACT ═══ -->
+{{#unless (isHidden "contact")}}
+<section class="contact-section" id="contact">
+  <div class="container">
+    <div class="section-title"><span>Contact</span></div>
+    <div class="contact-terminal">
+      {{#if basics.email}}
+      <div class="contact-line">
+        <span class="dollar">$</span>
+        <span class="cmd">echo</span>
+        <span class="output">"<a href="mailto:{{basics.email}}">{{basics.email}}</a>"</span>
+      </div>
+      {{/if}}
+      {{#if basics.phone}}
+      <div class="contact-line">
+        <span class="dollar">$</span>
+        <span class="cmd">echo</span>
+        <span class="output">"<a href="tel:{{basics.phone}}">{{basics.phone}}</a>"</span>
+      </div>
+      {{/if}}
+      {{#if basics.location}}
+      <div class="contact-line">
+        <span class="dollar">$</span>
+        <span class="cmd">echo</span>
+        <span class="output">"{{basics.location}}"</span>
+      </div>
+      {{/if}}
+      {{#if basics.github}}
+      <div class="contact-line">
+        <span class="dollar">$</span>
+        <span class="cmd">open</span>
+        <a href="{{basics.github}}" target="_blank" rel="noopener">{{basics.github}}</a>
+      </div>
+      {{/if}}
+      {{#if basics.linkedin}}
+      <div class="contact-line">
+        <span class="dollar">$</span>
+        <span class="cmd">open</span>
+        <a href="{{basics.linkedin}}" target="_blank" rel="noopener">{{basics.linkedin}}</a>
+      </div>
+      {{/if}}
+      {{#if basics.website}}
+      <div class="contact-line">
+        <span class="dollar">$</span>
+        <span class="cmd">open</span>
+        <a href="{{basics.website}}" target="_blank" rel="noopener">{{basics.website}}</a>
+      </div>
+      {{/if}}
+    </div>
+    <div class="footer-copy">&copy; {{basics.fullName}} — {{basics.title}}</div>
+  </div>
+</section>
+{{/unless}}
+
+<script>
+/* Mobile nav toggle */
+var navToggle = document.querySelector('.nav-toggle');
+var navLinks = document.querySelector('.nav-links');
+if (navToggle && navLinks) {
+  navToggle.addEventListener('click', function() { navLinks.classList.toggle('open'); });
+  navLinks.querySelectorAll('a').forEach(function(a) {
+    a.addEventListener('click', function() { navLinks.classList.remove('open'); });
+  });
+}
+/* Smooth scroll */
+document.querySelectorAll('a[href^="#"]').forEach(function(a) {
+  a.addEventListener('click', function(e) {
+    e.preventDefault();
+    var t = document.querySelector(a.getAttribute('href'));
+    if (t) t.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+});
+</script>
+</body>
+</html>

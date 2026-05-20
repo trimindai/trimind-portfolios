@@ -45,7 +45,7 @@ export const TEMPLATES: Template[] = (
   demoUrl: DEMO_URLS[m.id],
   // Flag "available" templates — corporate and engineer are live, others are coming soon.
   // Flip these on as their builders ship.
-  available: m.id === "corporate" || m.id === "engineer",
+  available: true,
 }));
 
 export function getTemplate(id: string): Template | undefined {

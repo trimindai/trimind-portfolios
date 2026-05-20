@@ -5,6 +5,16 @@ import corporateTemplateSource from "@/templates/corporate/template.hbs";
 import engineerTemplateSource from "@/templates/engineer/template.hbs";
 // @ts-ignore - webpack asset/source loader
 import engineerProjectDetailSource from "@/templates/engineer/project-detail.hbs";
+// @ts-ignore - webpack asset/source loader
+import creativeTemplateSource from "@/templates/creative/template.hbs";
+// @ts-ignore - webpack asset/source loader
+import designerTemplateSource from "@/templates/designer/template.hbs";
+// @ts-ignore - webpack asset/source loader
+import developerTemplateSource from "@/templates/developer/template.hbs";
+// @ts-ignore - webpack asset/source loader
+import medicalTemplateSource from "@/templates/medical/template.hbs";
+// @ts-ignore - webpack asset/source loader
+import educatorTemplateSource from "@/templates/educator/template.hbs";
 
 export interface PortfolioData {
   basics: {
@@ -137,6 +147,11 @@ Handlebars.registerHelper("json", function (context: any) {
 let compiledCorporateTemplate: Handlebars.TemplateDelegate | null = null;
 let compiledEngineerTemplate: Handlebars.TemplateDelegate | null = null;
 let compiledEngineerProjectDetail: Handlebars.TemplateDelegate | null = null;
+let compiledCreativeTemplate: Handlebars.TemplateDelegate | null = null;
+let compiledDesignerTemplate: Handlebars.TemplateDelegate | null = null;
+let compiledDeveloperTemplate: Handlebars.TemplateDelegate | null = null;
+let compiledMedicalTemplate: Handlebars.TemplateDelegate | null = null;
+let compiledEducatorTemplate: Handlebars.TemplateDelegate | null = null;
 
 function prepareTemplateData(data: PortfolioData & { contentAr?: any }) {
   const templateData: any = { ...data };
@@ -161,6 +176,41 @@ export function renderEngineerTemplate(data: PortfolioData & { contentAr?: any }
     compiledEngineerTemplate = Handlebars.compile(engineerTemplateSource as string);
   }
   return compiledEngineerTemplate(prepareTemplateData(data));
+}
+
+export function renderCreativeTemplate(data: PortfolioData & { contentAr?: any }): string {
+  if (!compiledCreativeTemplate) {
+    compiledCreativeTemplate = Handlebars.compile(creativeTemplateSource as string);
+  }
+  return compiledCreativeTemplate(prepareTemplateData(data));
+}
+
+export function renderDesignerTemplate(data: PortfolioData & { contentAr?: any }): string {
+  if (!compiledDesignerTemplate) {
+    compiledDesignerTemplate = Handlebars.compile(designerTemplateSource as string);
+  }
+  return compiledDesignerTemplate(prepareTemplateData(data));
+}
+
+export function renderDeveloperTemplate(data: PortfolioData & { contentAr?: any }): string {
+  if (!compiledDeveloperTemplate) {
+    compiledDeveloperTemplate = Handlebars.compile(developerTemplateSource as string);
+  }
+  return compiledDeveloperTemplate(prepareTemplateData(data));
+}
+
+export function renderMedicalTemplate(data: PortfolioData & { contentAr?: any }): string {
+  if (!compiledMedicalTemplate) {
+    compiledMedicalTemplate = Handlebars.compile(medicalTemplateSource as string);
+  }
+  return compiledMedicalTemplate(prepareTemplateData(data));
+}
+
+export function renderEducatorTemplate(data: PortfolioData & { contentAr?: any }): string {
+  if (!compiledEducatorTemplate) {
+    compiledEducatorTemplate = Handlebars.compile(educatorTemplateSource as string);
+  }
+  return compiledEducatorTemplate(prepareTemplateData(data));
 }
 
 /**
