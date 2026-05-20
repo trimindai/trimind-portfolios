@@ -43,7 +43,9 @@ export function BuilderForm({ portfolioId, initialData }: BuilderFormProps) {
   const save = async () => {
     setSaving(true);
     try {
-      const { _id, _creationTime, status, slug, generatedHtml, paymentId, publishedAt, createdAt, lastEditedAt, userId, templateId, name, locale, contentAr, ...fields } = formData;
+      // Strip Convex metadata and read-only fields before sending to update mutation
+      const STRIP_KEYS = new Set(["_id", "_creationTime", "status", "slug", "generatedHtml", "generatedProjectPages", "paymentId", "publishedAt", "createdAt", "lastEditedAt", "userId", "templateId", "name", "locale", "contentAr"]);
+      const fields = Object.fromEntries(Object.entries(formData).filter(([k]) => !STRIP_KEYS.has(k)));
       await updatePortfolio({ id: portfolioId, ...fields });
     } catch (e) {
       console.error("Save failed:", e);

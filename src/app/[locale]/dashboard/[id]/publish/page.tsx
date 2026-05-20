@@ -1,6 +1,6 @@
 "use client";
 
-import { useParams, useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "@convex/_generated/api";
 import { Id } from "@convex/_generated/dataModel";
@@ -172,7 +172,7 @@ export default function PublishPage() {
     } finally {
       setPublishing(false);
     }
-  }, [portfolio, slugAvailable, locale, slug, id, publishMutation]);
+  }, [portfolio, slugAvailable, locale, slug, id, publishMutation, isAdmin]);
 
   const handleCopyUrl = useCallback(async () => {
     try {

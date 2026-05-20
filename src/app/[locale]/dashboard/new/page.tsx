@@ -76,6 +76,7 @@ export default function NewPortfolioPage() {
     }
 
     initiate();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLoaded, user]);
 
   if (error) {

@@ -84,6 +84,69 @@ export const update = mutation({
           ),
           link: v.optional(v.string()),
           isFeatured: v.optional(v.boolean()),
+          slug: v.optional(v.string()),
+          tagline: v.optional(v.string()),
+          coverUrl: v.optional(v.string()),
+          meta: v.optional(
+            v.object({
+              type: v.optional(
+                v.union(
+                  v.literal("academic"),
+                  v.literal("industrial"),
+                  v.literal("personal"),
+                  v.literal("research")
+                )
+              ),
+              year: v.optional(v.string()),
+              courseCode: v.optional(v.string()),
+              institution: v.optional(v.string()),
+              teamSize: v.optional(v.number()),
+              role: v.optional(v.string()),
+              duration: v.optional(v.string()),
+            })
+          ),
+          blocks: v.optional(
+            v.array(
+              v.object({
+                kind: v.union(
+                  v.literal("paragraph"),
+                  v.literal("image"),
+                  v.literal("imageGrid"),
+                  v.literal("specs"),
+                  v.literal("standards"),
+                  v.literal("challenge")
+                ),
+                body: v.optional(v.string()),
+                caption: v.optional(v.string()),
+                url: v.optional(v.string()),
+                fullBleed: v.optional(v.boolean()),
+                images: v.optional(
+                  v.array(v.object({ url: v.string(), caption: v.optional(v.string()) }))
+                ),
+                items: v.optional(
+                  v.array(v.object({ label: v.string(), value: v.string() }))
+                ),
+                problem: v.optional(v.string()),
+                solution: v.optional(v.string()),
+              })
+            )
+          ),
+          links: v.optional(
+            v.array(
+              v.object({
+                kind: v.union(
+                  v.literal("report"),
+                  v.literal("repo"),
+                  v.literal("demo"),
+                  v.literal("paper"),
+                  v.literal("video"),
+                  v.literal("external")
+                ),
+                label: v.string(),
+                url: v.string(),
+              })
+            )
+          ),
         })
       )
     ),
