@@ -21,7 +21,7 @@ export function SkillsStep({ data, onChange }: SkillsStepProps) {
         <DynamicList
           items={skills}
           onChange={(items) => onChange({ skills: items })}
-          createEmpty={() => ({ category: "", items: [] })}
+          createEmpty={() => ({ category: "", items: [] as string[] })}
           maxItems={6}
           addLabel="Add Skill Category"
           renderItem={(item, _, update) => (

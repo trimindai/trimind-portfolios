@@ -5,6 +5,7 @@ import { api } from "@convex/_generated/api";
 import { Id } from "@convex/_generated/dataModel";
 import { BuilderForm } from "@/components/builder/BuilderForm";
 import { use } from "react";
+import { useParams } from "next/navigation";
 
 export default function EditPage({
   params,
@@ -12,6 +13,8 @@ export default function EditPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = use(params);
+  const routeParams = useParams();
+  const locale = (routeParams.locale as string) || "en";
   const portfolio = useQuery(api.portfolios.get, {
     id: id as Id<"portfolios">,
   });
@@ -34,7 +37,7 @@ export default function EditPage({
     return (
       <div className="text-center text-slate-400 py-20">
         Payment required to access the builder.
-        <a href="/en/dashboard" className="text-emerald-400 ml-2">
+        <a href={`/${locale}/dashboard`} className="text-emerald-400 ml-2">
           Go to Dashboard
         </a>
       </div>

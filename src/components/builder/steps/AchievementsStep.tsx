@@ -32,8 +32,8 @@ export function AchievementsStep({ data, onChange }: AchievementsStepProps) {
         createEmpty={() => ({
           title: "",
           description: "",
-          technologies: [],
-          metrics: [],
+          technologies: [] as string[],
+          metrics: [] as Array<{ value: string; label: string }>,
           isFeatured: false,
         })}
         maxItems={5}

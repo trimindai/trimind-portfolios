@@ -5,16 +5,19 @@ import { api } from "@convex/_generated/api";
 import { useDashboard } from "@/contexts/DashboardContext";
 import { Link } from "@/i18n/navigation";
 import { useState } from "react";
+import { useParams } from "next/navigation";
 
 export default function DashboardPage() {
   const { userId } = useDashboard();
+  const params = useParams();
+  const locale = (params.locale as string) || "en";
   // listByUser now auto-filters to the authenticated user — no userId arg.
   const portfolios = useQuery(api.portfolios.listByUser, {});
   const [loading, setLoading] = useState(false);
 
   const handleNewPortfolio = async () => {
     setLoading(true);
-    window.location.href = "/en/dashboard/new";
+    window.location.href = `/${locale}/dashboard/new`;
   };
 
   if (!userId || portfolios === undefined) {

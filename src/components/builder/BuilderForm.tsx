@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback } from "react";
+import { useParams } from "next/navigation";
 import { useMutation } from "convex/react";
 import { api } from "@convex/_generated/api";
 import { Id } from "@convex/_generated/dataModel";
@@ -28,6 +29,8 @@ interface BuilderFormProps {
 }
 
 export function BuilderForm({ portfolioId, initialData }: BuilderFormProps) {
+  const params = useParams();
+  const locale = (params.locale as string) || "en";
   const [currentStep, setCurrentStep] = useState(0);
   const [formData, setFormData] = useState(initialData);
   const [saving, setSaving] = useState(false);
@@ -118,7 +121,7 @@ export function BuilderForm({ portfolioId, initialData }: BuilderFormProps) {
           </button>
         ) : (
           <a
-            href={`/en/dashboard/${portfolioId}/preview`}
+            href={`/${locale}/dashboard/${portfolioId}/preview`}
             onClick={() => save()}
             className="rounded-lg bg-emerald-600 px-6 py-2.5 text-sm font-medium text-white hover:bg-emerald-500 transition-colors"
           >

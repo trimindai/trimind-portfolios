@@ -27,7 +27,7 @@ export function ExperienceStep({ data, onChange }: ExperienceStepProps) {
       <DynamicList
         items={experience}
         onChange={(items) => onChange({ experience: items })}
-        createEmpty={() => ({ title: "", company: "", startDate: "", endDate: "", description: "", highlights: [] })}
+        createEmpty={() => ({ title: "", company: "", startDate: "", endDate: "", description: "", highlights: [] as string[] })}
         maxItems={10}
         addLabel="Add Position"
         renderItem={(item, _, update) => (

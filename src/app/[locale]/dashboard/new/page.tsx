@@ -4,11 +4,14 @@ import { useMutation } from "convex/react";
 import { api } from "@convex/_generated/api";
 import { useUser } from "@clerk/nextjs";
 import { useEffect, useState } from "react";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useParams } from "next/navigation";
 
 export default function NewPortfolioPage() {
   const { user, isLoaded } = useUser();
   const searchParams = useSearchParams();
+  const params = useParams();
+  const localeParam = (params.locale as string) || "en";
+  const locale = (localeParam === "ar" ? "ar" : "en") as "en" | "ar";
   // create() now derives userId from the session — no client-supplied userId.
   const createPortfolio = useMutation(api.portfolios.create);
   const [error, setError] = useState("");
@@ -25,7 +28,7 @@ export default function NewPortfolioPage() {
         const templateId = searchParams.get("template") || "corporate";
         const portfolioId = await createPortfolio({
           templateId,
-          locale: "en",
+          locale,
           name: "My Portfolio",
           basics: {
             fullName: user?.fullName || "",
@@ -42,7 +45,7 @@ export default function NewPortfolioPage() {
           body: JSON.stringify({ portfolioId }),
         });
         if (freeRes.ok) {
-          window.location.href = `/en/dashboard/${portfolioId}/edit`;
+          window.location.href = `/${locale}/dashboard/${portfolioId}/edit`;
           return;
         }
 
@@ -51,13 +54,13 @@ export default function NewPortfolioPage() {
         const res = await fetch("/api/myfatoorah/initiate", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ portfolioId, locale: "en" }),
+          body: JSON.stringify({ portfolioId, locale }),
         });
 
         const data = await res.json();
 
         if (data.alreadyPaid) {
-          window.location.href = `/en/dashboard/${portfolioId}/edit`;
+          window.location.href = `/${locale}/dashboard/${portfolioId}/edit`;
           return;
         }
         if (data.paymentUrl) {
@@ -85,7 +88,7 @@ export default function NewPortfolioPage() {
           </p>
         )}
         <a
-          href="/en/dashboard"
+          href={`/${locale}/dashboard`}
           className="text-emerald-400 hover:text-emerald-300"
         >
           Back to Dashboard
