@@ -74,6 +74,7 @@ export default defineSchema({
     projects: v.optional(
       v.array(
         v.object({
+          // Existing fields (used by Corporate's inline "Impact Stories")
           title: v.string(),
           description: v.string(),
           technologies: v.optional(v.array(v.string())),
@@ -87,6 +88,85 @@ export default defineSchema({
           ),
           link: v.optional(v.string()),
           isFeatured: v.optional(v.boolean()),
+
+          // Detail-page fields: set `slug` to enable /p/<portfolio>/projects/<slug>.
+          // Greglagana.com pattern — narrative blocks, not fixed sections.
+          slug: v.optional(v.string()),
+          tagline: v.optional(v.string()),
+          coverUrl: v.optional(v.string()),
+
+          meta: v.optional(
+            v.object({
+              type: v.optional(
+                v.union(
+                  v.literal("academic"),
+                  v.literal("industrial"),
+                  v.literal("personal"),
+                  v.literal("research")
+                )
+              ),
+              year: v.optional(v.string()),
+              courseCode: v.optional(v.string()),
+              institution: v.optional(v.string()),
+              teamSize: v.optional(v.number()),
+              role: v.optional(v.string()),
+              duration: v.optional(v.string()),
+            })
+          ),
+
+          blocks: v.optional(
+            v.array(
+              v.object({
+                kind: v.union(
+                  v.literal("paragraph"),
+                  v.literal("image"),
+                  v.literal("imageGrid"),
+                  v.literal("specs"),
+                  v.literal("standards"),
+                  v.literal("challenge")
+                ),
+                body: v.optional(v.string()),
+                caption: v.optional(v.string()),
+                url: v.optional(v.string()),
+                fullBleed: v.optional(v.boolean()),
+                images: v.optional(
+                  v.array(
+                    v.object({
+                      url: v.string(),
+                      caption: v.optional(v.string()),
+                    })
+                  )
+                ),
+                items: v.optional(
+                  v.array(
+                    v.object({
+                      label: v.string(),
+                      value: v.string(),
+                    })
+                  )
+                ),
+                problem: v.optional(v.string()),
+                solution: v.optional(v.string()),
+              })
+            )
+          ),
+
+          links: v.optional(
+            v.array(
+              v.object({
+                kind: v.union(
+                  v.literal("report"),
+                  v.literal("repo"),
+                  v.literal("demo"),
+                  v.literal("paper"),
+                  v.literal("video"),
+                  v.literal("external")
+                ),
+                label: v.string(),
+                url: v.string(),
+              })
+            )
+          ),
         })
       )
     ),
@@ -164,6 +244,16 @@ export default defineSchema({
 
     contentAr: v.optional(v.string()),
     generatedHtml: v.optional(v.string()),
+    // Map of project slug → pre-rendered HTML. Populated at publish time
+    // for any project with a slug; served by /p/<slug>/projects/<projectSlug>.
+    generatedProjectPages: v.optional(
+      v.array(
+        v.object({
+          slug: v.string(),
+          html: v.string(),
+        })
+      )
+    ),
     paymentId: v.optional(v.string()),
     publishedAt: v.optional(v.number()),
     lastEditedAt: v.number(),

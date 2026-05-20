@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="{{locale}}" dir="{{#if isRTL}}rtl{{else}}ltr{{/if}}">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{{project.title}} — {{basics.fullName}}</title>
+<meta name="description" content="{{#if project.tagline}}{{project.tagline}}{{else}}{{project.description}}{{/if}}">
+<meta name="theme-color" content="#ffffff">
+<meta property="og:title" content="{{project.title}} | {{basics.fullName}}">
+<meta property="og:description" content="{{#if project.tagline}}{{project.tagline}}{{else}}{{project.description}}{{/if}}">
+<meta property="og:type" content="article">
+{{#if project.coverUrl}}<meta property="og:image" content="{{project.coverUrl}}">{{/if}}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --font-head: 'Poppins', sans-serif;
+  --font-body: 'Manrope', sans-serif;
+  --text: {{#if customization.primaryColor}}{{customization.primaryColor}}{{else}}#111{{/if}};
+  --text-secondary: #555;
+  --text-muted: #888;
+  --bg: {{#if customization.bgColor}}{{customization.bgColor}}{{else}}#fff{{/if}};
+  --bg-warm: #fafafa;
+  --border: #e5e5e5;
+  --accent: {{#if customization.accentColor}}{{customization.accentColor}}{{else}}#111{{/if}};
+}
+
+html { scroll-behavior: smooth; font-size: 16px; }
+body {
+  font-family: var(--font-body);
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+}
+a { text-decoration: none; color: inherit; }
+img { max-width: 100%; display: block; }
+
+/* Visible focus for keyboard a11y */
+a:focus-visible, button:focus-visible {
+  outline: 2px solid var(--text);
+  outline-offset: 3px;
+}
+
+/* ═══ HEADER (matches portfolio main) ═══ */
+.header {
+  position: sticky; top: 0; z-index: 1000;
+  background: rgba(255,255,255,0.95);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--border);
+}
+.header-inner {
+  max-width: 1200px; margin: 0 auto;
+  padding: 20px 40px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.header-brand {
+  font-family: var(--font-head); font-size: 1.1rem; font-weight: 600;
+  color: var(--text); letter-spacing: -0.01em;
+}
+.header-nav { display: flex; align-items: center; gap: 32px; }
+.header-nav a {
+  font-family: var(--font-body); font-size: 0.9rem; font-weight: 500;
+  color: var(--text-secondary); transition: color 200ms;
+}
+.header-nav a:hover { color: var(--text); }
+.header-social { display: flex; gap: 8px; }
+.header-social a {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 36px; height: 36px;
+  color: var(--text-secondary); transition: color 200ms;
+}
+.header-social a:hover { color: var(--text); }
+.header-social svg { width: 20px; height: 20px; }
+
+/* ═══ LAYOUT ═══ */
+main { display: block; }
+.container { max-width: 1100px; margin: 0 auto; padding: 0 40px; }
+.container-wide { max-width: 1200px; margin: 0 auto; padding: 0 40px; }
+
+/* ═══ PROJECT HERO ═══ */
+.project-hero { padding: 64px 0 32px; }
+
+.back-link {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-size: 0.82rem; color: var(--text-muted); font-weight: 500;
+  margin-bottom: 32px;
+  transition: color 200ms;
+}
+.back-link:hover { color: var(--text); }
+.back-link svg { width: 14px; height: 14px; }
+
+.project-byline {
+  display: flex; flex-wrap: wrap; gap: 16px;
+  font-size: 0.78rem; font-weight: 500;
+  color: var(--text-muted);
+  text-transform: uppercase; letter-spacing: 0.08em;
+  margin-bottom: 20px;
+}
+.project-byline > span:not(:last-child)::after {
+  content: '·'; margin-left: 16px; color: var(--border);
+}
+
+.project-title {
+  font-family: var(--font-head);
+  font-size: clamp(2.4rem, 5vw, 3.6rem); font-weight: 700;
+  line-height: 1.1; letter-spacing: -0.025em; color: var(--text);
+  margin-bottom: 20px;
+}
+
+.project-tagline {
+  font-size: 1.2rem; color: var(--text-secondary);
+  line-height: 1.55; max-width: 760px; font-weight: 400;
+}
+
+.project-cover {
+  margin-top: 48px;
+  width: 100%; height: auto;
+  border: 1px solid var(--border);
+}
+
+/* ═══ CONTENT BLOCKS ═══ */
+.project-content { padding: 32px 0 64px; }
+
+.block { margin: 36px 0; }
+.block-paragraph { max-width: 720px; }
+.block-paragraph p {
+  font-size: 1.05rem; line-height: 1.8; color: var(--text-secondary);
+}
+
+.block-image figure { margin: 0; }
+.block-image img { width: 100%; height: auto; }
+.block-image.full-bleed { max-width: none; padding: 0; }
+.block-image figcaption {
+  font-size: 0.82rem; color: var(--text-muted); font-weight: 500;
+  margin-top: 12px; text-transform: uppercase; letter-spacing: 0.06em;
+}
+
+.block-image-grid {
+  display: grid; grid-template-columns: repeat(2, 1fr); gap: 32px;
+}
+.block-image-grid figure { margin: 0; }
+.block-image-grid figcaption {
+  font-size: 0.78rem; color: var(--text-muted);
+  margin-top: 10px; font-weight: 500;
+}
+
+.block-specs {
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  padding: 24px 0;
+}
+.block-specs-row {
+  display: grid; grid-template-columns: 1fr 2fr; gap: 24px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+}
+.block-specs-row:last-child { border-bottom: none; }
+.block-specs-label {
+  font-size: 0.82rem; color: var(--text-muted); font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.06em;
+}
+.block-specs-value {
+  font-size: 0.95rem; color: var(--text); font-weight: 500;
+}
+
+.block-standards { max-width: 720px; }
+.block-standards-title {
+  font-family: var(--font-head); font-size: 0.85rem; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 14px;
+  color: var(--text-muted);
+}
+.block-standards ul { list-style: none; padding: 0; }
+.block-standards li {
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.95rem; color: var(--text-secondary);
+}
+.block-standards li:last-child { border-bottom: none; }
+
+.block-challenge {
+  background: var(--bg-warm);
+  border: 1px solid var(--border);
+  padding: 28px 32px;
+  max-width: 760px;
+}
+.block-challenge-label {
+  font-size: 0.78rem; font-weight: 600; color: var(--text-muted);
+  text-transform: uppercase; letter-spacing: 0.08em;
+  margin-bottom: 4px;
+}
+.block-challenge p { font-size: 0.95rem; line-height: 1.7; color: var(--text-secondary); }
+.block-challenge p + .block-challenge-label { margin-top: 16px; }
+
+/* ═══ LINKS ═══ */
+.project-links {
+  display: flex; flex-wrap: wrap; gap: 12px;
+  padding: 32px 0;
+  border-top: 1px solid var(--border);
+}
+.project-link {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 10px 18px;
+  border: 1px solid var(--text);
+  font-size: 0.85rem; font-weight: 600;
+  letter-spacing: 0.02em;
+  transition: all 200ms;
+}
+.project-link:hover { background: var(--text); color: var(--bg); }
+.project-link svg { width: 14px; height: 14px; }
+
+/* ═══ NEXT PROJECT (greglagana.com pattern) ═══ */
+.project-nav {
+  padding: 72px 0 96px;
+  border-top: 1px solid var(--border);
+}
+.next-link {
+  display: inline-flex; align-items: baseline; gap: 16px;
+  font-family: var(--font-head); font-weight: 600;
+  transition: gap 200ms;
+}
+.next-link:hover { gap: 24px; }
+.next-link-label {
+  font-size: 0.78rem; color: var(--text-muted);
+  text-transform: uppercase; letter-spacing: 0.08em;
+}
+.next-link-title {
+  font-size: 1.5rem; color: var(--text);
+  letter-spacing: -0.02em;
+}
+
+/* ═══ FOOTER (matches portfolio main) ═══ */
+.footer {
+  background: var(--bg-warm); border-top: 1px solid var(--border);
+  padding: 60px 40px 40px;
+}
+.footer-inner {
+  max-width: 1200px; margin: 0 auto;
+  display: grid; grid-template-columns: 1fr 1fr; gap: 40px;
+}
+.footer-col h4 {
+  font-family: var(--font-head); font-size: 0.85rem; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 12px;
+  color: var(--text-muted);
+}
+.footer-col p, .footer-col a {
+  font-size: 0.95rem; color: var(--text-secondary); line-height: 1.8;
+}
+.footer-col a:hover { color: var(--text); text-decoration: underline; }
+.footer-bottom {
+  max-width: 1200px; margin: 40px auto 0; padding-top: 20px;
+  border-top: 1px solid var(--border);
+  font-size: 0.8rem; color: var(--text-muted);
+}
+
+/* ═══ PRINT ═══ */
+@media print {
+  @page { margin: 0.5in; size: A4; }
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    backdrop-filter: none !important;
+  }
+  html, body { background: #fff !important; font-size: 10pt; }
+  .header { position: static; background: #fff !important; border-bottom: 1px solid var(--border); }
+  .header-social, .back-link, .project-nav, .project-links { display: none !important; }
+  .footer { background: #fff !important; }
+  .project-hero { padding: 16px 0 12px; }
+  .project-title { font-size: 22pt; }
+  .project-tagline { font-size: 11pt; }
+  .project-cover { margin-top: 16px; max-height: 4in; object-fit: cover; }
+  .block { margin: 18px 0; page-break-inside: avoid; break-inside: avoid; }
+  .block-paragraph p { font-size: 10pt; }
+  .block-specs-row { padding: 4px 0; }
+  .block-specs-label, .block-specs-value { font-size: 9pt; }
+  .block-image-grid { grid-template-columns: 1fr 1fr; gap: 12px; }
+}
+
+/* ═══ RTL ═══ */
+[dir="rtl"] .back-link svg { transform: scaleX(-1); }
+[dir="rtl"] .next-link { flex-direction: row-reverse; }
+
+/* ═══ RESPONSIVE ═══ */
+@media (max-width: 768px) {
+  .header-inner { padding: 16px 24px; }
+  .header-nav { display: none; }
+  .container, .container-wide { padding: 0 24px; }
+  .project-hero { padding: 40px 0 24px; }
+  .project-title { font-size: 2rem; }
+  .project-tagline { font-size: 1.05rem; }
+  .block-image-grid { grid-template-columns: 1fr; gap: 20px; }
+  .block-specs-row { grid-template-columns: 1fr; gap: 4px; padding: 12px 0; }
+  .block-challenge { padding: 20px 24px; }
+  .footer-inner { grid-template-columns: 1fr; gap: 32px; }
+}
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-inner">
+    <a href="/p/{{portfolioSlug}}" class="header-brand">{{basics.fullName}}</a>
+    <nav class="header-nav">
+      <a href="/p/{{portfolioSlug}}#about">Home</a>
+      <a href="/p/{{portfolioSlug}}#projects">Projects</a>
+      {{#if basics.linkedin}}<a href="{{basics.linkedin}}" target="_blank" rel="noopener">LinkedIn</a>{{/if}}
+    </nav>
+    <div class="header-social">
+      {{#if basics.linkedin}}
+      <a href="{{basics.linkedin}}" target="_blank" rel="noopener" aria-label="LinkedIn">
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+      </a>
+      {{/if}}
+      {{#if basics.github}}
+      <a href="{{basics.github}}" target="_blank" rel="noopener" aria-label="GitHub">
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
+      </a>
+      {{/if}}
+    </div>
+  </div>
+</header>
+
+<main>
+  <section class="project-hero">
+    <div class="container">
+      <a href="/p/{{portfolioSlug}}#projects" class="back-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        All projects
+      </a>
+
+      {{#if project.meta}}
+      <div class="project-byline">
+        {{#if project.meta.year}}<span>{{project.meta.year}}</span>{{/if}}
+        {{#if project.meta.role}}<span>{{project.meta.role}}</span>{{/if}}
+        {{#if project.meta.institution}}<span>{{project.meta.institution}}</span>{{/if}}
+        {{#if project.meta.courseCode}}<span>{{project.meta.courseCode}}</span>{{/if}}
+        {{#if project.meta.duration}}<span>{{project.meta.duration}}</span>{{/if}}
+        {{#if project.meta.teamSize}}<span>Team of {{project.meta.teamSize}}</span>{{/if}}
+      </div>
+      {{/if}}
+
+      <h1 class="project-title">{{project.title}}</h1>
+
+      {{#if project.tagline}}
+        <p class="project-tagline">{{project.tagline}}</p>
+      {{else}}
+        <p class="project-tagline">{{project.description}}</p>
+      {{/if}}
+
+      {{#if project.coverUrl}}
+        <img class="project-cover" src="{{project.coverUrl}}" alt="{{project.title}}">
+      {{/if}}
+    </div>
+  </section>
+
+  {{#if project.blocks}}
+  <section class="project-content">
+    <div class="container">
+      {{#each project.blocks}}
+
+        {{#ifEq this.kind "paragraph"}}
+        <div class="block block-paragraph">
+          <p>{{this.body}}</p>
+        </div>
+        {{/ifEq}}
+
+        {{#ifEq this.kind "image"}}
+        <div class="block block-image{{#if this.fullBleed}} full-bleed{{/if}}">
+          <figure>
+            <img src="{{this.url}}" alt="{{#if this.caption}}{{this.caption}}{{else}}Project image{{/if}}">
+            {{#if this.caption}}<figcaption>{{this.caption}}</figcaption>{{/if}}
+          </figure>
+        </div>
+        {{/ifEq}}
+
+        {{#ifEq this.kind "imageGrid"}}
+        <div class="block block-image-grid">
+          {{#each this.images}}
+          <figure>
+            <img src="{{this.url}}" alt="{{#if this.caption}}{{this.caption}}{{else}}Project image{{/if}}">
+            {{#if this.caption}}<figcaption>{{this.caption}}</figcaption>{{/if}}
+          </figure>
+          {{/each}}
+        </div>
+        {{/ifEq}}
+
+        {{#ifEq this.kind "specs"}}
+        <div class="block block-specs">
+          {{#each this.items}}
+          <div class="block-specs-row">
+            <div class="block-specs-label">{{this.label}}</div>
+            <div class="block-specs-value">{{this.value}}</div>
+          </div>
+          {{/each}}
+        </div>
+        {{/ifEq}}
+
+        {{#ifEq this.kind "standards"}}
+        <div class="block block-standards">
+          <div class="block-standards-title">Engineering Standards</div>
+          <ul>
+            {{#each this.items}}<li>{{this.label}}{{#if this.value}} — {{this.value}}{{/if}}</li>{{/each}}
+          </ul>
+        </div>
+        {{/ifEq}}
+
+        {{#ifEq this.kind "challenge"}}
+        <div class="block block-challenge">
+          {{#if this.problem}}
+          <div class="block-challenge-label">Challenge</div>
+          <p>{{this.problem}}</p>
+          {{/if}}
+          {{#if this.solution}}
+          <div class="block-challenge-label">Solution</div>
+          <p>{{this.solution}}</p>
+          {{/if}}
+        </div>
+        {{/ifEq}}
+
+      {{/each}}
+    </div>
+  </section>
+  {{/if}}
+
+  {{#if project.links}}
+  <section class="container">
+    <div class="project-links">
+      {{#each project.links}}
+      <a href="{{this.url}}" target="_blank" rel="noopener" class="project-link">
+        {{this.label}}
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M7 17L17 7M7 7h10v10"/></svg>
+      </a>
+      {{/each}}
+    </div>
+  </section>
+  {{/if}}
+
+  {{#if nextProject}}
+  <section class="container">
+    <nav class="project-nav" aria-label="Next project">
+      <a href="/p/{{portfolioSlug}}/projects/{{nextProject.slug}}" class="next-link">
+        <span class="next-link-label">Next /</span>
+        <span class="next-link-title">{{nextProject.title}}</span>
+      </a>
+    </nav>
+  </section>
+  {{/if}}
+</main>
+
+<footer class="footer">
+  <div class="footer-inner">
+    {{#if basics.location}}
+    <div class="footer-col">
+      <h4>Location</h4>
+      <p>{{basics.location}}</p>
+    </div>
+    {{/if}}
+    <div class="footer-col">
+      <h4>Contact</h4>
+      {{#if basics.email}}<p><a href="mailto:{{basics.email}}">{{basics.email}}</a></p>{{/if}}
+      {{#if basics.phone}}<p><a href="tel:{{basics.phone}}">{{basics.phone}}</a></p>{{/if}}
+    </div>
+  </div>
+  <div class="footer-bottom">
+    &copy; {{basics.fullName}}{{#if basics.title}} — {{basics.title}}{{/if}}
+  </div>
+</footer>
+
+</body>
+</html>

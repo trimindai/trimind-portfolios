@@ -3,6 +3,8 @@ import Handlebars from "handlebars";
 import corporateTemplateSource from "@/templates/corporate/template.hbs";
 // @ts-ignore - webpack asset/source loader
 import engineerTemplateSource from "@/templates/engineer/template.hbs";
+// @ts-ignore - webpack asset/source loader
+import engineerProjectDetailSource from "@/templates/engineer/project-detail.hbs";
 
 export interface PortfolioData {
   basics: {
@@ -38,6 +40,35 @@ export interface PortfolioData {
     metrics?: Array<{ value: string; label: string }>;
     link?: string;
     isFeatured?: boolean;
+    // Detail-page fields — set `slug` to enable /p/<portfolio>/projects/<slug>
+    slug?: string;
+    tagline?: string;
+    coverUrl?: string;
+    meta?: {
+      type?: "academic" | "industrial" | "personal" | "research";
+      year?: string;
+      courseCode?: string;
+      institution?: string;
+      teamSize?: number;
+      role?: string;
+      duration?: string;
+    };
+    blocks?: Array<{
+      kind: "paragraph" | "image" | "imageGrid" | "specs" | "standards" | "challenge";
+      body?: string;
+      caption?: string;
+      url?: string;
+      fullBleed?: boolean;
+      images?: Array<{ url: string; caption?: string }>;
+      items?: Array<{ label: string; value: string }>;
+      problem?: string;
+      solution?: string;
+    }>;
+    links?: Array<{
+      kind: "report" | "repo" | "demo" | "paper" | "video" | "external";
+      label: string;
+      url: string;
+    }>;
   }>;
   education?: Array<{
     degree: string;
@@ -105,6 +136,7 @@ Handlebars.registerHelper("json", function (context: any) {
 
 let compiledCorporateTemplate: Handlebars.TemplateDelegate | null = null;
 let compiledEngineerTemplate: Handlebars.TemplateDelegate | null = null;
+let compiledEngineerProjectDetail: Handlebars.TemplateDelegate | null = null;
 
 function prepareTemplateData(data: PortfolioData & { contentAr?: any }) {
   const templateData: any = { ...data };
@@ -129,4 +161,52 @@ export function renderEngineerTemplate(data: PortfolioData & { contentAr?: any }
     compiledEngineerTemplate = Handlebars.compile(engineerTemplateSource as string);
   }
   return compiledEngineerTemplate(prepareTemplateData(data));
+}
+
+/**
+ * Render a project detail page (/p/<portfolio>/projects/<slug>) in the Engineer style.
+ * Returns null when the project has no slug (means no detail page is offered).
+ */
+export function renderEngineerProjectDetail(
+  data: PortfolioData & { contentAr?: any; slug?: string },
+  projectSlug: string
+): string | null {
+  if (!data.projects?.length) return null;
+  const projectIndex = data.projects.findIndex((p) => p.slug === projectSlug);
+  if (projectIndex === -1) return null;
+
+  // Forward-only "Next" — next project in array order that also has a slug.
+  const nextProject = data.projects
+    .slice(projectIndex + 1)
+    .find((p) => p.slug);
+
+  if (!compiledEngineerProjectDetail) {
+    compiledEngineerProjectDetail = Handlebars.compile(
+      engineerProjectDetailSource as string
+    );
+  }
+
+  return compiledEngineerProjectDetail({
+    ...prepareTemplateData(data),
+    project: data.projects[projectIndex],
+    nextProject,
+    portfolioSlug: data.slug || "",
+  });
+}
+
+/**
+ * Bulk-render every project that has a `slug` for a portfolio.
+ * Used at publish time to populate `portfolio.generatedProjectPages`.
+ */
+export function renderAllProjectDetailPages(
+  data: PortfolioData & { contentAr?: any; slug?: string }
+): Array<{ slug: string; html: string }> {
+  const templateId = data.templateId || "corporate";
+  if (templateId !== "engineer") return []; // Phase 1: Engineer only
+
+  const slugged = (data.projects || []).filter((p) => p.slug);
+  return slugged.flatMap((p) => {
+    const html = renderEngineerProjectDetail(data, p.slug!);
+    return html ? [{ slug: p.slug!, html }] : [];
+  });
 }
