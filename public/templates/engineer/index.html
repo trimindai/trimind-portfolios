@@ -3,99 +3,121 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Bader Mohammad — Industrial Engineer</title>
-<meta name="description" content="Industrial Engineer based in Kuwait, Alshuhada. Industrial Engineering graduate with a strong foundation in simulation, optimization, and project management tools.">
+<title>Abdulrahman Alkandari — Electrical Engineering Student</title>
+<meta name="description" content="Electrical Engineering Student based in Kuwait City, Kuwait. Smart systems, electronics, automation, and practical engineering solutions.">
 <meta name="theme-color" content="#ffffff">
-<meta property="og:title" content="Bader Mohammad | Industrial Engineer">
-<meta property="og:description" content="Industrial Engineering graduate with a strong foundation in simulation, optimization, and project management tools. Passionate about smart manufacturing and process improvement.">
+<meta property="og:title" content="Abdulrahman Alkandari | Electrical Engineering Student">
+<meta property="og:description" content="Motivated Electrical Engineering student focused on smart systems, electronics, and automation.">
 <meta property="og:type" content="website">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 :root {
-  --font-head: 'Poppins', sans-serif;
-  --font-body: 'Manrope', sans-serif;
-  --text: #111;
-  --text-secondary: #555;
-  --text-muted: #888;
-  --bg: #fff;
+  --font-head: 'Space Grotesk', sans-serif;
+  --font-body: 'Inter', sans-serif;
+  --text: #18181b;
+  --text-secondary: #52525b;
+  --text-muted: #a1a1aa;
+  --bg: #ffffff;
   --bg-warm: #fafafa;
-  --border: #e5e5e5;
-  --accent: #111;
+  --bg-card: #f4f4f5;
+  --border: #e4e4e7;
+  --accent: #1e3a5f;
+  --accent-glow: rgba(30, 58, 95, 0.08);
+  --orange: #f97316;
+  --radius: 0px;
 }
 html { scroll-behavior: smooth; font-size: 16px; }
 body { font-family: var(--font-body); background: var(--bg); color: var(--text); line-height: 1.7; -webkit-font-smoothing: antialiased; }
 a { text-decoration: none; color: inherit; }
 img { max-width: 100%; display: block; }
-
-.header { position: sticky; top: 0; z-index: 1000; background: rgba(255,255,255,0.95); backdrop-filter: blur(10px); border-bottom: 1px solid transparent; }
-.header-inner { max-width: 1200px; margin: 0 auto; padding: 20px 40px; display: flex; align-items: center; justify-content: space-between; }
-.header-brand { font-family: var(--font-head); font-size: 1.1rem; font-weight: 600; color: var(--text); letter-spacing: -0.01em; }
-.header-nav { display: flex; align-items: center; gap: 32px; }
-.header-nav a { font-family: var(--font-body); font-size: 0.9rem; font-weight: 500; color: var(--text-secondary); transition: color 200ms; }
+a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+.header { position: sticky; top: 0; z-index: 1000; background: rgba(255,255,255,0.95); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); }
+.header-inner { max-width: 1200px; margin: 0 auto; padding: 18px 40px; display: flex; align-items: center; justify-content: space-between; }
+.header-brand { font-family: var(--font-head); font-size: 1.05rem; font-weight: 600; color: var(--text); letter-spacing: -0.01em; }
+.header-nav { display: flex; align-items: center; gap: 28px; }
+.header-nav a { font-size: 0.85rem; font-weight: 500; color: var(--text-secondary); transition: color 200ms; }
 .header-nav a:hover { color: var(--text); }
 .mobile-menu-btn { display: none; background: none; border: none; cursor: pointer; flex-direction: column; gap: 5px; padding: 4px; }
-.mobile-menu-btn span { display: block; width: 22px; height: 1.5px; background: var(--text); transition: all 200ms; }
-
+.mobile-menu-btn span { display: block; width: 20px; height: 1.5px; background: var(--text); transition: all 200ms; }
 .section { max-width: 1200px; margin: 0 auto; padding: 80px 40px; }
-
-.about-grid { display: grid; grid-template-columns: 1fr 1.2fr; gap: 60px; align-items: start; }
-.about-grid h1 { font-family: var(--font-head); font-size: 3rem; font-weight: 700; line-height: 1.15; letter-spacing: -0.02em; color: var(--text); }
-.about-text { font-family: var(--font-body); font-size: 1.05rem; color: var(--text-secondary); line-height: 1.75; }
-.about-text p + p { margin-top: 16px; }
-
-.about-actions { display: flex; gap: 16px; margin-top: 32px; }
-.btn { display: inline-flex; align-items: center; justify-content: center; padding: 12px 28px; font-family: var(--font-body); font-size: 0.85rem; font-weight: 600; letter-spacing: 0.02em; transition: all 200ms; border: 1.5px solid var(--text); cursor: pointer; }
-.btn-primary { background: var(--text); color: var(--bg); }
-.btn-primary:hover { background: transparent; color: var(--text); }
-.btn-secondary { background: transparent; color: var(--text); }
-.btn-secondary:hover { background: var(--text); color: var(--bg); }
-
+.section-sm { padding: 48px 40px; }
+.section-title { font-family: var(--font-head); font-size: 1.8rem; font-weight: 700; letter-spacing: -0.02em; color: var(--text); margin-bottom: 48px; }
 .divider { height: 1px; background: var(--border); max-width: 1200px; margin: 0 auto; }
-
-.projects-list { display: flex; flex-direction: column; gap: 32px; }
-.project-item { padding: 32px 0; border-bottom: 1px solid var(--border); }
-.project-item:last-child { border-bottom: none; }
-.project-item h3 { font-family: var(--font-head); font-size: 1.25rem; font-weight: 600; margin-bottom: 8px; }
-.project-item p { font-size: 0.95rem; color: var(--text-secondary); line-height: 1.7; max-width: 600px; }
-.project-meta { display: flex; gap: 16px; margin-top: 16px; }
-.project-meta span { font-size: 0.78rem; font-weight: 500; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.06em; }
-
-.skills-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 40px; }
-.skill-group h4 { font-family: var(--font-head); font-size: 0.85rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 14px; color: var(--text-muted); }
+.hero { padding-top: 100px; padding-bottom: 80px; }
+.hero-grid { display: grid; grid-template-columns: 1fr 1.4fr; gap: 64px; align-items: start; }
+.hero-left h1 { font-family: var(--font-head); font-size: 2.8rem; font-weight: 700; line-height: 1.1; letter-spacing: -0.03em; color: var(--text); }
+.hero-left .hero-discipline { font-size: 0.78rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: var(--accent); margin-top: 16px; }
+.hero-bio { font-size: 1.05rem; color: var(--text-secondary); line-height: 1.8; }
+.hero-bio p + p { margin-top: 14px; }
+.hero-meta { display: flex; flex-wrap: wrap; gap: 24px; margin-top: 24px; padding-top: 24px; border-top: 1px solid var(--border); }
+.hero-meta-item { display: flex; flex-direction: column; gap: 2px; }
+.hero-meta-label { font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); }
+.hero-meta-value { font-size: 0.9rem; font-weight: 500; color: var(--text); }
+.hero-actions { display: flex; gap: 12px; margin-top: 32px; }
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 11px 24px; font-family: var(--font-body); font-size: 0.82rem; font-weight: 600; letter-spacing: 0.02em; transition: all 200ms; border: 1.5px solid var(--accent); cursor: pointer; }
+.btn-primary { background: var(--accent); color: #fff; }
+.btn-primary:hover { background: transparent; color: var(--accent); }
+.btn-secondary { background: transparent; color: var(--accent); }
+.btn-secondary:hover { background: var(--accent); color: #fff; }
+.btn svg { width: 14px; height: 14px; }
+.objective { max-width: 800px; font-size: 1.05rem; color: var(--text-secondary); line-height: 1.8; padding: 32px; border-left: 3px solid var(--accent); background: var(--bg-warm); margin-top: 40px; }
+.projects-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 28px; }
+.project-card { border: 1px solid var(--border); overflow: hidden; transition: border-color 250ms, box-shadow 250ms; background: var(--bg); }
+.project-card:hover { border-color: var(--accent); box-shadow: 0 4px 24px rgba(0,0,0,0.06); }
+.project-card-img { aspect-ratio: 16/10; background: var(--bg-card); overflow: hidden; position: relative; }
+.project-card-img img { width: 100%; height: 100%; object-fit: cover; transition: transform 400ms; }
+.project-card:hover .project-card-img img { transform: scale(1.03); }
+.project-card-body { padding: 20px 24px 24px; }
+.project-card-type { font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--orange); margin-bottom: 8px; }
+.project-card-title { font-family: var(--font-head); font-size: 1.15rem; font-weight: 600; color: var(--text); line-height: 1.35; margin-bottom: 8px; }
+.project-card-desc { font-size: 0.88rem; color: var(--text-secondary); line-height: 1.65; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+.project-card-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 16px; }
+.project-card-tag { font-size: 0.7rem; font-weight: 500; color: var(--accent); background: var(--accent-glow); padding: 4px 10px; letter-spacing: 0.02em; }
+.skills-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 40px; }
+.skill-group h4 { font-family: var(--font-head); font-size: 0.78rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 16px; color: var(--accent); }
 .skill-group ul { list-style: none; }
-.skill-group li { font-size: 0.95rem; color: var(--text-secondary); padding: 4px 0; }
-
-.edu-item { padding: 24px 0; border-bottom: 1px solid var(--border); }
+.skill-group li { font-size: 0.9rem; color: var(--text-secondary); padding: 5px 0; }
+.edu-list { display: flex; flex-direction: column; }
+.edu-item { padding: 28px 0; border-bottom: 1px solid var(--border); display: grid; grid-template-columns: 200px 1fr; gap: 40px; align-items: start; }
 .edu-item:last-child { border-bottom: none; }
-.edu-item h3 { font-family: var(--font-head); font-size: 1.1rem; font-weight: 600; }
-.edu-item .institution { font-size: 0.95rem; color: var(--text-secondary); margin-top: 4px; }
-.edu-item .year { font-size: 0.82rem; color: var(--text-muted); margin-top: 6px; font-weight: 500; }
-
+.edu-year { font-size: 0.78rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.06em; padding-top: 4px; }
+.edu-content h3 { font-family: var(--font-head); font-size: 1.05rem; font-weight: 600; }
+.edu-content .institution { font-size: 0.92rem; color: var(--text-secondary); margin-top: 4px; }
+.edu-content .description { font-size: 0.88rem; color: var(--text-secondary); margin-top: 10px; line-height: 1.65; }
+.lang-grid { display: flex; flex-wrap: wrap; gap: 16px; }
+.lang-item { padding: 16px 28px; border: 1px solid var(--border); min-width: 160px; text-align: center; }
+.lang-item .name { font-family: var(--font-head); font-size: 0.95rem; font-weight: 600; }
+.lang-item .level { font-size: 0.8rem; color: var(--text-muted); margin-top: 4px; }
 .footer { background: var(--bg-warm); border-top: 1px solid var(--border); padding: 60px 40px 40px; }
-.footer-inner { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
-.footer-col h4 { font-family: var(--font-head); font-size: 0.85rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 12px; color: var(--text-muted); }
-.footer-col p, .footer-col a { font-size: 0.95rem; color: var(--text-secondary); line-height: 1.8; }
-.footer-col a:hover { color: var(--text); text-decoration: underline; }
-.footer-bottom { max-width: 1200px; margin: 40px auto 0; padding-top: 20px; border-top: 1px solid var(--border); font-size: 0.8rem; color: var(--text-muted); }
-
-@media print {
-  .header { position: static; border-bottom: 1px solid var(--border); }
-  .btn { border: 1.5px solid var(--text) !important; }
-  .footer { background: #fff !important; }
+.footer-inner { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 40px; }
+.footer-col h4 { font-family: var(--font-head); font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 12px; color: var(--text-muted); }
+.footer-col p, .footer-col a { font-size: 0.9rem; color: var(--text-secondary); line-height: 1.8; }
+.footer-col a:hover { color: var(--accent); }
+.footer-bottom { max-width: 1200px; margin: 40px auto 0; padding-top: 20px; border-top: 1px solid var(--border); font-size: 0.78rem; color: var(--text-muted); display: flex; justify-content: space-between; align-items: center; }
+@media (max-width: 900px) {
+  .hero-grid { grid-template-columns: 1fr; gap: 32px; }
+  .hero-left h1 { font-size: 2.2rem; }
+  .projects-grid { grid-template-columns: 1fr; }
+  .edu-item { grid-template-columns: 1fr; gap: 4px; }
 }
-
-@media (max-width: 768px) {
-  .header-inner { padding: 16px 24px; }
+@media (max-width: 640px) {
+  .header-inner { padding: 14px 20px; }
   .header-nav { display: none; }
   .mobile-menu-btn { display: flex; }
-  .section { padding: 60px 24px; }
-  .about-grid { grid-template-columns: 1fr; gap: 32px; }
-  .about-grid h1 { font-size: 2.2rem; }
-  .footer-inner { grid-template-columns: 1fr; gap: 32px; }
-  .skills-list { grid-template-columns: 1fr 1fr; gap: 24px; }
+  .section { padding: 48px 20px; }
+  .section-sm { padding: 32px 20px; }
+  .hero { padding-top: 72px; padding-bottom: 48px; }
+  .hero-left h1 { font-size: 1.8rem; }
+  .hero-actions { flex-direction: column; }
+  .hero-meta { gap: 16px; }
+  .skills-grid { grid-template-columns: 1fr 1fr; gap: 24px; }
+  .footer-inner { grid-template-columns: 1fr; gap: 24px; }
+  .footer-bottom { flex-direction: column; gap: 8px; text-align: center; }
+  .lang-grid { flex-direction: column; }
+  .lang-item { min-width: auto; }
 }
 </style>
 </head>
@@ -103,7 +125,7 @@ img { max-width: 100%; display: block; }
 
 <header class="header">
   <div class="header-inner">
-    <div class="header-brand">Bader Mohammad</div>
+    <a href="#about" class="header-brand">Abdulrahman Alkandari</a>
     <nav class="header-nav">
       <a href="#about">Home</a>
       <a href="#projects">Projects</a>
@@ -116,107 +138,133 @@ img { max-width: 100%; display: block; }
   </div>
 </header>
 
-<section class="section" id="about">
-  <div class="about-grid">
-    <div>
+<section class="section hero" id="about">
+  <div class="hero-grid">
+    <div class="hero-left">
       <h1>About Me</h1>
+      <div class="hero-discipline">Electrical Engineering Student</div>
     </div>
-    <div>
-      <div class="about-text">
-        <p>Industrial Engineering graduate with a strong foundation in simulation, optimization, and project management tools. Passionate about smart manufacturing and process improvement.</p>
-        <p>I am skilled at analyzing various components of manufacturing processes — schedules, flows, and specifications — to discover new ways to improve efficiency. I design and implement control systems ensuring that all products meet quality standards, and I advise clients regarding product specifications.</p>
+    <div class="hero-right">
+      <div class="hero-bio">
+        <p>Motivated Electrical Engineering student with an interest in smart systems, electronics, automation, and practical engineering solutions. Bilingual in Arabic and English, focused on academic development and project-based experience while building a foundation for work in electrical systems, control, and modern technology.</p>
+        <p>I build practical engineering solutions where hardware meets intelligence — sensors, microcontrollers, and machine learning working together to solve real problems for Kuwait and the wider Gulf.</p>
       </div>
-      <div class="about-actions">
-        <a href="mailto:Bkhaled.bbe@gmail.com" class="btn btn-primary">Contact</a>
-        <a href="#projects" class="btn btn-secondary">Projects</a>
+      <div class="hero-meta">
+        <div class="hero-meta-item">
+          <span class="hero-meta-label">Location</span>
+          <span class="hero-meta-value">Kuwait City, Kuwait</span>
+        </div>
+        <div class="hero-meta-item">
+          <span class="hero-meta-label">Nationality</span>
+          <span class="hero-meta-value">Kuwaiti National</span>
+        </div>
+        <div class="hero-meta-item">
+          <span class="hero-meta-label">Email</span>
+          <span class="hero-meta-value">aak22xq8@gmail.com</span>
+        </div>
+        <div class="hero-meta-item">
+          <span class="hero-meta-label">Phone</span>
+          <span class="hero-meta-value">+965 55502344</span>
+        </div>
+      </div>
+      <div class="hero-actions">
+        <a href="#" class="btn btn-primary">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+          Resume
+        </a>
+        <a href="#projects" class="btn btn-secondary">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+          Projects
+        </a>
       </div>
     </div>
   </div>
 </section>
 
 <div class="divider"></div>
-
 <section class="section" id="projects">
-  <h2 style="font-family:var(--font-head);font-size:2rem;font-weight:700;margin-bottom:40px;">Projects</h2>
-  <div class="projects-list">
-    <article class="project-item">
-      <h3>Smart Manufacturing of OSU Creamery</h3>
-      <p>A comprehensive smart manufacturing initiative for the Oregon State University Creamery. The project involved analyzing production workflows, implementing simulation models using Arena Rockwell Software, and optimizing scheduling and resource allocation to improve overall equipment effectiveness and reduce waste.</p>
-      <div class="project-meta">
-        <span>Arena Rockwell</span>
-        <span>Simulation</span>
-        <span>Optimization</span>
-        <span>Quality Control</span>
+  <h2 class="section-title">Projects</h2>
+  <div class="projects-grid">
+    <article class="project-card" style="cursor:pointer">
+      <div class="project-card-img">
+        <img src="/seed/smart-irrigation/cover.png" alt="Smart Irrigation System" loading="lazy">
+      </div>
+      <div class="project-card-body">
+        <div class="project-card-type">academic</div>
+        <h3 class="project-card-title">Smart Irrigation System</h3>
+        <p class="project-card-desc">Vision-based irrigation controller that identifies plant species and waters at species-specific moisture thresholds. Built for Gulf agriculture where water scarcity is acute.</p>
+        <div class="project-card-tags">
+          <span class="project-card-tag">Raspberry Pi</span>
+          <span class="project-card-tag">Arduino UNO</span>
+          <span class="project-card-tag">Python</span>
+          <span class="project-card-tag">TensorFlow Lite</span>
+          <span class="project-card-tag">YOLOv4-tiny</span>
+          <span class="project-card-tag">CNN</span>
+        </div>
       </div>
     </article>
   </div>
 </section>
 
 <div class="divider"></div>
-
 <section class="section" id="skills">
-  <h2 style="font-family:var(--font-head);font-size:2rem;font-weight:700;margin-bottom:40px;">Skills</h2>
-  <div class="skills-list">
+  <h2 class="section-title">Skills</h2>
+  <div class="skills-grid">
     <div class="skill-group">
-      <h4>Software & Tools</h4>
+      <h4>Engineering</h4>
       <ul>
-        <li>Microsoft Office</li>
-        <li>Arena Rockwell</li>
-        <li>LINGO</li>
-        <li>Minitab</li>
-        <li>MATLAB</li>
-        <li>Jack Software</li>
-        <li>Microsoft Project</li>
+        <li>Electrical engineering fundamentals</li>
+        <li>Smart systems and automation</li>
+        <li>Basic electronics</li>
+        <li>Problem solving and technical research</li>
       </ul>
     </div>
     <div class="skill-group">
-      <h4>Hard Skills</h4>
+      <h4>Tools</h4>
       <ul>
-        <li>Process Analysis</li>
-        <li>Quality Control</li>
-        <li>Cost Analysis</li>
-        <li>Project Planning</li>
-        <li>Data Analysis</li>
-        <li>Problem Solving</li>
-        <li>Critical Thinking</li>
+        <li>Arduino</li>
+        <li>Raspberry Pi</li>
+        <li>Microcontroller programming</li>
       </ul>
     </div>
     <div class="skill-group">
-      <h4>Personal Skills</h4>
+      <h4>Soft Skills</h4>
       <ul>
-        <li>Presentation</li>
-        <li>Communication</li>
-        <li>Time Management</li>
         <li>Teamwork</li>
-        <li>Decision Making</li>
-        <li>Stress Management</li>
-      </ul>
-    </div>
-    <div class="skill-group">
-      <h4>Languages</h4>
-      <ul>
-        <li>Arabic — Native</li>
-        <li>English — Fluent</li>
+        <li>Communication</li>
+        <li>Time management</li>
       </ul>
     </div>
   </div>
 </section>
 
 <div class="divider"></div>
-
 <section class="section" id="education">
-  <h2 style="font-family:var(--font-head);font-size:2rem;font-weight:700;margin-bottom:40px;">Education</h2>
-  <div>
+  <h2 class="section-title">Education</h2>
+  <div class="edu-list">
     <article class="edu-item">
-      <h3>Master of Business Management</h3>
-      <div class="institution">Cardiff University</div>
-      <div class="year">2025</div>
+      <div class="edu-year">In Progress</div>
+      <div class="edu-content">
+        <h3>B.Sc. in Electrical Engineering</h3>
+        <div class="institution">Kuwait</div>
+        <div class="description">Focus areas: smart systems, electronics, automation, power systems.</div>
+      </div>
     </article>
-    <article class="edu-item">
-      <h3>Bachelor of Industrial Engineering</h3>
-      <div class="institution">Oregon State University</div>
-      <div class="year">2024 — GPA: 3.83</div>
-    </article>
+  </div>
+</section>
+
+<div class="divider"></div>
+<section class="section section-sm" id="languages">
+  <h2 class="section-title">Languages</h2>
+  <div class="lang-grid">
+    <div class="lang-item">
+      <div class="name">Arabic</div>
+      <div class="level">Native</div>
+    </div>
+    <div class="lang-item">
+      <div class="name">English</div>
+      <div class="level">Good</div>
+    </div>
   </div>
 </section>
 
@@ -224,16 +272,20 @@ img { max-width: 100%; display: block; }
   <div class="footer-inner">
     <div class="footer-col">
       <h4>Location</h4>
-      <p>Kuwait, Alshuhada</p>
+      <p>Kuwait City, Kuwait</p>
     </div>
     <div class="footer-col">
       <h4>Contact</h4>
-      <p><a href="mailto:Bkhaled.bbe@gmail.com">Bkhaled.bbe@gmail.com</a></p>
-      <p><a href="tel:+96594011662">+965 94011662</a></p>
+      <p><a href="mailto:aak22xq8@gmail.com">aak22xq8@gmail.com</a></p>
+      <p><a href="tel:+96555502344">+965 55502344</a></p>
+    </div>
+    <div class="footer-col">
+      <h4>Connect</h4>
+      <p>—</p>
     </div>
   </div>
   <div class="footer-bottom">
-    &copy; Bader Mohammad — Industrial Engineer
+    <span>&copy; Abdulrahman Alkandari — Electrical Engineering Student</span>
   </div>
 </footer>
 
