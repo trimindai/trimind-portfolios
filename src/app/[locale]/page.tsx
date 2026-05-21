@@ -182,6 +182,62 @@ export default function LandingPage() {
             </div>
           </div>
 
+          {/* Engineer template — also available */}
+          <div className="mt-12 rounded-2xl border border-slate-800 bg-slate-900/50 overflow-hidden max-w-4xl mx-auto">
+            <div className="aspect-[16/9] bg-slate-800 flex items-center justify-center">
+              <iframe
+                src="/templates/engineer/index.html"
+                className="w-full h-full border-0 pointer-events-none"
+                title="Engineer Template Preview"
+              />
+            </div>
+            <div className="p-6 text-start">
+              <div className="flex items-center justify-between gap-4">
+                <h3 className="text-xl font-semibold">Engineer Portfolio</h3>
+                <span className="text-[10px] uppercase tracking-wider font-semibold rounded-full bg-emerald-500/20 text-emerald-300 px-2 py-1">
+                  {locale === "ar" ? "متاح الآن" : "Available now"}
+                </span>
+              </div>
+              <p className="mt-2 text-sm text-slate-400">
+                {locale === "ar"
+                  ? "تصميم هندسي بسيط يركز على المشاريع. بطاقات مشاريع بصور، مهارات تقنية، شهادات، وتفاصيل مشروع كاملة."
+                  : "Minimal, project-forward design for engineers. Image cards for projects, grouped technical skills, certifications, and full project detail pages."}
+              </p>
+              <div className="mt-4 flex flex-wrap gap-2">
+                {[
+                  locale === "ar" ? "بطاقات مشاريع" : "Project Cards",
+                  locale === "ar" ? "صفحات تفصيلية" : "Detail Pages",
+                  locale === "ar" ? "عربي + إنجليزي" : "Arabic + English",
+                  "Print Ready",
+                  locale === "ar" ? "متجاوب" : "Mobile Responsive",
+                ].map((tag) => (
+                  <span
+                    key={tag}
+                    className="text-xs bg-emerald-600/10 text-emerald-400 rounded-full px-3 py-1"
+                  >
+                    {tag}
+                  </span>
+                ))}
+              </div>
+              <div className="mt-6 flex flex-wrap gap-3">
+                <a
+                  href="/templates/engineer/index.html"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="rounded-lg border border-slate-700 px-4 py-2 text-sm hover:bg-slate-800 transition-colors"
+                >
+                  {locale === "ar" ? "افتح المعاينة" : "Open live preview"}
+                </a>
+                <Link
+                  href="/dashboard/new?template=engineer"
+                  className="rounded-lg bg-emerald-600 px-4 py-2 text-sm font-medium hover:bg-emerald-500 transition-colors"
+                >
+                  {locale === "ar" ? "استخدم هذا القالب" : "Use this template"}
+                </Link>
+              </div>
+            </div>
+          </div>
+
           {/* Other templates teaser */}
           <div className="mt-12 text-center">
             <p className="text-sm uppercase tracking-wider text-slate-500">
@@ -189,7 +245,6 @@ export default function LandingPage() {
             </p>
             <div className="mt-4 flex flex-wrap items-center justify-center gap-2">
               {[
-                "Engineer",
                 "Creative",
                 "Designer",
                 "Developer",

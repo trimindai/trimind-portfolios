@@ -9,29 +9,32 @@
 <meta property="og:title" content="{{basics.fullName}} | {{basics.title}}">
 <meta property="og:description" content="{{#if basics.subtitle}}{{basics.subtitle}}{{else}}{{basics.title}}{{#if basics.location}} based in {{basics.location}}{{/if}}{{/if}}">
 <meta property="og:type" content="website">
+{{#if basics.photoUrl}}<meta property="og:image" content="{{basics.photoUrl}}">{{/if}}
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 /* ══════════════════════════════════════════════════════
-   ENGINEER PORTFOLIO — Minimal Clean Design
-   Inspired by greglagana.com
+   ENGINEER PORTFOLIO — greglagana.com-inspired
+   Project-forward, minimal, clean
    ══════════════════════════════════════════════════════ */
 
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
 :root {
-  --font-head: 'Poppins', sans-serif;
-  --font-body: 'Manrope', sans-serif;
-  --text: {{#if customization.primaryColor}}{{customization.primaryColor}}{{else}}#111{{/if}};
-  --text-secondary: #555;
-  --text-muted: #888;
-  --bg: {{#if customization.bgColor}}{{customization.bgColor}}{{else}}#fff{{/if}};
+  --font-head: 'Space Grotesk', sans-serif;
+  --font-body: 'Inter', sans-serif;
+  --text: {{#if customization.primaryColor}}{{customization.primaryColor}}{{else}}#18181b{{/if}};
+  --text-secondary: #52525b;
+  --text-muted: #a1a1aa;
+  --bg: {{#if customization.bgColor}}{{customization.bgColor}}{{else}}#ffffff{{/if}};
   --bg-warm: #fafafa;
-  --border: #e5e5e5;
-  --accent: {{#if customization.accentColor}}{{customization.accentColor}}{{else}}#111{{/if}};
+  --bg-card: #f4f4f5;
+  --border: #e4e4e7;
+  --accent: {{#if customization.accentColor}}{{customization.accentColor}}{{else}}#1e3a5f{{/if}};
+  --accent-glow: rgba(30, 58, 95, 0.08);
+  --orange: #f97316;
   --radius: 0px;
-  --radius-sm: 0px;
 }
 
 html { scroll-behavior: smooth; font-size: 16px; }
@@ -45,35 +48,42 @@ body {
 a { text-decoration: none; color: inherit; }
 img { max-width: 100%; display: block; }
 
+/* Focus for keyboard a11y */
+a:focus-visible, button:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
 /* ═══ HEADER ═══ */
 .header {
   position: sticky; top: 0; z-index: 1000;
   background: rgba(255,255,255,0.95);
-  backdrop-filter: blur(10px);
-  border-bottom: 1px solid transparent;
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
 }
 .header-inner {
   max-width: 1200px; margin: 0 auto;
-  padding: 20px 40px;
+  padding: 18px 40px;
   display: flex; align-items: center; justify-content: space-between;
 }
 .header-brand {
-  font-family: var(--font-head); font-size: 1.1rem; font-weight: 600;
+  font-family: var(--font-head); font-size: 1.05rem; font-weight: 600;
   color: var(--text); letter-spacing: -0.01em;
 }
-.header-nav { display: flex; align-items: center; gap: 32px; }
+.header-nav { display: flex; align-items: center; gap: 28px; }
 .header-nav a {
-  font-family: var(--font-body); font-size: 0.9rem; font-weight: 500;
+  font-size: 0.85rem; font-weight: 500;
   color: var(--text-secondary); transition: color 200ms;
 }
 .header-nav a:hover { color: var(--text); }
+.header-social { display: flex; gap: 8px; }
 .header-social a {
   display: inline-flex; align-items: center; justify-content: center;
-  width: 36px; height: 36px;
-  color: var(--text-secondary); transition: color 200ms;
+  width: 34px; height: 34px;
+  color: var(--text-muted); transition: color 200ms;
 }
 .header-social a:hover { color: var(--text); }
-.header-social svg { width: 20px; height: 20px; }
+.header-social svg { width: 18px; height: 18px; }
 
 /* Mobile menu */
 .mobile-menu-btn {
@@ -81,122 +91,249 @@ img { max-width: 100%; display: block; }
   flex-direction: column; gap: 5px; padding: 4px;
 }
 .mobile-menu-btn span {
-  display: block; width: 22px; height: 1.5px; background: var(--text);
+  display: block; width: 20px; height: 1.5px; background: var(--text);
   transition: all 200ms;
 }
 
-/* ═══ SECTIONS ═══ */
-.section {
-  max-width: 1200px; margin: 0 auto; padding: 80px 40px;
-}
-.section-sm { padding: 40px 40px; }
+/* ═══ CONTAINER ═══ */
+.section { max-width: 1200px; margin: 0 auto; padding: 80px 40px; }
+.section-sm { padding: 48px 40px; }
 
-/* ═══ HERO / ABOUT ═══ */
-.about-grid {
-  display: grid; grid-template-columns: 1fr 1.2fr; gap: 60px; align-items: start;
+/* ═══ SECTION HEADINGS ═══ */
+.section-title {
+  font-family: var(--font-head); font-size: 1.8rem; font-weight: 700;
+  letter-spacing: -0.02em; color: var(--text); margin-bottom: 48px;
 }
-.about-grid h1 {
-  font-family: var(--font-head); font-size: 3rem; font-weight: 700;
-  line-height: 1.15; letter-spacing: -0.02em; color: var(--text);
-}
-.about-text {
-  font-family: var(--font-body); font-size: 1.05rem;
-  color: var(--text-secondary); line-height: 1.75;
-}
-.about-text p + p { margin-top: 16px; }
-
-.about-actions {
-  display: flex; gap: 16px; margin-top: 32px;
-}
-.btn {
-  display: inline-flex; align-items: center; justify-content: center;
-  padding: 12px 28px; font-family: var(--font-body); font-size: 0.85rem;
-  font-weight: 600; letter-spacing: 0.02em; transition: all 200ms;
-  border: 1.5px solid var(--text); cursor: pointer;
-}
-.btn-primary {
-  background: var(--text); color: var(--bg);
-}
-.btn-primary:hover { background: transparent; color: var(--text); }
-.btn-secondary {
-  background: transparent; color: var(--text);
-}
-.btn-secondary:hover { background: var(--text); color: var(--bg); }
 
 /* ═══ DIVIDER ═══ */
-.divider {
-  height: 1px; background: var(--border); max-width: 1200px; margin: 0 auto;
-}
+.divider { height: 1px; background: var(--border); max-width: 1200px; margin: 0 auto; }
 
-/* ═══ PROJECTS ═══ */
-.projects-list { display: flex; flex-direction: column; gap: 32px; }
-.project-item {
-  padding: 32px 0; border-bottom: 1px solid var(--border);
+/* ═══ HERO / ABOUT ═══ */
+.hero { padding-top: 100px; padding-bottom: 80px; }
+.hero-grid {
+  display: grid; grid-template-columns: 1fr 1.4fr; gap: 64px; align-items: start;
 }
-.project-item:last-child { border-bottom: none; }
-.project-item h3 {
-  font-family: var(--font-head); font-size: 1.25rem; font-weight: 600;
-  margin-bottom: 8px;
+.hero-left h1 {
+  font-family: var(--font-head); font-size: 2.8rem; font-weight: 700;
+  line-height: 1.1; letter-spacing: -0.03em; color: var(--text);
 }
-.project-item p {
-  font-size: 0.95rem; color: var(--text-secondary); line-height: 1.7;
-  max-width: 600px;
+.hero-left .hero-discipline {
+  font-size: 0.78rem; font-weight: 600; text-transform: uppercase;
+  letter-spacing: 0.1em; color: var(--accent); margin-top: 16px;
 }
-.project-meta {
-  display: flex; gap: 16px; margin-top: 16px;
+.hero-photo {
+  width: 120px; height: 120px; border-radius: 50%; object-fit: cover;
+  border: 3px solid var(--border); margin-top: 24px;
 }
-.project-meta span {
-  font-size: 0.78rem; font-weight: 500; color: var(--text-muted);
-  text-transform: uppercase; letter-spacing: 0.06em;
+.hero-right {}
+.hero-bio {
+  font-size: 1.05rem; color: var(--text-secondary); line-height: 1.8;
 }
+.hero-bio p + p { margin-top: 14px; }
+.hero-meta {
+  display: flex; flex-wrap: wrap; gap: 24px; margin-top: 24px;
+  padding-top: 24px; border-top: 1px solid var(--border);
+}
+.hero-meta-item {
+  display: flex; flex-direction: column; gap: 2px;
+}
+.hero-meta-label {
+  font-size: 0.7rem; font-weight: 600; text-transform: uppercase;
+  letter-spacing: 0.08em; color: var(--text-muted);
+}
+.hero-meta-value {
+  font-size: 0.9rem; font-weight: 500; color: var(--text);
+}
+.hero-actions {
+  display: flex; gap: 12px; margin-top: 32px;
+}
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  padding: 11px 24px; font-family: var(--font-body); font-size: 0.82rem;
+  font-weight: 600; letter-spacing: 0.02em; transition: all 200ms;
+  border: 1.5px solid var(--accent); cursor: pointer;
+}
+.btn-primary { background: var(--accent); color: #fff; }
+.btn-primary:hover { background: transparent; color: var(--accent); }
+.btn-secondary { background: transparent; color: var(--accent); }
+.btn-secondary:hover { background: var(--accent); color: #fff; }
+.btn svg { width: 14px; height: 14px; }
 
-/* ═══ SKILLS ═══ */
-.skills-list {
-  display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 40px;
+/* ═══ PROJECTS — IMAGE CARD GRID ═══ */
+.projects-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 28px;
 }
-.skill-group h4 {
-  font-family: var(--font-head); font-size: 0.85rem; font-weight: 600;
-  text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 14px;
-  color: var(--text-muted);
+.project-card {
+  border: 1px solid var(--border); overflow: hidden;
+  transition: border-color 250ms, box-shadow 250ms;
+  background: var(--bg);
 }
-.skill-group ul { list-style: none; }
-.skill-group li {
-  font-size: 0.95rem; color: var(--text-secondary); padding: 4px 0;
+.project-card:hover {
+  border-color: var(--accent);
+  box-shadow: 0 4px 24px rgba(0,0,0,0.06);
 }
-
-/* ═══ EDUCATION ═══ */
-.edu-item {
-  padding: 24px 0; border-bottom: 1px solid var(--border);
+.project-card-img {
+  aspect-ratio: 16/10; background: var(--bg-card);
+  overflow: hidden; position: relative;
 }
-.edu-item:last-child { border-bottom: none; }
-.edu-item h3 {
-  font-family: var(--font-head); font-size: 1.1rem; font-weight: 600;
+.project-card-img img {
+  width: 100%; height: 100%; object-fit: cover;
+  transition: transform 400ms;
 }
-.edu-item .institution {
-  font-size: 0.95rem; color: var(--text-secondary); margin-top: 4px;
+.project-card:hover .project-card-img img { transform: scale(1.03); }
+/* Placeholder when no image */
+.project-card-placeholder {
+  width: 100%; height: 100%;
+  display: flex; align-items: center; justify-content: center;
+  background: linear-gradient(135deg, var(--bg-card) 0%, var(--border) 100%);
 }
-.edu-item .year {
-  font-size: 0.82rem; color: var(--text-muted); margin-top: 6px;
-  font-weight: 500;
+.project-card-placeholder svg {
+  width: 48px; height: 48px; color: var(--text-muted); opacity: 0.4;
+}
+.project-card-body { padding: 20px 24px 24px; }
+.project-card-type {
+  font-size: 0.7rem; font-weight: 600; text-transform: uppercase;
+  letter-spacing: 0.08em; color: var(--orange); margin-bottom: 8px;
+}
+.project-card-title {
+  font-family: var(--font-head); font-size: 1.15rem; font-weight: 600;
+  color: var(--text); line-height: 1.35; margin-bottom: 8px;
+}
+.project-card-desc {
+  font-size: 0.88rem; color: var(--text-secondary); line-height: 1.65;
+  display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.project-card-tags {
+  display: flex; flex-wrap: wrap; gap: 6px; margin-top: 16px;
+}
+.project-card-tag {
+  font-size: 0.7rem; font-weight: 500; color: var(--accent);
+  background: var(--accent-glow); padding: 4px 10px;
+  letter-spacing: 0.02em;
 }
 
 /* ═══ EXPERIENCE ═══ */
+.exp-list { display: flex; flex-direction: column; }
 .exp-item {
-  padding: 24px 0; border-bottom: 1px solid var(--border);
+  padding: 28px 0; border-bottom: 1px solid var(--border);
+  display: grid; grid-template-columns: 200px 1fr; gap: 40px; align-items: start;
 }
 .exp-item:last-child { border-bottom: none; }
-.exp-item h3 {
-  font-family: var(--font-head); font-size: 1.1rem; font-weight: 600;
+.exp-date {
+  font-size: 0.78rem; font-weight: 600; color: var(--text-muted);
+  text-transform: uppercase; letter-spacing: 0.06em; padding-top: 4px;
 }
-.exp-item .company {
-  font-size: 0.95rem; color: var(--text-secondary); margin-top: 4px;
+.exp-content {}
+.exp-content h3 {
+  font-family: var(--font-head); font-size: 1.05rem; font-weight: 600;
 }
-.exp-item .date {
-  font-size: 0.82rem; color: var(--text-muted); margin-top: 6px;
-  font-weight: 500;
+.exp-content .company {
+  font-size: 0.92rem; color: var(--text-secondary); margin-top: 4px;
 }
-.exp-item p {
-  font-size: 0.92rem; color: var(--text-secondary); margin-top: 10px; line-height: 1.65;
+.exp-content p {
+  font-size: 0.9rem; color: var(--text-secondary); margin-top: 10px; line-height: 1.7;
+}
+.exp-highlights {
+  list-style: none; margin-top: 10px;
+}
+.exp-highlights li {
+  font-size: 0.88rem; color: var(--text-secondary); line-height: 1.65;
+  padding: 3px 0;
+  padding-left: 16px;
+  position: relative;
+}
+.exp-highlights li::before {
+  content: '';
+  position: absolute; left: 0; top: 11px;
+  width: 5px; height: 5px; border-radius: 50%;
+  background: var(--accent);
+}
+
+/* ═══ SKILLS ═══ */
+.skills-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 40px;
+}
+.skill-group {}
+.skill-group h4 {
+  font-family: var(--font-head); font-size: 0.78rem; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 16px;
+  color: var(--accent);
+}
+.skill-group ul { list-style: none; }
+.skill-group li {
+  font-size: 0.9rem; color: var(--text-secondary); padding: 5px 0;
+  border-bottom: 1px solid transparent;
+}
+
+/* ═══ EDUCATION ═══ */
+.edu-list { display: flex; flex-direction: column; }
+.edu-item {
+  padding: 28px 0; border-bottom: 1px solid var(--border);
+  display: grid; grid-template-columns: 200px 1fr; gap: 40px; align-items: start;
+}
+.edu-item:last-child { border-bottom: none; }
+.edu-year {
+  font-size: 0.78rem; font-weight: 600; color: var(--text-muted);
+  text-transform: uppercase; letter-spacing: 0.06em; padding-top: 4px;
+}
+.edu-content h3 {
+  font-family: var(--font-head); font-size: 1.05rem; font-weight: 600;
+}
+.edu-content .institution {
+  font-size: 0.92rem; color: var(--text-secondary); margin-top: 4px;
+}
+.edu-content .gpa {
+  display: inline-block; margin-top: 8px;
+  font-size: 0.78rem; font-weight: 600; color: var(--accent);
+  background: var(--accent-glow); padding: 3px 10px;
+}
+.edu-content .description {
+  font-size: 0.88rem; color: var(--text-secondary); margin-top: 10px; line-height: 1.65;
+}
+
+/* ═══ CERTIFICATIONS ═══ */
+.cert-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px;
+}
+.cert-item {
+  padding: 20px 24px; border: 1px solid var(--border);
+  transition: border-color 200ms;
+}
+.cert-item:hover { border-color: var(--accent); }
+.cert-item h4 {
+  font-family: var(--font-head); font-size: 0.95rem; font-weight: 600;
+}
+.cert-item .issuer {
+  font-size: 0.85rem; color: var(--text-secondary); margin-top: 4px;
+}
+.cert-item .year {
+  font-size: 0.75rem; font-weight: 600; color: var(--text-muted); margin-top: 8px;
+  text-transform: uppercase; letter-spacing: 0.06em;
+}
+
+/* ═══ LANGUAGES ═══ */
+.lang-grid {
+  display: flex; flex-wrap: wrap; gap: 16px;
+}
+.lang-item {
+  padding: 16px 28px; border: 1px solid var(--border); min-width: 160px;
+  text-align: center;
+}
+.lang-item .name {
+  font-family: var(--font-head); font-size: 0.95rem; font-weight: 600;
+}
+.lang-item .level {
+  font-size: 0.8rem; color: var(--text-muted); margin-top: 4px;
+}
+
+/* ═══ CAREER OBJECTIVE ═══ */
+.objective {
+  max-width: 800px;
+  font-size: 1.05rem; color: var(--text-secondary); line-height: 1.8;
+  padding: 32px;
+  border-left: 3px solid var(--accent);
+  background: var(--bg-warm);
 }
 
 /* ═══ FOOTER ═══ */
@@ -206,40 +343,79 @@ img { max-width: 100%; display: block; }
 }
 .footer-inner {
   max-width: 1200px; margin: 0 auto;
-  display: grid; grid-template-columns: 1fr 1fr; gap: 40px;
+  display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 40px;
 }
 .footer-col h4 {
-  font-family: var(--font-head); font-size: 0.85rem; font-weight: 600;
-  text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 12px;
+  font-family: var(--font-head); font-size: 0.75rem; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 12px;
   color: var(--text-muted);
 }
 .footer-col p, .footer-col a {
-  font-size: 0.95rem; color: var(--text-secondary); line-height: 1.8;
+  font-size: 0.9rem; color: var(--text-secondary); line-height: 1.8;
 }
-.footer-col a:hover { color: var(--text); text-decoration: underline; }
+.footer-col a:hover { color: var(--accent); }
 .footer-bottom {
   max-width: 1200px; margin: 40px auto 0; padding-top: 20px;
   border-top: 1px solid var(--border);
-  font-size: 0.8rem; color: var(--text-muted);
+  font-size: 0.78rem; color: var(--text-muted);
+  display: flex; justify-content: space-between; align-items: center;
 }
+.footer-qr { display: none; }
+
+/* ═══ RTL ═══ */
+[dir="rtl"] { font-family: 'Inter', 'Tajawal', sans-serif; }
+[dir="rtl"] .hero-grid { direction: rtl; }
+[dir="rtl"] .exp-highlights li { padding-left: 0; padding-right: 16px; }
+[dir="rtl"] .exp-highlights li::before { left: auto; right: 0; }
+[dir="rtl"] .objective { border-left: none; border-right: 3px solid var(--accent); }
 
 /* ═══ PRINT ═══ */
 @media print {
-  .header { position: static; border-bottom: 1px solid var(--border); }
-  .btn { border: 1.5px solid var(--text) !important; }
-  .footer { background: #fff !important; }
+  @page { margin: 0.5in; size: A4; }
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    backdrop-filter: none !important;
+  }
+  html, body { background: #fff !important; font-size: 9pt; }
+  .header { position: static; background: #fff !important; border-bottom: 1px solid var(--border); }
+  .header-social, .mobile-menu-btn { display: none !important; }
+  .section { padding: 24px 0; }
+  .hero { padding-top: 24px; padding-bottom: 24px; }
+  .hero-left h1 { font-size: 20pt; }
+  .projects-grid { grid-template-columns: 1fr 1fr; gap: 12px; }
+  .project-card-img { aspect-ratio: 16/8; }
+  .project-card-body { padding: 10px 12px 14px; }
+  .exp-item, .edu-item { padding: 12px 0; }
+  .footer { background: #fff !important; padding: 24px 0; }
+  .footer-qr { display: block; }
+  .footer-qr img { width: 80px; height: 80px; }
+  .btn { border: 1px solid var(--text) !important; }
 }
 
 /* ═══ RESPONSIVE ═══ */
-@media (max-width: 768px) {
-  .header-inner { padding: 16px 24px; }
+@media (max-width: 900px) {
+  .hero-grid { grid-template-columns: 1fr; gap: 32px; }
+  .hero-left h1 { font-size: 2.2rem; }
+  .projects-grid { grid-template-columns: 1fr; }
+  .exp-item, .edu-item { grid-template-columns: 1fr; gap: 4px; }
+}
+@media (max-width: 640px) {
+  .header-inner { padding: 14px 20px; }
   .header-nav { display: none; }
   .mobile-menu-btn { display: flex; }
-  .section { padding: 60px 24px; }
-  .about-grid { grid-template-columns: 1fr; gap: 32px; }
-  .about-grid h1 { font-size: 2.2rem; }
-  .footer-inner { grid-template-columns: 1fr; gap: 32px; }
-  .skills-list { grid-template-columns: 1fr 1fr; gap: 24px; }
+  .section { padding: 48px 20px; }
+  .section-sm { padding: 32px 20px; }
+  .hero { padding-top: 72px; padding-bottom: 48px; }
+  .hero-left h1 { font-size: 1.8rem; }
+  .hero-actions { flex-direction: column; }
+  .hero-meta { gap: 16px; }
+  .skills-grid { grid-template-columns: 1fr 1fr; gap: 24px; }
+  .footer-inner { grid-template-columns: 1fr; gap: 24px; }
+  .footer-bottom { flex-direction: column; gap: 8px; text-align: center; }
+  .cert-grid { grid-template-columns: 1fr; }
+  .lang-grid { flex-direction: column; }
+  .lang-item { min-width: auto; }
 }
 </style>
 </head>
@@ -248,7 +424,7 @@ img { max-width: 100%; display: block; }
 <!-- ═══ HEADER ═══ -->
 <header class="header">
   <div class="header-inner">
-    <div class="header-brand">{{basics.fullName}}</div>
+    <a href="#about" class="header-brand">{{basics.fullName}}</a>
     <nav class="header-nav">
       <a href="#about">Home</a>
       {{#if projects}}<a href="#projects">Projects</a>{{/if}}
@@ -258,12 +434,12 @@ img { max-width: 100%; display: block; }
     </nav>
     <div class="header-social">
       {{#if basics.linkedin}}
-      <a href="{{basics.linkedin}}" target="_blank" aria-label="LinkedIn">
+      <a href="{{basics.linkedin}}" target="_blank" rel="noopener" aria-label="LinkedIn">
         <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
       </a>
       {{/if}}
       {{#if basics.github}}
-      <a href="{{basics.github}}" target="_blank" aria-label="GitHub">
+      <a href="{{basics.github}}" target="_blank" rel="noopener" aria-label="GitHub">
         <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
       </a>
       {{/if}}
@@ -274,14 +450,20 @@ img { max-width: 100%; display: block; }
   </div>
 </header>
 
-<!-- ═══ ABOUT ═══ -->
-<section class="section" id="about">
-  <div class="about-grid">
-    <div>
+<!-- ═══ HERO / ABOUT ═══ -->
+<section class="section hero" id="about">
+  <div class="hero-grid">
+    <div class="hero-left">
       <h1>About Me</h1>
+      {{#if basics.title}}
+      <div class="hero-discipline">{{basics.title}}</div>
+      {{/if}}
+      {{#if basics.photoUrl}}
+      <img class="hero-photo" src="{{basics.photoUrl}}" alt="{{basics.fullName}}">
+      {{/if}}
     </div>
-    <div>
-      <div class="about-text">
+    <div class="hero-right">
+      <div class="hero-bio">
         {{#if basics.bio}}
           <p>{{basics.bio}}</p>
         {{/if}}
@@ -290,64 +472,120 @@ img { max-width: 100%; display: block; }
         {{/if}}
         {{#unless basics.bio}}
           {{#unless basics.valueProposition}}
-            <p>{{basics.title}} with a strong foundation in engineering principles, design, and manufacturing. Passionate about building practical solutions and continuously improving processes.</p>
+            <p>{{basics.title}}{{#if basics.location}} based in {{basics.location}}{{/if}}. Focused on delivering practical engineering solutions with precision and care.</p>
           {{/unless}}
         {{/unless}}
       </div>
-      <div class="about-actions">
+      <div class="hero-meta">
+        {{#if basics.location}}
+        <div class="hero-meta-item">
+          <span class="hero-meta-label">Location</span>
+          <span class="hero-meta-value">{{basics.location}}</span>
+        </div>
+        {{/if}}
+        {{#if basics.nationality}}
+        <div class="hero-meta-item">
+          <span class="hero-meta-label">Nationality</span>
+          <span class="hero-meta-value">{{basics.nationality}}</span>
+        </div>
+        {{/if}}
         {{#if basics.email}}
-        <a href="mailto:{{basics.email}}" class="btn btn-primary">Contact</a>
+        <div class="hero-meta-item">
+          <span class="hero-meta-label">Email</span>
+          <span class="hero-meta-value">{{basics.email}}</span>
+        </div>
+        {{/if}}
+        {{#if basics.phone}}
+        <div class="hero-meta-item">
+          <span class="hero-meta-label">Phone</span>
+          <span class="hero-meta-value">{{basics.phone}}</span>
+        </div>
+        {{/if}}
+      </div>
+      <div class="hero-actions">
+        {{#if basics.email}}
+        <a href="mailto:{{basics.email}}" class="btn btn-primary">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+          Contact
+        </a>
         {{/if}}
         {{#if projects}}
-        <a href="#projects" class="btn btn-secondary">Projects</a>
+        <a href="#projects" class="btn btn-secondary">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+          Projects
+        </a>
         {{/if}}
       </div>
     </div>
   </div>
 </section>
 
+<!-- ═══ PROJECTS ═══ -->
 {{#if projects}}
 <div class="divider"></div>
 <section class="section" id="projects">
-  <h2 style="font-family:var(--font-head);font-size:2rem;font-weight:700;margin-bottom:40px;">Projects</h2>
-  <div class="projects-list">
+  <h2 class="section-title">Projects</h2>
+  <div class="projects-grid">
     {{#each projects}}
-    <article class="project-item">
-      <h3>{{title}}</h3>
-      <p>{{description}}</p>
-      {{#if technologies}}
-      <div class="project-meta">
-        {{#each technologies}}<span>{{this}}</span>{{/each}}
+    <article class="project-card"{{#if slug}} onclick="window.location='/p/{{../slug}}/projects/{{slug}}'" style="cursor:pointer"{{/if}}>
+      <div class="project-card-img">
+        {{#if coverUrl}}
+          <img src="{{coverUrl}}" alt="{{title}}" loading="lazy">
+        {{else}}
+          <div class="project-card-placeholder">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/><circle cx="12" cy="10" r="3"/></svg>
+          </div>
+        {{/if}}
       </div>
-      {{/if}}
+      <div class="project-card-body">
+        {{#if meta.type}}
+        <div class="project-card-type">{{meta.type}}</div>
+        {{/if}}
+        <h3 class="project-card-title">{{title}}</h3>
+        <p class="project-card-desc">{{description}}</p>
+        {{#if technologies}}
+        <div class="project-card-tags">
+          {{#each technologies}}<span class="project-card-tag">{{this}}</span>{{/each}}
+        </div>
+        {{/if}}
+      </div>
     </article>
     {{/each}}
   </div>
 </section>
 {{/if}}
 
+<!-- ═══ EXPERIENCE ═══ -->
 {{#if experience}}
 <div class="divider"></div>
 <section class="section" id="experience">
-  <h2 style="font-family:var(--font-head);font-size:2rem;font-weight:700;margin-bottom:40px;">Experience</h2>
-  <div>
+  <h2 class="section-title">Experience</h2>
+  <div class="exp-list">
     {{#each experience}}
     <article class="exp-item">
-      <h3>{{title}}</h3>
-      <div class="company">{{company}}</div>
-      <div class="date">{{startDate}}{{#if endDate}} — {{endDate}}{{else}} — Present{{/if}}</div>
-      {{#if description}}<p>{{description}}</p>{{/if}}
+      <div class="exp-date">{{startDate}}{{#if endDate}} — {{endDate}}{{else}} — Present{{/if}}</div>
+      <div class="exp-content">
+        <h3>{{title}}</h3>
+        <div class="company">{{company}}</div>
+        {{#if description}}<p>{{description}}</p>{{/if}}
+        {{#if highlights}}
+        <ul class="exp-highlights">
+          {{#each highlights}}<li>{{this}}</li>{{/each}}
+        </ul>
+        {{/if}}
+      </div>
     </article>
     {{/each}}
   </div>
 </section>
 {{/if}}
 
+<!-- ═══ SKILLS ═══ -->
 {{#if skills}}
 <div class="divider"></div>
 <section class="section" id="skills">
-  <h2 style="font-family:var(--font-head);font-size:2rem;font-weight:700;margin-bottom:40px;">Skills</h2>
-  <div class="skills-list">
+  <h2 class="section-title">Skills</h2>
+  <div class="skills-grid">
     {{#each skills}}
     <div class="skill-group">
       <h4>{{category}}</h4>
@@ -360,17 +598,54 @@ img { max-width: 100%; display: block; }
 </section>
 {{/if}}
 
+<!-- ═══ EDUCATION ═══ -->
 {{#if education}}
 <div class="divider"></div>
 <section class="section" id="education">
-  <h2 style="font-family:var(--font-head);font-size:2rem;font-weight:700;margin-bottom:40px;">Education</h2>
-  <div>
+  <h2 class="section-title">Education</h2>
+  <div class="edu-list">
     {{#each education}}
     <article class="edu-item">
-      <h3>{{degree}}</h3>
-      <div class="institution">{{institution}}</div>
-      <div class="year">{{year}}</div>
+      <div class="edu-year">{{year}}</div>
+      <div class="edu-content">
+        <h3>{{degree}}</h3>
+        <div class="institution">{{institution}}</div>
+        {{#if description}}<div class="description">{{description}}</div>{{/if}}
+      </div>
     </article>
+    {{/each}}
+  </div>
+</section>
+{{/if}}
+
+<!-- ═══ CERTIFICATIONS ═══ -->
+{{#if certifications}}
+<div class="divider"></div>
+<section class="section section-sm" id="certifications">
+  <h2 class="section-title">Certifications</h2>
+  <div class="cert-grid">
+    {{#each certifications}}
+    <div class="cert-item">
+      <h4>{{name}}</h4>
+      <div class="issuer">{{issuer}}</div>
+      {{#if year}}<div class="year">{{year}}</div>{{/if}}
+    </div>
+    {{/each}}
+  </div>
+</section>
+{{/if}}
+
+<!-- ═══ LANGUAGES ═══ -->
+{{#if languages}}
+<div class="divider"></div>
+<section class="section section-sm" id="languages">
+  <h2 class="section-title">Languages</h2>
+  <div class="lang-grid">
+    {{#each languages}}
+    <div class="lang-item">
+      <div class="name">{{name}}</div>
+      <div class="level">{{level}}</div>
+    </div>
     {{/each}}
   </div>
 </section>
@@ -381,16 +656,25 @@ img { max-width: 100%; display: block; }
   <div class="footer-inner">
     <div class="footer-col">
       <h4>Location</h4>
-      <p>{{#if basics.location}}{{basics.location}}{{else}}Remote{{/if}}</p>
+      <p>{{#if basics.location}}{{basics.location}}{{else}}—{{/if}}</p>
     </div>
     <div class="footer-col">
       <h4>Contact</h4>
       {{#if basics.email}}<p><a href="mailto:{{basics.email}}">{{basics.email}}</a></p>{{/if}}
       {{#if basics.phone}}<p><a href="tel:{{basics.phone}}">{{basics.phone}}</a></p>{{/if}}
+      {{#if basics.website}}<p><a href="{{basics.website}}" target="_blank" rel="noopener">{{basics.website}}</a></p>{{/if}}
+    </div>
+    <div class="footer-col">
+      <h4>Connect</h4>
+      {{#if basics.linkedin}}<p><a href="{{basics.linkedin}}" target="_blank" rel="noopener">LinkedIn</a></p>{{/if}}
+      {{#if basics.github}}<p><a href="{{basics.github}}" target="_blank" rel="noopener">GitHub</a></p>{{/if}}
     </div>
   </div>
   <div class="footer-bottom">
-    &copy; {{basics.fullName}} — {{basics.title}}
+    <span>&copy; {{basics.fullName}}{{#if basics.title}} — {{basics.title}}{{/if}}</span>
+    <div class="footer-qr">
+      {{#if portfolioUrl}}<img src="https://api.qrserver.com/v1/create-qr-code/?size=80x80&data={{portfolioUrl}}" alt="QR">{{/if}}
+    </div>
   </div>
 </footer>
 

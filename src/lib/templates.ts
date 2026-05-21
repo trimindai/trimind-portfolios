@@ -43,9 +43,8 @@ export const TEMPLATES: Template[] = (
 ).map((m) => ({
   ...m,
   demoUrl: DEMO_URLS[m.id],
-  // Flag "available" templates — corporate and engineer are live, others are coming soon.
-  // Flip these on as their builders ship.
-  available: true,
+  // Only corporate and engineer are live — others are coming soon.
+  available: m.id === "corporate" || m.id === "engineer",
 }));
 
 export function getTemplate(id: string): Template | undefined {
