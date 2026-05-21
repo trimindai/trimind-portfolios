@@ -129,7 +129,7 @@ a:focus-visible, button:focus-visible {
 }
 
 .block-image-grid {
-  display: grid; grid-template-columns: repeat(2, 1fr); gap: 28px;
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 28px;
 }
 .block-image-grid figure { margin: 0; }
 .block-image-grid figcaption {
@@ -293,6 +293,8 @@ a:focus-visible, button:focus-visible {
 
       <h1 class="project-title">Smart Irrigation System</h1>
       <p class="project-tagline">A camera, a soil sensor, and a CNN &mdash; plants get the right amount of water without human guesswork.</p>
+
+      <img class="project-cover" src="/seed/smart-irrigation/cover.png" alt="Smart Irrigation System">
     </div>
   </section>
 
@@ -320,9 +322,7 @@ a:focus-visible, button:focus-visible {
       <!-- Block: Image — Architecture high-level -->
       <div class="block block-image">
         <figure>
-          <div style="aspect-ratio:16/10;background:linear-gradient(135deg,var(--bg-card) 0%,var(--border) 100%);display:flex;align-items:center;justify-content:center;border:1px solid var(--border)">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" style="width:64px;height:64px;color:var(--text-muted);opacity:0.3"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/><circle cx="12" cy="10" r="3"/></svg>
-          </div>
+          <img src="/seed/smart-irrigation/architecture-high-level.png" alt="High-level architecture" loading="lazy">
           <figcaption>High-level architecture: sensor-actuator unit (Arduino) and plant-detection unit (Raspberry Pi)</figcaption>
         </figure>
       </div>
@@ -330,9 +330,7 @@ a:focus-visible, button:focus-visible {
       <!-- Block: Image — Flowchart -->
       <div class="block block-image">
         <figure>
-          <div style="aspect-ratio:16/10;background:linear-gradient(135deg,var(--bg-card) 0%,var(--border) 100%);display:flex;align-items:center;justify-content:center;border:1px solid var(--border)">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" style="width:64px;height:64px;color:var(--text-muted);opacity:0.3"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/><circle cx="12" cy="10" r="3"/></svg>
-          </div>
+          <img src="/seed/smart-irrigation/flowchart.png" alt="Decision flowchart" loading="lazy">
           <figcaption>Decision flow: train CNN, classify plant, read moisture, compare to per-species threshold, fire pump</figcaption>
         </figure>
       </div>
@@ -340,9 +338,7 @@ a:focus-visible, button:focus-visible {
       <!-- Block: Image — Low-level wiring -->
       <div class="block block-image">
         <figure>
-          <div style="aspect-ratio:16/10;background:linear-gradient(135deg,var(--bg-card) 0%,var(--border) 100%);display:flex;align-items:center;justify-content:center;border:1px solid var(--border)">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" style="width:64px;height:64px;color:var(--text-muted);opacity:0.3"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/><circle cx="12" cy="10" r="3"/></svg>
-          </div>
+          <img src="/seed/smart-irrigation/architecture-low-level.png" alt="Component wiring detail" loading="lazy">
           <figcaption>Component wiring detail &mdash; Raspberry Pi + USB camera, soil moisture sensor to Arduino UNO, relay-driven 12V water pump</figcaption>
         </figure>
       </div>
@@ -387,16 +383,16 @@ a:focus-visible, button:focus-visible {
       <!-- Block: Image Grid — Test plants -->
       <div class="block block-image-grid">
         <figure>
-          <div style="aspect-ratio:4/3;background:linear-gradient(135deg,#e8f5e9 0%,var(--border) 100%);display:flex;align-items:center;justify-content:center;border:1px solid var(--border)">
-            <svg viewBox="0 0 24 24" fill="none" stroke="#4caf50" stroke-width="1.5" style="width:48px;height:48px;opacity:0.4"><path d="M12 22c-4 0-8-3-8-8 0-3 2-6 4-7.5C10 5 12 2 12 2s2 3 4 4.5c2 1.5 4 4.5 4 7.5 0 5-4 8-8 8z"/></svg>
-          </div>
+          <img src="/seed/smart-irrigation/test-aloe-vera.jpg" alt="Aloe Vera test" loading="lazy">
           <figcaption>Aloe Vera &mdash; thick pointed leaves, classified correctly under shifted lighting</figcaption>
         </figure>
         <figure>
-          <div style="aspect-ratio:4/3;background:linear-gradient(135deg,#e8f5e9 0%,var(--border) 100%);display:flex;align-items:center;justify-content:center;border:1px solid var(--border)">
-            <svg viewBox="0 0 24 24" fill="none" stroke="#4caf50" stroke-width="1.5" style="width:48px;height:48px;opacity:0.4"><path d="M12 22c-4 0-8-3-8-8 0-3 2-6 4-7.5C10 5 12 2 12 2s2 3 4 4.5c2 1.5 4 4.5 4 7.5 0 5-4 8-8 8z"/></svg>
-          </div>
+          <img src="/seed/smart-irrigation/test-mango.jpg" alt="Mango test" loading="lazy">
           <figcaption>Mango &mdash; broad leaves, classified across multiple shade-of-green variations</figcaption>
+        </figure>
+        <figure>
+          <img src="/seed/smart-irrigation/test-pepper.jpg" alt="Pepper test" loading="lazy">
+          <figcaption>Pepper &mdash; smaller leaves, required dataset rebalancing to disambiguate</figcaption>
         </figure>
       </div>
 
@@ -432,6 +428,30 @@ a:focus-visible, button:focus-visible {
         </div>
       </div>
 
+      <!-- Block: Image Grid — Components -->
+      <div class="block block-image-grid">
+        <figure>
+          <img src="/seed/smart-irrigation/cost-raspberry-pi.jpg" alt="Raspberry Pi" loading="lazy">
+          <figcaption>Raspberry Pi &mdash; 20 KWD</figcaption>
+        </figure>
+        <figure>
+          <img src="/seed/smart-irrigation/cost-arduino.jpg" alt="Arduino UNO" loading="lazy">
+          <figcaption>Arduino UNO &mdash; 8 KWD</figcaption>
+        </figure>
+        <figure>
+          <img src="/seed/smart-irrigation/cost-usb-camera.jpg" alt="USB Camera" loading="lazy">
+          <figcaption>USB Camera &mdash; 10 KWD</figcaption>
+        </figure>
+        <figure>
+          <img src="/seed/smart-irrigation/cost-soil-sensor.jpg" alt="Soil Moisture Sensor" loading="lazy">
+          <figcaption>Soil Moisture Sensor &mdash; 5 KWD</figcaption>
+        </figure>
+        <figure>
+          <img src="/seed/smart-irrigation/cost-relay-pump.jpg" alt="Relay + Water Pump" loading="lazy">
+          <figcaption>Relay Module + Water Pump &mdash; 12 KWD</figcaption>
+        </figure>
+      </div>
+
       <!-- Block: Challenge — Sensor noise -->
       <div class="block block-challenge">
         <div class="block-challenge-label">Challenge</div>
@@ -456,6 +476,14 @@ a:focus-visible, button:focus-visible {
           <li>IEEE 1451.0 &mdash; Smart transducer interface &mdash; applied to sensor/actuator wiring</li>
           <li>IEC 61131 &mdash; Programmable controller standard &mdash; applied to Arduino + Pi control logic</li>
         </ul>
+      </div>
+
+      <!-- Block: Image — Gantt Chart -->
+      <div class="block block-image">
+        <figure>
+          <img src="/seed/smart-irrigation/gantt-chart.png" alt="Project timeline Gantt chart" loading="lazy">
+          <figcaption>Project timeline &mdash; Gantt chart showing task distribution across Fall 2025 semester</figcaption>
+        </figure>
       </div>
 
       <!-- Block: Paragraph — Conclusion -->
