@@ -38,6 +38,7 @@ export default defineSchema({
       linkedin: v.optional(v.string()),
       github: v.optional(v.string()),
       photoUrl: v.optional(v.string()),
+      resumeUrl: v.optional(v.string()),
     }),
 
     metrics: v.optional(

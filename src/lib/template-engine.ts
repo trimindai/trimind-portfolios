@@ -32,6 +32,7 @@ export interface PortfolioData {
     linkedin?: string;
     github?: string;
     photoUrl?: string;
+    resumeUrl?: string;
   };
   metrics?: Array<{ value: string; label: string }>;
   experience?: Array<{

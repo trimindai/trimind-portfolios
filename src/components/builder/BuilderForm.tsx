@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useMemo } from "react";
 import { useParams } from "next/navigation";
 import { useMutation } from "convex/react";
 import { api } from "@convex/_generated/api";
@@ -12,8 +12,14 @@ import { SkillsStep } from "./steps/SkillsStep";
 import { EducationStep } from "./steps/EducationStep";
 import { EndorsementsStep } from "./steps/EndorsementsStep";
 import { CustomizeStep } from "./steps/CustomizeStep";
+import { EngineerBasicsStep } from "./steps/EngineerBasicsStep";
+import { EngineerProjectsStep } from "./steps/EngineerProjectsStep";
+import { EngineerBackgroundStep } from "./steps/EngineerBackgroundStep";
+import { EngineerCustomizeStep } from "./steps/EngineerCustomizeStep";
 
-const STEPS = [
+type Step = { name: string; component: React.ComponentType<{ data: any; onChange: (updates: any) => void }> };
+
+const CORPORATE_STEPS: Step[] = [
   { name: "Basics", component: BasicsStep },
   { name: "Experience", component: ExperienceStep },
   { name: "Achievements", component: AchievementsStep },
@@ -22,6 +28,23 @@ const STEPS = [
   { name: "Endorsements", component: EndorsementsStep },
   { name: "Customize", component: CustomizeStep },
 ];
+
+// greglagana.com-inspired: About → Projects → Background → Customize
+const ENGINEER_STEPS: Step[] = [
+  { name: "About", component: EngineerBasicsStep },
+  { name: "Projects", component: EngineerProjectsStep },
+  { name: "Background", component: EngineerBackgroundStep },
+  { name: "Customize", component: EngineerCustomizeStep },
+];
+
+const TEMPLATE_STEPS: Record<string, Step[]> = {
+  corporate: CORPORATE_STEPS,
+  engineer: ENGINEER_STEPS,
+};
+
+function getStepsForTemplate(templateId: string): Step[] {
+  return TEMPLATE_STEPS[templateId] || CORPORATE_STEPS;
+}
 
 interface BuilderFormProps {
   portfolioId: Id<"portfolios">;
@@ -35,6 +58,11 @@ export function BuilderForm({ portfolioId, initialData }: BuilderFormProps) {
   const [formData, setFormData] = useState(initialData);
   const [saving, setSaving] = useState(false);
   const updatePortfolio = useMutation(api.portfolios.update);
+
+  const steps = useMemo(
+    () => getStepsForTemplate(initialData.templateId || "corporate"),
+    [initialData.templateId]
+  );
 
   const handleChange = useCallback((updates: any) => {
     setFormData((prev: any) => ({ ...prev, ...updates }));
@@ -55,7 +83,7 @@ export function BuilderForm({ portfolioId, initialData }: BuilderFormProps) {
 
   const goNext = async () => {
     await save();
-    if (currentStep < STEPS.length - 1) {
+    if (currentStep < steps.length - 1) {
       setCurrentStep(currentStep + 1);
     }
   };
@@ -67,13 +95,13 @@ export function BuilderForm({ portfolioId, initialData }: BuilderFormProps) {
     }
   };
 
-  const StepComponent = STEPS[currentStep].component;
+  const StepComponent = steps[currentStep].component;
 
   return (
     <div>
       {/* Step indicator */}
       <div className="flex items-center justify-between mb-8">
-        {STEPS.map((step, i) => (
+        {steps.map((step, i) => (
           <div key={i} className="flex items-center">
             <button
               onClick={() => { save(); setCurrentStep(i); }}
@@ -90,7 +118,7 @@ export function BuilderForm({ portfolioId, initialData }: BuilderFormProps) {
               </span>
               <span className="hidden sm:inline">{step.name}</span>
             </button>
-            {i < STEPS.length - 1 && (
+            {i < steps.length - 1 && (
               <div className={`w-8 h-px mx-1 ${i < currentStep ? "bg-emerald-600" : "bg-slate-700"}`} />
             )}
           </div>
@@ -114,7 +142,7 @@ export function BuilderForm({ portfolioId, initialData }: BuilderFormProps) {
         <span className="text-xs text-slate-500">
           {saving ? "Saving..." : "Auto-saved"}
         </span>
-        {currentStep < STEPS.length - 1 ? (
+        {currentStep < steps.length - 1 ? (
           <button
             onClick={goNext}
             className="rounded-lg bg-emerald-600 px-6 py-2.5 text-sm font-medium text-white hover:bg-emerald-500 transition-colors"
