@@ -301,194 +301,65 @@ a:focus-visible, button:focus-visible {
   <section class="project-content">
     <div class="container">
 
-      <!-- Block: Paragraph — Introduction -->
+      <!-- Introduction -->
       <div class="block block-paragraph">
-        <p>In Kuwait, plants are watered on guesswork or fixed timers. In a region where water is a limited resource, that wastes liters per cycle and damages plants through over- and under-watering. We set out to build an automatic irrigation system that observes the soil, recognizes the plant, and only waters when both conditions agree.</p>
+        <p>Plants in Kuwait are watered on guesswork or fixed timers &mdash; wasting water and damaging crops. We built a system that sees the plant, reads the soil, and only waters when both agree.</p>
       </div>
 
-      <!-- Block: Challenge — Problem/Solution -->
-      <div class="block block-challenge">
-        <div class="block-challenge-label">Challenge</div>
-        <p>Existing commercial controllers in the Gulf (e.g. Hunter X2-401 at ~70 KWD) handle scheduling but cannot sense soil moisture and cannot recognize what they are watering. They water on a clock, not on a need.</p>
-        <div class="block-challenge-label">Solution</div>
-        <p>A two-microcontroller design: Arduino UNO reads a soil moisture sensor and drives the pump via a relay; a Raspberry Pi runs a CNN over a USB camera and tells the Arduino which species-specific threshold to apply. Pump only fires when species + soil dryness both vote yes.</p>
-      </div>
-
-      <!-- Block: Paragraph — CNN details -->
-      <div class="block block-paragraph">
-        <p>The CNN is trained on three plant classes &mdash; mango, aloe vera, and pepper &mdash; each with its own moisture threshold (40%, 60%, 50% respectively). Images go through filtering and augmentation (rotation, scaling, brightness) so the model holds up under varied outdoor lighting. The two devices talk over serial; the Pi handles vision and decisioning, the Arduino handles the low-level sensor read and pump actuation. The whole loop runs continuously, so changes in soil or lighting are picked up in seconds.</p>
-      </div>
-
-      <!-- Block: Image — Architecture high-level -->
+      <!-- Architecture -->
       <div class="block block-image">
         <figure>
-          <img src="/seed/smart-irrigation/architecture-high-level.png" alt="High-level architecture" loading="lazy">
-          <figcaption>High-level architecture: sensor-actuator unit (Arduino) and plant-detection unit (Raspberry Pi)</figcaption>
+          <img src="/seed/smart-irrigation/architecture-high-level.png" alt="System architecture" loading="lazy">
+          <figcaption>System architecture: Raspberry Pi (vision + CNN) + Arduino UNO (sensor + pump control)</figcaption>
         </figure>
       </div>
 
-      <!-- Block: Image — Flowchart -->
-      <div class="block block-image">
-        <figure>
-          <img src="/seed/smart-irrigation/flowchart.png" alt="Decision flowchart" loading="lazy">
-          <figcaption>Decision flow: train CNN, classify plant, read moisture, compare to per-species threshold, fire pump</figcaption>
-        </figure>
-      </div>
-
-      <!-- Block: Image — Low-level wiring -->
-      <div class="block block-image">
-        <figure>
-          <img src="/seed/smart-irrigation/architecture-low-level.png" alt="Component wiring detail" loading="lazy">
-          <figcaption>Component wiring detail &mdash; Raspberry Pi + USB camera, soil moisture sensor to Arduino UNO, relay-driven 12V water pump</figcaption>
-        </figure>
-      </div>
-
-      <!-- Block: Specs — Performance -->
+      <!-- Key specs -->
       <div class="block block-specs">
         <div class="block-specs-row">
-          <div class="block-specs-label">Plant detection accuracy</div>
-          <div class="block-specs-value">&ge;90% (CNN, three classes)</div>
+          <div class="block-specs-label">Plant detection</div>
+          <div class="block-specs-value">&ge;90% accuracy (CNN, 3 species)</div>
         </div>
         <div class="block-specs-row">
-          <div class="block-specs-label">CNN validation accuracy</div>
-          <div class="block-specs-value">&ge;85% stable across epochs</div>
+          <div class="block-specs-label">Response time</div>
+          <div class="block-specs-value">&lt;3s from dry soil to pump activation</div>
         </div>
         <div class="block-specs-row">
-          <div class="block-specs-label">Soil moisture sensor precision</div>
-          <div class="block-specs-value">&plusmn;5%</div>
-        </div>
-        <div class="block-specs-row">
-          <div class="block-specs-label">End-to-end processing</div>
-          <div class="block-specs-value">&lt;2s (capture &rarr; classify &rarr; decide)</div>
-        </div>
-        <div class="block-specs-row">
-          <div class="block-specs-label">Dry-to-pump response time</div>
-          <div class="block-specs-value">&lt;3s</div>
-        </div>
-        <div class="block-specs-row">
-          <div class="block-specs-label">Communication</div>
-          <div class="block-specs-value">Arduino &harr; Raspberry Pi serial (9600 baud)</div>
-        </div>
-        <div class="block-specs-row">
-          <div class="block-specs-label">Operating mode</div>
-          <div class="block-specs-value">Continuous loop, autonomous outdoor operation</div>
+          <div class="block-specs-label">Total cost</div>
+          <div class="block-specs-value">55 KWD (21% below commercial alternatives)</div>
         </div>
       </div>
 
-      <!-- Block: Paragraph — Testing -->
-      <div class="block block-paragraph">
-        <p>Three test plants validated the classifier end-to-end. Each was identified correctly under varied lighting; the relay fired only when the soil reading fell below the matched threshold. Pepper's smaller, sharper leaves were the hardest case &mdash; early datasets confused them with mango &mdash; and a more balanced training set fixed it.</p>
-      </div>
-
-      <!-- Block: Image Grid — Test plants -->
+      <!-- Test plants -->
       <div class="block block-image-grid">
         <figure>
-          <img src="/seed/smart-irrigation/test-aloe-vera.jpg" alt="Aloe Vera test" loading="lazy">
-          <figcaption>Aloe Vera &mdash; thick pointed leaves, classified correctly under shifted lighting</figcaption>
+          <img src="/seed/smart-irrigation/test-aloe-vera.jpg" alt="Aloe Vera" loading="lazy">
+          <figcaption>Aloe Vera</figcaption>
         </figure>
         <figure>
-          <img src="/seed/smart-irrigation/test-mango.jpg" alt="Mango test" loading="lazy">
-          <figcaption>Mango &mdash; broad leaves, classified across multiple shade-of-green variations</figcaption>
+          <img src="/seed/smart-irrigation/test-mango.jpg" alt="Mango" loading="lazy">
+          <figcaption>Mango</figcaption>
         </figure>
         <figure>
-          <img src="/seed/smart-irrigation/test-pepper.jpg" alt="Pepper test" loading="lazy">
-          <figcaption>Pepper &mdash; smaller leaves, required dataset rebalancing to disambiguate</figcaption>
+          <img src="/seed/smart-irrigation/test-pepper.jpg" alt="Pepper" loading="lazy">
+          <figcaption>Pepper</figcaption>
         </figure>
       </div>
 
-      <!-- Block: Specs — Bill of Materials -->
-      <div class="block block-specs">
-        <div class="block-specs-row">
-          <div class="block-specs-label">Raspberry Pi</div>
-          <div class="block-specs-value">20 KWD &mdash; primary processing + camera input</div>
-        </div>
-        <div class="block-specs-row">
-          <div class="block-specs-label">Arduino UNO</div>
-          <div class="block-specs-value">8 KWD &mdash; sensor read + relay control</div>
-        </div>
-        <div class="block-specs-row">
-          <div class="block-specs-label">USB Camera</div>
-          <div class="block-specs-value">10 KWD &mdash; real-time image capture</div>
-        </div>
-        <div class="block-specs-row">
-          <div class="block-specs-label">Soil Moisture Sensor</div>
-          <div class="block-specs-value">5 KWD &mdash; analog moisture readings to Arduino</div>
-        </div>
-        <div class="block-specs-row">
-          <div class="block-specs-label">Relay Module</div>
-          <div class="block-specs-value">6 KWD &mdash; switches the water pump</div>
-        </div>
-        <div class="block-specs-row">
-          <div class="block-specs-label">Water Pump</div>
-          <div class="block-specs-value">6 KWD &mdash; irrigation actuator</div>
-        </div>
-        <div class="block-specs-row">
-          <div class="block-specs-label">Total prototype cost</div>
-          <div class="block-specs-value">55 KWD (vs Hunter X2-401 at ~70 KWD with fewer features)</div>
-        </div>
-      </div>
-
-      <!-- Block: Image Grid — Components -->
-      <div class="block block-image-grid">
-        <figure>
-          <img src="/seed/smart-irrigation/cost-raspberry-pi.jpg" alt="Raspberry Pi" loading="lazy">
-          <figcaption>Raspberry Pi &mdash; 20 KWD</figcaption>
-        </figure>
-        <figure>
-          <img src="/seed/smart-irrigation/cost-arduino.jpg" alt="Arduino UNO" loading="lazy">
-          <figcaption>Arduino UNO &mdash; 8 KWD</figcaption>
-        </figure>
-        <figure>
-          <img src="/seed/smart-irrigation/cost-usb-camera.jpg" alt="USB Camera" loading="lazy">
-          <figcaption>USB Camera &mdash; 10 KWD</figcaption>
-        </figure>
-        <figure>
-          <img src="/seed/smart-irrigation/cost-soil-sensor.jpg" alt="Soil Moisture Sensor" loading="lazy">
-          <figcaption>Soil Moisture Sensor &mdash; 5 KWD</figcaption>
-        </figure>
-        <figure>
-          <img src="/seed/smart-irrigation/cost-relay-pump.jpg" alt="Relay + Water Pump" loading="lazy">
-          <figcaption>Relay Module + Water Pump &mdash; 12 KWD</figcaption>
-        </figure>
-      </div>
-
-      <!-- Block: Challenge — Sensor noise -->
+      <!-- Challenge -->
       <div class="block block-challenge">
         <div class="block-challenge-label">Challenge</div>
-        <p>Sudden moisture readings caused the pump to chatter on and off &mdash; sensor noise was creating false decisions.</p>
+        <p>Commercial controllers (Hunter X2-401, ~70 KWD) water on a timer &mdash; they can't sense soil moisture or identify plants.</p>
         <div class="block-challenge-label">Solution</div>
-        <p>Moving-average filter on the moisture stream plus a short decision delay before the pump fires. Smoothed unstable readings and prevented rapid switching without sacrificing real-time response.</p>
+        <p>Dual-microcontroller design: Raspberry Pi runs a CNN over a camera to identify the species, Arduino reads soil moisture and drives the pump. Water only flows when both agree.</p>
       </div>
 
-      <!-- Block: Challenge — Pi process lag -->
-      <div class="block block-challenge">
-        <div class="block-challenge-label">Challenge</div>
-        <p>Two parallel processes on the Raspberry Pi (image capture + decision dispatch) occasionally caused a watering command to lag in real-time tests.</p>
-        <div class="block-challenge-label">Solution</div>
-        <p>Rearranged the message order, dropped non-essential background work, and switched some delays to asynchronous timing so the Pi didn't block waiting for prior tasks.</p>
-      </div>
-
-      <!-- Block: Standards -->
-      <div class="block block-standards">
-        <div class="block-standards-title">Engineering Standards</div>
-        <ul>
-          <li>IEEE 802.11 &mdash; Wireless data transport for sensor readings to cloud/dashboard</li>
-          <li>IEEE 1451.0 &mdash; Smart transducer interface &mdash; applied to sensor/actuator wiring</li>
-          <li>IEC 61131 &mdash; Programmable controller standard &mdash; applied to Arduino + Pi control logic</li>
-        </ul>
-      </div>
-
-      <!-- Block: Image — Gantt Chart -->
+      <!-- Wiring detail -->
       <div class="block block-image">
         <figure>
-          <img src="/seed/smart-irrigation/gantt-chart.png" alt="Project timeline Gantt chart" loading="lazy">
-          <figcaption>Project timeline &mdash; Gantt chart showing task distribution across Fall 2025 semester</figcaption>
+          <img src="/seed/smart-irrigation/architecture-low-level.png" alt="Component wiring" loading="lazy">
+          <figcaption>Component wiring: Pi + camera, soil sensor to Arduino, relay-driven 12V pump</figcaption>
         </figure>
-      </div>
-
-      <!-- Block: Paragraph — Conclusion -->
-      <div class="block block-paragraph">
-        <p>The system delivered on its goal: water only when both plant type and soil moisture agree. Future work &mdash; more plant species, weather-proof enclosure, mobile dashboard, cloud-stored history, and longer outdoor field trials &mdash; would harden it for real farms. The 55 KWD bill of materials makes it cost-competitive against off-the-shelf controllers that do less.</p>
       </div>
 
     </div>

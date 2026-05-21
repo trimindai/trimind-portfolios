@@ -44,6 +44,11 @@ a:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 .btn-secondary{background:transparent;color:var(--accent)}.btn-secondary:hover{background:var(--accent);color:#fff}
 .btn svg{width:14px;height:14px}
 
+.divider{height:1px;background:var(--border);max-width:1200px;margin:0 auto}
+.skills-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:40px}
+.skill-group h4{font-family:var(--font-head);font-size:0.78rem;font-weight:600;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:16px;color:var(--accent)}
+.skill-group ul{list-style:none}.skill-group li{font-size:0.9rem;color:var(--text-secondary);padding:5px 0}
+
 .footer{background:var(--bg-warm);border-top:1px solid var(--border);padding:60px 40px 40px}
 .footer-inner{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr 1fr;gap:40px}
 .footer-col h4{font-family:var(--font-head);font-size:0.75rem;font-weight:600;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:12px;color:var(--text-muted)}
@@ -88,6 +93,16 @@ a:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
         <a href="projects/smart-irrigation.html" class="btn btn-secondary"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>Projects</a>
       </div>
     </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+<section class="section" id="skills">
+  <h2 class="section-title">Skills</h2>
+  <div class="skills-grid">
+    <div class="skill-group"><h4>Engineering</h4><ul><li>Electrical engineering fundamentals</li><li>Smart systems and automation</li><li>Basic electronics and technical concepts</li></ul></div>
+    <div class="skill-group"><h4>Tools</h4><ul><li>Arduino</li><li>Raspberry Pi</li><li>Microcontroller programming</li></ul></div>
+    <div class="skill-group"><h4>Professional</h4><ul><li>Problem-solving and technical research</li><li>Teamwork and communication</li><li>Time management</li></ul></div>
   </div>
 </section>
 
