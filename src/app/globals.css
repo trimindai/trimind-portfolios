@@ -78,3 +78,70 @@
     color: var(--foreground);
   }
 }
+
+/* ─── Landing page tokens ─────────────────────── */
+:root {
+  --land-bg: oklch(0.13 0.01 160);
+  --land-surface: oklch(0.17 0.008 160);
+  --land-border: oklch(0.24 0.01 160);
+  --land-muted: oklch(0.5 0.012 160);
+  --land-body: oklch(0.72 0.008 160);
+  --land-bright: oklch(0.95 0.005 160);
+  --land-accent: oklch(0.59 0.17 160);
+  --land-accent-hover: oklch(0.64 0.17 160);
+}
+
+/* ─── Landing page animations ─────────────────── */
+@keyframes land-fade-up {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes land-slide-end {
+  from { opacity: 0; transform: translateX(30px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+@keyframes land-slide-start {
+  from { opacity: 0; transform: translateX(-30px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+.land-stagger > * {
+  opacity: 0;
+  animation: land-fade-up 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+.land-stagger > :nth-child(1) { animation-delay: 0.1s; }
+.land-stagger > :nth-child(2) { animation-delay: 0.25s; }
+.land-stagger > :nth-child(3) { animation-delay: 0.4s; }
+.land-stagger > :nth-child(4) { animation-delay: 0.55s; }
+
+.land-visual {
+  opacity: 0;
+  animation: land-slide-end 1s cubic-bezier(0.16, 1, 0.3, 1) 0.3s both;
+}
+[dir="rtl"] .land-visual {
+  animation-name: land-slide-start;
+}
+
+.reveal-up {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.reveal-up.revealed {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .land-stagger > *,
+  .land-visual {
+    animation: none !important;
+    opacity: 1 !important;
+  }
+  .reveal-up {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+}
