@@ -164,6 +164,7 @@ a:focus-visible, button:focus-visible {
   display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 28px;
 }
 .project-card {
+  display: block;
   border: 1px solid var(--border); overflow: hidden;
   transition: border-color 250ms, box-shadow 250ms;
   background: var(--bg);
@@ -527,7 +528,11 @@ a:focus-visible, button:focus-visible {
   <h2 class="section-title">Projects</h2>
   <div class="projects-grid">
     {{#each projects}}
-    <article class="project-card"{{#if slug}} onclick="window.location='/p/{{../slug}}/projects/{{slug}}'" style="cursor:pointer"{{/if}}>
+    {{#if slug}}
+    <a href="/p/{{../slug}}/projects/{{slug}}" class="project-card" style="cursor:pointer">
+    {{else}}
+    <div class="project-card">
+    {{/if}}
       <div class="project-card-img">
         {{#if coverUrl}}
           <img src="{{coverUrl}}" alt="{{title}}" loading="lazy">
@@ -549,7 +554,11 @@ a:focus-visible, button:focus-visible {
         </div>
         {{/if}}
       </div>
-    </article>
+    {{#if slug}}
+    </a>
+    {{else}}
+    </div>
+    {{/if}}
     {{/each}}
   </div>
 </section>

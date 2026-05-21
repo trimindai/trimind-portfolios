@@ -45,7 +45,7 @@ a:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 .btn svg{width:14px;height:14px}
 
 .projects-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:28px}
-.project-card{border:1px solid var(--border);overflow:hidden;transition:border-color 250ms,box-shadow 250ms;background:var(--bg)}
+.project-card{display:block;border:1px solid var(--border);overflow:hidden;transition:border-color 250ms,box-shadow 250ms;background:var(--bg)}
 .project-card:hover{border-color:var(--accent);box-shadow:0 4px 24px rgba(0,0,0,0.06)}
 .project-card-img{aspect-ratio:16/10;background:var(--bg-card);overflow:hidden}
 .project-card-placeholder{width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,var(--bg-card) 0%,var(--border) 100%)}
@@ -129,7 +129,7 @@ a:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 <section class="section" id="projects">
   <h2 class="section-title">Projects</h2>
   <div class="projects-grid">
-    <article class="project-card">
+    <a href="projects/smart-irrigation.html" class="project-card" style="cursor:pointer">
       <div class="project-card-img"><div class="project-card-placeholder"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/><circle cx="12" cy="10" r="3"/></svg></div></div>
       <div class="project-card-body">
         <div class="project-card-type">Academic &middot; GP2</div>
@@ -143,7 +143,7 @@ a:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
           <span class="project-card-tag">Python</span>
         </div>
       </div>
-    </article>
+    </a>
   </div>
 </section>
 
