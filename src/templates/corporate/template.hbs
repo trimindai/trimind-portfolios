@@ -65,7 +65,7 @@ a { text-decoration: none; color: inherit; }
 
 /* ═══ SCROLL PROGRESS ═══ */
 .scroll-bar {
-    position: fixed; top: 0; left: 0; height: 2px; z-index: 10001;
+    position: fixed; top: 0; left: 0; height: 1px; z-index: 10001;
     background: linear-gradient(90deg, var(--gold), var(--gold-warm));
     width: 0%;
 }
@@ -123,9 +123,9 @@ a { text-decoration: none; color: inherit; }
 }
 .section-title {
     font-family: var(--font-head);
-    font-size: clamp(1.6rem, 2.8vw, 2.2rem);
+    font-size: clamp(1.7rem, 3vw, 2.4rem);
     font-weight: 600; color: var(--navy);
-    line-height: 1.3; letter-spacing: -0.01em;
+    line-height: 1.3; letter-spacing: -0.03em;
     margin-bottom: 40px;
 }
 .section-title em { font-style: italic; color: var(--gold); font-weight: 400; }
@@ -181,7 +181,7 @@ a { text-decoration: none; color: inherit; }
     width: 42%; height: 100%;
     background: var(--navy);
     clip-path: polygon(18% 0, 100% 0, 100% 100%, 0% 100%);
-    animation: navyPanelSlide 1s cubic-bezier(0.22, 1, 0.36, 1) 0.2s both;
+    animation: navyPanelSlide 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.1s both;
     z-index: 0;
 }
 
@@ -193,7 +193,7 @@ a { text-decoration: none; color: inherit; }
 
 .hero-content {
     padding: 32px 0;
-    animation: heroSlideLeft 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.4s both;
+    animation: heroSlideLeft 0.7s cubic-bezier(0.22, 1, 0.36, 1) 0.2s both;
 }
 
 .hero-location {
@@ -201,24 +201,24 @@ a { text-decoration: none; color: inherit; }
     display: flex; align-items: center; gap: 6px;
     letter-spacing: 0.04em; text-transform: uppercase;
     margin-bottom: 16px;
-    animation: heroFadeUp 0.7s var(--ease) 0.6s both;
+    animation: heroFadeUp 0.55s var(--ease) 0.3s both;
 }
 .hero-location svg { width: 13px; height: 13px; }
 
 .hero-name {
     font-family: var(--font-head);
-    font-size: clamp(2.6rem, 5vw, 3.8rem);
+    font-size: clamp(2.8rem, 5vw, 4rem);
     font-weight: 700; line-height: 1.12;
     letter-spacing: -0.01em; color: var(--navy);
     margin-bottom: 8px;
-    animation: heroNameReveal 1s cubic-bezier(0.22, 1, 0.36, 1) 0.5s both;
+    animation: heroNameReveal 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.25s both;
 }
 
 .hero-title {
     font-family: var(--font-head);
-    font-size: 1.2rem; font-weight: 400; font-style: italic;
+    font-size: clamp(1rem, 2vw, 1.3rem); font-weight: 400; font-style: italic;
     color: var(--text-sub); margin-bottom: 24px;
-    animation: heroFadeUp 0.8s var(--ease) 0.8s both;
+    animation: heroFadeUp 0.65s var(--ease) 0.4s both;
 }
 
 /* Contact row — visible without scrolling */
@@ -227,7 +227,7 @@ a { text-decoration: none; color: inherit; }
     margin-bottom: 40px;
     padding-bottom: 28px;
     border-bottom: 1px solid var(--border);
-    animation: heroFadeUp 0.8s var(--ease) 1s both;
+    animation: heroFadeUp 0.65s var(--ease) 0.55s both;
 }
 .hero-contact a, .hero-contact span {
     display: inline-flex; align-items: center; gap: 6px;
@@ -246,19 +246,19 @@ a { text-decoration: none; color: inherit; }
 .hero-metrics::before {
     content: ''; position: absolute; top: -2px; left: 0;
     height: 2px; background: var(--navy);
-    animation: goldLineDraw 0.8s var(--ease) 1.2s both;
+    animation: goldLineDraw 0.65s var(--ease) 1.0s both;
 }
 .metric {
     padding: 18px 0; text-align: left;
     border-right: 1px solid var(--border);
     padding-right: 16px;
-    animation: metricPop 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+    animation: metricPop 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
     transition: transform 300ms var(--ease);
 }
-.metric:nth-child(1) { animation-delay: 1.3s; }
-.metric:nth-child(2) { animation-delay: 1.45s; }
-.metric:nth-child(3) { animation-delay: 1.6s; }
-.metric:nth-child(4) { animation-delay: 1.75s; }
+.metric:nth-child(1) { animation-delay: 0.7s; }
+.metric:nth-child(2) { animation-delay: 0.8s; }
+.metric:nth-child(3) { animation-delay: 0.9s; }
+.metric:nth-child(4) { animation-delay: 1.0s; }
 .metric:hover { transform: translateY(-3px); }
 .metric:last-child { border-right: none; }
 .metric:not(:first-child) { padding-left: 16px; }
@@ -276,7 +276,7 @@ a { text-decoration: none; color: inherit; }
 /* Portrait */
 .hero-portrait-wrap {
     position: relative; z-index: 2;
-    animation: heroSlideRight 1s cubic-bezier(0.22, 1, 0.36, 1) 0.6s both;
+    animation: heroSlideRight 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.35s both;
 }
 .hero-portrait {
     width: 100%; aspect-ratio: 3/4;
@@ -312,7 +312,11 @@ a { text-decoration: none; color: inherit; }
 }
 .cred-badge {
     text-align: center; min-width: 100px;
+    padding: 8px 12px; border-radius: var(--r-sm);
+    border: 1px solid transparent;
+    transition: transform 200ms var(--ease), border-color 200ms var(--ease);
 }
+.cred-badge:hover { transform: translateY(-2px); border-color: var(--gold-border); }
 .cred-acronym {
     font-family: var(--font-head);
     font-size: 1.3rem; font-weight: 700;
@@ -364,8 +368,10 @@ a { text-decoration: none; color: inherit; }
     background: var(--bg-white);
     border: 1px solid var(--border);
     border-radius: var(--r);
-    box-shadow: var(--shadow-sm);
+    transition: border-color 200ms var(--ease), background 300ms ease;
+    cursor: default;
 }
+.tl-card:hover { border-color: var(--gold-border); background: #FAFBFD; }
 
 .tl-top {
     display: flex; justify-content: space-between;
@@ -614,7 +620,9 @@ a { text-decoration: none; color: inherit; }
     border: 1px solid var(--border);
     border-radius: var(--r);
     padding: 28px 24px;
+    transition: border-color 200ms var(--ease);
 }
+.endorsement-card:hover { border-color: var(--gold-border); }
 .endorsement-quote-mark {
     font-family: var(--font-head);
     font-size: 3rem; line-height: 1;
@@ -654,9 +662,9 @@ a { text-decoration: none; color: inherit; }
 .contact-cell {
     background: rgba(15,23,42,0.5);
     padding: 28px 20px; text-align: center;
-    transition: background 200ms;
+    transition: background 200ms, transform 200ms ease;
 }
-.contact-cell:hover { background: rgba(30,58,138,0.25); }
+.contact-cell:hover { background: rgba(30,58,138,0.25); transform: translateY(-1px); }
 .contact-cell svg { width: 22px; height: 22px; color: var(--gold-warm); margin: 0 auto 12px; display: block; }
 .contact-cell h4 {
     font-family: var(--font-head);
@@ -687,6 +695,7 @@ a { text-decoration: none; color: inherit; }
 footer {
     padding: 36px 0; text-align: center;
     background: var(--navy-deep);
+    border-top: 1px solid var(--gold-border);
 }
 footer p { font-size: 0.7rem; color: var(--text-on-dark-dim); }
 footer a { color: var(--gold-warm); border-bottom: 1px solid rgba(202,138,4,0.3); }

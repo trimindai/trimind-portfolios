@@ -100,33 +100,42 @@ export function BuilderForm({ portfolioId, initialData }: BuilderFormProps) {
   return (
     <div>
       {/* Step indicator */}
-      <div className="flex items-center justify-between mb-8">
-        {steps.map((step, i) => (
-          <div key={i} className="flex items-center">
+      <div className="relative mb-8">
+        {/* Progress bar track */}
+        <div className="absolute top-1/2 left-0 right-0 h-0.5 -translate-y-1/2 bg-slate-700/50 rounded-full" />
+        <div
+          className="absolute top-1/2 left-0 h-0.5 -translate-y-1/2 bg-emerald-600 rounded-full transition-all duration-500"
+          style={{ width: `${steps.length > 1 ? (currentStep / (steps.length - 1)) * 100 : 0}%` }}
+        />
+        <div className="relative flex items-center justify-between">
+          {steps.map((step, i) => (
             <button
+              key={i}
               onClick={() => { save(); setCurrentStep(i); }}
-              className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm transition-colors ${
+              className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm transition-all duration-300 ${
                 i === currentStep
-                  ? "bg-emerald-600 text-white"
+                  ? "bg-emerald-600 text-white ring-1 ring-emerald-500/20"
                   : i < currentStep
                     ? "bg-emerald-600/20 text-emerald-400"
                     : "bg-slate-800 text-slate-500"
               }`}
             >
               <span className="w-5 h-5 rounded-full border flex items-center justify-center text-xs">
-                {i < currentStep ? "✓" : i + 1}
+                {i < currentStep ? (
+                  <svg className="w-3 h-3" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M2 6l3 3 5-5" />
+                  </svg>
+                ) : i + 1}
               </span>
               <span className="hidden sm:inline">{step.name}</span>
             </button>
-            {i < steps.length - 1 && (
-              <div className={`w-8 h-px mx-1 ${i < currentStep ? "bg-emerald-600" : "bg-slate-700"}`} />
-            )}
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
 
       {/* Step content */}
-      <div className="bg-slate-900/50 border border-slate-800 rounded-xl p-6 mb-6">
+      <div className="bg-slate-900/40 border border-slate-700/50 rounded-2xl p-8 mb-6 overflow-hidden">
+        <div className="h-px -mx-8 -mt-8 mb-8 bg-gradient-to-r from-transparent via-emerald-500/30 to-transparent" />
         <StepComponent data={formData} onChange={handleChange} />
       </div>
 
@@ -135,27 +144,34 @@ export function BuilderForm({ portfolioId, initialData }: BuilderFormProps) {
         <button
           onClick={goPrev}
           disabled={currentStep === 0}
-          className="rounded-lg border border-slate-700 px-6 py-2.5 text-sm text-slate-300 hover:bg-slate-800 transition-colors disabled:opacity-30"
+          className="min-w-[120px] rounded-lg border border-slate-700 px-6 py-2.5 text-sm text-slate-300 hover:bg-slate-800 transition-colors active:scale-[0.98] disabled:opacity-30"
         >
-          Previous
+          &larr; Previous
         </button>
-        <span className="text-xs text-slate-500">
-          {saving ? "Saving..." : "Auto-saved"}
+        <span className={`text-xs text-slate-500 flex items-center gap-1 ${saving ? "animate-pulse" : ""}`}>
+          {saving ? "Saving..." : (
+            <>
+              <svg className="w-3 h-3 text-emerald-500" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M2 6l3 3 5-5" />
+              </svg>
+              Auto-saved
+            </>
+          )}
         </span>
         {currentStep < steps.length - 1 ? (
           <button
             onClick={goNext}
-            className="rounded-lg bg-emerald-600 px-6 py-2.5 text-sm font-medium text-white hover:bg-emerald-500 transition-colors"
+            className="min-w-[120px] rounded-lg bg-emerald-600 px-6 py-2.5 text-sm font-medium text-white hover:bg-emerald-500 transition-colors active:scale-[0.98]"
           >
-            Next
+            Next &rarr;
           </button>
         ) : (
           <a
             href={`/${locale}/dashboard/${portfolioId}/preview`}
             onClick={() => save()}
-            className="rounded-lg bg-emerald-600 px-6 py-2.5 text-sm font-medium text-white hover:bg-emerald-500 transition-colors"
+            className="min-w-[120px] rounded-lg bg-emerald-600 px-6 py-2.5 text-sm font-semibold text-white hover:bg-emerald-500 transition-colors active:scale-[0.98] text-center"
           >
-            Preview →
+            Preview &rarr;
           </a>
         )}
       </div>

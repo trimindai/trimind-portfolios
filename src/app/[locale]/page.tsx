@@ -65,7 +65,7 @@ export default function LandingPage() {
       ];
 
   return (
-    <div className="min-h-screen bg-[var(--land-bg)] text-[var(--land-bright)]">
+    <div className="min-h-screen bg-[var(--land-bg)] text-[var(--land-bright)] land-grain">
       {/* ── Navbar ─────────────────────────────── */}
       <nav className="fixed top-0 z-50 w-full border-b border-[var(--land-border)]/50 bg-[var(--land-bg)]/80 backdrop-blur-md">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
@@ -97,11 +97,11 @@ export default function LandingPage() {
       </nav>
 
       {/* ── Hero ───────────────────────────────── */}
-      <section className="relative min-h-screen flex items-center overflow-hidden">
+      <section className="relative min-h-[100dvh] flex items-center overflow-hidden">
         <div
           className="absolute inset-0 pointer-events-none"
           style={{
-            background: `radial-gradient(ellipse at ${isRTL ? "30%" : "70%"} 40%, oklch(0.22 0.08 160 / 0.4), transparent 70%)`,
+            background: `radial-gradient(ellipse at ${isRTL ? "30%" : "70%"} 40%, oklch(0.22 0.08 160 / 0.55), transparent 70%), radial-gradient(circle at ${isRTL ? "80%" : "20%"} 80%, oklch(0.18 0.05 160 / 0.3), transparent 50%)`,
           }}
         />
         <div className="relative z-10 mx-auto w-full max-w-7xl px-6 pt-28 pb-16 lg:pt-0">
@@ -136,7 +136,13 @@ export default function LandingPage() {
             </div>
 
             <div className="land-visual w-full max-w-xl">
-              <div className="hidden lg:block" style={{ perspective: "1200px" }}>
+              <div className="hidden lg:block relative" style={{ perspective: "1200px" }}>
+                <div
+                  className="absolute inset-0 -inset-x-8 -inset-y-8 pointer-events-none"
+                  style={{
+                    background: `radial-gradient(ellipse at center, var(--land-glow), transparent 70%)`,
+                  }}
+                />
                 <div
                   style={{
                     transform: isRTL
@@ -162,24 +168,29 @@ export default function LandingPage() {
       {/* ── Social proof strip ─────────────────── */}
       <ScrollReveal>
         <div className="bg-[var(--land-surface)] border-y border-[var(--land-border)]/50 py-6 px-6">
-          <div className="mx-auto max-w-5xl flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-8">
-            <p className="text-sm text-[var(--land-muted)]">
-              {isRTL
-                ? "موثوق من متخصصين في"
-                : "Trusted by professionals in"}
-            </p>
-            <div className="flex flex-wrap items-center justify-center gap-2">
-              {(isRTL
-                ? ["الكويت", "الإمارات", "السعودية"]
-                : ["Kuwait", "UAE", "Saudi Arabia"]
-              ).map((region) => (
-                <span
-                  key={region}
-                  className="text-xs font-medium text-[var(--land-body)] bg-[var(--land-bg)] px-3 py-1.5 rounded"
-                >
-                  {region}
-                </span>
-              ))}
+          <div className="mx-auto max-w-5xl">
+            <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-8 bg-[var(--land-surface-raised)] rounded-lg px-6 py-4 border border-[var(--land-border)]">
+              <p className="text-sm text-[var(--land-muted)]">
+                {isRTL
+                  ? "موثوق من متخصصين في"
+                  : "Trusted by professionals in"}
+              </p>
+              <div className="flex flex-wrap items-center gap-3">
+                {(isRTL
+                  ? ["الكويت", "الإمارات", "السعودية"]
+                  : ["Kuwait", "UAE", "Saudi Arabia"]
+                ).map((region, i) => (
+                  <span
+                    key={region}
+                    className="text-xs font-medium tracking-wide text-[var(--land-body)]"
+                  >
+                    {region}
+                    {i < 2 && (
+                      <span className="ml-3 text-[var(--land-border)]">/</span>
+                    )}
+                  </span>
+                ))}
+              </div>
             </div>
           </div>
         </div>
@@ -299,16 +310,13 @@ export default function LandingPage() {
         <section className="py-20 px-6">
           <div className="mx-auto max-w-3xl">
             <h2
-              className="text-center font-bold tracking-tight"
+              className="font-bold tracking-tight"
               style={{ fontSize: "clamp(1.75rem, 3vw, 2.5rem)" }}
             >
               {isRTL ? "ثلاث خطوات فقط" : "Three steps. That's it."}
             </h2>
-            <div className="mt-16 relative">
-              <div className="hidden lg:block absolute top-5 start-[16%] end-[16%] h-px bg-[var(--land-border)]" />
-              <div className="lg:hidden absolute top-5 bottom-5 start-5 w-px bg-[var(--land-border)]" />
-
-              <div className="flex flex-col lg:flex-row lg:justify-between gap-12 lg:gap-8">
+            <div className="mt-16">
+              <div className="flex flex-col gap-10">
                 {[
                   {
                     n: "1",
@@ -331,16 +339,23 @@ export default function LandingPage() {
                       ? "بنقرة واحدة يصبح بورتفوليوك حيًا برابط خاص"
                       : "One click and your portfolio is live with its own URL",
                   },
-                ].map((step) => (
+                ].map((step, i) => (
                   <div
                     key={step.n}
-                    className="flex items-start lg:flex-col lg:items-center lg:text-center gap-4 relative z-10 lg:flex-1"
+                    className="flex items-start gap-6 relative"
+                    style={{ [isRTL ? "paddingRight" : "paddingLeft"]: `${i * 2}rem` }}
                   >
-                    <div className="w-10 h-10 rounded-full bg-[var(--land-surface)] border border-[var(--land-border)] flex items-center justify-center text-[var(--land-accent)] font-semibold text-sm shrink-0">
+                    {i < 2 && (
+                      <div
+                        className="absolute top-10 w-px h-full bg-[var(--land-border)]/50"
+                        style={{ [isRTL ? "right" : "left"]: `calc(${i * 2}rem + 0.875rem)` }}
+                      />
+                    )}
+                    <span className="text-2xl font-bold text-[var(--land-accent)] shrink-0 w-7">
                       {step.n}
-                    </div>
+                    </span>
                     <div>
-                      <h3 className="font-semibold">{step.title}</h3>
+                      <h3 className="font-semibold text-lg">{step.title}</h3>
                       <p className="mt-1 text-sm text-[var(--land-body)] max-w-xs">
                         {step.desc}
                       </p>
@@ -486,7 +501,8 @@ export default function LandingPage() {
 
       {/* ── Pricing ────────────────────────────── */}
       <ScrollReveal>
-        <section className="py-24 px-6 bg-[var(--land-surface)]">
+        <section className="relative py-24 px-6 bg-[var(--land-surface-raised)]">
+          <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[var(--land-accent)] to-transparent opacity-40" />
           <div className="mx-auto max-w-3xl lg:grid lg:grid-cols-[1fr_auto] gap-16 items-start">
             <div>
               <h2
@@ -556,13 +572,13 @@ export default function LandingPage() {
               </div>
             </div>
             <div className="hidden lg:block text-end pt-2">
-              <div className="text-4xl font-bold text-[var(--land-bright)]">
+              <div className="text-5xl font-bold text-[var(--land-bright)] tracking-tight">
                 1.500{" "}
-                <span className="text-lg font-medium text-[var(--land-muted)]">
+                <span className="text-xl font-medium text-[var(--land-muted)]">
                   KD
                 </span>
               </div>
-              <p className="text-sm text-[var(--land-muted)] mt-1">~$5 USD</p>
+              <p className="text-sm text-[var(--land-muted)] mt-2">~$5 USD</p>
             </div>
           </div>
         </section>
@@ -584,7 +600,7 @@ export default function LandingPage() {
                   key={i}
                   className="group border-b border-[var(--land-border)] py-5 first:border-t"
                 >
-                  <summary className="cursor-pointer list-none flex items-center justify-between gap-4 text-base font-medium">
+                  <summary className="cursor-pointer list-none flex items-center justify-between gap-4 text-base font-medium hover:text-[var(--land-accent)] transition-colors">
                     <span>{item.q}</span>
                     <svg
                       className="w-4 h-4 text-[var(--land-muted)] transition-transform duration-200 group-open:rotate-180 shrink-0"
@@ -701,7 +717,8 @@ export default function LandingPage() {
             </ul>
           </nav>
         </div>
-        <div className="border-t border-[var(--land-border)] py-6 text-center text-xs text-[var(--land-muted)]">
+        <div className="relative border-t border-[var(--land-border)] py-6 text-center text-xs text-[var(--land-muted)]">
+          <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[var(--land-accent)] to-transparent opacity-20" />
           &copy; {new Date().getFullYear()} Portfolio Pro by TriMind
         </div>
       </footer>
@@ -719,12 +736,12 @@ function TemplateBrowser({
   url: string;
 }) {
   return (
-    <div className="rounded-xl overflow-hidden border border-[var(--land-border)] transition-transform duration-300 group-hover:translate-y-[-2px]">
+    <div className="rounded-xl overflow-hidden border border-[var(--land-border)] transition-all duration-500 group-hover:translate-y-[-2px] group-hover:border-[var(--land-accent)]/30">
       <div className="bg-[oklch(0.17_0.008_160)] px-4 py-2 flex items-center gap-3">
         <div className="flex gap-1.5">
-          <div className="w-2 h-2 rounded-full bg-[oklch(0.3_0.006_160)]" />
-          <div className="w-2 h-2 rounded-full bg-[oklch(0.3_0.006_160)]" />
-          <div className="w-2 h-2 rounded-full bg-[oklch(0.3_0.006_160)]" />
+          <div className="w-2 h-2 rounded-full bg-[oklch(0.35_0.01_0)]" />
+          <div className="w-2 h-2 rounded-full bg-[oklch(0.35_0.01_55)]" />
+          <div className="w-2 h-2 rounded-full bg-[oklch(0.35_0.01_150)]" />
         </div>
         <div className="flex-1 h-5 rounded bg-[oklch(0.12_0.008_160)] mx-4 flex items-center px-3">
           <span className="text-[10px] text-[var(--land-muted)] truncate">
@@ -739,60 +756,77 @@ function TemplateBrowser({
 
 function CorporateMockup() {
   return (
-    <div className="aspect-[16/10] bg-[oklch(0.97_0.003_200)] flex flex-col">
-      <div className="bg-[oklch(0.18_0.04_250)] px-5 py-4 flex items-center gap-3">
-        <div className="w-8 h-8 rounded-full bg-[oklch(0.3_0.03_250)]" />
-        <div>
-          <div className="h-2 w-24 rounded-full bg-[oklch(0.72_0.08_65)]" />
-          <div className="h-1.5 w-16 rounded-full bg-[oklch(0.45_0.02_250)] mt-1" />
+    <div className="aspect-[16/10] bg-[oklch(0.97_0.003_250)] flex flex-col">
+      <div className="bg-[oklch(0.12_0.04_250)] px-5 py-3 flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <div className="w-7 h-7 rounded-full bg-[oklch(0.25_0.03_250)] ring-1 ring-[oklch(0.72_0.08_65)]/30" />
+          <div>
+            <div className="h-2 w-20 rounded-full bg-[oklch(0.85_0.005_250)]" />
+            <div className="h-1 w-14 rounded-full bg-[oklch(0.4_0.02_250)] mt-1" />
+          </div>
+        </div>
+        <div className="flex gap-4">
+          {["w-8", "w-10", "w-7"].map((w, i) => (
+            <div key={i} className={`h-1 ${w} rounded-full bg-[oklch(0.35_0.02_250)]`} />
+          ))}
         </div>
       </div>
-      <div className="flex-1 p-5">
-        <div className="flex gap-3 mb-4">
-          {[1, 2, 3].map((i) => (
-            <div
-              key={i}
-              className="flex-1 rounded bg-[oklch(0.94_0.005_200)] p-2.5"
-            >
-              <div className="h-4 w-8 rounded bg-[oklch(0.22_0.03_250)]" />
-              <div className="h-1 w-12 rounded-full bg-[oklch(0.82_0.005_200)] mt-1.5" />
+      <div className="flex-1 p-4">
+        <div className="flex gap-2.5 mb-3">
+          {[
+            { label: "w-6", color: "oklch(0.22_0.03_250)" },
+            { label: "w-8", color: "oklch(0.72_0.08_65)" },
+            { label: "w-5", color: "oklch(0.22_0.03_250)" },
+          ].map((item, i) => (
+            <div key={i} className="flex-1 rounded bg-[oklch(0.94_0.005_250)] p-2">
+              <div className={`h-3.5 ${item.label} rounded`} style={{ background: item.color }} />
+              <div className="h-1 w-10 rounded-full bg-[oklch(0.82_0.005_250)] mt-1.5" />
             </div>
           ))}
         </div>
-        <div className="space-y-2.5">
-          {[75, 55, 65].map((w, i) => (
+        <div className="space-y-2 mt-3">
+          {[78, 52, 68, 45].map((w, i) => (
             <div key={i} className="flex items-center gap-2">
-              <div className="w-1.5 h-1.5 rounded-full bg-[oklch(0.72_0.08_65)]" />
-              <div
-                className="h-1.5 rounded-full bg-[oklch(0.88_0.005_200)]"
-                style={{ width: `${w}%` }}
-              />
+              <div className="w-1 h-1 rounded-full bg-[oklch(0.72_0.08_65)]" />
+              <div className="h-1.5 rounded-full bg-[oklch(0.9_0.005_250)]" style={{ width: `${w}%` }} />
             </div>
           ))}
         </div>
       </div>
-      <div className="h-0.5 bg-[oklch(0.72_0.08_65)]" />
+      <div className="h-px bg-gradient-to-r from-[oklch(0.72_0.08_65)] via-[oklch(0.72_0.08_65)]/50 to-transparent" />
     </div>
   );
 }
 
 function EngineerMockup() {
   return (
-    <div className="aspect-[16/10] bg-white flex flex-col">
-      <div className="px-5 py-3 border-b border-[oklch(0.92_0_0)]">
-        <div className="h-2 w-20 rounded-full bg-[oklch(0.15_0.01_160)]" />
-        <div className="h-1.5 w-14 rounded-full bg-[oklch(0.55_0.01_160)] mt-1" />
+    <div className="aspect-[16/10] bg-[oklch(0.99_0.002_160)] flex flex-col">
+      <div className="px-5 py-3 border-b border-[oklch(0.92_0.005_160)] flex items-center justify-between">
+        <div>
+          <div className="h-2 w-20 rounded-full bg-[oklch(0.15_0.01_160)]" />
+          <div className="h-1 w-12 rounded-full bg-[oklch(0.55_0.01_160)] mt-1" />
+        </div>
+        <div className="flex gap-2">
+          <div className="h-4 w-4 rounded bg-[oklch(0.93_0.005_160)]" />
+          <div className="h-4 w-4 rounded bg-[oklch(0.93_0.005_160)]" />
+        </div>
       </div>
-      <div className="flex-1 p-4 grid grid-cols-2 gap-2">
-        {[1, 2, 3, 4].map((i) => (
-          <div key={i} className="rounded bg-[oklch(0.96_0.003_160)] p-2">
-            <div className="aspect-[3/2] rounded bg-[oklch(0.91_0.008_160)]" />
-            <div className="h-1.5 w-3/4 rounded-full bg-[oklch(0.25_0.005_160)] mt-2" />
+      <div className="flex-1 p-3 grid grid-cols-2 gap-2">
+        {[
+          { h: "aspect-[4/3]", accent: true },
+          { h: "aspect-[3/2]", accent: false },
+          { h: "aspect-[3/2]", accent: false },
+          { h: "aspect-[4/3]", accent: true },
+        ].map((card, i) => (
+          <div key={i} className="rounded bg-[oklch(0.97_0.003_160)] p-2">
+            <div className={`${card.h} rounded ${card.accent ? "bg-[oklch(0.92_0.02_160)]" : "bg-[oklch(0.93_0.008_160)]"}`} />
+            <div className="h-1.5 w-3/4 rounded-full bg-[oklch(0.2_0.005_160)] mt-2" />
             <div className="h-1 w-1/2 rounded-full bg-[oklch(0.65_0.005_160)] mt-1" />
+            {card.accent && <div className="h-0.5 w-6 rounded-full bg-[oklch(0.59_0.17_160)] mt-1.5" />}
           </div>
         ))}
       </div>
-      <div className="h-0.5 bg-[oklch(0.59_0.17_160)]" />
+      <div className="h-px bg-gradient-to-r from-[oklch(0.59_0.17_160)] via-[oklch(0.59_0.17_160)]/50 to-transparent" />
     </div>
   );
 }

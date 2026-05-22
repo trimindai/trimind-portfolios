@@ -82,41 +82,83 @@
 /* ─── Landing page tokens ─────────────────────── */
 :root {
   --land-bg: oklch(0.13 0.01 160);
-  --land-surface: oklch(0.17 0.008 160);
+  --land-surface: oklch(0.16 0.008 160);
+  --land-surface-raised: oklch(0.19 0.008 160);
   --land-border: oklch(0.24 0.01 160);
+  --land-border-subtle: oklch(0.20 0.008 160);
   --land-muted: oklch(0.5 0.012 160);
   --land-body: oklch(0.72 0.008 160);
   --land-bright: oklch(0.95 0.005 160);
   --land-accent: oklch(0.59 0.17 160);
   --land-accent-hover: oklch(0.64 0.17 160);
+  --land-accent-subtle: oklch(0.59 0.17 160 / 0.12);
+  --land-glow: oklch(0.59 0.17 160 / 0.08);
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+/* ─── Grain texture overlay ──────────────────── */
+.land-grain::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  pointer-events: none;
+  opacity: 0.035;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 256px 256px;
+}
+
+/* ─── Selection color ────────────────────────── */
+::selection {
+  background: oklch(0.59 0.17 160 / 0.3);
+  color: oklch(0.95 0.005 160);
 }
 
 /* ─── Landing page animations ─────────────────── */
 @keyframes land-fade-up {
-  from { opacity: 0; transform: translateY(20px); }
+  from { opacity: 0; transform: translateY(24px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes land-fade-up-far {
+  from { opacity: 0; transform: translateY(40px); }
   to { opacity: 1; transform: translateY(0); }
 }
 @keyframes land-slide-end {
-  from { opacity: 0; transform: translateX(30px); }
+  from { opacity: 0; transform: translateX(40px); }
   to { opacity: 1; transform: translateX(0); }
 }
 @keyframes land-slide-start {
-  from { opacity: 0; transform: translateX(-30px); }
+  from { opacity: 0; transform: translateX(-40px); }
   to { opacity: 1; transform: translateX(0); }
+}
+@keyframes land-scale-in {
+  from { opacity: 0; transform: scale(0.96); }
+  to { opacity: 1; transform: scale(1); }
+}
+@keyframes land-glow-pulse {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 0.7; }
+}
+@keyframes land-shimmer {
+  from { background-position: -200% 0; }
+  to { background-position: 200% 0; }
 }
 
 .land-stagger > * {
   opacity: 0;
-  animation: land-fade-up 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation: land-fade-up 0.9s var(--ease-out-expo) both;
 }
-.land-stagger > :nth-child(1) { animation-delay: 0.1s; }
-.land-stagger > :nth-child(2) { animation-delay: 0.25s; }
-.land-stagger > :nth-child(3) { animation-delay: 0.4s; }
-.land-stagger > :nth-child(4) { animation-delay: 0.55s; }
+.land-stagger > :nth-child(1) { animation-delay: 0.15s; }
+.land-stagger > :nth-child(2) { animation-delay: 0.3s; }
+.land-stagger > :nth-child(3) { animation-delay: 0.45s; }
+.land-stagger > :nth-child(4) { animation-delay: 0.6s; }
+.land-stagger > :nth-child(5) { animation-delay: 0.75s; }
 
 .land-visual {
   opacity: 0;
-  animation: land-slide-end 1s cubic-bezier(0.16, 1, 0.3, 1) 0.3s both;
+  animation: land-slide-end 1.1s var(--ease-out-expo) 0.35s both;
 }
 [dir="rtl"] .land-visual {
   animation-name: land-slide-start;
@@ -124,14 +166,38 @@
 
 .reveal-up {
   opacity: 0;
-  transform: translateY(20px);
-  transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
-              transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+  transform: translateY(24px);
+  transition: opacity 0.8s var(--ease-out-expo),
+              transform 0.8s var(--ease-out-expo);
 }
 .reveal-up.revealed {
   opacity: 1;
   transform: none;
 }
+
+/* Reveal with scale */
+.reveal-scale {
+  opacity: 0;
+  transform: scale(0.97);
+  transition: opacity 0.7s var(--ease-out-expo),
+              transform 0.7s var(--ease-out-expo);
+}
+.reveal-scale.revealed {
+  opacity: 1;
+  transform: none;
+}
+
+/* Staggered children inside a revealed parent */
+.reveal-up.revealed .stagger-child {
+  opacity: 0;
+  animation: land-fade-up 0.6s var(--ease-out-expo) both;
+}
+.reveal-up.revealed .stagger-child:nth-child(1) { animation-delay: 0.05s; }
+.reveal-up.revealed .stagger-child:nth-child(2) { animation-delay: 0.12s; }
+.reveal-up.revealed .stagger-child:nth-child(3) { animation-delay: 0.19s; }
+.reveal-up.revealed .stagger-child:nth-child(4) { animation-delay: 0.26s; }
+.reveal-up.revealed .stagger-child:nth-child(5) { animation-delay: 0.33s; }
+.reveal-up.revealed .stagger-child:nth-child(6) { animation-delay: 0.40s; }
 
 @media (prefers-reduced-motion: reduce) {
   .land-stagger > *,
@@ -139,9 +205,14 @@
     animation: none !important;
     opacity: 1 !important;
   }
-  .reveal-up {
+  .reveal-up,
+  .reveal-scale {
     opacity: 1 !important;
     transform: none !important;
     transition: none !important;
+  }
+  .reveal-up.revealed .stagger-child {
+    animation: none !important;
+    opacity: 1 !important;
   }
 }
