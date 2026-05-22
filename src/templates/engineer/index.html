@@ -48,37 +48,9 @@ a:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 .btn-secondary{background:transparent;color:var(--accent)}.btn-secondary:hover{background:var(--accent);color:#fff}
 .btn svg{width:14px;height:14px}
 
-/* --- METRICS --- */
-.metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:32px;margin-top:48px;padding-top:48px;border-top:1px solid var(--border)}
-.metric{text-align:center}
-.metric-value{font-family:var(--font-head);font-size:2rem;font-weight:800;letter-spacing:-0.02em;color:var(--accent)}
-.metric-label{font-size:0.72rem;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted);margin-top:4px}
-
-/* --- PROJECTS --- */
-.projects-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:28px}
-.project-card{border:1px solid var(--border);padding:28px;transition:border-color 200ms}
-.project-card:hover{border-color:var(--accent)}
-.project-card-meta{font-size:0.72rem;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted);margin-bottom:12px;display:flex;gap:12px}
-.project-card-meta span:not(:last-child)::after{content:'\00b7';margin-left:12px;color:var(--border)}
-.project-card h3{font-family:var(--font-head);font-size:1.15rem;font-weight:700;letter-spacing:-0.01em;margin-bottom:10px}
-.project-card p{font-size:0.9rem;color:var(--text-secondary);line-height:1.7}
-.project-card-specs{display:flex;flex-wrap:wrap;gap:16px;margin-top:16px;padding-top:16px;border-top:1px solid var(--border)}
-.project-card-spec{display:flex;flex-direction:column;gap:1px}
-.project-card-spec .spec-label{font-size:0.68rem;font-weight:600;text-transform:uppercase;letter-spacing:0.06em;color:var(--text-muted)}
-.project-card-spec .spec-value{font-size:0.85rem;font-weight:600;color:var(--text)}
-
-/* --- SKILLS --- */
 .skills-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:40px}
 .skill-group h4{font-family:var(--font-head);font-size:0.78rem;font-weight:600;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:16px;color:var(--accent)}
 .skill-group ul{list-style:none}.skill-group li{font-size:0.9rem;color:var(--text-secondary);padding:5px 0}
-
-/* --- EDUCATION --- */
-.edu-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:24px}
-.edu-card{border:1px solid var(--border);padding:24px;display:flex;flex-direction:column;gap:8px}
-.edu-degree{font-family:var(--font-head);font-size:1.05rem;font-weight:700}
-.edu-school{font-size:0.9rem;color:var(--accent);font-weight:500}
-.edu-year{font-size:0.72rem;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.06em}
-.edu-desc{font-size:0.88rem;color:var(--text-secondary);line-height:1.7;margin-top:4px}
 
 .footer{background:var(--bg-warm);border-top:1px solid var(--border);padding:60px 40px 40px}
 .footer-inner{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr 1fr;gap:40px}
@@ -91,8 +63,8 @@ a:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 .rv.v{opacity:1;transform:translateY(0)}
 .rv-d1{transition-delay:0.08s}.rv-d2{transition-delay:0.16s}.rv-d3{transition-delay:0.24s}
 
-@media(max-width:900px){.hero-grid{grid-template-columns:1fr;gap:32px}.hero-left h1{font-size:2.2rem}.metrics{grid-template-columns:repeat(3,1fr);gap:24px}.projects-grid{grid-template-columns:1fr}}
-@media(max-width:640px){.header-inner{padding:14px 20px}.header-nav{display:none}.section{padding:48px 20px}.hero{padding-top:72px;padding-bottom:48px}.hero-left h1{font-size:1.8rem}.hero-actions{flex-direction:column}.footer-inner{grid-template-columns:1fr;gap:24px}.metrics{grid-template-columns:1fr}.edu-grid{grid-template-columns:1fr}}
+@media(max-width:900px){.hero-grid{grid-template-columns:1fr;gap:32px}.hero-left h1{font-size:2.2rem}}
+@media(max-width:640px){.header-inner{padding:14px 20px}.header-nav{display:none}.section{padding:48px 20px}.hero{padding-top:72px;padding-bottom:48px}.hero-left h1{font-size:1.8rem}.hero-actions{flex-direction:column}.footer-inner{grid-template-columns:1fr;gap:24px}}
 
 @media print{
   @page{margin:0.5in;size:A4}
@@ -113,10 +85,8 @@ a:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
   <div class="header-inner">
     <a href="#about" class="header-brand">Abdulrahman Alkandari</a>
     <nav class="header-nav">
-      <a href="#about">About</a>
-      <a href="#projects">Projects</a>
-      <a href="#skills">Skills</a>
-      <a href="#education">Education</a>
+      <a href="#about">Home</a>
+      <a href="projects/smart-irrigation.html">Projects</a>
     </nav>
   </div>
 </header>
@@ -129,8 +99,8 @@ a:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
     </div>
     <div class="rv rv-d1">
       <div class="hero-bio">
-        <p>Electrical Engineering graduate with hands-on experience in smart systems, electronics, and automation. I build practical engineering solutions that bridge hardware and software&mdash;from microcontroller-driven IoT systems to sensor-based automation.</p>
-        <p>Bilingual in Arabic and English with strong communication skills and a collaborative approach to problem-solving.</p>
+        <p>Electrical Engineering graduate with hands-on experience in smart systems, electronics, automation, and practical engineering solutions. Focused on building real hardware that solves real problems.</p>
+        <p>Bilingual in Arabic and English with strong communication skills and a collaborative approach to teamwork and problem-solving.</p>
       </div>
       <div class="hero-meta">
         <div class="hero-meta-item"><span class="hero-meta-label">Location</span><span class="hero-meta-value">Kuwait City, Kuwait</span></div>
@@ -139,60 +109,7 @@ a:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
       </div>
       <div class="hero-actions">
         <a href="#" class="btn btn-primary"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>Resume</a>
-        <a href="#projects" class="btn btn-secondary"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>Projects</a>
-      </div>
-    </div>
-  </div>
-
-  <div class="metrics rv rv-d2">
-    <div class="metric">
-      <div class="metric-value">B.Sc.</div>
-      <div class="metric-label">Electrical Engineering</div>
-    </div>
-    <div class="metric">
-      <div class="metric-value">3</div>
-      <div class="metric-label">Technical Projects</div>
-    </div>
-    <div class="metric">
-      <div class="metric-value">2</div>
-      <div class="metric-label">Languages</div>
-    </div>
-  </div>
-</section>
-
-<div class="divider"></div>
-
-<section class="section" id="projects">
-  <h2 class="section-title rv">Projects</h2>
-  <div class="projects-grid">
-    <div class="project-card rv">
-      <div class="project-card-meta"><span>Capstone</span><span>Senior Project</span></div>
-      <h3>Smart Irrigation System</h3>
-      <p>Designed and built an automated irrigation system using soil moisture sensors, relay modules, and an Arduino-based controller. The system monitors real-time soil conditions and activates water pumps only when needed, reducing water consumption.</p>
-      <div class="project-card-specs">
-        <div class="project-card-spec"><span class="spec-label">Platform</span><span class="spec-value">Arduino</span></div>
-        <div class="project-card-spec"><span class="spec-label">Sensors</span><span class="spec-value">Soil moisture</span></div>
-        <div class="project-card-spec"><span class="spec-label">Output</span><span class="spec-value">Relay + pump</span></div>
-      </div>
-    </div>
-    <div class="project-card rv rv-d1">
-      <div class="project-card-meta"><span>Academic</span><span>Lab Project</span></div>
-      <h3>Home Automation Prototype</h3>
-      <p>Built a Raspberry Pi-based home automation prototype with remote control via a simple web interface. Controlled lighting, fan speed, and door lock through GPIO pins and relay switching circuits.</p>
-      <div class="project-card-specs">
-        <div class="project-card-spec"><span class="spec-label">Platform</span><span class="spec-value">Raspberry Pi</span></div>
-        <div class="project-card-spec"><span class="spec-label">Interface</span><span class="spec-value">Web-based</span></div>
-        <div class="project-card-spec"><span class="spec-label">Modules</span><span class="spec-value">3 devices</span></div>
-      </div>
-    </div>
-    <div class="project-card rv rv-d2">
-      <div class="project-card-meta"><span>Personal</span><span>IoT</span></div>
-      <h3>Environmental Monitoring Station</h3>
-      <p>Assembled a compact environmental monitoring station using temperature, humidity, and air quality sensors connected to an ESP32 microcontroller. Data is logged and displayed on an LCD screen in real time.</p>
-      <div class="project-card-specs">
-        <div class="project-card-spec"><span class="spec-label">Platform</span><span class="spec-value">ESP32</span></div>
-        <div class="project-card-spec"><span class="spec-label">Sensors</span><span class="spec-value">DHT22 + MQ-135</span></div>
-        <div class="project-card-spec"><span class="spec-label">Display</span><span class="spec-value">LCD 16x2</span></div>
+        <a href="projects/smart-irrigation.html" class="btn btn-secondary"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>Projects</a>
       </div>
     </div>
   </div>
@@ -203,60 +120,9 @@ a:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 <section class="section" id="skills">
   <h2 class="section-title rv">Skills</h2>
   <div class="skills-grid">
-    <div class="skill-group rv">
-      <h4>Engineering</h4>
-      <ul>
-        <li>Electrical circuit design &amp; analysis</li>
-        <li>Smart systems &amp; automation</li>
-        <li>Sensor integration &amp; signal conditioning</li>
-        <li>Power systems fundamentals</li>
-        <li>Control systems &amp; PLC basics</li>
-      </ul>
-    </div>
-    <div class="skill-group rv rv-d1">
-      <h4>Hardware &amp; Prototyping</h4>
-      <ul>
-        <li>Arduino &amp; ESP32 development</li>
-        <li>Raspberry Pi projects</li>
-        <li>PCB layout &amp; soldering</li>
-        <li>Breadboard prototyping</li>
-        <li>Relay &amp; motor driver circuits</li>
-      </ul>
-    </div>
-    <div class="skill-group rv rv-d2">
-      <h4>Software &amp; Tools</h4>
-      <ul>
-        <li>MATLAB &amp; Simulink</li>
-        <li>AutoCAD Electrical</li>
-        <li>Arduino IDE &amp; PlatformIO</li>
-        <li>Python (scripting &amp; data)</li>
-        <li>Microsoft Office Suite</li>
-      </ul>
-    </div>
-    <div class="skill-group rv rv-d3">
-      <h4>Professional</h4>
-      <ul>
-        <li>Technical report writing</li>
-        <li>Problem-solving &amp; research</li>
-        <li>Teamwork &amp; collaboration</li>
-        <li>Time management</li>
-        <li>Bilingual: Arabic &amp; English</li>
-      </ul>
-    </div>
-  </div>
-</section>
-
-<div class="divider"></div>
-
-<section class="section" id="education">
-  <h2 class="section-title rv">Education</h2>
-  <div class="edu-grid">
-    <div class="edu-card rv">
-      <div class="edu-degree">B.Sc. Electrical Engineering</div>
-      <div class="edu-school">Kuwait University</div>
-      <div class="edu-year">2024</div>
-      <div class="edu-desc">Focused on smart systems, electronics, and automation. Capstone project: Smart Irrigation System using Arduino-based sensor networks.</div>
-    </div>
+    <div class="skill-group rv"><h4>Engineering</h4><ul><li>Electrical circuit design &amp; analysis</li><li>Smart systems &amp; automation</li><li>Sensor integration &amp; signal conditioning</li><li>Power systems fundamentals</li></ul></div>
+    <div class="skill-group rv rv-d1"><h4>Hardware &amp; Prototyping</h4><ul><li>Arduino &amp; ESP32 development</li><li>Raspberry Pi projects</li><li>PCB layout &amp; soldering</li><li>Microcontroller programming</li></ul></div>
+    <div class="skill-group rv rv-d2"><h4>Tools &amp; Software</h4><ul><li>MATLAB &amp; Simulink</li><li>AutoCAD Electrical</li><li>Arduino IDE &amp; PlatformIO</li><li>Python scripting</li></ul></div>
   </div>
 </section>
 
