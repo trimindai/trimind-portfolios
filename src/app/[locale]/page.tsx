@@ -98,37 +98,56 @@ export default function LandingPage() {
 
       {/* ── Hero ───────────────────────────────── */}
       <section className="relative min-h-[100dvh] flex items-center overflow-hidden">
+        {/* Background glows — vivid and dramatic */}
         <div
           className="absolute inset-0 pointer-events-none"
           style={{
-            background: `radial-gradient(ellipse at ${isRTL ? "30%" : "70%"} 40%, oklch(0.22 0.08 160 / 0.55), transparent 70%), radial-gradient(circle at ${isRTL ? "80%" : "20%"} 80%, oklch(0.18 0.05 160 / 0.3), transparent 50%)`,
+            background: `radial-gradient(ellipse 80% 60% at ${isRTL ? "25%" : "75%"} 35%, oklch(0.25 0.12 160 / 0.7), transparent 70%), radial-gradient(circle at ${isRTL ? "85%" : "15%"} 85%, oklch(0.2 0.08 160 / 0.4), transparent 50%), radial-gradient(circle at 50% 0%, oklch(0.15 0.05 160 / 0.3), transparent 60%)`,
+          }}
+        />
+        {/* Grid pattern overlay */}
+        <div
+          className="absolute inset-0 pointer-events-none opacity-[0.04]"
+          style={{
+            backgroundImage: `linear-gradient(var(--land-border) 1px, transparent 1px), linear-gradient(90deg, var(--land-border) 1px, transparent 1px)`,
+            backgroundSize: "64px 64px",
           }}
         />
         <div className="relative z-10 mx-auto w-full max-w-7xl px-6 pt-28 pb-16 lg:pt-0">
           <div className="flex flex-col lg:grid lg:grid-cols-[1fr_1.2fr] items-center gap-12 lg:gap-20">
             <div className="land-stagger">
+              <p className="text-sm font-medium tracking-widest uppercase text-[var(--land-accent)]">
+                {isRTL ? "بورتفوليو برو" : "Portfolio Pro"}
+              </p>
               <h1
-                className="font-bold leading-[1.05] tracking-tight"
-                style={{ fontSize: "clamp(2.5rem, 5.5vw, 4.25rem)" }}
+                className="mt-4 font-extrabold leading-[1] tracking-tighter"
+                style={{ fontSize: "clamp(3rem, 6.5vw, 5.5rem)" }}
               >
                 {isRTL
                   ? "البورتفوليو الذي تستحقه مسيرتك"
                   : "The portfolio your career has earned"}
               </h1>
-              <p className="mt-6 max-w-lg text-lg leading-relaxed text-[var(--land-body)]">
+              <p className="mt-8 max-w-lg text-lg leading-relaxed text-[var(--land-body)]">
                 {isRTL
                   ? "بورتفوليوهات احترافية لمهندسي النفط والغاز والقيادات والمتخصصين في الكويت. ثنائية اللغة. جاهزة للطباعة. جاهزة في دقائق."
                   : "Professional portfolios for Kuwait's oil and gas engineers, corporate leaders, and technical specialists. Bilingual. Print-ready. Live in minutes."}
               </p>
-              <div className="mt-10">
+              <div className="mt-10 flex items-center gap-4">
                 <Link
                   href="/dashboard/new"
-                  className="inline-block rounded-lg bg-[var(--land-accent)] px-8 py-3.5 text-base font-semibold text-white hover:bg-[var(--land-accent-hover)] transition-colors"
+                  className="land-btn-shimmer inline-block rounded-xl bg-[var(--land-accent)] px-10 py-4 text-lg font-semibold text-white hover:bg-[var(--land-accent-hover)] transition-colors"
                 >
                   {isRTL ? "ابنِ بورتفوليوك" : "Build yours"}
                 </Link>
+                <Link
+                  href="/templates"
+                  className="text-sm font-medium text-[var(--land-body)] hover:text-[var(--land-bright)] transition-colors"
+                >
+                  {isRTL ? "تصفح القوالب" : "Browse templates"}{" "}
+                  <span className="inline-block transition-transform group-hover:translate-x-1">&rarr;</span>
+                </Link>
               </div>
-              <p className="mt-4 text-sm text-[var(--land-muted)]">
+              <p className="mt-5 text-sm text-[var(--land-muted)]">
                 {isRTL
                   ? "بدون اشتراك. ضمان استرداد ٧ أيام."
                   : "No subscription. 7-day money-back guarantee."}
@@ -136,14 +155,16 @@ export default function LandingPage() {
             </div>
 
             <div className="land-visual w-full max-w-xl">
-              <div className="hidden lg:block relative" style={{ perspective: "1200px" }}>
+              <div className="hidden lg:block relative land-float" style={{ perspective: "1200px" }}>
+                {/* Glow behind mockup */}
                 <div
-                  className="absolute inset-0 -inset-x-8 -inset-y-8 pointer-events-none"
+                  className="absolute -inset-12 pointer-events-none"
                   style={{
-                    background: `radial-gradient(ellipse at center, var(--land-glow), transparent 70%)`,
+                    background: `radial-gradient(ellipse at center, var(--land-glow), transparent 65%)`,
                   }}
                 />
                 <div
+                  className="land-glow-border rounded-xl"
                   style={{
                     transform: isRTL
                       ? "rotateY(4deg) rotateX(2deg)"
@@ -167,9 +188,9 @@ export default function LandingPage() {
 
       {/* ── Social proof strip ─────────────────── */}
       <ScrollReveal>
-        <div className="bg-[var(--land-surface)] border-y border-[var(--land-border)]/50 py-6 px-6">
+        <div className="bg-[var(--land-surface)] border-y border-[var(--land-border)]/50 py-8 px-6">
           <div className="mx-auto max-w-5xl">
-            <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-8 bg-[var(--land-surface-raised)] rounded-lg px-6 py-4 border border-[var(--land-border)]">
+            <div className="flex flex-col sm:flex-row items-center gap-6 sm:gap-10 bg-[var(--land-surface-raised)] rounded-xl px-8 py-5 border border-[var(--land-border)]">
               <p className="text-sm text-[var(--land-muted)]">
                 {isRTL
                   ? "موثوق من متخصصين في"
@@ -200,13 +221,16 @@ export default function LandingPage() {
       <section className="pt-32 pb-24 px-6">
         <ScrollReveal>
           <div className="mx-auto max-w-7xl">
+            <p className="text-sm font-medium tracking-widest uppercase text-[var(--land-accent)]">
+              {isRTL ? "القوالب" : "Templates"}
+            </p>
             <h2
-              className="font-bold tracking-tight"
-              style={{ fontSize: "clamp(1.75rem, 3vw, 2.5rem)" }}
+              className="mt-3 font-extrabold tracking-tighter"
+              style={{ fontSize: "clamp(2rem, 4vw, 3.5rem)" }}
             >
               {isRTL ? "شاهد ما ستبنيه" : "See what you'll build"}
             </h2>
-            <p className="mt-4 max-w-lg text-[var(--land-body)]">
+            <p className="mt-4 max-w-lg text-lg text-[var(--land-body)]">
               {isRTL
                 ? "قوالب مصممة بعناية لمختلف المهن. كل قالب مختلف تمامًا عن الآخر."
                 : "Hand-crafted templates for different professions. Each one is a completely different design."}
@@ -310,8 +334,8 @@ export default function LandingPage() {
         <section className="py-20 px-6">
           <div className="mx-auto max-w-3xl">
             <h2
-              className="font-bold tracking-tight"
-              style={{ fontSize: "clamp(1.75rem, 3vw, 2.5rem)" }}
+              className="font-extrabold tracking-tighter"
+              style={{ fontSize: "clamp(2rem, 4vw, 3rem)" }}
             >
               {isRTL ? "ثلاث خطوات فقط" : "Three steps. That's it."}
             </h2>
@@ -572,13 +596,19 @@ export default function LandingPage() {
               </div>
             </div>
             <div className="hidden lg:block text-end pt-2">
-              <div className="text-5xl font-bold text-[var(--land-bright)] tracking-tight">
-                1.500{" "}
-                <span className="text-xl font-medium text-[var(--land-muted)]">
+              <div
+                className="font-extrabold tracking-tighter"
+                style={{ fontSize: "clamp(3rem, 5vw, 4.5rem)" }}
+              >
+                <span className="text-[var(--land-accent)]">1.500</span>{" "}
+                <span className="text-2xl font-medium text-[var(--land-muted)]">
                   KD
                 </span>
               </div>
               <p className="text-sm text-[var(--land-muted)] mt-2">~$5 USD</p>
+              <p className="text-xs text-[var(--land-accent)] mt-1 font-medium">
+                {isRTL ? "دفعة واحدة فقط" : "one-time, forever"}
+              </p>
             </div>
           </div>
         </section>
@@ -589,8 +619,8 @@ export default function LandingPage() {
         <section className="py-20 px-6">
           <div className="mx-auto max-w-2xl">
             <h2
-              className="font-bold tracking-tight"
-              style={{ fontSize: "clamp(1.75rem, 3vw, 2.5rem)" }}
+              className="font-extrabold tracking-tighter"
+              style={{ fontSize: "clamp(2rem, 4vw, 3rem)" }}
             >
               {isRTL ? "أسئلة شائعة" : "Common questions"}
             </h2>

@@ -81,18 +81,18 @@
 
 /* ─── Landing page tokens ─────────────────────── */
 :root {
-  --land-bg: oklch(0.13 0.01 160);
-  --land-surface: oklch(0.16 0.008 160);
-  --land-surface-raised: oklch(0.19 0.008 160);
-  --land-border: oklch(0.24 0.01 160);
-  --land-border-subtle: oklch(0.20 0.008 160);
-  --land-muted: oklch(0.5 0.012 160);
-  --land-body: oklch(0.72 0.008 160);
-  --land-bright: oklch(0.95 0.005 160);
-  --land-accent: oklch(0.59 0.17 160);
-  --land-accent-hover: oklch(0.64 0.17 160);
-  --land-accent-subtle: oklch(0.59 0.17 160 / 0.12);
-  --land-glow: oklch(0.59 0.17 160 / 0.08);
+  --land-bg: oklch(0.11 0.012 160);
+  --land-surface: oklch(0.14 0.01 160);
+  --land-surface-raised: oklch(0.17 0.01 160);
+  --land-border: oklch(0.24 0.012 160);
+  --land-border-subtle: oklch(0.20 0.01 160);
+  --land-muted: oklch(0.5 0.015 160);
+  --land-body: oklch(0.76 0.01 160);
+  --land-bright: oklch(0.97 0.005 160);
+  --land-accent: oklch(0.64 0.2 160);
+  --land-accent-hover: oklch(0.69 0.2 160);
+  --land-accent-subtle: oklch(0.64 0.2 160 / 0.15);
+  --land-glow: oklch(0.64 0.2 160 / 0.12);
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
 }
@@ -144,6 +144,73 @@
 @keyframes land-shimmer {
   from { background-position: -200% 0; }
   to { background-position: 200% 0; }
+}
+@keyframes land-border-rotate {
+  from { --land-angle: 0deg; }
+  to { --land-angle: 360deg; }
+}
+@keyframes land-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+@keyframes land-pulse-ring {
+  0% { opacity: 0.6; transform: scale(1); }
+  100% { opacity: 0; transform: scale(1.5); }
+}
+
+/* ─── Shimmer CTA button ────────────────────── */
+.land-btn-shimmer {
+  position: relative;
+  overflow: hidden;
+}
+.land-btn-shimmer::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    110deg,
+    transparent 25%,
+    oklch(1 0 0 / 0.15) 50%,
+    transparent 75%
+  );
+  background-size: 250% 100%;
+  animation: land-shimmer 3s ease-in-out infinite;
+  pointer-events: none;
+}
+
+/* ─── Animated gradient border ──────────────── */
+@property --land-angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+.land-glow-border {
+  position: relative;
+}
+.land-glow-border::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  padding: 1px;
+  background: conic-gradient(
+    from var(--land-angle),
+    oklch(0.64 0.2 160) 0%,
+    oklch(0.64 0.2 160 / 0.1) 25%,
+    oklch(0.64 0.2 160 / 0.3) 50%,
+    oklch(0.64 0.2 160 / 0.1) 75%,
+    oklch(0.64 0.2 160) 100%
+  );
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  animation: land-border-rotate 4s linear infinite;
+  pointer-events: none;
+}
+
+/* ─── Floating animation ────────────────────── */
+.land-float {
+  animation: land-float 4s ease-in-out infinite;
 }
 
 .land-stagger > * {
@@ -201,7 +268,10 @@
 
 @media (prefers-reduced-motion: reduce) {
   .land-stagger > *,
-  .land-visual {
+  .land-visual,
+  .land-float,
+  .land-btn-shimmer::after,
+  .land-glow-border::before {
     animation: none !important;
     opacity: 1 !important;
   }
