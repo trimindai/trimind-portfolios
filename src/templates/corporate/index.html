@@ -43,7 +43,7 @@
     --border-strong: #CBD5E1;
 
     --font-head: 'Playfair Display', Georgia, serif;
-    --font-body: 'Inter', system-ui, sans-serif;
+    --font-body: 'DM Sans', system-ui, sans-serif;
 
     --r: 10px;
     --r-sm: 6px;
@@ -171,18 +171,6 @@ a { text-decoration: none; color: inherit; }
     from { width: 0; }
     to { width: 100%; }
 }
-@keyframes shimmer {
-    0% { background-position: -200% 0; }
-    100% { background-position: 200% 0; }
-}
-@keyframes floatSubtle {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-8px); }
-}
-@keyframes pulseGlow {
-    0%, 100% { box-shadow: 0 8px 30px rgba(15,23,42,0.08); }
-    50% { box-shadow: 0 12px 40px rgba(15,23,42,0.15), 0 0 60px rgba(161,98,7,0.08); }
-}
 
 .hero {
     min-height: 100vh; display: flex; align-items: center;
@@ -298,7 +286,6 @@ a { text-decoration: none; color: inherit; }
     overflow: hidden; box-shadow: var(--shadow-lg);
     display: flex; align-items: center; justify-content: center;
     position: relative;
-    animation: pulseGlow 4s ease-in-out 2.5s infinite, floatSubtle 6s ease-in-out 2.5s infinite;
 }
 .hero-portrait-ph svg { width: 80px; height: 80px; color: var(--text-dim); opacity: 0.25; }
 .hero-portrait-tag {
