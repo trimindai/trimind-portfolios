@@ -10,13 +10,14 @@ const isProtectedRoute = createRouteMatcher([
   "/:locale/admin(.*)",
 ]);
 
-const isApiRoute = (req: NextRequest) =>
+const isStaticRoute = (req: NextRequest) =>
   req.nextUrl.pathname.startsWith("/api") ||
-  req.nextUrl.pathname.startsWith("/p/");
+  req.nextUrl.pathname.startsWith("/p/") ||
+  req.nextUrl.pathname.startsWith("/demo");
 
 export default clerkMiddleware(async (auth, req) => {
   // Skip intl middleware for API routes and public portfolio routes
-  if (isApiRoute(req)) {
+  if (isStaticRoute(req)) {
     return;
   }
 
