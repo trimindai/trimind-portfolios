@@ -33,14 +33,14 @@ export function EngineerBackgroundStep({ data, onChange }: EngineerBackgroundSte
     <div className="space-y-6">
       <div>
         <h2 className="text-xl font-semibold text-white">Background</h2>
-        <p className="text-sm text-slate-400 mt-1">
+        <p className="text-sm text-[var(--land-body)] mt-1">
           Optional sections — all auto-hide when empty. Fill in what applies to you.
           Your projects are the star; this adds professional context.
         </p>
       </div>
 
       {/* Section tabs */}
-      <div className="flex flex-wrap gap-1 bg-slate-800/50 rounded-lg p-1">
+      <div className="flex flex-wrap gap-1 bg-[var(--land-surface-raised)]/50 rounded-lg p-1">
         {SECTION_TABS.map((tab) => {
           const count =
             tab.id === "experience" ? experience.length :
@@ -56,14 +56,14 @@ export function EngineerBackgroundStep({ data, onChange }: EngineerBackgroundSte
               onClick={() => setActiveSection(tab.id)}
               className={`px-3 py-1.5 rounded-md text-sm font-medium transition-colors flex items-center gap-1.5 ${
                 activeSection === tab.id
-                  ? "bg-emerald-600 text-white"
-                  : "text-slate-400 hover:text-white"
+                  ? "bg-[var(--land-accent)] text-white"
+                  : "text-[var(--land-body)] hover:text-white"
               }`}
             >
               {tab.label}
               {count > 0 && (
                 <span className={`text-xs px-1.5 py-0.5 rounded-full ${
-                  activeSection === tab.id ? "bg-emerald-500/50" : "bg-slate-700"
+                  activeSection === tab.id ? "bg-[var(--land-accent-hover)]/50" : "bg-[var(--land-border)]"
                 }`}>
                   {count}
                 </span>
@@ -76,7 +76,7 @@ export function EngineerBackgroundStep({ data, onChange }: EngineerBackgroundSte
       {/* Experience */}
       {activeSection === "experience" && (
         <div className="space-y-4">
-          <div className="bg-slate-800/30 border border-amber-900/30 rounded-lg p-3 text-sm text-amber-300/80">
+          <div className="bg-[var(--land-surface-raised)]/30 border border-amber-900/30 rounded-lg p-3 text-sm text-amber-300/80">
             <strong>Tip:</strong> Most recent first. Focus on engineering scope, not job duties.
           </div>
           <DynamicList
@@ -113,7 +113,7 @@ export function EngineerBackgroundStep({ data, onChange }: EngineerBackgroundSte
       {/* Skills */}
       {activeSection === "skills" && (
         <div className="space-y-4">
-          <p className="text-sm text-slate-400">Group skills by category. Common engineering categories: Technical, Software, Tools & Equipment, Standards & Codes.</p>
+          <p className="text-sm text-[var(--land-body)]">Group skills by category. Common engineering categories: Technical, Software, Tools & Equipment, Standards & Codes.</p>
           <DynamicList
             items={skills}
             onChange={(items) => onChange({ skills: items })}
@@ -130,12 +130,12 @@ export function EngineerBackgroundStep({ data, onChange }: EngineerBackgroundSte
                   examples={["Technical Skills", "Software & Tools", "Standards & Codes", "Lab & Equipment", "Project Management"]}
                 />
                 <div>
-                  <label className="text-sm font-medium text-slate-300 mb-1.5 block">Skills (comma-separated)</label>
+                  <label className="text-sm font-medium text-[var(--land-bright)] mb-1.5 block">Skills (comma-separated)</label>
                   <input
                     value={item.items.join(", ")}
                     onChange={(e) => update({ items: e.target.value.split(",").map((s: string) => s.trim()).filter(Boolean) })}
                     placeholder="MATLAB, AutoCAD, SolidWorks, PLC Programming, SCADA"
-                    className="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2.5 text-white placeholder:text-slate-500 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 outline-none transition-colors"
+                    className="w-full bg-[var(--land-surface-raised)] border border-[var(--land-border)] rounded-lg px-4 py-2.5 text-white placeholder:text-[var(--land-muted)] focus:border-[var(--land-accent)] focus:ring-1 focus:ring-[var(--land-accent)] outline-none transition-colors"
                   />
                 </div>
               </div>
@@ -172,7 +172,7 @@ export function EngineerBackgroundStep({ data, onChange }: EngineerBackgroundSte
       {/* Certifications */}
       {activeSection === "certifications" && (
         <div className="space-y-4">
-          <p className="text-sm text-slate-400">Professional certifications, licenses, and technical qualifications.</p>
+          <p className="text-sm text-[var(--land-body)]">Professional certifications, licenses, and technical qualifications.</p>
           <DynamicList
             items={certifications}
             onChange={(items) => onChange({ certifications: items })}
@@ -203,11 +203,11 @@ export function EngineerBackgroundStep({ data, onChange }: EngineerBackgroundSte
               <div className="grid grid-cols-2 gap-3 pr-16">
                 <TextField label="Language" value={item.name} onChange={(v) => update({ name: v })} placeholder="Arabic" />
                 <div>
-                  <label className="text-sm font-medium text-slate-300 mb-1.5 block">Level</label>
+                  <label className="text-sm font-medium text-[var(--land-bright)] mb-1.5 block">Level</label>
                   <select
                     value={item.level}
                     onChange={(e) => update({ level: e.target.value })}
-                    className="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2.5 text-white focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 outline-none transition-colors"
+                    className="w-full bg-[var(--land-surface-raised)] border border-[var(--land-border)] rounded-lg px-4 py-2.5 text-white focus:border-[var(--land-accent)] focus:ring-1 focus:ring-[var(--land-accent)] outline-none transition-colors"
                   >
                     <option value="Native">Native</option>
                     <option value="Fluent">Fluent</option>

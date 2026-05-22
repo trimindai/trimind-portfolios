@@ -49,11 +49,11 @@ export function EducationStep({ data, onChange }: EducationStepProps) {
             <div className="grid grid-cols-2 gap-3 pr-16">
               <TextField label="Language" value={item.name} onChange={(v) => update({ name: v })} placeholder="Arabic" />
               <div>
-                <label className="text-sm font-medium text-slate-300 mb-1.5 block">Level</label>
+                <label className="text-sm font-medium text-[var(--land-bright)] mb-1.5 block">Level</label>
                 <select
                   value={item.level}
                   onChange={(e) => update({ level: e.target.value })}
-                  className="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2.5 text-white focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 outline-none transition-colors"
+                  className="w-full bg-[var(--land-surface-raised)] border border-[var(--land-border)] rounded-lg px-4 py-2.5 text-white focus:border-[var(--land-accent)] focus:ring-1 focus:ring-[var(--land-accent)] outline-none transition-colors"
                 >
                   <option value="Native">Native</option>
                   <option value="Fluent">Fluent</option>

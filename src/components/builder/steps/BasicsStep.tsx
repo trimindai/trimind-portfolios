@@ -22,7 +22,7 @@ export function BasicsStep({ data, onChange }: BasicsStepProps) {
     <div className="space-y-6">
       <div>
         <h2 className="text-xl font-semibold text-white">Basic Information</h2>
-        <p className="text-sm text-slate-400 mt-1">Fill in your core professional identity. The published portfolio will have an auto-translate button for Arabic.</p>
+        <p className="text-sm text-[var(--land-body)] mt-1">Fill in your core professional identity. The published portfolio will have an auto-translate button for Arabic.</p>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -83,7 +83,7 @@ export function BasicsStep({ data, onChange }: BasicsStepProps) {
       <div>
         <div className="flex items-center justify-between mb-3">
           <h3 className="text-lg font-medium text-white">Key Metrics</h3>
-          <span className="text-xs text-slate-500">Numbers that prove impact</span>
+          <span className="text-xs text-[var(--land-muted)]">Numbers that prove impact</span>
         </div>
         <DynamicList
           items={metrics}

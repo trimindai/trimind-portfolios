@@ -6,7 +6,7 @@ type PageProps = { params: Promise<{ locale: string }> };
 export const metadata = {
   title: "Portfolio Templates — Portfolio Pro",
   description:
-    "Seven profession-specific portfolio templates: Corporate, Engineer, Creative, Designer, Developer, Medical, Educator.",
+    "Profession-specific portfolio templates: Corporate, Engineer, Creative, Designer, Developer, Medical, Educator.",
 };
 
 export default async function TemplatesPage({ params }: PageProps) {
@@ -16,8 +16,8 @@ export default async function TemplatesPage({ params }: PageProps) {
   const t = {
     title: isAr ? "اختر القالب المناسب لك" : "Pick the right template",
     subtitle: isAr
-      ? "سبعة قوالب مصممة لكل مهنة — اختر واحدًا وابدأ خلال دقائق."
-      : "Seven profession-specific templates — pick one and launch in minutes.",
+      ? "قوالب مصممة لكل مهنة — اختر واحدًا وابدأ خلال دقائق."
+      : "Profession-specific templates — pick one and launch in minutes.",
     available: isAr ? "متاح الآن" : "Available now",
     soon: isAr ? "قريبًا" : "Coming soon",
     preview: isAr ? "معاينة مباشرة" : "Live preview",
@@ -27,7 +27,7 @@ export default async function TemplatesPage({ params }: PageProps) {
   };
 
   return (
-    <div className="min-h-screen bg-[var(--land-bg)] text-white">
+    <div className="min-h-screen bg-[var(--land-bg)] text-[var(--land-bright)]">
       <nav className="border-b border-[var(--land-border)]/50 bg-[var(--land-bg)]/80 backdrop-blur-md">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
           <Link href="/" className="text-xl font-bold tracking-tight">

@@ -1,0 +1,170 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-05-21T00:00:00Z",
+  "title": "Design System: Portfolio Pro",
+  "extensions": {
+    "colorMeta": {
+      "atelier-emerald": {
+        "role": "primary",
+        "displayName": "Atelier Emerald",
+        "canonical": "oklch(0.596 0.145 163)",
+        "tonalRamp": [
+          "oklch(0.20 0.04 163)",
+          "oklch(0.30 0.07 163)",
+          "oklch(0.40 0.10 163)",
+          "oklch(0.50 0.13 163)",
+          "oklch(0.596 0.145 163)",
+          "oklch(0.70 0.17 163)",
+          "oklch(0.80 0.14 163)",
+          "oklch(0.92 0.06 163)"
+        ]
+      },
+      "deep-ink": {
+        "role": "neutral",
+        "displayName": "Deep Ink",
+        "canonical": "oklch(0.129 0.014 256)",
+        "tonalRamp": [
+          "oklch(0.129 0.014 256)",
+          "oklch(0.208 0.018 265)",
+          "oklch(0.282 0.018 260)",
+          "oklch(0.371 0.013 261)",
+          "oklch(0.554 0.019 254)",
+          "oklch(0.685 0.019 250)",
+          "oklch(0.835 0.013 253)",
+          "oklch(0.98 0.002 247)"
+        ]
+      },
+      "workshop-dark": {
+        "role": "neutral",
+        "displayName": "Workshop Dark",
+        "canonical": "oklch(0.208 0.018 265)"
+      },
+      "surface-recessed": {
+        "role": "neutral",
+        "displayName": "Surface Recessed",
+        "canonical": "oklch(0.282 0.018 260)"
+      },
+      "frame-line": {
+        "role": "neutral",
+        "displayName": "Frame Line",
+        "canonical": "oklch(0.371 0.013 261)"
+      },
+      "quiet-text": {
+        "role": "neutral",
+        "displayName": "Quiet Text",
+        "canonical": "oklch(0.685 0.019 250)"
+      },
+      "soft-text": {
+        "role": "neutral",
+        "displayName": "Soft Text",
+        "canonical": "oklch(0.835 0.013 253)"
+      }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Display", "purpose": "Hero headlines only. One per page." },
+      "headline": { "displayName": "Headline", "purpose": "Section titles." },
+      "body": { "displayName": "Body", "purpose": "Descriptions, feature text, FAQ answers." },
+      "label": { "displayName": "Label", "purpose": "Button text, form labels, nav items." },
+      "caption": { "displayName": "Caption", "purpose": "Timestamps, help text, fine print." }
+    },
+    "shadows": [],
+    "motion": [
+      { "name": "state-transition", "value": "150ms ease", "purpose": "Default for color and opacity transitions. Instant-feeling, no choreography." }
+    ],
+    "breakpoints": [
+      { "name": "sm", "value": "640px" },
+      { "name": "md", "value": "768px" },
+      { "name": "lg", "value": "1024px" },
+      { "name": "xl", "value": "1280px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "The primary CTA. Emerald fill, used for the single most important action on each screen.",
+      "html": "<button class=\"ds-btn-primary\">Get Started</button>",
+      "css": ".ds-btn-primary { background: #059669; color: #fff; padding: 10px 16px; font-size: 0.875rem; font-weight: 500; font-family: Geist, system-ui, sans-serif; border: none; border-radius: 8px; cursor: pointer; transition: background-color 150ms ease; } .ds-btn-primary:hover { background: #10b981; } .ds-btn-primary:focus-visible { outline: 2px solid #94a3b8; outline-offset: 2px; } .ds-btn-primary:disabled { opacity: 0.3; cursor: not-allowed; }"
+    },
+    {
+      "name": "Ghost Button",
+      "kind": "button",
+      "refersTo": "button-ghost",
+      "description": "Secondary actions. Transparent with border. Used alongside primary buttons.",
+      "html": "<button class=\"ds-btn-ghost\">Browse Templates</button>",
+      "css": ".ds-btn-ghost { background: transparent; color: #cbd5e1; padding: 10px 16px; font-size: 0.875rem; font-weight: 500; font-family: Geist, system-ui, sans-serif; border: 1px solid #334155; border-radius: 8px; cursor: pointer; transition: background-color 150ms ease, color 150ms ease; } .ds-btn-ghost:hover { background: #1e293b; color: #f8fafc; } .ds-btn-ghost:focus-visible { outline: 2px solid #94a3b8; outline-offset: 2px; }"
+    },
+    {
+      "name": "Card Surface",
+      "kind": "card",
+      "refersTo": "card-surface",
+      "description": "Content container for portfolios, template previews, and form sections.",
+      "html": "<div class=\"ds-card\"><h3 class=\"ds-card-title\">Corporate Portfolio</h3><p class=\"ds-card-desc\">Navy & gold institutional design.</p></div>",
+      "css": ".ds-card { background: rgba(15, 23, 42, 0.5); border: 1px solid #334155; border-radius: 12px; padding: 20px 24px; } .ds-card-title { color: #f8fafc; font-size: 1.25rem; font-weight: 600; font-family: Geist, system-ui, sans-serif; margin: 0 0 8px 0; } .ds-card-desc { color: #94a3b8; font-size: 0.875rem; font-family: Geist, system-ui, sans-serif; margin: 0; line-height: 1.5; }"
+    },
+    {
+      "name": "Accent Chip",
+      "kind": "chip",
+      "refersTo": "chip-accent",
+      "description": "Feature tags and template capability badges.",
+      "html": "<span class=\"ds-chip\">PDF Export</span>",
+      "css": ".ds-chip { display: inline-block; background: rgba(5, 150, 105, 0.1); color: #10b981; font-size: 0.75rem; font-family: Geist, system-ui, sans-serif; padding: 4px 12px; border-radius: 9999px; }"
+    },
+    {
+      "name": "Text Input",
+      "kind": "input",
+      "refersTo": "input-default",
+      "description": "Form fields in the portfolio builder wizard.",
+      "html": "<input class=\"ds-input\" type=\"text\" placeholder=\"Full Name\" />",
+      "css": ".ds-input { width: 100%; background: #1e293b; color: #cbd5e1; border: 1px solid #334155; border-radius: 8px; padding: 10px 12px; font-size: 0.875rem; font-family: Geist, system-ui, sans-serif; transition: border-color 150ms ease; } .ds-input::placeholder { color: #64748b; } .ds-input:focus { outline: none; border-color: #059669; } .ds-input:disabled { opacity: 0.5; cursor: not-allowed; }"
+    },
+    {
+      "name": "Navigation Bar",
+      "kind": "nav",
+      "refersTo": "nav-top",
+      "description": "Fixed top navigation with brand mark, nav links, and CTA.",
+      "html": "<nav class=\"ds-nav\"><span class=\"ds-nav-brand\">Portfolio Pro</span><div class=\"ds-nav-links\"><a class=\"ds-nav-link\" href=\"#\">Sign In</a><button class=\"ds-btn-primary ds-nav-cta\">Get Started</button></div></nav>",
+      "css": ".ds-nav { display: flex; align-items: center; justify-content: space-between; padding: 16px 24px; background: rgba(2, 6, 23, 0.8); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(255,255,255,0.05); } .ds-nav-brand { color: #f8fafc; font-size: 1.25rem; font-weight: 700; font-family: Geist, system-ui, sans-serif; letter-spacing: -0.01em; } .ds-nav-links { display: flex; align-items: center; gap: 16px; } .ds-nav-link { color: #94a3b8; font-size: 0.875rem; font-family: Geist, system-ui, sans-serif; text-decoration: none; transition: color 150ms ease; } .ds-nav-link:hover { color: #f8fafc; } .ds-nav-cta { font-size: 0.875rem; padding: 8px 16px; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Quiet Atelier",
+    "overview": "A designer's private workshop: precise, unhurried, expert. Dark surfaces recede so the work (portfolio templates) stands forward. Emerald accents are deliberate and rare, marking only the actions that matter. The tool never competes with what it produces.\n\nPortfolio Pro's visual language serves GCC professionals who expect polish without pretension. The interface says \"we've already made the design decisions\" through craft, not decoration. Every surface is dark enough to let template previews and content breathe, but warm enough (slate, not pure black) to avoid the cold-tool cliche.",
+    "keyCharacteristics": [
+      "Dark workshop surfaces with tinted slate neutrals, never pure black",
+      "Single emerald accent used with restraint; its rarity is the point",
+      "Geist typeface throughout, hierarchy driven by scale and weight",
+      "Flat elevation with border-based separation; no shadows",
+      "Content-forward: template previews and user work dominate",
+      "Bilingual-native: Arabic RTL is first-class"
+    ],
+    "rules": [
+      { "name": "The One Accent Rule", "body": "Atelier Emerald appears on no more than 10% of any screen. Its power comes from scarcity.", "section": "colors" },
+      { "name": "The Tinted Neutral Rule", "body": "Every neutral carries a blue undertone (chroma 0.013-0.019 in the 250-265 hue range). Pure gray is forbidden.", "section": "colors" },
+      { "name": "The Weight Ladder Rule", "body": "Adjacent hierarchy levels must differ by at least one weight step (100) AND one size step (ratio >= 1.25).", "section": "typography" },
+      { "name": "The Single Family Rule", "body": "Geist only. No decorative fonts, no serif pairings, no monospace for emphasis.", "section": "typography" },
+      { "name": "The No Shadow Rule", "body": "No box-shadow on any app surface. Shadows are reserved for portfolio templates, not the builder UI.", "section": "elevation" },
+      { "name": "The Blur Exception", "body": "backdrop-blur permitted only on fixed navbar and overlay backdrops. Nowhere else.", "section": "elevation" }
+    ],
+    "dos": [
+      "Do use Atelier Emerald exclusively for primary actions and success states.",
+      "Do tint every neutral toward slate-blue.",
+      "Do let template previews dominate the visual hierarchy.",
+      "Do treat Arabic RTL as a native layout.",
+      "Do use borders (1px, Frame Line) as the primary separation mechanism.",
+      "Do keep motion to transition-colors and transition-opacity."
+    ],
+    "donts": [
+      "Don't use gradient blobs, glassmorphism cards, or hero-metric templates.",
+      "Don't use box-shadow on app surfaces.",
+      "Don't scatter emerald across the interface (max 10% of any screen).",
+      "Don't use border-left or border-right greater than 1px as a colored accent stripe.",
+      "Don't use identical card grids (same-size cards with icon + heading + text repeated).",
+      "Don't use pure black (#000) or pure white (#fff).",
+      "Don't introduce a second font family.",
+      "Don't build layouts that look like Wix or generic WordPress themes.",
+      "Don't use warm beige backgrounds, soft illustrations, or rounded-everything."
+    ]
+  }
+}

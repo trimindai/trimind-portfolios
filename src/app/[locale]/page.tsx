@@ -256,7 +256,7 @@ export default function LandingPage() {
                   </p>
                   <div className="mt-4 flex flex-wrap gap-4">
                     <a
-                      href="https://corporate-three-pink.vercel.app/"
+                      href="/demo/corporate/index.html"
                       target="_blank"
                       rel="noopener noreferrer"
                       className="text-sm text-[var(--land-accent)] hover:text-[var(--land-accent-hover)] transition-colors"
@@ -290,7 +290,7 @@ export default function LandingPage() {
                   </p>
                   <div className="mt-4 flex flex-wrap gap-4">
                     <a
-                      href="/templates/engineer/index.html"
+                      href="/demo/engineer/index.html"
                       target="_blank"
                       rel="noopener noreferrer"
                       className="text-sm text-[var(--land-accent)] hover:text-[var(--land-accent-hover)] transition-colors"
@@ -404,8 +404,8 @@ export default function LandingPage() {
                 </p>
                 <h3 className="mt-2 text-2xl font-bold tracking-tight">
                   {isRTL
-                    ? "سبعة قوالب. كل واحد مصمم، ليس مولّد."
-                    : "Seven templates. Each one designed, not generated."}
+                    ? "كل قالب مصمم يدويًا، ليس مولّد."
+                    : "Every template designed, not generated."}
                 </h3>
                 <p className="mt-4 text-[var(--land-body)] leading-relaxed">
                   {isRTL
@@ -690,7 +690,7 @@ export default function LandingPage() {
               </li>
               <li>
                 <a
-                  href="https://corporate-three-pink.vercel.app/"
+                  href="/demo/corporate/index.html"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="hover:text-[var(--land-bright)] transition-colors"

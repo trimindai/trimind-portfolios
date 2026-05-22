@@ -21,7 +21,7 @@ export default function EditPage({
 
   if (portfolio === undefined) {
     return (
-      <div className="text-center text-slate-400 py-20">Loading...</div>
+      <div className="text-center text-[var(--land-body)] py-20">Loading...</div>
     );
   }
 

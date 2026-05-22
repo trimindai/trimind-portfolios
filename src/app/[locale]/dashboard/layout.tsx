@@ -36,27 +36,27 @@ export default function DashboardLayout({
 
   if (!isLoaded || !synced) {
     return (
-      <div className="min-h-screen bg-slate-950 flex items-center justify-center">
-        <div className="text-slate-400 text-sm">Loading...</div>
+      <div className="min-h-screen bg-[var(--land-bg)] flex items-center justify-center">
+        <div className="text-[var(--land-body)] text-sm">Loading...</div>
       </div>
     );
   }
 
   return (
     <DashboardContext.Provider value={{ userId }}>
-      <div className="min-h-screen bg-slate-950">
-        <header className="border-b border-slate-800 bg-slate-950/80 backdrop-blur-md">
+      <div className="min-h-screen bg-[var(--land-bg)]">
+        <header className="border-b border-[var(--land-border)] bg-[var(--land-bg)]/80 backdrop-blur-md">
           <div className="mx-auto max-w-7xl flex items-center justify-between px-6 py-4">
             <span className="text-xl font-bold text-white tracking-tight">
               Portfolio Pro
             </span>
             <div className="flex items-center gap-4">
               <AdminLink />
-              <span className="text-sm text-slate-400">
+              <span className="text-sm text-[var(--land-body)]">
                 {user?.fullName || user?.primaryEmailAddress?.emailAddress}
               </span>
               <SignOutButton>
-                <button className="text-sm text-slate-500 hover:text-white transition-colors">
+                <button className="text-sm text-[var(--land-muted)] hover:text-white transition-colors">
                   Sign out
                 </button>
               </SignOutButton>

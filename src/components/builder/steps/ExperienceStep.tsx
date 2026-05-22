@@ -17,10 +17,10 @@ export function ExperienceStep({ data, onChange }: ExperienceStepProps) {
     <div className="space-y-6">
       <div>
         <h2 className="text-xl font-semibold text-white">Work Experience</h2>
-        <p className="text-sm text-slate-400 mt-1">Most recent first. Focus on <strong className="text-slate-300">results and impact</strong>.</p>
+        <p className="text-sm text-[var(--land-body)] mt-1">Most recent first. Focus on <strong className="text-[var(--land-bright)]">results and impact</strong>.</p>
       </div>
 
-      <div className="bg-slate-800/30 border border-amber-900/30 rounded-lg p-4 text-sm text-amber-300/80">
+      <div className="bg-[var(--land-surface-raised)]/30 border border-amber-900/30 rounded-lg p-4 text-sm text-amber-300/80">
         <strong>Power words:</strong> Led, Delivered, Reduced, Increased, Automated, Designed, Launched, Optimized, Managed, Generated
       </div>
 

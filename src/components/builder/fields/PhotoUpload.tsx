@@ -78,16 +78,16 @@ export function PhotoUpload({ value, onChange }: PhotoUploadProps) {
 
   return (
     <div>
-      <label className="text-sm font-medium text-slate-300 mb-1.5 block">
+      <label className="text-sm font-medium text-[var(--land-bright)] mb-1.5 block">
         Profile Photo
       </label>
-      <p className="text-xs text-slate-500 mb-2">
+      <p className="text-xs text-[var(--land-muted)] mb-2">
         Square photo works best. Max 5MB. JPG or PNG.
       </p>
       <div className="flex items-center gap-4">
         <div
           onClick={() => !uploading && fileInputRef.current?.click()}
-          className="w-24 h-24 rounded-full border-2 border-dashed border-slate-700 hover:border-emerald-500 flex items-center justify-center cursor-pointer transition-colors overflow-hidden bg-slate-800 flex-shrink-0"
+          className="w-24 h-24 rounded-full border-2 border-dashed border-[var(--land-border)] hover:border-[var(--land-accent)] flex items-center justify-center cursor-pointer transition-colors overflow-hidden bg-[var(--land-surface-raised)] flex-shrink-0"
         >
           {preview ? (
             <img
@@ -98,9 +98,9 @@ export function PhotoUpload({ value, onChange }: PhotoUploadProps) {
           ) : (
             <div className="text-center">
               {uploading ? (
-                <div className="animate-spin h-6 w-6 border-2 border-emerald-500 border-t-transparent rounded-full mx-auto" />
+                <div className="animate-spin h-6 w-6 border-2 border-[var(--land-accent)] border-t-transparent rounded-full mx-auto" />
               ) : (
-                <svg className="w-8 h-8 text-slate-500 mx-auto" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor">
+                <svg className="w-8 h-8 text-[var(--land-muted)] mx-auto" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M6.827 6.175A2.31 2.31 0 0 1 5.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 0 0-1.134-.175 2.31 2.31 0 0 1-1.64-1.055l-.822-1.316a2.192 2.192 0 0 0-1.736-1.039 48.774 48.774 0 0 0-5.232 0 2.192 2.192 0 0 0-1.736 1.039l-.821 1.316Z" />
                   <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 12.75a4.5 4.5 0 1 1-9 0 4.5 4.5 0 0 1 9 0Z" />
                 </svg>
@@ -113,7 +113,7 @@ export function PhotoUpload({ value, onChange }: PhotoUploadProps) {
             type="button"
             onClick={() => !uploading && fileInputRef.current?.click()}
             disabled={uploading}
-            className="text-sm text-emerald-400 hover:text-emerald-300 transition-colors disabled:opacity-50"
+            className="text-sm text-[var(--land-accent-hover)] hover:text-[var(--land-accent-hover)] transition-colors disabled:opacity-50"
           >
             {uploading ? "Uploading..." : preview ? "Change photo" : "Upload photo"}
           </button>

@@ -187,10 +187,10 @@ export default function PublishPage() {
   // Loading state
   if (portfolio === undefined) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-slate-950">
+      <div className="flex min-h-screen items-center justify-center bg-[var(--land-bg)]">
         <div className="flex flex-col items-center gap-3">
-          <Loader2 className="h-8 w-8 animate-spin text-emerald-500" />
-          <span className="text-sm text-slate-400">{tc("loading")}</span>
+          <Loader2 className="h-8 w-8 animate-spin text-[var(--land-accent)]" />
+          <span className="text-sm text-[var(--land-body)]">{tc("loading")}</span>
         </div>
       </div>
     );
@@ -199,8 +199,8 @@ export default function PublishPage() {
   // Not found
   if (portfolio === null) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-slate-950">
-        <p className="text-slate-400">Portfolio not found.</p>
+      <div className="flex min-h-screen items-center justify-center bg-[var(--land-bg)]">
+        <p className="text-[var(--land-body)]">Portfolio not found.</p>
       </div>
     );
   }
@@ -208,18 +208,18 @@ export default function PublishPage() {
   // Published success state
   if (published) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-slate-950 px-4">
-        <div className="w-full max-w-lg rounded-2xl border border-slate-800 bg-slate-900 p-8 text-center">
+      <div className="flex min-h-screen items-center justify-center bg-[var(--land-bg)] px-4">
+        <div className="w-full max-w-lg rounded-2xl border border-[var(--land-border)] bg-[var(--land-surface)] p-8 text-center">
           {/* Animated checkmark */}
-          <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-emerald-600/20">
-            <CheckCircle2 className="h-12 w-12 text-emerald-500 animate-in zoom-in duration-500" />
+          <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-[var(--land-accent-subtle)]">
+            <CheckCircle2 className="h-12 w-12 text-[var(--land-accent)] animate-in zoom-in duration-500" />
           </div>
 
           <h1 className="text-2xl font-bold text-white">{t("published")}</h1>
 
           {/* URL display */}
-          <div className="mt-6 rounded-lg bg-slate-800 p-3">
-            <p className="font-mono text-sm text-emerald-400 break-all">
+          <div className="mt-6 rounded-lg bg-[var(--land-surface-raised)] p-3">
+            <p className="font-mono text-sm text-[var(--land-accent-hover)] break-all">
               {portfolioUrl}
             </p>
           </div>
@@ -230,17 +230,17 @@ export default function PublishPage() {
               href={`/p/${slug}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center justify-center gap-2 rounded-lg bg-emerald-600 px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-emerald-500"
+              className="inline-flex items-center justify-center gap-2 rounded-lg bg-[var(--land-accent)] px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-[var(--land-accent-hover)]"
             >
               <ExternalLink className="h-4 w-4" />
               {t("visitSite")}
             </a>
             <button
               onClick={handleCopyUrl}
-              className="inline-flex items-center justify-center gap-2 rounded-lg border border-slate-700 bg-slate-800 px-6 py-3 text-sm font-medium text-slate-300 transition-colors hover:bg-slate-700 hover:text-white"
+              className="inline-flex items-center justify-center gap-2 rounded-lg border border-[var(--land-border)] bg-[var(--land-surface-raised)] px-6 py-3 text-sm font-medium text-[var(--land-bright)] transition-colors hover:bg-[var(--land-border)] hover:text-white"
             >
               {copied ? (
-                <Check className="h-4 w-4 text-emerald-500" />
+                <Check className="h-4 w-4 text-[var(--land-accent)]" />
               ) : (
                 <Copy className="h-4 w-4" />
               )}
@@ -251,7 +251,7 @@ export default function PublishPage() {
           {/* Back to dashboard */}
           <Link
             href="/dashboard"
-            className="mt-6 inline-block text-sm text-slate-500 transition-colors hover:text-slate-300"
+            className="mt-6 inline-block text-sm text-[var(--land-muted)] transition-colors hover:text-[var(--land-bright)]"
           >
             Back to Dashboard
           </Link>
@@ -262,46 +262,46 @@ export default function PublishPage() {
 
   // Publish form
   return (
-    <div className="flex min-h-screen items-center justify-center bg-slate-950 px-4">
+    <div className="flex min-h-screen items-center justify-center bg-[var(--land-bg)] px-4">
       <div className="w-full max-w-lg">
         {/* Back link */}
         <Link
           href={`/dashboard/${id}/preview`}
-          className="mb-6 inline-flex items-center gap-2 text-sm text-slate-400 transition-colors hover:text-white"
+          className="mb-6 inline-flex items-center gap-2 text-sm text-[var(--land-body)] transition-colors hover:text-white"
         >
           <ArrowLeft className="h-4 w-4" />
           Back to Preview
         </Link>
 
         {/* Card */}
-        <div className="rounded-2xl border border-slate-800 bg-slate-900 p-8">
+        <div className="rounded-2xl border border-[var(--land-border)] bg-[var(--land-surface)] p-8">
           <h1 className="text-2xl font-bold text-white">{t("title")}</h1>
-          <p className="mt-2 text-sm text-slate-400">{t("chooseSlug")}</p>
+          <p className="mt-2 text-sm text-[var(--land-body)]">{t("chooseSlug")}</p>
 
           {/* Slug input */}
           <div className="mt-6">
-            <label className="mb-2 block text-sm font-medium text-slate-300">
+            <label className="mb-2 block text-sm font-medium text-[var(--land-bright)]">
               {t("chooseSlug")}
             </label>
-            <div className="flex items-center gap-0 rounded-lg border border-slate-700 bg-slate-800 focus-within:border-emerald-600 focus-within:ring-1 focus-within:ring-emerald-600/50">
-              <span className="whitespace-nowrap border-r border-slate-700 px-3 py-2.5 text-sm text-slate-500">
+            <div className="flex items-center gap-0 rounded-lg border border-[var(--land-border)] bg-[var(--land-surface-raised)] focus-within:border-[var(--land-accent)] focus-within:ring-1 focus-within:ring-[var(--land-accent)]/50">
+              <span className="whitespace-nowrap border-r border-[var(--land-border)] px-3 py-2.5 text-sm text-[var(--land-muted)]">
                 {t("slugPrefix")}
               </span>
               <input
                 type="text"
                 value={slug}
                 onChange={(e) => setSlug(slugify(e.target.value))}
-                className="flex-1 bg-transparent px-3 py-2.5 text-sm text-white placeholder-slate-600 outline-none"
+                className="flex-1 bg-transparent px-3 py-2.5 text-sm text-white placeholder-[var(--land-muted)] outline-none"
                 placeholder="your-name"
               />
               {/* Availability indicator */}
               <div className="px-3">
                 {slug.length >= 2 && slugAvailable === null && (
-                  <Loader2 className="h-4 w-4 animate-spin text-slate-500" />
+                  <Loader2 className="h-4 w-4 animate-spin text-[var(--land-muted)]" />
                 )}
                 {slugAvailable === true && (
                   <div className="flex items-center gap-1">
-                    <Check className="h-4 w-4 text-emerald-500" />
+                    <Check className="h-4 w-4 text-[var(--land-accent)]" />
                   </div>
                 )}
                 {slugAvailable === false && (
@@ -314,15 +314,15 @@ export default function PublishPage() {
 
             {/* Availability message */}
             {slug.length >= 2 && slugAvailable === true && (
-              <p className="mt-2 text-sm text-emerald-500">{t("available")}</p>
+              <p className="mt-2 text-sm text-[var(--land-accent)]">{t("available")}</p>
             )}
             {slugAvailable === false && (
               <p className="mt-2 text-sm text-red-500">{t("taken")}</p>
             )}
 
             {/* URL preview */}
-            <div className="mt-4 rounded-lg bg-slate-800/50 p-3">
-              <p className="font-mono text-sm text-slate-400 break-all">
+            <div className="mt-4 rounded-lg bg-[var(--land-surface-raised)]/50 p-3">
+              <p className="font-mono text-sm text-[var(--land-body)] break-all">
                 {portfolioUrl}
               </p>
             </div>
@@ -339,7 +339,7 @@ export default function PublishPage() {
           <button
             onClick={handlePublish}
             disabled={publishing || !slugAvailable || slug.length < 2}
-            className="mt-6 flex w-full items-center justify-center gap-2 rounded-lg bg-emerald-600 px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-emerald-500 disabled:cursor-not-allowed disabled:opacity-50"
+            className="mt-6 flex w-full items-center justify-center gap-2 rounded-lg bg-[var(--land-accent)] px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-[var(--land-accent-hover)] disabled:cursor-not-allowed disabled:opacity-50"
           >
             {publishing ? (
               <>

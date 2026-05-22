@@ -102,9 +102,9 @@ export function BuilderForm({ portfolioId, initialData }: BuilderFormProps) {
       {/* Step indicator */}
       <div className="relative mb-8">
         {/* Progress bar track */}
-        <div className="absolute top-1/2 left-0 right-0 h-0.5 -translate-y-1/2 bg-slate-700/50 rounded-full" />
+        <div className="absolute top-1/2 left-0 right-0 h-0.5 -translate-y-1/2 bg-[var(--land-border)]/50 rounded-full" />
         <div
-          className="absolute top-1/2 left-0 h-0.5 -translate-y-1/2 bg-emerald-600 rounded-full transition-all duration-500"
+          className="absolute top-1/2 left-0 h-0.5 -translate-y-1/2 bg-[var(--land-accent)] rounded-full transition-all duration-500"
           style={{ width: `${steps.length > 1 ? (currentStep / (steps.length - 1)) * 100 : 0}%` }}
         />
         <div className="relative flex items-center justify-between">
@@ -114,10 +114,10 @@ export function BuilderForm({ portfolioId, initialData }: BuilderFormProps) {
               onClick={() => { save(); setCurrentStep(i); }}
               className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm transition-all duration-300 ${
                 i === currentStep
-                  ? "bg-emerald-600 text-white ring-1 ring-emerald-500/20"
+                  ? "bg-[var(--land-accent)] text-white ring-1 ring-[var(--land-accent)]/20"
                   : i < currentStep
-                    ? "bg-emerald-600/20 text-emerald-400"
-                    : "bg-slate-800 text-slate-500"
+                    ? "bg-[var(--land-accent)]/20 text-[var(--land-accent-hover)]"
+                    : "bg-[var(--land-surface-raised)] text-[var(--land-muted)]"
               }`}
             >
               <span className="w-5 h-5 rounded-full border flex items-center justify-center text-xs">
@@ -134,8 +134,8 @@ export function BuilderForm({ portfolioId, initialData }: BuilderFormProps) {
       </div>
 
       {/* Step content */}
-      <div className="bg-slate-900/40 border border-slate-700/50 rounded-2xl p-8 mb-6 overflow-hidden">
-        <div className="h-px -mx-8 -mt-8 mb-8 bg-gradient-to-r from-transparent via-emerald-500/30 to-transparent" />
+      <div className="bg-[var(--land-surface)]/40 border border-[var(--land-border)]/50 rounded-2xl p-8 mb-6 overflow-hidden">
+        <div className="h-px -mx-8 -mt-8 mb-8 bg-gradient-to-r from-transparent via-[var(--land-accent)]/30 to-transparent" />
         <StepComponent data={formData} onChange={handleChange} />
       </div>
 
@@ -144,14 +144,14 @@ export function BuilderForm({ portfolioId, initialData }: BuilderFormProps) {
         <button
           onClick={goPrev}
           disabled={currentStep === 0}
-          className="min-w-[120px] rounded-lg border border-slate-700 px-6 py-2.5 text-sm text-slate-300 hover:bg-slate-800 transition-colors active:scale-[0.98] disabled:opacity-30"
+          className="min-w-[120px] rounded-lg border border-[var(--land-border)] px-6 py-2.5 text-sm text-[var(--land-bright)] hover:bg-[var(--land-surface-raised)] transition-colors active:scale-[0.98] disabled:opacity-30"
         >
           &larr; Previous
         </button>
-        <span className={`text-xs text-slate-500 flex items-center gap-1 ${saving ? "animate-pulse" : ""}`}>
+        <span className={`text-xs text-[var(--land-muted)] flex items-center gap-1 ${saving ? "animate-pulse" : ""}`}>
           {saving ? "Saving..." : (
             <>
-              <svg className="w-3 h-3 text-emerald-500" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <svg className="w-3 h-3 text-[var(--land-accent)]" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M2 6l3 3 5-5" />
               </svg>
               Auto-saved
@@ -161,7 +161,7 @@ export function BuilderForm({ portfolioId, initialData }: BuilderFormProps) {
         {currentStep < steps.length - 1 ? (
           <button
             onClick={goNext}
-            className="min-w-[120px] rounded-lg bg-emerald-600 px-6 py-2.5 text-sm font-medium text-white hover:bg-emerald-500 transition-colors active:scale-[0.98]"
+            className="min-w-[120px] rounded-lg bg-[var(--land-accent)] px-6 py-2.5 text-sm font-medium text-white hover:bg-[var(--land-accent-hover)] transition-colors active:scale-[0.98]"
           >
             Next &rarr;
           </button>
@@ -169,7 +169,7 @@ export function BuilderForm({ portfolioId, initialData }: BuilderFormProps) {
           <a
             href={`/${locale}/dashboard/${portfolioId}/preview`}
             onClick={() => save()}
-            className="min-w-[120px] rounded-lg bg-emerald-600 px-6 py-2.5 text-sm font-semibold text-white hover:bg-emerald-500 transition-colors active:scale-[0.98] text-center"
+            className="min-w-[120px] rounded-lg bg-[var(--land-accent)] px-6 py-2.5 text-sm font-semibold text-white hover:bg-[var(--land-accent-hover)] transition-colors active:scale-[0.98] text-center"
           >
             Preview &rarr;
           </a>

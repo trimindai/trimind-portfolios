@@ -78,14 +78,14 @@ const PreviewFrame = forwardRef<PreviewFrameHandle, PreviewFrameProps>(
       <div className="relative flex h-full flex-col items-center">
         <div
           className={`flex h-full w-full items-start justify-center overflow-auto ${
-            isNarrow ? "bg-slate-950 p-8" : ""
+            isNarrow ? "bg-[var(--land-bg)] p-8" : ""
           }`}
         >
           {loading ? (
             <div className="flex h-96 w-full items-center justify-center">
               <div className="flex flex-col items-center gap-3">
-                <Loader2 className="h-8 w-8 animate-spin text-emerald-500" />
-                <span className="text-sm text-slate-400">
+                <Loader2 className="h-8 w-8 animate-spin text-[var(--land-accent)]" />
+                <span className="text-sm text-[var(--land-body)]">
                   Generating preview...
                 </span>
               </div>
@@ -94,7 +94,7 @@ const PreviewFrame = forwardRef<PreviewFrameHandle, PreviewFrameProps>(
             <div className="flex h-96 w-full items-center justify-center">
               <div className="rounded-lg bg-red-950/50 p-6 text-center">
                 <p className="text-red-400">{error}</p>
-                <p className="mt-2 text-sm text-slate-500">
+                <p className="mt-2 text-sm text-[var(--land-muted)]">
                   Please try again or check your portfolio data.
                 </p>
               </div>
@@ -103,7 +103,7 @@ const PreviewFrame = forwardRef<PreviewFrameHandle, PreviewFrameProps>(
             <div
               className={`h-full transition-all duration-300 ${
                 isNarrow
-                  ? "rounded-lg shadow-2xl shadow-black/50 ring-1 ring-slate-700"
+                  ? "rounded-lg shadow-2xl shadow-black/50 ring-1 ring-[var(--land-border)]"
                   : ""
               }`}
               style={{ width, maxWidth: "100%" }}

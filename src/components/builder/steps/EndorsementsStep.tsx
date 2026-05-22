@@ -18,12 +18,12 @@ export function EndorsementsStep({ data, onChange }: EndorsementsStepProps) {
     <div className="space-y-8">
       <div>
         <h2 className="text-xl font-semibold text-white mb-2">Endorsements & Professional Profile</h2>
-        <p className="text-sm text-slate-400">Testimonials build trust. Professional memberships show commitment.</p>
+        <p className="text-sm text-[var(--land-body)]">Testimonials build trust. Professional memberships show commitment.</p>
       </div>
 
       <div>
         <h3 className="text-lg font-medium text-white mb-1">Endorsements</h3>
-        <p className="text-sm text-slate-400 mb-4">Quotes from colleagues or supervisors who can vouch for your work.</p>
+        <p className="text-sm text-[var(--land-body)] mb-4">Quotes from colleagues or supervisors who can vouch for your work.</p>
         <DynamicList
           items={endorsements}
           onChange={(items) => onChange({ endorsements: items })}
@@ -60,7 +60,7 @@ export function EndorsementsStep({ data, onChange }: EndorsementsStepProps) {
 
       <div>
         <h3 className="text-lg font-medium text-white mb-1">Professional Affiliations</h3>
-        <p className="text-sm text-slate-400 mb-3">Memberships in professional bodies show industry commitment.</p>
+        <p className="text-sm text-[var(--land-body)] mb-3">Memberships in professional bodies show industry commitment.</p>
         <DynamicList
           items={affiliations}
           onChange={(items) => onChange({ professionalAffiliations: items })}
@@ -78,7 +78,7 @@ export function EndorsementsStep({ data, onChange }: EndorsementsStepProps) {
 
       <div>
         <h3 className="text-lg font-medium text-white mb-1">Continuous Development</h3>
-        <p className="text-sm text-slate-400 mb-3">Recent courses show you stay current in your field.</p>
+        <p className="text-sm text-[var(--land-body)] mb-3">Recent courses show you stay current in your field.</p>
         <DynamicList
           items={development}
           onChange={(items) => onChange({ continuousDevelopment: items })}

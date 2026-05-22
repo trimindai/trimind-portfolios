@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jurassic Production Enhancement Program — Ahmad Al-Mutairi</title>
+<meta name="description" content="$420M capital project delivering 35,000 bopd production uplift across Sabriyah and Raudhatain fields through horizontal drilling and intelligent completions.">
+<meta name="theme-color" content="#ffffff">
+<meta property="og:title" content="Jurassic Production Enhancement | Ahmad Al-Mutairi">
+<meta property="og:description" content="$420M capital project — 12 horizontal wells, 35,000 bopd uplift across North Kuwait fields.">
+<meta property="og:type" content="article">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --font-head: 'Manrope', sans-serif;
+  --font-body: 'DM Sans', sans-serif;
+  --text: #18181b;
+  --text-secondary: #52525b;
+  --text-muted: #a1a1aa;
+  --bg: #ffffff;
+  --bg-warm: #fafafa;
+  --bg-card: #f4f4f5;
+  --border: #e4e4e7;
+  --accent: #1e3a5f;
+  --accent-glow: rgba(30, 58, 95, 0.08);
+}
+
+html { scroll-behavior: smooth; font-size: 16px; }
+body {
+  font-family: var(--font-body);
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+}
+a { text-decoration: none; color: inherit; }
+img { max-width: 100%; display: block; }
+a:focus-visible, button:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+.header {
+  position: sticky; top: 0; z-index: 1000;
+  background: rgba(255,255,255,0.95);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+}
+.header-inner {
+  max-width: 1100px; margin: 0 auto;
+  padding: 18px 40px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.header-brand {
+  font-family: var(--font-head); font-size: 1.05rem; font-weight: 600;
+  color: var(--text); letter-spacing: -0.01em;
+}
+.header-nav { display: flex; align-items: center; gap: 28px; }
+.header-nav a {
+  font-size: 0.85rem; font-weight: 500;
+  color: var(--text-secondary); transition: color 200ms;
+}
+.header-nav a:hover { color: var(--text); }
+
+.container { max-width: 1100px; margin: 0 auto; padding: 0 40px; }
+
+.project-hero { padding: 64px 0 32px; }
+
+.back-link {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-size: 0.8rem; color: var(--text-muted); font-weight: 500;
+  margin-bottom: 32px; transition: color 200ms;
+}
+.back-link:hover { color: var(--text); }
+.back-link svg { width: 14px; height: 14px; }
+
+.project-byline {
+  display: flex; flex-wrap: wrap; gap: 16px;
+  font-size: 0.75rem; font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase; letter-spacing: 0.08em;
+  margin-bottom: 20px;
+}
+.project-byline > span:not(:last-child)::after {
+  content: '\00b7'; margin-left: 16px; color: var(--border);
+}
+
+.project-title {
+  font-family: var(--font-head);
+  font-size: clamp(2.2rem, 5vw, 3.2rem); font-weight: 700;
+  line-height: 1.1; letter-spacing: -0.025em; color: var(--text);
+  margin-bottom: 20px;
+}
+
+.project-tagline {
+  font-size: 1.15rem; color: var(--text-secondary);
+  line-height: 1.6; max-width: 760px; font-weight: 400;
+}
+
+.project-content { padding: 48px 0 64px; }
+
+.block { margin: 36px 0; }
+.block-paragraph { max-width: 720px; }
+.block-paragraph p {
+  font-size: 1.02rem; line-height: 1.8; color: var(--text-secondary);
+}
+.block-paragraph p + p { margin-top: 16px; }
+
+.block-specs {
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  padding: 20px 0;
+}
+.block-specs-row {
+  display: grid; grid-template-columns: 1fr 2fr; gap: 24px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+}
+.block-specs-row:last-child { border-bottom: none; }
+.block-specs-label {
+  font-size: 0.78rem; color: var(--text-muted); font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.06em;
+}
+.block-specs-value {
+  font-size: 0.92rem; color: var(--text); font-weight: 500;
+}
+
+.block-challenge {
+  background: var(--bg-warm);
+  border: 1px solid var(--border);
+  padding: 28px 32px;
+  max-width: 760px;
+}
+.block-challenge-label {
+  font-size: 0.72rem; font-weight: 600; color: var(--accent);
+  text-transform: uppercase; letter-spacing: 0.1em;
+  margin-bottom: 6px;
+}
+.block-challenge p { font-size: 0.92rem; line-height: 1.7; color: var(--text-secondary); }
+.block-challenge p + .block-challenge-label { margin-top: 16px; }
+
+.block-standards { max-width: 720px; }
+.block-standards-title {
+  font-family: var(--font-head); font-size: 0.78rem; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 14px;
+  color: var(--accent);
+}
+.block-standards ul { list-style: none; padding: 0; }
+.block-standards li {
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.92rem; color: var(--text-secondary);
+}
+.block-standards li:last-child { border-bottom: none; }
+
+.footer {
+  background: var(--bg-warm); border-top: 1px solid var(--border);
+  padding: 60px 40px 40px;
+}
+.footer-inner {
+  max-width: 1100px; margin: 0 auto;
+  display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 40px;
+}
+.footer-col h4 {
+  font-family: var(--font-head); font-size: 0.75rem; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 12px;
+  color: var(--text-muted);
+}
+.footer-col p, .footer-col a {
+  font-size: 0.9rem; color: var(--text-secondary); line-height: 1.8;
+}
+.footer-col a:hover { color: var(--accent); }
+.footer-bottom {
+  max-width: 1100px; margin: 40px auto 0; padding-top: 20px;
+  border-top: 1px solid var(--border);
+  font-size: 0.78rem; color: var(--text-muted);
+}
+
+@media print {
+  @page { margin: 0.5in; size: A4; }
+  * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; backdrop-filter: none !important; }
+  html, body { background: #fff !important; font-size: 9pt; }
+  .header { position: static; background: #fff !important; }
+  .back-link { display: none !important; }
+  .footer { background: #fff !important; }
+}
+
+@media (max-width: 640px) {
+  .header-inner { padding: 14px 20px; }
+  .header-nav { display: none; }
+  .container { padding: 0 20px; }
+  .project-hero { padding: 40px 0 24px; }
+  .project-title { font-size: 1.8rem; }
+  .block-specs-row { grid-template-columns: 1fr; gap: 4px; padding: 12px 0; }
+  .block-challenge { padding: 20px 24px; }
+  .footer-inner { grid-template-columns: 1fr; gap: 24px; }
+}
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-inner">
+    <a href="../index.html" class="header-brand">Ahmad Al-Mutairi</a>
+    <nav class="header-nav">
+      <a href="../index.html#about">About</a>
+      <a href="../index.html#projects">Projects</a>
+      <a href="../index.html#experience">Experience</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section class="project-hero">
+    <div class="container">
+      <a href="../index.html#projects" class="back-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        All projects
+      </a>
+
+      <div class="project-byline">
+        <span>2019 &ndash; 2024</span>
+        <span>Production Engineering</span>
+        <span>Kuwait Oil Company</span>
+        <span>Sabriyah &amp; Raudhatain Fields</span>
+      </div>
+
+      <h1 class="project-title">Jurassic Production Enhancement Program</h1>
+      <p class="project-tagline">$420M capital program delivering 35,000 bopd production uplift through 12 horizontal wells with intelligent completions across North Kuwait&rsquo;s Jurassic reservoirs.</p>
+    </div>
+  </section>
+
+  <section class="project-content">
+    <div class="container">
+
+      <div class="block block-paragraph">
+        <p>Kuwait&rsquo;s Jurassic reservoirs in the northern fields hold significant untapped potential, but the carbonate formations present complex drilling and completion challenges. This program was designed to unlock incremental production through modern horizontal well technology, targeting the Marrat, Minjur, and Dharuma formations.</p>
+        <p>As lead engineer, I was responsible for the full lifecycle: concept screening, well trajectory design, completion architecture, surface facility tie-ins, and production ramp-up. The program delivered ahead of the 2025 target and under the original budget estimate.</p>
+      </div>
+
+      <div class="block block-specs">
+        <div class="block-specs-row">
+          <div class="block-specs-label">Total Capex</div>
+          <div class="block-specs-value">$420M (vs. $455M approved budget)</div>
+        </div>
+        <div class="block-specs-row">
+          <div class="block-specs-label">Production Uplift</div>
+          <div class="block-specs-value">35,000 bopd gross (28,500 bopd net)</div>
+        </div>
+        <div class="block-specs-row">
+          <div class="block-specs-label">Wells Drilled</div>
+          <div class="block-specs-value">12 horizontal wells, avg. 4,200m MD</div>
+        </div>
+        <div class="block-specs-row">
+          <div class="block-specs-label">Completion Type</div>
+          <div class="block-specs-value">Intelligent completions with interval control valves (ICVs)</div>
+        </div>
+        <div class="block-specs-row">
+          <div class="block-specs-label">Fields</div>
+          <div class="block-specs-value">Sabriyah (7 wells), Raudhatain (5 wells)</div>
+        </div>
+        <div class="block-specs-row">
+          <div class="block-specs-label">Schedule</div>
+          <div class="block-specs-value">Delivered 6 months ahead of target</div>
+        </div>
+      </div>
+
+      <div class="block block-challenge">
+        <div class="block-challenge-label">Challenge</div>
+        <p>The Jurassic carbonates in Sabriyah have highly heterogeneous permeability, with production dominated by natural fracture networks rather than matrix flow. Conventional vertical wells were producing below 1,500 bopd each, and water coning was reducing well life to under 5 years.</p>
+        <div class="block-challenge-label">Approach</div>
+        <p>We designed long-reach horizontal wells (2,800&ndash;4,600m lateral length) targeting fracture corridors identified through seismic attribute analysis and image log interpretation. Each well was equipped with 4&ndash;6 ICV zones, allowing real-time production optimization and water shut-off without workover intervention.</p>
+        <div class="block-challenge-label">Result</div>
+        <p>Average well IP of 3,800 bopd&mdash;more than 2.5x the vertical well benchmark. Water cut managed below 15% across the program through proactive ICV management. Unit development cost of $12/bbl, 30% below the previous Jurassic campaign.</p>
+      </div>
+
+      <div class="block block-standards">
+        <div class="block-standards-title">My Role</div>
+        <ul>
+          <li>Technical authority for well trajectory design and completion architecture</li>
+          <li>Led multi-discipline team of 8 engineers (drilling, completions, reservoir, facilities)</li>
+          <li>Managed interface with Schlumberger (completions) and Halliburton (drilling services)</li>
+          <li>Authored project economics and presented to KOC Board for final investment decision</li>
+          <li>Designed surface facility modifications for tie-in to existing GC-24 and GC-29 gathering centers</li>
+          <li>Chaired weekly progress reviews and monthly steering committee updates</li>
+        </ul>
+      </div>
+
+      <div class="block block-standards">
+        <div class="block-standards-title">Standards &amp; Codes Applied</div>
+        <ul>
+          <li>NORSOK D-010 (Well Integrity)</li>
+          <li>API RP 19G-11 (Intelligent Well Systems)</li>
+          <li>KOC Engineering Standards KES-E-203 (Completion Design)</li>
+          <li>ASME B31.3 (Process Piping)</li>
+          <li>KEPA Environmental Compliance (Kuwait EPA)</li>
+        </ul>
+      </div>
+
+    </div>
+  </section>
+</main>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-col">
+      <h4>Location</h4>
+      <p>Ahmadi, Kuwait</p>
+    </div>
+    <div class="footer-col">
+      <h4>Contact</h4>
+      <p><a href="mailto:a.almutairi@email.com">a.almutairi@email.com</a></p>
+      <p><a href="tel:+96599991234">+965 9999 1234</a></p>
+    </div>
+    <div class="footer-col">
+      <h4>Template</h4>
+      <p>Engineer Portfolio by <a href="https://portfolio-trimind.com" target="_blank">Portfolio Pro</a></p>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    &copy; Ahmad Al-Mutairi &mdash; Principal Petroleum Engineer
+  </div>
+</footer>
+
+</body>
+</html>

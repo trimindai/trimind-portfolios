@@ -51,13 +51,13 @@ export function EngineerProjectsStep({ data, onChange }: EngineerProjectsStepPro
     <div className="space-y-6">
       <div>
         <h2 className="text-xl font-semibold text-white">Projects</h2>
-        <p className="text-sm text-slate-400 mt-1">
+        <p className="text-sm text-[var(--land-body)] mt-1">
           Showcase your engineering work. Each project gets a card on the main page.
           Add a slug to create a full detail page with narrative blocks.
         </p>
       </div>
 
-      <div className="bg-slate-800/30 border border-blue-900/30 rounded-lg p-4 text-sm text-blue-300/80">
+      <div className="bg-[var(--land-surface-raised)]/30 border border-blue-900/30 rounded-lg p-4 text-sm text-blue-300/80">
         <strong>Tip:</strong> Add 2-5 of your strongest projects. Include a cover image for visual impact.
         Projects with a slug get their own dedicated page with images, specs, and challenge/solution narratives.
       </div>
@@ -90,7 +90,7 @@ export function EngineerProjectsStep({ data, onChange }: EngineerProjectsStepPro
                   <button
                     type="button"
                     onClick={() => setExpandedProject(isExpanded ? null : index)}
-                    className="text-xs text-emerald-400 hover:text-emerald-300 transition-colors"
+                    className="text-xs text-[var(--land-accent-hover)] hover:text-[var(--land-accent)] transition-colors"
                   >
                     {isExpanded ? "Collapse" : "Expand details"}
                   </button>
@@ -122,11 +122,11 @@ export function EngineerProjectsStep({ data, onChange }: EngineerProjectsStepPro
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="text-sm font-medium text-slate-300 mb-1.5 block">Project Type</label>
+                  <label className="text-sm font-medium text-[var(--land-bright)] mb-1.5 block">Project Type</label>
                   <select
                     value={item.meta?.type || ""}
                     onChange={(e) => update({ meta: { ...item.meta, type: e.target.value } })}
-                    className="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2.5 text-white focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 outline-none transition-colors"
+                    className="w-full bg-[var(--land-surface-raised)] border border-[var(--land-border)] rounded-lg px-4 py-2.5 text-white focus:border-[var(--land-accent)] focus:ring-1 focus:ring-[var(--land-accent)] outline-none transition-colors"
                   >
                     {PROJECT_TYPES.map((t) => (
                       <option key={t.value} value={t.value}>{t.label}</option>
@@ -142,14 +142,14 @@ export function EngineerProjectsStep({ data, onChange }: EngineerProjectsStepPro
               </div>
 
               <div>
-                <label className="text-sm font-medium text-slate-300 mb-1.5 block">Technologies Used</label>
+                <label className="text-sm font-medium text-[var(--land-bright)] mb-1.5 block">Technologies Used</label>
                 <input
                   value={(item.technologies || []).join(", ")}
                   onChange={(e) => update({ technologies: e.target.value.split(",").map((s: string) => s.trim()).filter(Boolean) })}
                   placeholder="Arduino, Raspberry Pi, Python, SolidWorks, MATLAB"
-                  className="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2.5 text-white placeholder:text-slate-500 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 outline-none transition-colors"
+                  className="w-full bg-[var(--land-surface-raised)] border border-[var(--land-border)] rounded-lg px-4 py-2.5 text-white placeholder:text-[var(--land-muted)] focus:border-[var(--land-accent)] focus:ring-1 focus:ring-[var(--land-accent)] outline-none transition-colors"
                 />
-                <p className="text-xs text-slate-500 mt-1">Comma-separated</p>
+                <p className="text-xs text-[var(--land-muted)] mt-1">Comma-separated</p>
               </div>
 
               <TextField
@@ -162,8 +162,8 @@ export function EngineerProjectsStep({ data, onChange }: EngineerProjectsStepPro
 
               {/* Expanded detail fields */}
               {isExpanded && (
-                <div className="space-y-4 mt-4 pt-4 border-t border-slate-700">
-                  <h4 className="text-sm font-semibold text-emerald-400 uppercase tracking-wider">Detail Page Settings</h4>
+                <div className="space-y-4 mt-4 pt-4 border-t border-[var(--land-border)]">
+                  <h4 className="text-sm font-semibold text-[var(--land-accent-hover)] uppercase tracking-wider">Detail Page Settings</h4>
 
                   <div className="grid grid-cols-2 gap-3">
                     <div>
@@ -178,7 +178,7 @@ export function EngineerProjectsStep({ data, onChange }: EngineerProjectsStepPro
                         <button
                           type="button"
                           onClick={() => update({ slug: slugify(item.title) })}
-                          className="text-xs text-emerald-400 hover:text-emerald-300 mt-1 transition-colors"
+                          className="text-xs text-[var(--land-accent-hover)] hover:text-[var(--land-accent)] mt-1 transition-colors"
                         >
                           Generate from title
                         </button>
@@ -195,7 +195,7 @@ export function EngineerProjectsStep({ data, onChange }: EngineerProjectsStepPro
 
                   {/* Project Meta */}
                   <div>
-                    <h5 className="text-sm font-medium text-slate-300 mb-3">Project Metadata</h5>
+                    <h5 className="text-sm font-medium text-[var(--land-bright)] mb-3">Project Metadata</h5>
                     <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                       <TextField
                         label="Institution"
@@ -234,8 +234,8 @@ export function EngineerProjectsStep({ data, onChange }: EngineerProjectsStepPro
 
                   {/* KPIs / Metrics */}
                   <div>
-                    <h5 className="text-sm font-medium text-slate-300 mb-2">Key Results / Metrics</h5>
-                    <p className="text-xs text-slate-500 mb-2">Quantifiable outcomes of this project</p>
+                    <h5 className="text-sm font-medium text-[var(--land-bright)] mb-2">Key Results / Metrics</h5>
+                    <p className="text-xs text-[var(--land-muted)] mb-2">Quantifiable outcomes of this project</p>
                     <DynamicList
                       items={item.metrics || []}
                       onChange={(m) => update({ metrics: m })}
@@ -253,7 +253,7 @@ export function EngineerProjectsStep({ data, onChange }: EngineerProjectsStepPro
 
                   {/* Links */}
                   <div>
-                    <h5 className="text-sm font-medium text-slate-300 mb-2">Project Links</h5>
+                    <h5 className="text-sm font-medium text-[var(--land-bright)] mb-2">Project Links</h5>
                     <DynamicList
                       items={item.links || []}
                       onChange={(links) => update({ links })}
@@ -263,11 +263,11 @@ export function EngineerProjectsStep({ data, onChange }: EngineerProjectsStepPro
                       renderItem={(link, _, updateLink) => (
                         <div className="grid grid-cols-3 gap-3">
                           <div>
-                            <label className="text-sm font-medium text-slate-300 mb-1.5 block">Type</label>
+                            <label className="text-sm font-medium text-[var(--land-bright)] mb-1.5 block">Type</label>
                             <select
                               value={link.kind}
                               onChange={(e) => updateLink({ kind: e.target.value })}
-                              className="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2.5 text-white focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 outline-none transition-colors"
+                              className="w-full bg-[var(--land-surface-raised)] border border-[var(--land-border)] rounded-lg px-4 py-2.5 text-white focus:border-[var(--land-accent)] focus:ring-1 focus:ring-[var(--land-accent)] outline-none transition-colors"
                             >
                               {LINK_KINDS.map((k) => (
                                 <option key={k.value} value={k.value}>{k.label}</option>
@@ -283,8 +283,8 @@ export function EngineerProjectsStep({ data, onChange }: EngineerProjectsStepPro
 
                   {/* Content Blocks */}
                   <div>
-                    <h5 className="text-sm font-medium text-slate-300 mb-2">Content Blocks</h5>
-                    <p className="text-xs text-slate-500 mb-2">
+                    <h5 className="text-sm font-medium text-[var(--land-bright)] mb-2">Content Blocks</h5>
+                    <p className="text-xs text-[var(--land-muted)] mb-2">
                       Build the project detail page as a narrative. Add text, images, specs tables, and challenge/solution sections.
                     </p>
                     <DynamicList
@@ -296,11 +296,11 @@ export function EngineerProjectsStep({ data, onChange }: EngineerProjectsStepPro
                       renderItem={(block, _, updateBlock) => (
                         <div className="space-y-3">
                           <div>
-                            <label className="text-sm font-medium text-slate-300 mb-1.5 block">Block Type</label>
+                            <label className="text-sm font-medium text-[var(--land-bright)] mb-1.5 block">Block Type</label>
                             <select
                               value={block.kind}
                               onChange={(e) => updateBlock({ kind: e.target.value })}
-                              className="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2.5 text-white focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 outline-none transition-colors"
+                              className="w-full bg-[var(--land-surface-raised)] border border-[var(--land-border)] rounded-lg px-4 py-2.5 text-white focus:border-[var(--land-accent)] focus:ring-1 focus:ring-[var(--land-accent)] outline-none transition-colors"
                             >
                               {BLOCK_KINDS.map((k) => (
                                 <option key={k.value} value={k.value}>{k.label}</option>
@@ -329,9 +329,9 @@ export function EngineerProjectsStep({ data, onChange }: EngineerProjectsStepPro
                                   type="checkbox"
                                   checked={block.fullBleed || false}
                                   onChange={(e) => updateBlock({ fullBleed: e.target.checked })}
-                                  className="w-4 h-4 rounded border-slate-600 text-emerald-500 focus:ring-emerald-500 bg-slate-800"
+                                  className="w-4 h-4 rounded border-[var(--land-border)] text-[var(--land-accent)] focus:ring-[var(--land-accent)] bg-[var(--land-surface-raised)]"
                                 />
-                                <span className="text-sm text-slate-400">Full-width image</span>
+                                <span className="text-sm text-[var(--land-body)]">Full-width image</span>
                               </label>
                             </div>
                           )}
@@ -339,7 +339,7 @@ export function EngineerProjectsStep({ data, onChange }: EngineerProjectsStepPro
                           {/* Image Grid */}
                           {block.kind === "imageGrid" && (
                             <div className="space-y-2">
-                              <p className="text-xs text-slate-500">Add images as comma-separated URLs (caption after |)</p>
+                              <p className="text-xs text-[var(--land-muted)]">Add images as comma-separated URLs (caption after |)</p>
                               <TextareaField
                                 label="Images"
                                 value={

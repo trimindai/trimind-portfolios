@@ -21,8 +21,8 @@ export type TemplateManifest = {
 // Live preview URLs hosted separately (one per template that has a demo).
 // Templates without a demo URL render a styled placeholder card.
 const DEMO_URLS: Record<string, string | undefined> = {
-  corporate: "https://corporate-three-pink.vercel.app/",
-  engineer: "/templates/engineer/index.html",
+  corporate: "/demo/corporate/index.html",
+  engineer: "/demo/engineer/index.html",
 };
 
 export type Template = TemplateManifest & {

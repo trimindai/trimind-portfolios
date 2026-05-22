@@ -17,12 +17,12 @@ export function AchievementsStep({ data, onChange }: AchievementsStepProps) {
     <div className="space-y-6">
       <div>
         <h2 className="text-xl font-semibold text-white">Selected Achievements</h2>
-        <p className="text-sm text-slate-400 mt-1">
+        <p className="text-sm text-[var(--land-body)] mt-1">
           Showcase 1-3 major impact stories. The first one marked as &quot;Featured&quot; gets a larger card.
         </p>
       </div>
 
-      <div className="bg-slate-800/30 border border-amber-900/30 rounded-lg p-4 text-sm text-amber-300/80">
+      <div className="bg-[var(--land-surface-raised)]/30 border border-amber-900/30 rounded-lg p-4 text-sm text-amber-300/80">
         <strong>STAR format:</strong> Situation (context) → Task (what was needed) → Action (what you did) → Result (quantified outcome). Add KPIs and tools used for maximum impact.
       </div>
 
@@ -46,7 +46,7 @@ export function AchievementsStep({ data, onChange }: AchievementsStepProps) {
                   type="checkbox"
                   checked={item.isFeatured || false}
                   onChange={(e) => update({ isFeatured: e.target.checked })}
-                  className="w-4 h-4 rounded border-slate-600 text-emerald-500 focus:ring-emerald-500 bg-slate-800"
+                  className="w-4 h-4 rounded border-[var(--land-border)] text-[var(--land-accent)] focus:ring-[var(--land-accent)] bg-[var(--land-surface-raised)]"
                 />
                 <span className="text-sm text-amber-400 font-medium">Featured (large card)</span>
               </label>
@@ -75,10 +75,10 @@ export function AchievementsStep({ data, onChange }: AchievementsStepProps) {
             />
 
             <div>
-              <label className="text-sm font-medium text-slate-300 mb-1.5 block">
+              <label className="text-sm font-medium text-[var(--land-bright)] mb-1.5 block">
                 Key Metrics / KPIs
               </label>
-              <p className="text-xs text-slate-500 mb-2">Add 2-4 measurable results</p>
+              <p className="text-xs text-[var(--land-muted)] mb-2">Add 2-4 measurable results</p>
               <DynamicList
                 items={item.metrics || []}
                 onChange={(m) => update({ metrics: m })}
@@ -95,16 +95,16 @@ export function AchievementsStep({ data, onChange }: AchievementsStepProps) {
             </div>
 
             <div>
-              <label className="text-sm font-medium text-slate-300 mb-1.5 block">
+              <label className="text-sm font-medium text-[var(--land-bright)] mb-1.5 block">
                 Tools & Technologies Used
               </label>
               <input
                 value={(item.technologies || []).join(", ")}
                 onChange={(e) => update({ technologies: e.target.value.split(",").map((s: string) => s.trim()).filter(Boolean) })}
                 placeholder="Python, Bloomberg, Power BI, SQL, Risk Analytics"
-                className="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2.5 text-white placeholder:text-slate-500 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 outline-none transition-colors"
+                className="w-full bg-[var(--land-surface-raised)] border border-[var(--land-border)] rounded-lg px-4 py-2.5 text-white placeholder:text-[var(--land-muted)] focus:border-[var(--land-accent)] focus:ring-1 focus:ring-[var(--land-accent)] outline-none transition-colors"
               />
-              <p className="text-xs text-slate-500 mt-1">Comma-separated</p>
+              <p className="text-xs text-[var(--land-muted)] mt-1">Comma-separated</p>
             </div>
           </div>
         )}

@@ -44,12 +44,12 @@ export function DynamicList<T>({
       {items.map((item, index) => (
         <div
           key={index}
-          className="relative bg-slate-800/50 border border-slate-700 rounded-lg p-4"
+          className="relative bg-[var(--land-surface-raised)]/50 border border-[var(--land-border)] rounded-lg p-4"
         >
           <button
             type="button"
             onClick={() => removeItem(index)}
-            className="absolute top-2 right-2 text-slate-500 hover:text-red-400 transition-colors text-sm"
+            className="absolute top-2 right-2 text-[var(--land-muted)] hover:text-red-400 transition-colors text-sm"
           >
             Remove
           </button>
@@ -60,7 +60,7 @@ export function DynamicList<T>({
         <button
           type="button"
           onClick={addItem}
-          className="w-full border border-dashed border-slate-700 hover:border-emerald-500 text-slate-400 hover:text-emerald-400 rounded-lg py-3 text-sm transition-colors"
+          className="w-full border border-dashed border-[var(--land-border)] hover:border-[var(--land-accent)] text-[var(--land-body)] hover:text-[var(--land-accent-hover)] rounded-lg py-3 text-sm transition-colors"
         >
           + {addLabel}
         </button>

@@ -35,10 +35,10 @@ export default function PreviewPage() {
 
   if (portfolio === undefined) {
     return (
-      <div className="flex h-screen items-center justify-center bg-slate-950">
+      <div className="flex h-screen items-center justify-center bg-[var(--land-bg)]">
         <div className="flex flex-col items-center gap-3">
-          <div className="h-8 w-8 animate-spin rounded-full border-2 border-emerald-500 border-t-transparent" />
-          <span className="text-sm text-slate-400">{tc("loading")}</span>
+          <div className="h-8 w-8 animate-spin rounded-full border-2 border-[var(--land-accent)] border-t-transparent" />
+          <span className="text-sm text-[var(--land-body)]">{tc("loading")}</span>
         </div>
       </div>
     );
@@ -46,8 +46,8 @@ export default function PreviewPage() {
 
   if (portfolio === null) {
     return (
-      <div className="flex h-screen items-center justify-center bg-slate-950">
-        <p className="text-slate-400">Portfolio not found.</p>
+      <div className="flex h-screen items-center justify-center bg-[var(--land-bg)]">
+        <p className="text-[var(--land-body)]">Portfolio not found.</p>
       </div>
     );
   }
@@ -59,26 +59,26 @@ export default function PreviewPage() {
   ];
 
   return (
-    <div className="flex h-screen flex-col bg-slate-950">
+    <div className="flex h-screen flex-col bg-[var(--land-bg)]">
       {/* Top toolbar */}
-      <div className="flex items-center justify-between border-b border-slate-800 bg-slate-900 px-4 py-3">
+      <div className="flex items-center justify-between border-b border-[var(--land-border)] bg-[var(--land-surface)] px-4 py-3">
         <Link
           href={`/dashboard/${id}/edit`}
-          className="flex items-center gap-2 text-sm text-slate-400 transition-colors hover:text-white"
+          className="flex items-center gap-2 text-sm text-[var(--land-body)] transition-colors hover:text-white"
         >
           <ArrowLeft className="h-4 w-4" />
           {t("backToEdit")}
         </Link>
 
-        <div className="flex items-center gap-1 rounded-lg bg-slate-800/50 p-1">
+        <div className="flex items-center gap-1 rounded-lg bg-[var(--land-surface-raised)]/50 p-1">
           {devices.map(({ mode, icon: Icon, label }) => (
             <button
               key={mode}
               onClick={() => setDeviceMode(mode)}
               className={`flex items-center gap-2 rounded-md px-3 py-1.5 text-sm transition-colors ${
                 deviceMode === mode
-                  ? "bg-emerald-600 text-white"
-                  : "text-slate-400 hover:bg-slate-700 hover:text-white"
+                  ? "bg-[var(--land-accent)] text-white"
+                  : "text-[var(--land-body)] hover:bg-[var(--land-border)] hover:text-white"
               }`}
               title={label}
             >
@@ -90,7 +90,7 @@ export default function PreviewPage() {
 
         <Link
           href={`/dashboard/${id}/publish`}
-          className="rounded-lg bg-emerald-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-emerald-500"
+          className="rounded-lg bg-[var(--land-accent)] px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[var(--land-accent-hover)]"
         >
           {tc("publish")}
         </Link>
@@ -105,7 +105,7 @@ export default function PreviewPage() {
         {/* Floating Save PDF button */}
         <button
           onClick={() => previewRef.current?.print()}
-          className="fixed bottom-6 right-6 z-50 flex items-center gap-2 rounded-full bg-emerald-600 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-emerald-600/25 hover:bg-emerald-500 hover:shadow-emerald-500/30 transition-all hover:-translate-y-0.5"
+          className="fixed bottom-6 right-6 z-50 flex items-center gap-2 rounded-full bg-[var(--land-accent)] px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-emerald-600/25 hover:bg-[var(--land-accent-hover)] hover:shadow-emerald-500/30 transition-all hover:-translate-y-0.5"
         >
           <Download className="h-4 w-4" />
           Save PDF / Print

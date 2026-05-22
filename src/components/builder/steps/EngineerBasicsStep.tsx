@@ -19,7 +19,7 @@ export function EngineerBasicsStep({ data, onChange }: EngineerBasicsStepProps) 
     <div className="space-y-6">
       <div>
         <h2 className="text-xl font-semibold text-white">Basic Information</h2>
-        <p className="text-sm text-slate-400 mt-1">
+        <p className="text-sm text-[var(--land-body)] mt-1">
           Your engineering identity. The published portfolio auto-hides empty fields.
         </p>
       </div>
@@ -123,7 +123,7 @@ export function EngineerBasicsStep({ data, onChange }: EngineerBasicsStepProps) 
       />
 
       {/* Resume — greglagana.com-style prominent download button */}
-      <div className="bg-slate-800/30 border border-emerald-900/30 rounded-lg p-4">
+      <div className="bg-[var(--land-surface-raised)]/30 border border-[var(--land-accent)]/30 rounded-lg p-4">
         <TextField
           label="Resume / CV URL"
           value={basics.resumeUrl}

@@ -16,7 +16,7 @@ export function SkillsStep({ data, onChange }: SkillsStepProps) {
     <div className="space-y-8">
       <div>
         <h2 className="text-xl font-semibold text-white mb-2">Skills & Competencies</h2>
-        <p className="text-sm text-slate-400 mb-4">Group skills by category (e.g., Technical, Leadership).</p>
+        <p className="text-sm text-[var(--land-body)] mb-4">Group skills by category (e.g., Technical, Leadership).</p>
 
         <DynamicList
           items={skills}
@@ -28,12 +28,12 @@ export function SkillsStep({ data, onChange }: SkillsStepProps) {
             <div className="space-y-3 pr-16">
               <TextField label="Category" value={item.category} onChange={(v) => update({ category: v })} placeholder="Technical Skills" />
               <div>
-                <label className="text-sm font-medium text-slate-300 mb-1.5 block">Skills (comma-separated)</label>
+                <label className="text-sm font-medium text-[var(--land-bright)] mb-1.5 block">Skills (comma-separated)</label>
                 <input
                   value={item.items.join(", ")}
                   onChange={(e) => update({ items: e.target.value.split(",").map((s: string) => s.trim()).filter(Boolean) })}
                   placeholder="Python, Excel, Power BI, SQL"
-                  className="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2.5 text-white placeholder:text-slate-500 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 outline-none transition-colors"
+                  className="w-full bg-[var(--land-surface-raised)] border border-[var(--land-border)] rounded-lg px-4 py-2.5 text-white placeholder:text-[var(--land-muted)] focus:border-[var(--land-accent)] focus:ring-1 focus:ring-[var(--land-accent)] outline-none transition-colors"
                 />
               </div>
             </div>

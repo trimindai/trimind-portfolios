@@ -61,13 +61,13 @@ export default function NewPortfolioPage() {
       <div className="flex flex-col items-center justify-center py-20">
         <p className="text-red-400 mb-4">{error}</p>
         {details && (
-          <p className="text-xs text-slate-500 mb-4 max-w-md text-center break-all">
+          <p className="text-xs text-[var(--land-muted)] mb-4 max-w-md text-center break-all">
             {details}
           </p>
         )}
         <a
           href={`/${locale}/dashboard`}
-          className="text-emerald-400 hover:text-emerald-300"
+          className="text-[var(--land-accent-hover)] hover:text-[var(--land-accent-hover)]"
         >
           Back to Dashboard
         </a>
@@ -77,8 +77,8 @@ export default function NewPortfolioPage() {
 
   return (
     <div className="flex flex-col items-center justify-center py-20">
-      <div className="animate-spin h-8 w-8 border-2 border-emerald-500 border-t-transparent rounded-full mb-4" />
-      <p className="text-slate-400">Setting up your portfolio...</p>
+      <div className="animate-spin h-8 w-8 border-2 border-[var(--land-accent)] border-t-transparent rounded-full mb-4" />
+      <p className="text-[var(--land-body)]">Setting up your portfolio...</p>
     </div>
   );
 }
