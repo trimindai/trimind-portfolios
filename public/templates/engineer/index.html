@@ -7,10 +7,10 @@
 <meta name="description" content="Electrical Engineering student based in Kuwait City. Focused on smart systems, electronics, and automation.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
-:root{--font-head:'Space Grotesk',sans-serif;--font-body:'Inter',sans-serif;--text:#18181b;--text-secondary:#52525b;--text-muted:#a1a1aa;--bg:#fff;--bg-warm:#fafafa;--bg-card:#f4f4f5;--border:#e4e4e7;--accent:#1e3a5f;--accent-glow:rgba(30,58,95,0.08);--orange:#f97316}
+:root{--font-head:'Manrope',sans-serif;--font-body:'Inter',sans-serif;--text:#18181b;--text-secondary:#52525b;--text-muted:#a1a1aa;--bg:#fff;--bg-warm:#fafafa;--bg-card:#f4f4f5;--border:#e4e4e7;--accent:#1e3a5f;--accent-glow:rgba(30,58,95,0.08);--orange:#f97316}
 html{scroll-behavior:smooth;font-size:16px}
 body{font-family:var(--font-body);background:var(--bg);color:var(--text);line-height:1.7;-webkit-font-smoothing:antialiased}
 a{text-decoration:none;color:inherit}img{max-width:100%;display:block}
@@ -44,7 +44,6 @@ a:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 .btn-secondary{background:transparent;color:var(--accent)}.btn-secondary:hover{background:var(--accent);color:#fff}
 .btn svg{width:14px;height:14px}
 
-.divider{height:1px;background:var(--border);max-width:1200px;margin:0 auto}
 .skills-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:40px}
 .skill-group h4{font-family:var(--font-head);font-size:0.78rem;font-weight:600;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:16px;color:var(--accent)}
 .skill-group ul{list-style:none}.skill-group li{font-size:0.9rem;color:var(--text-secondary);padding:5px 0}
@@ -55,6 +54,10 @@ a:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 .footer-col p,.footer-col a{font-size:0.9rem;color:var(--text-secondary);line-height:1.8}
 .footer-col a:hover{color:var(--accent)}
 .footer-bottom{max-width:1200px;margin:40px auto 0;padding-top:20px;border-top:1px solid var(--border);font-size:0.78rem;color:var(--text-muted)}
+
+.rv{opacity:0;transform:translateY(20px);transition:opacity 0.6s cubic-bezier(0.25,0.46,0.45,0.94),transform 0.6s cubic-bezier(0.25,0.46,0.45,0.94)}
+.rv.v{opacity:1;transform:translateY(0)}
+.rv-d1{transition-delay:0.08s}.rv-d2{transition-delay:0.16s}
 
 @media(max-width:900px){.hero-grid{grid-template-columns:1fr;gap:32px}.hero-left h1{font-size:2.2rem}}
 @media(max-width:640px){.header-inner{padding:14px 20px}.header-nav{display:none}.section{padding:48px 20px}.hero{padding-top:72px;padding-bottom:48px}.hero-left h1{font-size:1.8rem}.hero-actions{flex-direction:column}.footer-inner{grid-template-columns:1fr;gap:24px}}
@@ -74,11 +77,11 @@ a:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 
 <section class="section hero" id="about">
   <div class="hero-grid">
-    <div class="hero-left">
+    <div class="hero-left rv">
       <h1>About Me</h1>
       <div class="hero-discipline">Electrical Engineering Student</div>
     </div>
-    <div>
+    <div class="rv rv-d1">
       <div class="hero-bio">
         <p>Motivated Electrical Engineering student with an interest in smart systems, electronics, automation, and practical engineering solutions. Strong willingness to learn, develop technical skills, and contribute to projects related to electrical systems, control, and modern technology.</p>
         <p>Bilingual in Arabic and English with good communication skills and a positive attitude toward teamwork and problem-solving.</p>
@@ -98,11 +101,11 @@ a:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 
 <div class="divider"></div>
 <section class="section" id="skills">
-  <h2 class="section-title">Skills</h2>
+  <h2 class="section-title rv">Skills</h2>
   <div class="skills-grid">
-    <div class="skill-group"><h4>Engineering</h4><ul><li>Electrical engineering fundamentals</li><li>Smart systems and automation</li><li>Basic electronics and technical concepts</li></ul></div>
-    <div class="skill-group"><h4>Tools</h4><ul><li>Arduino</li><li>Raspberry Pi</li><li>Microcontroller programming</li></ul></div>
-    <div class="skill-group"><h4>Professional</h4><ul><li>Problem-solving and technical research</li><li>Teamwork and communication</li><li>Time management</li></ul></div>
+    <div class="skill-group rv"><h4>Engineering</h4><ul><li>Electrical engineering fundamentals</li><li>Smart systems and automation</li><li>Basic electronics and technical concepts</li></ul></div>
+    <div class="skill-group rv rv-d1"><h4>Tools</h4><ul><li>Arduino</li><li>Raspberry Pi</li><li>Microcontroller programming</li></ul></div>
+    <div class="skill-group rv rv-d2"><h4>Professional</h4><ul><li>Problem-solving and technical research</li><li>Teamwork and communication</li><li>Time management</li></ul></div>
   </div>
 </section>
 
@@ -115,5 +118,11 @@ a:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
   <div class="footer-bottom">&copy; Abdulrahman Alkandari &mdash; Electrical Engineering Student</div>
 </footer>
 
+<script>
+const ro=new IntersectionObserver(e=>{e.forEach(e=>{e.isIntersecting&&(e.target.classList.add('v'),ro.unobserve(e.target))})},{threshold:0.08,rootMargin:'0px 0px -30px 0px'});
+document.querySelectorAll('.rv').forEach(el=>ro.observe(el));
+document.querySelectorAll('a[href^="#"]').forEach(a=>{a.addEventListener('click',e=>{e.preventDefault();const t=document.querySelector(a.getAttribute('href'));t&&t.scrollIntoView({behavior:'smooth',block:'start'})})});
+if(window.matchMedia('(prefers-reduced-motion: reduce)').matches){document.querySelectorAll('.rv').forEach(el=>{el.classList.add('v');el.style.transition='none'})}
+</script>
 </body>
 </html>
