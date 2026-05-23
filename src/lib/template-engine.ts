@@ -8,7 +8,7 @@ import engineerProjectDetailSource from "@/templates/engineer/project-detail.hbs
 // @ts-ignore - webpack asset/source loader
 import creativeTemplateSource from "@/templates/creative/template.hbs";
 // @ts-ignore - webpack asset/source loader
-import designerTemplateSource from "@/templates/designer/template.hbs";
+import creatorTemplateSource from "@/templates/creator/template.hbs";
 // @ts-ignore - webpack asset/source loader
 import developerTemplateSource from "@/templates/developer/template.hbs";
 // @ts-ignore - webpack asset/source loader
@@ -149,7 +149,7 @@ let compiledCorporateTemplate: Handlebars.TemplateDelegate | null = null;
 let compiledEngineerTemplate: Handlebars.TemplateDelegate | null = null;
 let compiledEngineerProjectDetail: Handlebars.TemplateDelegate | null = null;
 let compiledCreativeTemplate: Handlebars.TemplateDelegate | null = null;
-let compiledDesignerTemplate: Handlebars.TemplateDelegate | null = null;
+let compiledCreatorTemplate: Handlebars.TemplateDelegate | null = null;
 let compiledDeveloperTemplate: Handlebars.TemplateDelegate | null = null;
 let compiledMedicalTemplate: Handlebars.TemplateDelegate | null = null;
 let compiledEducatorTemplate: Handlebars.TemplateDelegate | null = null;
@@ -186,11 +186,11 @@ export function renderCreativeTemplate(data: PortfolioData & { contentAr?: any }
   return compiledCreativeTemplate(prepareTemplateData(data));
 }
 
-export function renderDesignerTemplate(data: PortfolioData & { contentAr?: any }): string {
-  if (!compiledDesignerTemplate) {
-    compiledDesignerTemplate = Handlebars.compile(designerTemplateSource as string);
+export function renderCreatorTemplate(data: PortfolioData & { contentAr?: any }): string {
+  if (!compiledCreatorTemplate) {
+    compiledCreatorTemplate = Handlebars.compile(creatorTemplateSource as string);
   }
-  return compiledDesignerTemplate(prepareTemplateData(data));
+  return compiledCreatorTemplate(prepareTemplateData(data));
 }
 
 export function renderDeveloperTemplate(data: PortfolioData & { contentAr?: any }): string {

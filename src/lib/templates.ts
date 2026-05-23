@@ -3,7 +3,7 @@
 
 import corporate from "@/templates/corporate/manifest.json";
 import creative from "@/templates/creative/manifest.json";
-import designer from "@/templates/designer/manifest.json";
+import creator from "@/templates/creator/manifest.json";
 import developer from "@/templates/developer/manifest.json";
 import educator from "@/templates/educator/manifest.json";
 import engineer from "@/templates/engineer/manifest.json";
@@ -35,7 +35,7 @@ export const TEMPLATES: Template[] = (
     corporate,
     engineer,
     creative,
-    designer,
+    creator,
     developer,
     medical,
     educator,

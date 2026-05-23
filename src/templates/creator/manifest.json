@@ -1,0 +1,35 @@
+{
+  "id": "creator",
+  "name": "Creator",
+  "description": "High-energy portfolio for content creators, artists, and digital storytellers — social stats, content showcase, brand collaborations, and audience engagement metrics front and center.",
+  "category": "media",
+  "targetProfessions": ["Content Creator", "YouTuber", "Blogger", "Social Media Manager", "Marketer", "Artist", "Influencer", "Podcast Host", "Musician", "Brand Strategist", "Copywriter", "Digital Marketer"],
+  "colors": {
+    "bg": "#0c0a09",
+    "bgDeep": "#050403",
+    "bgCard": "rgba(28, 25, 23, 0.70)",
+    "primary": "#f59e0b",
+    "primaryGlow": "rgba(245, 158, 11, 0.35)",
+    "primaryDim": "rgba(245, 158, 11, 0.12)",
+    "secondary": "#ef4444",
+    "secondaryGlow": "rgba(239, 68, 68, 0.30)",
+    "secondaryDim": "rgba(239, 68, 68, 0.10)",
+    "accent": "#f5f5f4",
+    "text": "#f5f5f4",
+    "textSecondary": "#a8a29e",
+    "textTertiary": "#57534e",
+    "border": "rgba(245, 158, 11, 0.08)",
+    "gradientHero": "linear-gradient(135deg, #f59e0b 0%, #ef4444 50%, #8b5cf6 100%)"
+  },
+  "fonts": {
+    "heading": "Plus Jakarta Sans",
+    "body": "Inter",
+    "headingRTL": "Cairo",
+    "bodyRTL": "Tajawal",
+    "googleFontsUrl": "https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap"
+  },
+  "sections": ["hero", "social-stats", "content-showcase", "brands-worked-with", "skills", "experience", "education", "contact"],
+  "specialSections": ["social-stats", "content-showcase", "brands-worked-with"],
+  "features": ["animated-gradient-hero-name", "social-stats-count-up", "platform-cards-with-engagement", "brand-logo-marquee", "content-category-pills", "video-thumbnail-grid", "spring-overshoot-card-hover", "noise-texture-overlay", "warm-amber-palette", "print-media-kit-style"],
+  "designNotes": "The Creator template speaks the language of digital audiences: warm amber and red tones evoke energy and engagement over near-black backgrounds. Social stats (followers, views, engagement rate) are first-class citizens, not afterthoughts. The content showcase section uses a grid optimized for video thumbnails and blog post previews. Brand collaboration logos scroll in an infinite marquee, establishing credibility at a glance. Plus Jakarta Sans brings a friendly, approachable confidence that matches the creator economy's tone."
+}

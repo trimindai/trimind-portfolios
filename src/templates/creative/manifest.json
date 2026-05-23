@@ -1,9 +1,9 @@
 {
   "id": "creative",
   "name": "Creative",
-  "description": "Bold, high-energy portfolio for photographers, videographers, content creators, YouTubers, and artists — large visual showcase, social proof stats, and animated gradient identity.",
+  "description": "Bold, portfolio-forward template for creative professionals — built around visual work, process storytelling, and design showcase with masonry galleries and tool proficiency grids.",
   "category": "creative",
-  "targetProfessions": ["Photographer", "Videographer", "Content Creator", "YouTuber", "Social Media Manager", "Visual Artist", "Musician", "Motion Designer", "Podcast Host", "Influencer", "Brand Strategist"],
+  "targetProfessions": ["Photographer", "Videographer", "UI/UX Designer", "Graphic Designer", "Brand Designer", "Interior Designer", "Architect", "Art Director", "Creative Director", "Illustrator", "Visual Designer", "Motion Designer"],
   "colors": {
     "bg": "#0a0a0a",
     "bgDeep": "#050505",
@@ -30,8 +30,8 @@
     "bodyRTL": "Tajawal",
     "googleFontsUrl": "https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700;800&display=swap"
   },
-  "sections": ["hero", "social-stats", "portfolio-showcase", "content-categories", "brands-worked-with", "skills", "experience", "behind-the-scenes", "education", "contact"],
-  "specialSections": ["portfolio-showcase", "social-stats", "brands-worked-with", "content-categories", "behind-the-scenes"],
-  "features": ["animated-gradient-hero-name-4s-loop", "syne-800-bold-geometric", "portfolio-masonry-3col-grid", "fullscreen-lightbox-viewer", "video-thumbnail-with-qr-in-print", "portfolio-category-filter", "social-stats-count-up-1800ms", "platform-cards-with-engagement-rate", "brand-logo-infinite-marquee", "grayscale-to-color-logo-hover", "marquee-rtl-reverse", "content-categories-pill-grid", "behind-the-scenes-two-col", "spring-overshoot-card-hover", "28s-fastest-orb-drift", "noise-texture-overlay", "scroll-parallax-orbs", "print-media-kit-style", "3-color-variants"],
-  "designNotes": "The Creative template makes no apologies for being loud — near-black backgrounds create a gallery void that lets visual work breathe, while the hot pink / electric blue / neon yellow triad delivers the visual punch that stops a scroll in the GCC social media landscape. The animated gradient hero name is the signature: an infinitely cycling Syne 800-weight headline that communicates personality before a single word is processed. Print output functions as a media kit with portfolio thumbnails, static brand logos, and QR codes for video content."
+  "sections": ["hero", "portfolio-gallery", "skills", "design-process", "experience", "tools-software", "education", "contact"],
+  "specialSections": ["portfolio-gallery", "design-process", "tools-software"],
+  "features": ["animated-gradient-hero-name-4s-loop", "syne-800-bold-geometric", "portfolio-masonry-3col-grid", "fullscreen-lightbox-viewer", "gallery-category-filter", "design-process-4-step-timeline", "tools-proficiency-grid", "image-zoom-hover", "spring-overshoot-card-hover", "noise-texture-overlay", "scroll-parallax-orbs", "print-media-kit-style", "3-color-variants", "dribbble-behance-cards"],
+  "designNotes": "The Creative template merges the best of visual portfolio and design process storytelling. Near-black backgrounds create a gallery void that lets visual work breathe, while the hot pink / electric blue / neon yellow triad delivers the visual punch that stops a scroll. The animated gradient hero name is the signature: an infinitely cycling Syne 800-weight headline. The masonry gallery grid is the centrepiece for showcasing design and photography work, with category filtering and a design process timeline for UX/brand professionals."
 }

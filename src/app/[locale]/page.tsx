@@ -2,6 +2,7 @@ import { useTranslations, useLocale } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { AdminLink } from "@/components/AdminLink";
 import { ScrollReveal } from "@/components/landing/ScrollReveal";
+import Image from "next/image";
 
 export default function LandingPage() {
   const tc = useTranslations("common");
@@ -23,10 +24,6 @@ export default function LandingPage() {
         {
           q: "ما طرق الدفع المتاحة؟",
           a: "كل بطاقات K-Net، Visa، Mastercard، وApple Pay عبر MyFatoorah — البوابة المعتمدة في الكويت.",
-        },
-        {
-          q: "هل يوجد ضمان استرداد؟",
-          a: "نعم. ٧ أيام، كامل المبلغ، بدون أسئلة. اقرأ سياسة الاسترداد.",
         },
         {
           q: "هل بياناتي آمنة؟",
@@ -51,10 +48,6 @@ export default function LandingPage() {
           a: "All K-Net cards, Visa, Mastercard, and Apple Pay via MyFatoorah, Kuwait's licensed payment gateway.",
         },
         {
-          q: "Is there a refund guarantee?",
-          a: "Yes. 7 days, full refund, no questions asked. See our Refund Policy.",
-        },
-        {
           q: "Is my data secure?",
           a: "Yes. Authentication via Clerk, encryption in transit and at rest, and strict per-owner access control on every record.",
         },
@@ -69,17 +62,18 @@ export default function LandingPage() {
       {/* ── Navbar ─────────────────────────────── */}
       <nav className="fixed top-0 z-50 w-full border-b border-[var(--land-border)]/50 bg-[var(--land-bg)]/80 backdrop-blur-md">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
-          <span className="text-lg font-bold tracking-tight">
+          <Link href="/" className="text-lg font-bold tracking-tight hover:text-[var(--land-accent)] transition-colors">
             {tc("appName")}
-          </span>
+          </Link>
           <div className="flex items-center gap-4">
             <AdminLink />
-            <a
-              href={`/${otherLocale}`}
+            <Link
+              href="/"
+              locale={otherLocale}
               className="text-sm text-[var(--land-muted)] hover:text-[var(--land-bright)] transition-colors"
             >
               {otherLabel}
-            </a>
+            </Link>
             <Link
               href="/sign-in"
               className="hidden sm:inline text-sm text-[var(--land-body)] hover:text-[var(--land-bright)] transition-colors"
@@ -87,7 +81,7 @@ export default function LandingPage() {
               {tc("signIn")}
             </Link>
             <Link
-              href="/dashboard/new"
+              href="/templates"
               className="rounded-lg bg-[var(--land-accent)] px-4 py-2 text-sm font-medium text-white hover:bg-[var(--land-accent-hover)] transition-colors"
             >
               {tc("getStarted")}
@@ -98,6 +92,15 @@ export default function LandingPage() {
 
       {/* ── Hero ───────────────────────────────── */}
       <section className="relative min-h-[100dvh] flex items-center overflow-hidden">
+        {/* Hero background image */}
+        <Image
+          src="/landing/hero-bg.jpg"
+          alt=""
+          fill
+          className="object-cover object-center opacity-40 pointer-events-none"
+          priority
+          quality={85}
+        />
         {/* Background glows — vivid and dramatic */}
         <div
           className="absolute inset-0 pointer-events-none"
@@ -134,52 +137,80 @@ export default function LandingPage() {
               </p>
               <div className="mt-10 flex items-center gap-4">
                 <Link
-                  href="/dashboard/new"
+                  href="/templates"
                   className="land-btn-shimmer inline-block rounded-xl bg-[var(--land-accent)] px-10 py-4 text-lg font-semibold text-white hover:bg-[var(--land-accent-hover)] transition-colors"
                 >
                   {isRTL ? "ابنِ بورتفوليوك" : "Build yours"}
                 </Link>
-                <Link
-                  href="/templates"
-                  className="text-sm font-medium text-[var(--land-body)] hover:text-[var(--land-bright)] transition-colors"
-                >
-                  {isRTL ? "تصفح القوالب" : "Browse templates"}{" "}
-                  <span className="inline-block transition-transform group-hover:translate-x-1">&rarr;</span>
-                </Link>
               </div>
               <p className="mt-5 text-sm text-[var(--land-muted)]">
                 {isRTL
-                  ? "بدون اشتراك. ضمان استرداد ٧ أيام."
-                  : "No subscription. 7-day money-back guarantee."}
+                  ? "بدون اشتراك. دفعة واحدة فقط."
+                  : "No subscription. One-time payment."}
               </p>
             </div>
 
             <div className="land-visual w-full max-w-xl">
+              {/* Desktop: stacked cards effect */}
               <div className="hidden lg:block relative land-float" style={{ perspective: "1200px" }}>
-                {/* Glow behind mockup */}
+                {/* Ambient glow behind stack */}
                 <div
-                  className="absolute -inset-12 pointer-events-none"
+                  className="absolute -inset-16 pointer-events-none"
                   style={{
-                    background: `radial-gradient(ellipse at center, var(--land-glow), transparent 65%)`,
+                    background: `radial-gradient(ellipse 80% 70% at center, oklch(0.35 0.12 163 / 0.25), transparent 70%)`,
                   }}
                 />
+                {/* Back card: Engineer (rotated, scaled) */}
                 <div
-                  className="land-glow-border rounded-xl"
+                  className="absolute inset-0 rounded-xl overflow-hidden border border-[var(--land-border)] opacity-40"
                   style={{
                     transform: isRTL
-                      ? "rotateY(4deg) rotateX(2deg)"
-                      : "rotateY(-4deg) rotateX(2deg)",
+                      ? "translate(24px, 20px) rotate(3deg) scale(0.93)"
+                      : "translate(-24px, 20px) rotate(-3deg) scale(0.93)",
+                    zIndex: 1,
                   }}
                 >
-                  <TemplateBrowser url="portfolio-trimind.com/ahmad-al-rashidi">
-                    <CorporateMockup />
-                  </TemplateBrowser>
+                  <Image
+                    src="/landing/mockup-engineer.jpg"
+                    alt=""
+                    width={1200}
+                    height={800}
+                    className="w-full h-auto"
+                    quality={75}
+                  />
+                </div>
+                {/* Front card: Corporate (straight, prominent) */}
+                <div
+                  className="relative rounded-xl overflow-hidden border border-[var(--land-border)]"
+                  style={{
+                    transform: isRTL
+                      ? "rotateY(3deg) rotateX(1deg)"
+                      : "rotateY(-3deg) rotateX(1deg)",
+                    zIndex: 2,
+                  }}
+                >
+                  <Image
+                    src="/landing/mockup-corporate.jpg"
+                    alt="Corporate portfolio template preview"
+                    width={1200}
+                    height={800}
+                    className="w-full h-auto"
+                    priority
+                    quality={90}
+                  />
                 </div>
               </div>
-              <div className="lg:hidden">
-                <TemplateBrowser url="portfolio-trimind.com/ahmad">
-                  <CorporateMockup />
-                </TemplateBrowser>
+              {/* Mobile: single image */}
+              <div className="lg:hidden rounded-xl overflow-hidden border border-[var(--land-border)]">
+                <Image
+                  src="/landing/mockup-corporate.jpg"
+                  alt="Corporate portfolio template preview"
+                  width={1200}
+                  height={800}
+                  className="w-full h-auto"
+                  priority
+                  quality={85}
+                />
               </div>
             </div>
           </div>
@@ -242,9 +273,22 @@ export default function LandingPage() {
           <div className="flex flex-col lg:grid lg:grid-cols-[1.3fr_1fr] gap-8 lg:gap-10 items-start">
             <ScrollReveal>
               <div className="group">
-                <TemplateBrowser url="portfolio-trimind.com/ahmad">
-                  <CorporateMockup />
-                </TemplateBrowser>
+                <div className="relative rounded-xl overflow-hidden border border-[var(--land-border)] transition-all duration-500 group-hover:translate-y-[-2px] group-hover:border-[var(--land-accent)]/30">
+                  <Image
+                    src="/landing/mockup-corporate.jpg"
+                    alt="Corporate portfolio template"
+                    width={1200}
+                    height={800}
+                    className="w-full h-auto"
+                    quality={90}
+                  />
+                  <div className="absolute inset-0 bg-[oklch(0.08_0.02_260_/_0)] group-hover:bg-[oklch(0.08_0.02_260_/_0.6)] transition-all duration-300 flex items-center justify-center">
+                    <span className="text-sm font-medium text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center gap-2">
+                      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path strokeLinecap="round" strokeLinejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
+                      {isRTL ? "عرض مباشر" : "View live demo"}
+                    </span>
+                  </div>
+                </div>
                 <div className="mt-6">
                   <h3 className="text-xl font-semibold">
                     {isRTL ? "بورتفوليو مؤسسي" : "Corporate Portfolio"}
@@ -264,7 +308,7 @@ export default function LandingPage() {
                       {isRTL ? "عرض مباشر ←" : "View live demo \u2192"}
                     </a>
                     <Link
-                      href="/dashboard/new"
+                      href="/templates"
                       className="text-sm text-[var(--land-body)] hover:text-[var(--land-bright)] transition-colors"
                     >
                       {isRTL ? "استخدم هذا القالب" : "Use this template"}
@@ -276,9 +320,22 @@ export default function LandingPage() {
 
             <ScrollReveal delay={150} className="lg:mt-20">
               <div className="group">
-                <TemplateBrowser url="portfolio-trimind.com/sara">
-                  <EngineerMockup />
-                </TemplateBrowser>
+                <div className="relative rounded-xl overflow-hidden border border-[var(--land-border)] transition-all duration-500 group-hover:translate-y-[-2px] group-hover:border-[var(--land-accent)]/30">
+                  <Image
+                    src="/landing/mockup-engineer.jpg"
+                    alt="Engineer portfolio template"
+                    width={1200}
+                    height={800}
+                    className="w-full h-auto"
+                    quality={90}
+                  />
+                  <div className="absolute inset-0 bg-[oklch(0.08_0.02_260_/_0)] group-hover:bg-[oklch(0.08_0.02_260_/_0.6)] transition-all duration-300 flex items-center justify-center">
+                    <span className="text-sm font-medium text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center gap-2">
+                      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path strokeLinecap="round" strokeLinejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
+                      {isRTL ? "عرض مباشر" : "View live demo"}
+                    </span>
+                  </div>
+                </div>
                 <div className="mt-6">
                   <h3 className="text-xl font-semibold">
                     {isRTL ? "بورتفوليو هندسي" : "Engineer Portfolio"}
@@ -314,7 +371,7 @@ export default function LandingPage() {
               {isRTL ? "قوالب إضافية قريبًا" : "More templates coming soon"}
             </p>
             <div className="mt-3 flex flex-wrap gap-2">
-              {["Creative", "Designer", "Developer", "Medical", "Educator"].map(
+              {["Creative", "Creator", "Developer", "Medical", "Educator"].map(
                 (name) => (
                   <span
                     key={name}
@@ -413,28 +470,15 @@ export default function LandingPage() {
                     : "From corporate boardrooms to engineering field reports. Each template is hand-crafted for a specific profession, not clones with different colors."}
                 </p>
               </div>
-              <div className="mt-8 lg:mt-0 flex gap-3 items-end">
-                <div className="flex-1 aspect-[3/4] rounded-lg overflow-hidden bg-[oklch(0.2_0.04_250)] border border-[oklch(0.3_0.03_250)]">
-                  <div className="h-1 bg-[oklch(0.72_0.08_65)]" />
-                  <div className="p-3 space-y-2 mt-3">
-                    <div className="h-1.5 w-3/4 rounded-full bg-[oklch(0.72_0.08_65)]/30" />
-                    <div className="h-1 w-1/2 rounded-full bg-[oklch(0.35_0.02_250)]" />
-                  </div>
-                </div>
-                <div className="flex-1 aspect-[3/5] rounded-lg overflow-hidden bg-white border border-[oklch(0.9_0_0)]">
-                  <div className="h-1 bg-[oklch(0.59_0.17_160)]" />
-                  <div className="p-3 space-y-2 mt-3">
-                    <div className="h-1.5 w-3/4 rounded-full bg-[oklch(0.15_0.01_160)]" />
-                    <div className="h-1 w-1/2 rounded-full bg-[oklch(0.7_0.01_160)]" />
-                  </div>
-                </div>
-                <div className="flex-1 aspect-[3/4] rounded-lg overflow-hidden bg-[oklch(0.15_0.015_200)] border border-[oklch(0.25_0.01_200)] opacity-50">
-                  <div className="h-1 bg-[oklch(0.6_0.15_200)]" />
-                  <div className="p-3 space-y-2 mt-3">
-                    <div className="h-1.5 w-2/3 rounded-full bg-[oklch(0.3_0.01_200)]" />
-                    <div className="h-1 w-1/2 rounded-full bg-[oklch(0.25_0.01_200)]" />
-                  </div>
-                </div>
+              <div className="mt-8 lg:mt-0 rounded-xl overflow-hidden border border-[var(--land-border)]">
+                <Image
+                  src="/landing/feature-templates.jpg"
+                  alt="Multiple portfolio templates"
+                  width={1200}
+                  height={800}
+                  className="w-full h-auto"
+                  quality={85}
+                />
               </div>
             </div>
           </ScrollReveal>
@@ -443,27 +487,66 @@ export default function LandingPage() {
           <ScrollReveal>
             <div className="flex flex-col lg:grid lg:grid-cols-2 gap-16 items-center">
               <div className="order-2 lg:order-1 mt-8 lg:mt-0 flex gap-3">
-                <div className="flex-1 rounded-lg bg-[var(--land-surface)] p-4 border border-[var(--land-border)]">
-                  <p className="text-[10px] text-[var(--land-muted)] mb-3">
-                    English
-                  </p>
-                  <div className="space-y-2">
-                    <div className="h-1.5 w-full rounded-full bg-[var(--land-border)]" />
-                    <div className="h-1.5 w-4/5 rounded-full bg-[var(--land-border)]" />
-                    <div className="h-1.5 w-3/5 rounded-full bg-[var(--land-border)]" />
+                {/* English LTR mockup */}
+                <div className="flex-1 rounded-lg bg-[var(--land-surface)] border border-[var(--land-border)] overflow-hidden">
+                  <div className="bg-[oklch(0.17_0.008_260)] px-3 py-1.5 flex items-center gap-2 border-b border-[var(--land-border)]">
+                    <div className="flex gap-1">
+                      <div className="w-1.5 h-1.5 rounded-full bg-[oklch(0.35_0.01_0)]" />
+                      <div className="w-1.5 h-1.5 rounded-full bg-[oklch(0.35_0.01_55)]" />
+                      <div className="w-1.5 h-1.5 rounded-full bg-[oklch(0.35_0.01_150)]" />
+                    </div>
+                    <p className="text-[9px] text-[var(--land-muted)]">English</p>
+                  </div>
+                  <div className="p-3 space-y-3">
+                    <div className="flex items-center gap-2">
+                      <div className="w-6 h-6 rounded-full bg-[oklch(0.25_0.03_250)]" />
+                      <div>
+                        <div className="h-1.5 w-16 rounded-full bg-[oklch(0.7_0.01_250)]" />
+                        <div className="h-1 w-10 rounded-full bg-[var(--land-border)] mt-1" />
+                      </div>
+                    </div>
+                    <div className="h-px bg-[var(--land-border)]" />
+                    <div className="space-y-1.5">
+                      <div className="h-2 w-20 rounded-full bg-[oklch(0.8_0.01_250)]" />
+                      <div className="h-1.5 w-full rounded-full bg-[var(--land-border)]" />
+                      <div className="h-1.5 w-4/5 rounded-full bg-[var(--land-border)]" />
+                      <div className="h-1.5 w-3/5 rounded-full bg-[var(--land-border)]" />
+                    </div>
+                    <div className="flex gap-1.5">
+                      <div className="h-4 w-12 rounded bg-[var(--land-accent)] opacity-60" />
+                      <div className="h-4 w-12 rounded bg-[var(--land-border)]" />
+                    </div>
                   </div>
                 </div>
-                <div
-                  className="flex-1 rounded-lg bg-[var(--land-surface)] p-4 border border-[var(--land-border)]"
-                  dir="rtl"
-                >
-                  <p className="text-[10px] text-[var(--land-muted)] mb-3">
-                    عربي
-                  </p>
-                  <div className="space-y-2">
-                    <div className="h-1.5 w-full rounded-full bg-[var(--land-border)]" />
-                    <div className="h-1.5 w-4/5 rounded-full bg-[var(--land-border)]" />
-                    <div className="h-1.5 w-3/5 rounded-full bg-[var(--land-border)]" />
+                {/* Arabic RTL mockup */}
+                <div className="flex-1 rounded-lg bg-[var(--land-surface)] border border-[var(--land-border)] overflow-hidden" dir="rtl">
+                  <div className="bg-[oklch(0.17_0.008_260)] px-3 py-1.5 flex items-center gap-2 border-b border-[var(--land-border)]" dir="ltr">
+                    <div className="flex gap-1">
+                      <div className="w-1.5 h-1.5 rounded-full bg-[oklch(0.35_0.01_0)]" />
+                      <div className="w-1.5 h-1.5 rounded-full bg-[oklch(0.35_0.01_55)]" />
+                      <div className="w-1.5 h-1.5 rounded-full bg-[oklch(0.35_0.01_150)]" />
+                    </div>
+                    <p className="text-[9px] text-[var(--land-muted)]">عربي</p>
+                  </div>
+                  <div className="p-3 space-y-3">
+                    <div className="flex items-center gap-2">
+                      <div className="w-6 h-6 rounded-full bg-[oklch(0.25_0.03_250)]" />
+                      <div>
+                        <div className="h-1.5 w-16 rounded-full bg-[oklch(0.7_0.01_250)]" />
+                        <div className="h-1 w-10 rounded-full bg-[var(--land-border)] mt-1" />
+                      </div>
+                    </div>
+                    <div className="h-px bg-[var(--land-border)]" />
+                    <div className="space-y-1.5">
+                      <div className="h-2 w-20 rounded-full bg-[oklch(0.8_0.01_250)]" />
+                      <div className="h-1.5 w-full rounded-full bg-[var(--land-border)]" />
+                      <div className="h-1.5 w-4/5 rounded-full bg-[var(--land-border)]" />
+                      <div className="h-1.5 w-3/5 rounded-full bg-[var(--land-border)]" />
+                    </div>
+                    <div className="flex gap-1.5">
+                      <div className="h-4 w-12 rounded bg-[var(--land-accent)] opacity-60" />
+                      <div className="h-4 w-12 rounded bg-[var(--land-border)]" />
+                    </div>
                   </div>
                 </div>
               </div>
@@ -494,13 +577,13 @@ export default function LandingPage() {
                 </p>
                 <h3 className="mt-2 text-xl font-bold tracking-tight">
                   {isRTL
-                    ? "PDF جاهز للطباعة مع رمز QR"
-                    : "Print-ready PDF with QR code"}
+                    ? "سيرة ذاتية PDF مع باركود"
+                    : "CV page with scannable barcode"}
                 </h3>
                 <p className="mt-3 text-sm text-[var(--land-body)] leading-relaxed">
                   {isRTL
-                    ? "حمّل بورتفوليوك كملف PDF منسّق مع رمز QR يربط مباشرة بصفحتك الحية."
-                    : "Download your portfolio as a formatted PDF with a QR code linking directly to your live page."}
+                    ? "حمّل صفحة سيرة ذاتية احترافية كملف PDF مع باركود يوجّه مباشرة إلى بورتفوليوك الحي."
+                    : "Download a professional CV page as PDF with a scannable barcode that links directly to your live portfolio."}
                 </p>
               </div>
               <div className="mt-12 lg:mt-0">
@@ -540,18 +623,18 @@ export default function LandingPage() {
                   <>
                     كل شيء مشمول مقابل{" "}
                     <span className="font-semibold text-[var(--land-bright)]">
-                      ١.٥٠٠ دك
+                      ٤.٩٩٠ دك
                     </span>{" "}
-                    للبورتفوليو الواحد (~٥ دولار). دفعة واحدة. بدون اشتراكات.
+                    للبورتفوليو الواحد (~١٦ دولار). دفعة واحدة. بدون اشتراكات.
                     بدون تجديد.
                   </>
                 ) : (
                   <>
                     Everything included for{" "}
                     <span className="font-semibold text-[var(--land-bright)]">
-                      1.500 KD
+                      4.990 KD
                     </span>{" "}
-                    per portfolio (~$5 USD). One-time payment. No subscriptions.
+                    per portfolio (~$16 USD). One-time payment. No subscriptions.
                     No renewals.
                   </>
                 )}
@@ -560,7 +643,7 @@ export default function LandingPage() {
                 {(isRTL
                   ? [
                       "رابط مستضاف",
-                      "PDF + رمز QR",
+                      "سيرة ذاتية + باركود",
                       "عربي + إنجليزي",
                       "ألوان مخصصة",
                       "جاهز للطباعة",
@@ -568,7 +651,7 @@ export default function LandingPage() {
                     ]
                   : [
                       "Hosted URL",
-                      "PDF + QR code",
+                      "CV page + barcode",
                       "Arabic + English",
                       "Custom colors",
                       "Print-optimized",
@@ -583,16 +666,36 @@ export default function LandingPage() {
               </div>
               <div className="mt-10">
                 <Link
-                  href="/dashboard/new"
+                  href="/templates"
                   className="inline-block rounded-lg bg-[var(--land-accent)] px-8 py-3.5 text-base font-semibold text-white hover:bg-[var(--land-accent-hover)] transition-colors"
                 >
                   {isRTL ? "ابنِ بورتفوليوك" : "Build yours"}
                 </Link>
                 <p className="mt-3 text-xs text-[var(--land-muted)]">
                   {isRTL
-                    ? "ضمان استرداد ٧ أيام. بدون أسئلة."
-                    : "7-day money-back guarantee. No questions asked."}
+                    ? "دفعة واحدة. بدون تجديد."
+                    : "One-time payment. No renewals."}
                 </p>
+                {/* Payment trust icons */}
+                <div className="mt-6 flex flex-wrap items-center gap-4">
+                  <p className="text-[10px] text-[var(--land-muted)] tracking-wide uppercase">
+                    {isRTL ? "ادفع عبر" : "Pay with"}
+                  </p>
+                  <div className="flex items-center gap-3">
+                    {/* K-Net */}
+                    <span className="text-xs font-bold text-[var(--land-body)] tracking-tight">K-NET</span>
+                    {/* Visa */}
+                    <svg className="h-4 text-[var(--land-body)]" viewBox="0 0 48 16" fill="currentColor"><path d="M19.6 1.2l-3.5 13.6h-2.8l3.5-13.6h2.8zm14.3 8.8l1.5-4 .8 4h-2.3zm3.1 4.8h2.6l-2.3-13.6h-2.4c-.5 0-1 .3-1.2.8l-4.2 12.8h2.9l.6-1.6h3.6l.4 1.6zm-7.5-4.4c0-3.6-5-3.8-5-5.4 0-.5.5-1 1.5-1.1.5 0 1.9-.1 3.4.6l.6-2.8c-.8-.3-1.9-.6-3.2-.6-3.4 0-5.8 1.8-5.8 4.4 0 1.9 1.7 3 3 3.6 1.3.7 1.8 1.1 1.8 1.7 0 .9-1.1 1.3-2 1.3-1.7 0-2.7-.5-3.5-.8l-.6 2.9c.8.4 2.3.7 3.8.7 3.6 0 6-1.8 6-4.5zm-14.2-9.2l-5.6 13.6h-3l-2.7-10.9c-.2-.6-.3-.8-.8-1.1-.9-.4-2.3-.8-3.5-1.1l.1-.5h4.7c.6 0 1.1.4 1.3 1.1l1.2 6.1 2.8-7.2h2.9z" /></svg>
+                    {/* Mastercard */}
+                    <svg className="h-4" viewBox="0 0 32 20" fill="none"><circle cx="12" cy="10" r="8" fill="oklch(0.55 0.02 20)" /><circle cx="20" cy="10" r="8" fill="oklch(0.6 0.08 65)" /><path d="M16 4.7a7.96 7.96 0 010 10.6 7.96 7.96 0 000-10.6z" fill="oklch(0.58 0.06 40)" /></svg>
+                    {/* Apple Pay */}
+                    <span className="text-xs font-medium text-[var(--land-body)]">Apple Pay</span>
+                  </div>
+                  <div className="h-3 w-px bg-[var(--land-border)]" />
+                  <p className="text-[10px] text-[var(--land-accent)] font-medium">
+                    {isRTL ? "عبر MyFatoorah" : "via MyFatoorah"}
+                  </p>
+                </div>
               </div>
             </div>
             <div className="hidden lg:block text-end pt-2">
@@ -600,12 +703,12 @@ export default function LandingPage() {
                 className="font-extrabold tracking-tighter"
                 style={{ fontSize: "clamp(3rem, 5vw, 4.5rem)" }}
               >
-                <span className="text-[var(--land-accent)]">1.500</span>{" "}
+                <span className="text-[var(--land-accent)]">4.990</span>{" "}
                 <span className="text-2xl font-medium text-[var(--land-muted)]">
                   KD
                 </span>
               </div>
-              <p className="text-sm text-[var(--land-muted)] mt-2">~$5 USD</p>
+              <p className="text-sm text-[var(--land-muted)] mt-2">~$16 USD</p>
               <p className="text-xs text-[var(--land-accent)] mt-1 font-medium">
                 {isRTL ? "دفعة واحدة فقط" : "one-time, forever"}
               </p>
@@ -682,7 +785,7 @@ export default function LandingPage() {
               </li>
               <li>
                 <Link
-                  href="/dashboard/new"
+                  href="/templates"
                   className="hover:text-[var(--land-bright)] transition-colors"
                 >
                   {isRTL ? "ابدأ" : "Get started"}
@@ -756,107 +859,3 @@ export default function LandingPage() {
   );
 }
 
-/* ── Helper components ─────────────────────────── */
-
-function TemplateBrowser({
-  children,
-  url,
-}: {
-  children: React.ReactNode;
-  url: string;
-}) {
-  return (
-    <div className="rounded-xl overflow-hidden border border-[var(--land-border)] transition-all duration-500 group-hover:translate-y-[-2px] group-hover:border-[var(--land-accent)]/30">
-      <div className="bg-[oklch(0.17_0.008_160)] px-4 py-2 flex items-center gap-3">
-        <div className="flex gap-1.5">
-          <div className="w-2 h-2 rounded-full bg-[oklch(0.35_0.01_0)]" />
-          <div className="w-2 h-2 rounded-full bg-[oklch(0.35_0.01_55)]" />
-          <div className="w-2 h-2 rounded-full bg-[oklch(0.35_0.01_150)]" />
-        </div>
-        <div className="flex-1 h-5 rounded bg-[oklch(0.12_0.008_160)] mx-4 flex items-center px-3">
-          <span className="text-[10px] text-[var(--land-muted)] truncate">
-            {url}
-          </span>
-        </div>
-      </div>
-      {children}
-    </div>
-  );
-}
-
-function CorporateMockup() {
-  return (
-    <div className="aspect-[16/10] bg-[oklch(0.97_0.003_250)] flex flex-col">
-      <div className="bg-[oklch(0.12_0.04_250)] px-5 py-3 flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <div className="w-7 h-7 rounded-full bg-[oklch(0.25_0.03_250)] ring-1 ring-[oklch(0.72_0.08_65)]/30" />
-          <div>
-            <div className="h-2 w-20 rounded-full bg-[oklch(0.85_0.005_250)]" />
-            <div className="h-1 w-14 rounded-full bg-[oklch(0.4_0.02_250)] mt-1" />
-          </div>
-        </div>
-        <div className="flex gap-4">
-          {["w-8", "w-10", "w-7"].map((w, i) => (
-            <div key={i} className={`h-1 ${w} rounded-full bg-[oklch(0.35_0.02_250)]`} />
-          ))}
-        </div>
-      </div>
-      <div className="flex-1 p-4">
-        <div className="flex gap-2.5 mb-3">
-          {[
-            { label: "w-6", color: "oklch(0.22_0.03_250)" },
-            { label: "w-8", color: "oklch(0.72_0.08_65)" },
-            { label: "w-5", color: "oklch(0.22_0.03_250)" },
-          ].map((item, i) => (
-            <div key={i} className="flex-1 rounded bg-[oklch(0.94_0.005_250)] p-2">
-              <div className={`h-3.5 ${item.label} rounded`} style={{ background: item.color }} />
-              <div className="h-1 w-10 rounded-full bg-[oklch(0.82_0.005_250)] mt-1.5" />
-            </div>
-          ))}
-        </div>
-        <div className="space-y-2 mt-3">
-          {[78, 52, 68, 45].map((w, i) => (
-            <div key={i} className="flex items-center gap-2">
-              <div className="w-1 h-1 rounded-full bg-[oklch(0.72_0.08_65)]" />
-              <div className="h-1.5 rounded-full bg-[oklch(0.9_0.005_250)]" style={{ width: `${w}%` }} />
-            </div>
-          ))}
-        </div>
-      </div>
-      <div className="h-px bg-gradient-to-r from-[oklch(0.72_0.08_65)] via-[oklch(0.72_0.08_65)]/50 to-transparent" />
-    </div>
-  );
-}
-
-function EngineerMockup() {
-  return (
-    <div className="aspect-[16/10] bg-[oklch(0.99_0.002_160)] flex flex-col">
-      <div className="px-5 py-3 border-b border-[oklch(0.92_0.005_160)] flex items-center justify-between">
-        <div>
-          <div className="h-2 w-20 rounded-full bg-[oklch(0.15_0.01_160)]" />
-          <div className="h-1 w-12 rounded-full bg-[oklch(0.55_0.01_160)] mt-1" />
-        </div>
-        <div className="flex gap-2">
-          <div className="h-4 w-4 rounded bg-[oklch(0.93_0.005_160)]" />
-          <div className="h-4 w-4 rounded bg-[oklch(0.93_0.005_160)]" />
-        </div>
-      </div>
-      <div className="flex-1 p-3 grid grid-cols-2 gap-2">
-        {[
-          { h: "aspect-[4/3]", accent: true },
-          { h: "aspect-[3/2]", accent: false },
-          { h: "aspect-[3/2]", accent: false },
-          { h: "aspect-[4/3]", accent: true },
-        ].map((card, i) => (
-          <div key={i} className="rounded bg-[oklch(0.97_0.003_160)] p-2">
-            <div className={`${card.h} rounded ${card.accent ? "bg-[oklch(0.92_0.02_160)]" : "bg-[oklch(0.93_0.008_160)]"}`} />
-            <div className="h-1.5 w-3/4 rounded-full bg-[oklch(0.2_0.005_160)] mt-2" />
-            <div className="h-1 w-1/2 rounded-full bg-[oklch(0.65_0.005_160)] mt-1" />
-            {card.accent && <div className="h-0.5 w-6 rounded-full bg-[oklch(0.59_0.17_160)] mt-1.5" />}
-          </div>
-        ))}
-      </div>
-      <div className="h-px bg-gradient-to-r from-[oklch(0.59_0.17_160)] via-[oklch(0.59_0.17_160)]/50 to-transparent" />
-    </div>
-  );
-}
