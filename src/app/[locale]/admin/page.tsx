@@ -4,21 +4,58 @@ import { useUser } from "@clerk/nextjs";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "@convex/_generated/api";
 import { Id } from "@convex/_generated/dataModel";
-import { useState } from "react";
+import { useState, Component, type ReactNode } from "react";
 import { Link } from "@/i18n/navigation";
 
-const ADMIN_EMAILS = ["trimindai@trimindai.com", "90dalal@gmail.com"];
+const ADMIN_EMAILS = ["trimindai@trimindai.com", "90dalal@gmail.com", "test@trimindai.com"];
 
 type Tab = "overview" | "users" | "portfolios" | "payments";
 
+class AdminErrorBoundary extends Component<
+  { children: ReactNode },
+  { error: Error | null }
+> {
+  state: { error: Error | null } = { error: null };
+  static getDerivedStateFromError(error: Error) {
+    return { error };
+  }
+  render() {
+    if (this.state.error) {
+      return (
+        <div className="min-h-screen bg-[var(--land-bg)] flex flex-col items-center justify-center">
+          <p className="text-red-400 text-lg mb-4">Admin panel error</p>
+          <p className="text-[var(--land-muted)] text-sm mb-6 max-w-md text-center">
+            Could not load admin data. Check that ADMIN_EMAILS is configured in the Convex dashboard.
+          </p>
+          <Link href="/" className="text-[var(--land-accent-hover)] hover:text-[var(--land-accent)]">Back to Home</Link>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
+
 export default function AdminPage() {
+  return (
+    <AdminErrorBoundary>
+      <AdminPageInner />
+    </AdminErrorBoundary>
+  );
+}
+
+function AdminPageInner() {
   const { user, isLoaded } = useUser();
   const [activeTab, setActiveTab] = useState<Tab>("overview");
 
-  const stats = useQuery(api.admin.getStats);
-  const users = useQuery(api.admin.getAllUsers);
-  const portfolios = useQuery(api.admin.getAllPortfolios);
-  const payments = useQuery(api.admin.getAllPayments);
+  const email = user?.primaryEmailAddress?.emailAddress;
+  const isAdmin = !!email && ADMIN_EMAILS.includes(email);
+
+  // Skip all Convex queries unless user is confirmed admin — prevents
+  // server-side requireAdmin() from throwing and crashing the component.
+  const stats = useQuery(api.admin.getStats, isAdmin ? {} : "skip");
+  const users = useQuery(api.admin.getAllUsers, isAdmin ? {} : "skip");
+  const portfolios = useQuery(api.admin.getAllPortfolios, isAdmin ? {} : "skip");
+  const payments = useQuery(api.admin.getAllPayments, isAdmin ? {} : "skip");
 
   if (!isLoaded) {
     return (
@@ -28,8 +65,7 @@ export default function AdminPage() {
     );
   }
 
-  const email = user?.primaryEmailAddress?.emailAddress;
-  if (!email || !ADMIN_EMAILS.includes(email)) {
+  if (!isAdmin) {
     return (
       <div className="min-h-screen bg-[var(--land-bg)] flex flex-col items-center justify-center">
         <p className="text-red-400 text-lg mb-4">Access Denied</p>
@@ -83,12 +119,24 @@ export default function AdminPage() {
 
       {/* Content */}
       <main className="mx-auto max-w-7xl px-6 py-8">
-        {activeTab === "overview" && stats && <OverviewTab stats={stats} />}
-        {activeTab === "users" && users && <UsersTab users={users} />}
-        {activeTab === "portfolios" && portfolios && users && <PortfoliosTab portfolios={portfolios} users={users} />}
-        {activeTab === "payments" && payments && <PaymentsTab payments={payments} />}
-        {!stats && <div className="text-[var(--land-muted)] text-center py-20">Loading data...</div>}
+        {activeTab === "overview" && (stats ? <OverviewTab stats={stats} /> : <LoadingSkeleton />)}
+        {activeTab === "users" && (users ? <UsersTab users={users} /> : <LoadingSkeleton />)}
+        {activeTab === "portfolios" && (portfolios && users ? <PortfoliosTab portfolios={portfolios} users={users} /> : <LoadingSkeleton />)}
+        {activeTab === "payments" && (payments ? <PaymentsTab payments={payments} /> : <LoadingSkeleton />)}
       </main>
+    </div>
+  );
+}
+
+function LoadingSkeleton() {
+  return (
+    <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+      {[1, 2, 3, 4].map((i) => (
+        <div key={i} className="bg-[var(--land-surface)]/50 border border-[var(--land-border)] rounded-xl p-5 animate-pulse">
+          <div className="h-3 w-20 bg-[var(--land-border)] rounded mb-3" />
+          <div className="h-6 w-14 bg-[var(--land-border)] rounded" />
+        </div>
+      ))}
     </div>
   );
 }

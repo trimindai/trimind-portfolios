@@ -19,7 +19,7 @@ import {
 import { useUser } from "@clerk/nextjs";
 import { toPortfolioData } from "@/lib/portfolio-data";
 
-const ADMIN_EMAILS = ["trimindai@trimindai.com", "90dalal@gmail.com"];
+const ADMIN_EMAILS = ["trimindai@trimindai.com", "90dalal@gmail.com", "test@trimindai.com"];
 
 function slugify(name: string): string {
   return name
@@ -118,34 +118,46 @@ export default function PublishPage() {
     setError(null);
 
     try {
-      // Draft → pay first (admins skip payment entirely).
+      // Draft → need payment or free-access grant first (admins skip entirely).
       if (portfolio.status === "draft" && !isAdmin) {
-        const payRes = await fetch("/api/myfatoorah/initiate", {
+        // Try free-access grant first — server checks FREE_ACCESS_EMAILS.
+        const freeRes = await fetch("/api/free-access", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            portfolioId: id,
-            locale,
-          }),
+          body: JSON.stringify({ portfolioId: id }),
         });
 
-        const payData = await payRes.json();
-        if (!payRes.ok) {
-          throw new Error(payData.error || "Failed to start payment");
-        }
+        if (freeRes.ok) {
+          // Free access granted — portfolio is now "paid" server-side.
+          // Fall through to HTML generation + publish.
+        } else if (freeRes.status === 403) {
+          // Not eligible for free access — redirect to MyFatoorah payment.
+          const payRes = await fetch("/api/myfatoorah/initiate", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ portfolioId: id, locale }),
+          });
 
-        // Reconciled: a completed payment already existed and the portfolio
-        // was just marked paid server-side — fall through to publish.
-        if (!payData.alreadyPaid) {
-          if (!payData.paymentUrl) {
-            throw new Error("Failed to start payment");
+          const payData = await payRes.json();
+          if (!payRes.ok) {
+            throw new Error(payData.error || "Failed to start payment");
           }
-          window.location.href = payData.paymentUrl;
-          return;
+
+          // Reconciled: a completed payment already existed and the portfolio
+          // was just marked paid server-side — fall through to publish.
+          if (!payData.alreadyPaid) {
+            if (!payData.paymentUrl) {
+              throw new Error("Failed to start payment");
+            }
+            window.location.href = payData.paymentUrl;
+            return;
+          }
+        } else {
+          throw new Error("Something went wrong. Please try again.");
         }
       }
 
-      // Paid → generate HTML and publish
+      // Paid/free-access → generate HTML and publish
       const portfolioData = toPortfolioData(portfolio, locale);
       const res = await fetch("/api/generate", {
         method: "POST",
@@ -153,7 +165,7 @@ export default function PublishPage() {
         body: JSON.stringify(portfolioData),
       });
 
-      if (!res.ok) throw new Error("Failed to generate portfolio HTML");
+      if (!res.ok) throw new Error("Failed to generate portfolio. Please try again.");
       const { html } = await res.json();
 
       await publishMutation({
@@ -164,11 +176,18 @@ export default function PublishPage() {
 
       setPublished(true);
     } catch (err) {
-      setError(
-        err instanceof Error
-          ? err.message
-          : "Publishing failed. Please try again."
-      );
+      const raw = err instanceof Error ? err.message : "";
+      // Strip Convex internal error prefixes — never expose mutation names.
+      const cleaned = raw.replace(/\[CONVEX [A-Z]\([^\)]*\)\]\s*/g, "").trim();
+      const userMessage =
+        cleaned === "Portfolio is not paid"
+          ? "Payment required. Please complete payment to publish."
+          : cleaned === "Unauthenticated"
+            ? "Your session expired. Please sign in again."
+            : cleaned && !cleaned.toLowerCase().includes("server error")
+              ? cleaned
+              : "Something went wrong while publishing. Please try again.";
+      setError(userMessage);
     } finally {
       setPublishing(false);
     }

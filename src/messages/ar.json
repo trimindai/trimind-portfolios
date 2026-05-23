@@ -151,7 +151,7 @@
   "publish": {
     "title": "انشر بورتفوليو",
     "chooseSlug": "اختر رابطك",
-    "slugPrefix": "trimindportfolios.com/p/",
+    "slugPrefix": "portfolio-trimind.com/p/",
     "available": "متاح!",
     "taken": "مستخدم مسبقًا",
     "payAndPublish": "ادفع وانشر",

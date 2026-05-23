@@ -28,15 +28,30 @@ export default async function LocaleLayout({
 
   return (
     <NextIntlClientProvider messages={messages}>
+      <LocaleHead locale={locale} isRTL={isRTL} />
       <div
         dir={isRTL ? "rtl" : "ltr"}
         className={cn(
-          isRTL ? notoKufi.variable : geist.variable,
-          "font-sans"
+          geist.variable,
+          notoKufi.variable,
+          isRTL ? "font-arabic" : "font-sans"
         )}
       >
         {children}
       </div>
     </NextIntlClientProvider>
+  );
+}
+
+function LocaleHead({ locale, isRTL }: { locale: string; isRTL: boolean }) {
+  // Set html lang/dir at runtime since root layout can't access [locale] param.
+  // locale is validated above — only "en" or "ar".
+  return (
+    <script
+      suppressHydrationWarning
+      dangerouslySetInnerHTML={{
+        __html: `document.documentElement.lang="${locale}";${isRTL ? 'document.documentElement.dir="rtl"' : 'document.documentElement.removeAttribute("dir")'}`,
+      }}
+    />
   );
 }

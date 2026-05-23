@@ -151,7 +151,7 @@
   "publish": {
     "title": "Publish Your Portfolio",
     "chooseSlug": "Choose your URL",
-    "slugPrefix": "trimindportfolios.com/p/",
+    "slugPrefix": "portfolio-trimind.com/p/",
     "available": "Available!",
     "taken": "Already taken",
     "payAndPublish": "Pay & Publish",
