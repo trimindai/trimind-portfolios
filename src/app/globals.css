@@ -132,6 +132,25 @@
 .land-glow-border::before { display: none; }
 .land-float { animation: none; }
 
+/* ─── CRO landing motion: CTA glow pulse, mockup float, mobile marquee ── */
+@keyframes land-cta-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 oklch(0.596 0.145 163 / 0.45); }
+  50% { box-shadow: 0 0 26px 5px oklch(0.596 0.145 163 / 0.35); }
+}
+.land-cta-glow { animation: land-cta-pulse 2s ease-in-out infinite; }
+
+@keyframes land-mockup-float {
+  0%, 100% { transform: translateY(-8px); }
+  50% { transform: translateY(8px); }
+}
+.land-mockup-float { animation: land-mockup-float 3s ease-in-out infinite; }
+
+@keyframes land-marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+.land-marquee { animation: land-marquee 20s linear infinite; }
+
 .land-stagger > * {
   opacity: 0;
   animation: land-fade-up 0.9s var(--ease-out-expo) both;
@@ -198,7 +217,7 @@ details > p {
   margin-top: 0;
 }
 details[open] > p {
-  max-height: 200px;
+  max-height: 480px;
   opacity: 1;
   margin-top: 0.75rem;
 }
@@ -207,6 +226,9 @@ details[open] > p {
   .land-stagger > *,
   .land-visual,
   .land-float,
+  .land-cta-glow,
+  .land-mockup-float,
+  .land-marquee,
   .land-btn-shimmer::after,
   .land-glow-border::before {
     animation: none !important;
