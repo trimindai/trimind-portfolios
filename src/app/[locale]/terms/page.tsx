@@ -1,4 +1,5 @@
 import { LegalLayout } from "@/components/LegalLayout";
+import Link from "next/link";
 
 type PageProps = { params: Promise<{ locale: string }> };
 
@@ -135,7 +136,7 @@ export default async function TermsPage({ params }: PageProps) {
         </li>
         <li>
           Refunds are governed by our separate{" "}
-          <a href="/refund">Refund Policy</a>.
+          <Link href="/refund">Refund Policy</Link>.
         </li>
       </ul>
 

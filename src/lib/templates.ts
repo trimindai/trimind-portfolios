@@ -23,6 +23,7 @@ export type TemplateManifest = {
 const DEMO_URLS: Record<string, string | undefined> = {
   corporate: "/demo/corporate",
   engineer: "/demo/engineer",
+  creative: "/demo/creative",
 };
 
 export type Template = TemplateManifest & {
@@ -44,7 +45,7 @@ export const TEMPLATES: Template[] = (
   ...m,
   demoUrl: DEMO_URLS[m.id],
   // Only corporate and engineer are live — others are coming soon.
-  available: m.id === "corporate" || m.id === "engineer",
+  available: m.id === "corporate" || m.id === "engineer" || m.id === "creative",
 }));
 
 export function getTemplate(id: string): Template | undefined {
