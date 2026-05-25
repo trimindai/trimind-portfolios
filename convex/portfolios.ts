@@ -1,6 +1,76 @@
 import { v } from "convex/values";
-import { mutation, query } from "./_generated/server";
-import { requireUser, requireOwner, requireAdminOrOwner, verifyServerSecret } from "./auth";
+import { mutation, query, QueryCtx, MutationCtx } from "./_generated/server";
+import { Doc, Id } from "./_generated/dataModel";
+import { requireUser, requireAdminOrOwner, verifyServerSecret } from "./auth";
+
+// ── Slug rules & reservation ───────────────────────────────────────────────
+// Public CVs live at portfolio-trimind.com/p/<slug>, so slugs are a single
+// global namespace and must be unique across all live portfolios.
+const SLUG_RE = /^[a-z0-9][a-z0-9-]{1,38}[a-z0-9]$/; // 3-40 chars, no leading/trailing hyphen
+const RESERVED_SLUGS = new Set([
+  "admin",
+  "api",
+  "dashboard",
+  "sign-in",
+  "sign-up",
+  "p",
+  "privacy",
+  "terms",
+  "refund",
+  "templates",
+]);
+// How long a draft may hold a slug before paying. After this, the name frees
+// up again so an abandoned checkout never blocks the name permanently.
+const SLUG_RESERVATION_TTL_MS = 30 * 60 * 1000; // 30 minutes
+
+/** Normalize arbitrary text into a candidate slug (mirrors the publish UI). */
+function normalizeSlug(raw: string): string {
+  return raw
+    .toLowerCase()
+    .trim()
+    .replace(/[^\w\s-]/g, "")
+    .replace(/[\s_]+/g, "-")
+    .replace(/-+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
+
+/** Throw a user-facing error if a slug is malformed or reserved. */
+function assertValidSlug(slug: string): void {
+  if (!SLUG_RE.test(slug)) {
+    throw new Error(
+      "Invalid slug. Use 3-40 lowercase letters, digits, or hyphens."
+    );
+  }
+  if (RESERVED_SLUGS.has(slug)) throw new Error("Slug is reserved");
+}
+
+/**
+ * Returns the portfolio currently HOLDING `slug` (blocking others), or null if
+ * the name is free. A name is held when a portfolio is paid/published, or when
+ * a draft reserved it within the TTL window. Expired draft holds count as free.
+ * `exceptId` lets a portfolio ignore its own hold (re-publish / re-reserve).
+ *
+ * Collects all rows for the slug (not `.first()`) so a stale expired draft can
+ * never mask a real paid/published holder of the same name.
+ */
+async function slugHolder(
+  ctx: QueryCtx | MutationCtx,
+  slug: string,
+  exceptId?: Id<"portfolios">
+): Promise<Doc<"portfolios"> | null> {
+  const rows = await ctx.db
+    .query("portfolios")
+    .withIndex("by_slug", (q) => q.eq("slug", slug))
+    .collect();
+  const now = Date.now();
+  for (const doc of rows) {
+    if (exceptId && doc._id === exceptId) continue;
+    if (doc.status === "paid" || doc.status === "published") return doc;
+    // Draft: held only while its reservation is still fresh.
+    if (now - (doc.slugReservedAt ?? 0) < SLUG_RESERVATION_TTL_MS) return doc;
+  }
+  return null;
+}
 
 const basicsValidator = v.object({
   fullName: v.string(),
@@ -289,11 +359,50 @@ export const isSlugTaken = query({
   args: { slug: v.string() },
   handler: async (ctx, { slug }) => {
     await requireUser(ctx);
-    const portfolio = await ctx.db
-      .query("portfolios")
-      .withIndex("by_slug", (q) => q.eq("slug", slug))
-      .first();
-    return portfolio ? { ownerPortfolioId: portfolio._id } : null;
+    // Expiry-aware: an expired draft reservation no longer counts as taken.
+    const holder = await slugHolder(ctx, slug);
+    return holder ? { ownerPortfolioId: holder._id } : null;
+  },
+});
+
+/**
+ * Authenticated: atomically claim a slug for the caller's portfolio BEFORE the
+ * slow steps (payment, HTML generation). This is the duplicate guard — Convex
+ * mutations are serializable, so the holder check + write happen as one unit.
+ * Called right before redirecting to payment so a user never pays for a name
+ * they then lose to someone else.
+ */
+export const reserveSlug = mutation({
+  args: { id: v.id("portfolios"), slug: v.string() },
+  handler: async (ctx, { id, slug }) => {
+    await requireAdminOrOwner(ctx, id);
+    assertValidSlug(slug);
+    const holder = await slugHolder(ctx, slug, id);
+    if (holder) throw new Error("Slug already taken");
+    await ctx.db.patch(id, { slug, slugReservedAt: Date.now() });
+  },
+});
+
+/**
+ * Authenticated: given a desired name, return up to 3 available alternatives.
+ * Used to offer one-click suggestions when the chosen name is taken.
+ */
+export const suggestSlugs = query({
+  args: { base: v.string() },
+  handler: async (ctx, { base }) => {
+    await requireUser(ctx);
+    const root = normalizeSlug(base) || "portfolio";
+    const candidates = [
+      ...[2, 3, 4, 5, 6, 7, 8, 9].map((n) => `${root}-${n}`),
+      ...["cv", "pro", "official", "portfolio"].map((s) => `${root}-${s}`),
+    ];
+    const out: string[] = [];
+    for (const c of candidates) {
+      if (!SLUG_RE.test(c) || RESERVED_SLUGS.has(c)) continue;
+      if (!(await slugHolder(ctx, c))) out.push(c);
+      if (out.length >= 3) break;
+    }
+    return out;
   },
 });
 
@@ -320,26 +429,7 @@ export const publish = mutation({
     // Auth + ownership (admins can publish any portfolio).
     const { portfolio, isAdmin } = await requireAdminOrOwner(ctx, id);
 
-    // Slug shape: lowercase letters, digits, hyphens, 3-40 chars.
-    if (!/^[a-z0-9][a-z0-9-]{1,38}[a-z0-9]$/.test(slug)) {
-      throw new Error(
-        "Invalid slug. Use 3-40 lowercase letters, digits, or hyphens."
-      );
-    }
-    // Reserved slugs that collide with app routes.
-    const reserved = new Set([
-      "admin",
-      "api",
-      "dashboard",
-      "sign-in",
-      "sign-up",
-      "p",
-      "privacy",
-      "terms",
-      "refund",
-      "templates",
-    ]);
-    if (reserved.has(slug)) throw new Error("Slug is reserved");
+    assertValidSlug(slug);
 
     // Payment gate: only paid (or already-published re-publish) may publish.
     // Admins can bypass the payment gate.
@@ -347,12 +437,8 @@ export const publish = mutation({
       throw new Error("Portfolio is not paid");
     }
 
-    const existing = await ctx.db
-      .query("portfolios")
-      .withIndex("by_slug", (q) => q.eq("slug", slug))
-      .first();
-
-    if (existing && existing._id !== id) {
+    // Final duplicate guard (expiry-aware, ignores this portfolio's own hold).
+    if (await slugHolder(ctx, slug, id)) {
       throw new Error("Slug already taken");
     }
 

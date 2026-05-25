@@ -54,6 +54,7 @@ export default function PublishPage() {
   const [copied, setCopied] = useState(false);
 
   const publishMutation = useMutation(api.portfolios.publish);
+  const reserveSlugMutation = useMutation(api.portfolios.reserveSlug);
 
   // Auto-generate slug from name
   useEffect(() => {
@@ -108,6 +109,13 @@ export default function PublishPage() {
     return slugTaken.ownerPortfolioId === id;
   }, [slugTaken, id, slug]);
 
+  // When the chosen name is taken, fetch a few available alternatives to offer
+  // as one-click chips. Skips the query while the name is free/loading.
+  const suggestions = useQuery(
+    api.portfolios.suggestSlugs,
+    slugAvailable === false && slug.length >= 2 ? { base: slug } : "skip"
+  );
+
   const portfolioUrl = `https://portfolio-trimind.com/p/${slug}`;
 
   const handlePublish = useCallback(async () => {
@@ -117,6 +125,23 @@ export default function PublishPage() {
     setError(null);
 
     try {
+      // Lock the name FIRST, before any slow step (payment, HTML generation),
+      // so no one else can grab it — and so the user never pays for a name they
+      // then lose. Already-published re-publishes keep their existing name.
+      if (portfolio.status !== "published") {
+        try {
+          await reserveSlugMutation({ id: id as Id<"portfolios">, slug });
+        } catch (e) {
+          const msg = e instanceof Error ? e.message : "";
+          if (msg.includes("taken")) {
+            setError(t("takenTryAnother"));
+            setPublishing(false);
+            return;
+          }
+          throw e;
+        }
+      }
+
       // Draft → need payment or free-access grant first (admins skip entirely).
       if (portfolio.status === "draft" && !isAdmin) {
         // Try free-access grant first — server checks FREE_ACCESS_EMAILS.
@@ -190,7 +215,7 @@ export default function PublishPage() {
     } finally {
       setPublishing(false);
     }
-  }, [portfolio, slugAvailable, locale, slug, id, publishMutation, isAdmin]);
+  }, [portfolio, slugAvailable, locale, slug, id, publishMutation, reserveSlugMutation, isAdmin, t]);
 
   const handleCopyUrl = useCallback(async () => {
     try {
@@ -336,6 +361,27 @@ export default function PublishPage() {
             )}
             {slugAvailable === false && (
               <p className="mt-2 text-sm text-red-500">{t("taken")}</p>
+            )}
+
+            {/* One-click available alternatives when the chosen name is taken */}
+            {slugAvailable === false && suggestions && suggestions.length > 0 && (
+              <div className="mt-3">
+                <p className="text-xs text-[var(--land-muted)]">
+                  {t("suggestionsLabel")}
+                </p>
+                <div className="mt-2 flex flex-wrap gap-2">
+                  {suggestions.map((s) => (
+                    <button
+                      key={s}
+                      type="button"
+                      onClick={() => setSlug(s)}
+                      className="rounded-full border border-[var(--land-border)] bg-[var(--land-surface-raised)] px-3 py-1 font-mono text-xs text-[var(--land-accent-hover)] transition-colors hover:border-[var(--land-accent)] hover:text-white"
+                    >
+                      {s}
+                    </button>
+                  ))}
+                </div>
+              </div>
             )}
 
             {/* URL preview */}

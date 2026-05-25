@@ -154,6 +154,8 @@
     "slugPrefix": "portfolio-trimind.com/p/",
     "available": "Available!",
     "taken": "Already taken",
+    "takenTryAnother": "That name was just taken. Pick another below.",
+    "suggestionsLabel": "Try one of these instead:",
     "payAndPublish": "Pay & Publish",
     "price": "5 KWD",
     "published": "Your portfolio is live!",

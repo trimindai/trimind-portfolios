@@ -154,6 +154,8 @@
     "slugPrefix": "portfolio-trimind.com/p/",
     "available": "متاح!",
     "taken": "مستخدم مسبقًا",
+    "takenTryAnother": "تم حجز هذا الاسم للتو. اختر اسمًا آخر بالأسفل.",
+    "suggestionsLabel": "جرّب أحد هذه الأسماء:",
     "payAndPublish": "ادفع وانشر",
     "price": "٥ د.ك",
     "published": "بورتفوليو منشور!",

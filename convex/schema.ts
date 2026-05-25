@@ -22,6 +22,9 @@ export default defineSchema({
     ),
     locale: v.union(v.literal("en"), v.literal("ar")),
     slug: v.optional(v.string()),
+    // When a draft reserved its slug (ms). Lets an unpaid hold expire so an
+    // abandoned checkout never squats a name forever. See SLUG_RESERVATION_TTL_MS.
+    slugReservedAt: v.optional(v.number()),
 
     basics: v.object({
       fullName: v.string(),
