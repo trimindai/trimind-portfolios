@@ -23,8 +23,9 @@ export default clerkMiddleware(async (auth, req) => {
 
   if (isProtectedRoute(req)) {
     const locale = req.nextUrl.pathname.split("/")[1] || "en";
+    const returnTo = req.nextUrl.pathname + req.nextUrl.search;
     await auth.protect({
-      unauthenticatedUrl: `${req.nextUrl.origin}/${locale}/sign-in`,
+      unauthenticatedUrl: `${req.nextUrl.origin}/${locale}/sign-in?redirect_url=${encodeURIComponent(returnTo)}`,
     });
   }
 
