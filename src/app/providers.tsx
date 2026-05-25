@@ -12,7 +12,11 @@ export function Providers({ children }: { children: ReactNode }) {
   if (!convex) return <>{children}</>;
 
   return (
-    <ClerkProvider>
+    <ClerkProvider
+      signInUrl="/en/sign-in"
+      signUpUrl="/en/sign-up"
+      afterSignOutUrl="/en"
+    >
       <ConvexProviderWithClerk client={convex} useAuth={useAuth}>
         {children}
       </ConvexProviderWithClerk>

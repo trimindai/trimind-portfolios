@@ -17,6 +17,10 @@ const nextConfig = {
       },
     ];
   },
+  images: {
+    // Serve modern formats; AVIF/WebP are far smaller than the source JPGs.
+    formats: ["image/avif", "image/webp"],
+  },
   webpack: (config) => {
     config.module.rules.push({
       test: /\.hbs$/,

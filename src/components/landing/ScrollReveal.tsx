@@ -16,7 +16,12 @@ export function ScrollReveal({
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    // Reveal immediately when motion is unwanted or IntersectionObserver is
+    // unavailable, so content is never left stuck at opacity:0.
+    if (
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches ||
+      typeof IntersectionObserver === "undefined"
+    ) {
       el.classList.add("revealed");
       return;
     }

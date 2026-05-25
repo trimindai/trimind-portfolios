@@ -1,12 +1,18 @@
-import { useTranslations, useLocale } from "next-intl";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
-import { AdminLink } from "@/components/AdminLink";
 import { ScrollReveal } from "@/components/landing/ScrollReveal";
 import Image from "next/image";
 
-export default function LandingPage() {
-  const tc = useTranslations("common");
-  const locale = useLocale();
+export default async function LandingPage({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  // Resolve locale from the route segment and pin it for next-intl so this
+  // page is rendered statically at build time instead of dynamic SSR per request.
+  const { locale } = await params;
+  setRequestLocale(locale);
+  const tc = await getTranslations("common");
   const isRTL = locale === "ar";
   const otherLocale = isRTL ? "en" : "ar";
   const otherLabel = isRTL ? "English" : "عربي";
@@ -66,7 +72,6 @@ export default function LandingPage() {
             {tc("appName")}
           </Link>
           <div className="flex items-center gap-4">
-            <AdminLink />
             <Link
               href="/"
               locale={otherLocale}
@@ -97,9 +102,10 @@ export default function LandingPage() {
           src="/landing/hero-bg.jpg"
           alt=""
           fill
+          sizes="100vw"
           className="object-cover object-center opacity-40 pointer-events-none"
           priority
-          quality={85}
+          quality={60}
         />
         {/* Background glows — vivid and dramatic */}
         <div
@@ -162,6 +168,26 @@ export default function LandingPage() {
                   </>
                 )}
               </p>
+              {/* Trust signals */}
+              <ul className="mt-6 flex flex-wrap gap-x-5 gap-y-2 text-xs text-[var(--land-body)]">
+                {(isRTL
+                  ? [
+                      "ضمان استرداد خلال ٧ أيام",
+                      "بدون اشتراك",
+                      "دفع آمن (K-NET، Apple Pay)",
+                    ]
+                  : [
+                      "7-day refund guarantee",
+                      "No subscription",
+                      "Secure payment (K-NET, Apple Pay)",
+                    ]
+                ).map((b) => (
+                  <li key={b} className="flex items-center gap-1.5">
+                    <span className="text-[var(--land-accent)]">✓</span>
+                    {b}
+                  </li>
+                ))}
+              </ul>
             </div>
 
             <div className="land-visual w-full max-w-xl">
@@ -189,6 +215,7 @@ export default function LandingPage() {
                     alt=""
                     width={1200}
                     height={800}
+                    sizes="(min-width: 1024px) 576px, 1px"
                     className="w-full h-auto"
                     quality={75}
                   />
@@ -208,6 +235,7 @@ export default function LandingPage() {
                     alt="Corporate portfolio template preview"
                     width={1200}
                     height={800}
+                    sizes="(min-width: 1024px) 576px, 1px"
                     className="w-full h-auto"
                     priority
                     quality={90}
@@ -221,6 +249,7 @@ export default function LandingPage() {
                   alt="Corporate portfolio template preview"
                   width={1200}
                   height={800}
+                  sizes="(min-width: 1024px) 1px, 100vw"
                   className="w-full h-auto"
                   priority
                   quality={85}
@@ -293,6 +322,7 @@ export default function LandingPage() {
                     alt="Corporate portfolio template"
                     width={1200}
                     height={800}
+                    sizes="(min-width: 1024px) 720px, 100vw"
                     className="w-full h-auto"
                     quality={90}
                   />
@@ -340,6 +370,7 @@ export default function LandingPage() {
                     alt="Engineer portfolio template"
                     width={1200}
                     height={800}
+                    sizes="(min-width: 1024px) 520px, 100vw"
                     className="w-full h-auto"
                     quality={90}
                   />
@@ -490,6 +521,7 @@ export default function LandingPage() {
                   alt="Multiple portfolio templates"
                   width={1200}
                   height={800}
+                  sizes="(min-width: 1024px) 600px, 100vw"
                   className="w-full h-auto"
                   quality={85}
                 />
@@ -687,8 +719,12 @@ export default function LandingPage() {
                 </Link>
                 <p className="mt-3 text-xs text-[var(--land-muted)]">
                   {isRTL
-                    ? "دفعة واحدة. بدون تجديد."
-                    : "One-time payment. No renewals."}
+                    ? "دفعة واحدة · ٤.٩٠٠ دك · بدون تجديد."
+                    : "One-time payment · 4.900 KD · No renewals."}
+                </p>
+                <p className="mt-2 flex items-center gap-1.5 text-xs text-[var(--land-body)]">
+                  <span className="text-[var(--land-accent)]">✓</span>
+                  {isRTL ? "ضمان استرداد خلال ٧ أيام" : "7-day refund guarantee"}
                 </p>
                 {/* Payment trust icons */}
                 <div className="mt-6 flex flex-wrap items-center gap-4">

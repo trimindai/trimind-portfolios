@@ -23,6 +23,14 @@ export default async function TemplatesPage({ params }: PageProps) {
     subtitle: isAr
       ? "قوالب مصممة لكل مهنة — اختر واحدًا وابدأ خلال دقائق."
       : "Profession-specific templates — pick one and launch in minutes.",
+    priceLine: isAr
+      ? `رسوم لمرة واحدة ${priceLabel} (~١٦ دولار) لكل بورتفوليو.`
+      : `One-time fee of ${priceLabel} (~$16 USD) per portfolio.`,
+    refund: isAr ? "ضمان استرداد خلال ٧ أيام" : "7-day refund guarantee",
+    noSub: isAr ? "بدون اشتراك" : "No subscription",
+    securePay: isAr ? "دفع آمن (K-NET، Apple Pay)" : "Secure payment (K-NET, Apple Pay)",
+    usd: "~$16 USD",
+    stickyOneTime: isAr ? "دفعة واحدة" : "One-time",
     available: isAr ? "متاح الآن" : "Available now",
     soon: isAr ? "قريبًا" : "Coming soon",
     preview: isAr ? "معاينة مباشرة" : "Live preview",
@@ -34,7 +42,9 @@ export default async function TemplatesPage({ params }: PageProps) {
     step1: isAr ? "اختر القالب" : "Pick a template",
     step2: isAr ? "أضف بياناتك" : "Fill in your details",
     step3: isAr ? "انشر بضغطة" : "Publish with one click",
-    oneTime: isAr ? "دفعة واحدة · بدون اشتراك" : "One-time payment · No subscription",
+    oneTime: isAr
+      ? `دفعة واحدة · ${priceLabel} · بدون اشتراك`
+      : `One-time payment · ${priceLabel} · No subscription`,
     comingSoonTitle: isAr ? "قوالب قادمة قريبًا" : "More templates coming soon",
     notifyHint: isAr
       ? "نعمل على هذه القوالب — تابعنا للتحديثات."
@@ -60,8 +70,18 @@ export default async function TemplatesPage({ params }: PageProps) {
       <header className="px-6 py-16 text-center">
         <h1 className="text-4xl font-bold sm:text-5xl">{t.title}</h1>
         <p className="mt-4 text-lg text-[var(--land-body)] max-w-2xl mx-auto">
-          {t.subtitle}
+          {t.subtitle}{" "}
+          <span className="text-[var(--land-bright)]">{t.priceLine}</span>
         </p>
+        {/* Trust signals */}
+        <ul className="mt-6 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm text-[var(--land-body)]">
+          {[t.refund, t.noSub, t.securePay].map((badge) => (
+            <li key={badge} className="flex items-center gap-1.5">
+              <span className="text-[var(--land-accent)]">✓</span>
+              {badge}
+            </li>
+          ))}
+        </ul>
       </header>
 
       {/* ── How it works (compact) ────────────── */}
@@ -273,6 +293,27 @@ export default async function TemplatesPage({ params }: PageProps) {
           </Link>
         </div>
       </main>
+
+      {/* Sticky purchase bar */}
+      <div className="fixed inset-x-0 bottom-0 z-40 border-t border-[var(--land-border)] bg-[var(--land-bg)]/95 backdrop-blur-md">
+        <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-6 py-3">
+          <div className="flex items-baseline gap-2">
+            <span className="text-lg font-bold text-[var(--land-accent)]">
+              {priceLabel}
+            </span>
+            <span className="text-sm text-[var(--land-muted)]">{t.usd}</span>
+            <span className="hidden text-xs text-[var(--land-muted)] sm:inline">
+              · {t.stickyOneTime}
+            </span>
+          </div>
+          <Link
+            href="/dashboard/new"
+            className="rounded-lg bg-[var(--land-accent)] px-6 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[var(--land-accent-hover)]"
+          >
+            {t.useNav}
+          </Link>
+        </div>
+      </div>
     </div>
   );
 }

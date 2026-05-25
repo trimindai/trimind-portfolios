@@ -37,3 +37,6 @@ next-env.d.ts
 
 .vercel
 .claude/
+
+# graphify generated knowledge graph
+graphify-out/
