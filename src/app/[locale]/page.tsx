@@ -144,9 +144,23 @@ export default function LandingPage() {
                 </Link>
               </div>
               <p className="mt-5 text-sm text-[var(--land-muted)]">
-                {isRTL
-                  ? "بدون اشتراك. دفعة واحدة فقط."
-                  : "No subscription. One-time payment."}
+                {isRTL ? (
+                  <>
+                    دفعة واحدة{" "}
+                    <span className="font-semibold text-[var(--land-accent)]">
+                      ٤.٩٠٠ دك
+                    </span>{" "}
+                    (~١٦ دولار). بدون اشتراك. بدون تجديد.
+                  </>
+                ) : (
+                  <>
+                    One-time payment of{" "}
+                    <span className="font-semibold text-[var(--land-accent)]">
+                      4.900 KD
+                    </span>{" "}
+                    (~$16 USD). No subscription. No renewals.
+                  </>
+                )}
               </p>
             </div>
 
