@@ -26,7 +26,6 @@ export default async function TemplatesPage({ params }: PageProps) {
     priceLine: isAr
       ? `رسوم لمرة واحدة ${priceLabel} (~١٦ دولار) لكل بورتفوليو.`
       : `One-time fee of ${priceLabel} (~$16 USD) per portfolio.`,
-    refund: isAr ? "ضمان استرداد خلال ٧ أيام" : "7-day refund guarantee",
     noSub: isAr ? "بدون اشتراك" : "No subscription",
     securePay: isAr ? "دفع آمن (K-NET، Apple Pay)" : "Secure payment (K-NET, Apple Pay)",
     usd: "~$16 USD",
@@ -75,7 +74,7 @@ export default async function TemplatesPage({ params }: PageProps) {
         </p>
         {/* Trust signals */}
         <ul className="mt-6 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm text-[var(--land-body)]">
-          {[t.refund, t.noSub, t.securePay].map((badge) => (
+          {[t.noSub, t.securePay].map((badge) => (
             <li key={badge} className="flex items-center gap-1.5">
               <span className="text-[var(--land-accent)]">✓</span>
               {badge}

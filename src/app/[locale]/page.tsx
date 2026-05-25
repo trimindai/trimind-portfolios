@@ -171,16 +171,8 @@ export default async function LandingPage({
               {/* Trust signals */}
               <ul className="mt-6 flex flex-wrap gap-x-5 gap-y-2 text-xs text-[var(--land-body)]">
                 {(isRTL
-                  ? [
-                      "ضمان استرداد خلال ٧ أيام",
-                      "بدون اشتراك",
-                      "دفع آمن (K-NET، Apple Pay)",
-                    ]
-                  : [
-                      "7-day refund guarantee",
-                      "No subscription",
-                      "Secure payment (K-NET, Apple Pay)",
-                    ]
+                  ? ["بدون اشتراك", "دفع آمن (K-NET، Apple Pay)"]
+                  : ["No subscription", "Secure payment (K-NET, Apple Pay)"]
                 ).map((b) => (
                   <li key={b} className="flex items-center gap-1.5">
                     <span className="text-[var(--land-accent)]">✓</span>
@@ -721,10 +713,6 @@ export default async function LandingPage({
                   {isRTL
                     ? "دفعة واحدة · ٤.٩٠٠ دك · بدون تجديد."
                     : "One-time payment · 4.900 KD · No renewals."}
-                </p>
-                <p className="mt-2 flex items-center gap-1.5 text-xs text-[var(--land-body)]">
-                  <span className="text-[var(--land-accent)]">✓</span>
-                  {isRTL ? "ضمان استرداد خلال ٧ أيام" : "7-day refund guarantee"}
                 </p>
                 {/* Payment trust icons */}
                 <div className="mt-6 flex flex-wrap items-center gap-4">
