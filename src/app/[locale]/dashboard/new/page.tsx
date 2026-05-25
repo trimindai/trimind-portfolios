@@ -3,7 +3,7 @@
 import { useMutation } from "convex/react";
 import { api } from "@convex/_generated/api";
 import { useUser } from "@clerk/nextjs";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useSearchParams, useParams } from "next/navigation";
 
 export default function NewPortfolioPage() {
@@ -16,9 +16,11 @@ export default function NewPortfolioPage() {
   const createPortfolio = useMutation(api.portfolios.create);
   const [error, setError] = useState("");
   const [details, setDetails] = useState("");
+  const initiatedRef = useRef(false);
 
   useEffect(() => {
-    if (!isLoaded || !user) return;
+    if (!isLoaded || !user || initiatedRef.current) return;
+    initiatedRef.current = true;
 
     async function initiate() {
       try {
@@ -53,8 +55,7 @@ export default function NewPortfolioPage() {
     }
 
     initiate();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isLoaded, user]);
+  }, [isLoaded, user, createPortfolio, searchParams, locale]);
 
   if (error) {
     return (

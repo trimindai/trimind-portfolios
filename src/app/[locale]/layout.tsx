@@ -50,7 +50,7 @@ function LocaleHead({ locale, isRTL }: { locale: string; isRTL: boolean }) {
     <script
       suppressHydrationWarning
       dangerouslySetInnerHTML={{
-        __html: `document.documentElement.lang="${locale}";${isRTL ? 'document.documentElement.dir="rtl"' : 'document.documentElement.removeAttribute("dir")'}`,
+        __html: `document.documentElement.lang=${JSON.stringify(locale)};${isRTL ? 'document.documentElement.dir="rtl"' : 'document.documentElement.removeAttribute("dir")'}`,
       }}
     />
   );

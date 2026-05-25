@@ -1,19 +1,11 @@
 import Handlebars from "handlebars";
-// @ts-ignore - webpack asset/source loader
 import corporateTemplateSource from "@/templates/corporate/template.hbs";
-// @ts-ignore - webpack asset/source loader
 import engineerTemplateSource from "@/templates/engineer/template.hbs";
-// @ts-ignore - webpack asset/source loader
 import engineerProjectDetailSource from "@/templates/engineer/project-detail.hbs";
-// @ts-ignore - webpack asset/source loader
 import creativeTemplateSource from "@/templates/creative/template.hbs";
-// @ts-ignore - webpack asset/source loader
 import creatorTemplateSource from "@/templates/creator/template.hbs";
-// @ts-ignore - webpack asset/source loader
 import developerTemplateSource from "@/templates/developer/template.hbs";
-// @ts-ignore - webpack asset/source loader
 import medicalTemplateSource from "@/templates/medical/template.hbs";
-// @ts-ignore - webpack asset/source loader
 import educatorTemplateSource from "@/templates/educator/template.hbs";
 
 export interface PortfolioData {

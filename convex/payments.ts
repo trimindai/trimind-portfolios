@@ -17,6 +17,13 @@ export const create = mutation({
   },
   handler: async (ctx, { serverSecret, ...args }) => {
     verifyServerSecret(serverSecret);
+    // Cross-check userId against portfolio owner
+    if (args.userId) {
+      const portfolio = await ctx.db.get(args.portfolioId);
+      if (portfolio?.userId && portfolio.userId !== args.userId) {
+        throw new Error("userId does not match portfolio owner");
+      }
+    }
     return await ctx.db.insert("payments", {
       ...args,
       status: "pending",
@@ -34,6 +41,11 @@ export const markCompleted = mutation({
   },
   handler: async (ctx, { id, myfatoorahInvoiceId, serverSecret }) => {
     verifyServerSecret(serverSecret);
+    const payment = await ctx.db.get(id);
+    if (!payment) throw new Error("Payment not found");
+    if (payment.myfatoorahInvoiceId && payment.myfatoorahInvoiceId !== myfatoorahInvoiceId) {
+      throw new Error("Invoice ID mismatch");
+    }
     await ctx.db.patch(id, {
       status: "completed",
       myfatoorahInvoiceId,

@@ -2,7 +2,7 @@
 
 import { useMutation } from "convex/react";
 import { api } from "@convex/_generated/api";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 
 interface PhotoUploadProps {
   value: string;
@@ -14,6 +14,14 @@ export function PhotoUpload({ value, onChange }: PhotoUploadProps) {
   const [uploading, setUploading] = useState(false);
   const [preview, setPreview] = useState<string>(value || "");
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const blobUrlRef = useRef<string | null>(null);
+
+  // Revoke blob URL on unmount to prevent memory leak
+  useEffect(() => {
+    return () => {
+      if (blobUrlRef.current) URL.revokeObjectURL(blobUrlRef.current);
+    };
+  }, []);
 
   const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -29,8 +37,12 @@ export function PhotoUpload({ value, onChange }: PhotoUploadProps) {
       return;
     }
 
+    // Revoke any previous blob URL before creating a new one
+    if (blobUrlRef.current) URL.revokeObjectURL(blobUrlRef.current);
+
     // Show local preview immediately
     const localUrl = URL.createObjectURL(file);
+    blobUrlRef.current = localUrl;
     setPreview(localUrl);
     setUploading(true);
 
@@ -39,13 +51,11 @@ export function PhotoUpload({ value, onChange }: PhotoUploadProps) {
       const uploadUrl = await generateUploadUrl();
 
       // Upload the file
-      const result = await fetch(uploadUrl, {
+      await fetch(uploadUrl, {
         method: "POST",
         headers: { "Content-Type": file.type },
         body: file,
       });
-
-      const { storageId } = await result.json();
 
       // Convert to base64 for reliable storage in the portfolio data
       // (Convex storage URLs require auth, base64 works everywhere)
@@ -54,16 +64,18 @@ export function PhotoUpload({ value, onChange }: PhotoUploadProps) {
         const base64 = reader.result as string;
         onChange(base64);
         setPreview(base64);
+        if (blobUrlRef.current) { URL.revokeObjectURL(blobUrlRef.current); blobUrlRef.current = null; }
         setUploading(false);
       };
       reader.readAsDataURL(file);
-    } catch (err) {
+    } catch {
       // Fallback to base64 directly
       const reader = new FileReader();
       reader.onload = () => {
         const base64 = reader.result as string;
         onChange(base64);
         setPreview(base64);
+        if (blobUrlRef.current) { URL.revokeObjectURL(blobUrlRef.current); blobUrlRef.current = null; }
         setUploading(false);
       };
       reader.readAsDataURL(file);
@@ -71,6 +83,7 @@ export function PhotoUpload({ value, onChange }: PhotoUploadProps) {
   };
 
   const handleRemove = () => {
+    if (blobUrlRef.current) { URL.revokeObjectURL(blobUrlRef.current); blobUrlRef.current = null; }
     onChange("");
     setPreview("");
     if (fileInputRef.current) fileInputRef.current.value = "";

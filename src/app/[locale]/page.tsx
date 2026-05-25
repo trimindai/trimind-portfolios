@@ -623,18 +623,18 @@ export default function LandingPage() {
                   <>
                     كل شيء مشمول مقابل{" "}
                     <span className="font-semibold text-[var(--land-bright)]">
-                      ٤.٩٩٠ دك
+                      ١.٥٠٠ دك
                     </span>{" "}
-                    للبورتفوليو الواحد (~١٦ دولار). دفعة واحدة. بدون اشتراكات.
+                    للبورتفوليو الواحد (~٥ دولار). دفعة واحدة. بدون اشتراكات.
                     بدون تجديد.
                   </>
                 ) : (
                   <>
                     Everything included for{" "}
                     <span className="font-semibold text-[var(--land-bright)]">
-                      4.990 KD
+                      1.500 KD
                     </span>{" "}
-                    per portfolio (~$16 USD). One-time payment. No subscriptions.
+                    per portfolio (~$5 USD). One-time payment. No subscriptions.
                     No renewals.
                   </>
                 )}
@@ -703,12 +703,12 @@ export default function LandingPage() {
                 className="font-extrabold tracking-tighter"
                 style={{ fontSize: "clamp(3rem, 5vw, 4.5rem)" }}
               >
-                <span className="text-[var(--land-accent)]">4.990</span>{" "}
+                <span className="text-[var(--land-accent)]">1.500</span>{" "}
                 <span className="text-2xl font-medium text-[var(--land-muted)]">
                   KD
                 </span>
               </div>
-              <p className="text-sm text-[var(--land-muted)] mt-2">~$16 USD</p>
+              <p className="text-sm text-[var(--land-muted)] mt-2">~$5 USD</p>
               <p className="text-xs text-[var(--land-accent)] mt-1 font-medium">
                 {isRTL ? "دفعة واحدة فقط" : "one-time, forever"}
               </p>

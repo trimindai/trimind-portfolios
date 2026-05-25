@@ -2,8 +2,7 @@
 
 import { useUser } from "@clerk/nextjs";
 import { Link } from "@/i18n/navigation";
-
-const ADMIN_EMAILS = ["trimindai@trimindai.com", "90dalal@gmail.com", "test@trimindai.com"];
+import { ADMIN_EMAILS } from "@/lib/admin";
 
 export function AdminLink() {
   const { user, isLoaded } = useUser();

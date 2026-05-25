@@ -14,7 +14,6 @@ export default function EditPage({
 }) {
   const { id } = use(params);
   const routeParams = useParams();
-  const locale = (routeParams.locale as string) || "en";
   const portfolio = useQuery(api.portfolios.get, {
     id: id as Id<"portfolios">,
   });

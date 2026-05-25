@@ -6,8 +6,7 @@ import { api } from "@convex/_generated/api";
 import { Id } from "@convex/_generated/dataModel";
 import { useState, Component, type ReactNode } from "react";
 import { Link } from "@/i18n/navigation";
-
-const ADMIN_EMAILS = ["trimindai@trimindai.com", "90dalal@gmail.com", "test@trimindai.com"];
+import { ADMIN_EMAILS } from "@/lib/admin";
 
 type Tab = "overview" | "users" | "portfolios" | "payments";
 

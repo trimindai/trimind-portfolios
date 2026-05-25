@@ -278,5 +278,6 @@ export default defineSchema({
     createdAt: v.number(),
   })
     .index("by_portfolio", ["portfolioId"])
-    .index("by_invoice", ["myfatoorahInvoiceId"]),
+    .index("by_invoice", ["myfatoorahInvoiceId"])
+    .index("by_user", ["userId"]),
 });

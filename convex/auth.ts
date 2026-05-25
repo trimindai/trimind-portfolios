@@ -60,16 +60,26 @@ export async function requireAdminOrOwner(
   const portfolio = await ctx.db.get(portfolioId);
   if (!portfolio) throw new Error("Portfolio not found");
 
-  const allowed = (process.env.ADMIN_EMAILS || "")
-    .split(",")
-    .map((e) => e.trim().toLowerCase())
-    .filter(Boolean);
-  const isAdmin = allowed.includes(user.email.toLowerCase());
+  const isAdmin = isAdminEmail(user.email);
 
   if (!isAdmin && portfolio.userId !== user._id) {
     throw new Error("Forbidden: not portfolio owner");
   }
   return { user, portfolio, isAdmin };
+}
+
+/** Parse ADMIN_EMAILS env var into a lowercase list. */
+function getAdminEmails(): string[] {
+  return (process.env.ADMIN_EMAILS || "")
+    .split(",")
+    .map((e) => e.trim().toLowerCase())
+    .filter(Boolean);
+}
+
+/** Check if an email is in the admin allowlist. */
+export function isAdminEmail(email: string): boolean {
+  const allowed = getAdminEmails();
+  return allowed.length > 0 && allowed.includes(email.toLowerCase());
 }
 
 /**
@@ -80,10 +90,7 @@ export async function requireAdmin(
   ctx: QueryCtx | MutationCtx
 ): Promise<Doc<"users">> {
   const user = await requireUser(ctx);
-  const allowed = (process.env.ADMIN_EMAILS || "")
-    .split(",")
-    .map((e) => e.trim().toLowerCase())
-    .filter(Boolean);
+  const allowed = getAdminEmails();
   if (allowed.length === 0) {
     throw new Error(
       "Admin access denied: ADMIN_EMAILS env var not configured in Convex"
@@ -103,12 +110,22 @@ export async function requireAdmin(
  *   - Convex dashboard → Environment Variables
  *   - Vercel → Environment Variables
  */
+/** Constant-time string comparison to prevent timing attacks. */
+function constantTimeEqual(a: string, b: string): boolean {
+  if (a.length !== b.length) return false;
+  let result = 0;
+  for (let i = 0; i < a.length; i++) {
+    result |= a.charCodeAt(i) ^ b.charCodeAt(i);
+  }
+  return result === 0;
+}
+
 export function verifyServerSecret(secret: string | undefined): void {
   const expected = process.env.INTERNAL_API_SECRET;
   if (!expected) {
     throw new Error("INTERNAL_API_SECRET not configured in Convex");
   }
-  if (!secret || secret !== expected) {
+  if (!secret || !constantTimeEqual(secret, expected)) {
     throw new Error("Forbidden: invalid server secret");
   }
 }

@@ -28,8 +28,7 @@ export default function DashboardLayout({
         setSynced(true);
       });
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isLoaded, user]);
+  }, [isLoaded, user, upsertUser]);
 
   // Fall back to currentUser query result if upsert hasn't completed yet.
   const userId = convexUserId ?? currentUser?._id ?? null;

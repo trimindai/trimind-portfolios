@@ -206,6 +206,15 @@ export const update = mutation({
   handler: async (ctx, { id, ...fields }) => {
     // Auth + ownership: caller must own this portfolio (admins can edit any).
     await requireAdminOrOwner(ctx, id);
+    // Sanitize project slugs to prevent path-traversal-style strings
+    if (fields.projects) {
+      const slugPattern = /^[a-z0-9][a-z0-9-]*[a-z0-9]$/;
+      for (const project of fields.projects) {
+        if (project.slug && !slugPattern.test(project.slug)) {
+          throw new Error(`Invalid project slug: "${project.slug}". Use lowercase letters, digits, or hyphens.`);
+        }
+      }
+    }
     await ctx.db.patch(id, {
       ...fields,
       lastEditedAt: Date.now(),
@@ -312,7 +321,7 @@ export const publish = mutation({
     const { portfolio, isAdmin } = await requireAdminOrOwner(ctx, id);
 
     // Slug shape: lowercase letters, digits, hyphens, 3-40 chars.
-    if (!/^[a-z0-9](?:[a-z0-9-]{1,38}[a-z0-9])?$/.test(slug)) {
+    if (!/^[a-z0-9][a-z0-9-]{1,38}[a-z0-9]$/.test(slug)) {
       throw new Error(
         "Invalid slug. Use 3-40 lowercase letters, digits, or hyphens."
       );

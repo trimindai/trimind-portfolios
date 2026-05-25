@@ -1,6 +1,6 @@
 "use client";
 
-import { ReactNode } from "react";
+import { ReactNode, useRef } from "react";
 
 interface DynamicListProps<T> {
   items: T[];
@@ -8,7 +8,8 @@ interface DynamicListProps<T> {
   renderItem: (
     item: T,
     index: number,
-    updateItem: (updates: Partial<T>) => void
+    updateItem: (updates: Partial<T>) => void,
+    stableKey: string
   ) => ReactNode;
   createEmpty: () => T;
   maxItems?: number;
@@ -23,13 +24,27 @@ export function DynamicList<T>({
   maxItems = 10,
   addLabel = "Add Item",
 }: DynamicListProps<T>) {
+  const keysRef = useRef<string[]>([]);
+  const counterRef = useRef(0);
+
+  // Grow keys for new items
+  while (keysRef.current.length < items.length) {
+    keysRef.current.push(`dl-${counterRef.current++}`);
+  }
+  // Trim if items were removed externally
+  if (keysRef.current.length > items.length) {
+    keysRef.current.length = items.length;
+  }
+
   const addItem = () => {
     if (items.length < maxItems) {
+      keysRef.current.push(`dl-${counterRef.current++}`);
       onChange([...items, createEmpty()]);
     }
   };
 
   const removeItem = (index: number) => {
+    keysRef.current.splice(index, 1);
     onChange(items.filter((_, i) => i !== index));
   };
 
@@ -43,7 +58,7 @@ export function DynamicList<T>({
     <div className="space-y-3">
       {items.map((item, index) => (
         <div
-          key={index}
+          key={keysRef.current[index]}
           className="relative bg-[var(--land-surface-raised)]/50 border border-[var(--land-border)] rounded-lg p-4"
         >
           <button
@@ -53,7 +68,7 @@ export function DynamicList<T>({
           >
             Remove
           </button>
-          {renderItem(item, index, (updates) => updateItem(index, updates))}
+          {renderItem(item, index, (updates) => updateItem(index, updates), keysRef.current[index])}
         </div>
       ))}
       {items.length < maxItems && (

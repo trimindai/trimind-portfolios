@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState, forwardRef, useImperativeHandle } from "react";
+import { useEffect, useRef, useState, forwardRef, useImperativeHandle, useCallback } from "react";
 import { Loader2 } from "lucide-react";
 
 interface PreviewFrameProps {
@@ -33,7 +33,13 @@ const PreviewFrame = forwardRef<PreviewFrameHandle, PreviewFrameProps>(
       },
     }));
 
+    const lastDataRef = useRef<string>("");
+
     useEffect(() => {
+      const dataJson = JSON.stringify(portfolioData);
+      if (dataJson === lastDataRef.current) return;
+      lastDataRef.current = dataJson;
+
       let cancelled = false;
 
       async function generate() {

@@ -45,7 +45,7 @@ function slugify(text: string): string {
 
 export function EngineerProjectsStep({ data, onChange }: EngineerProjectsStepProps) {
   const projects = data.projects || [];
-  const [expandedProject, setExpandedProject] = useState<number | null>(null);
+  const [expandedKey, setExpandedKey] = useState<string | null>(null);
 
   return (
     <div className="space-y-6">
@@ -79,8 +79,8 @@ export function EngineerProjectsStep({ data, onChange }: EngineerProjectsStepPro
         })}
         maxItems={8}
         addLabel="Add Project"
-        renderItem={(item, index, update) => {
-          const isExpanded = expandedProject === index;
+        renderItem={(item, index, update, stableKey) => {
+          const isExpanded = expandedKey === stableKey;
 
           return (
             <div className="space-y-4 pr-16">
@@ -89,7 +89,7 @@ export function EngineerProjectsStep({ data, onChange }: EngineerProjectsStepPro
                 <div className="flex items-center gap-3">
                   <button
                     type="button"
-                    onClick={() => setExpandedProject(isExpanded ? null : index)}
+                    onClick={() => setExpandedKey(isExpanded ? null : stableKey)}
                     className="text-xs text-[var(--land-accent-hover)] hover:text-[var(--land-accent)] transition-colors"
                   >
                     {isExpanded ? "Collapse" : "Expand details"}

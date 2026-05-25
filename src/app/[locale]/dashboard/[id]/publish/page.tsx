@@ -18,8 +18,7 @@ import {
 } from "lucide-react";
 import { useUser } from "@clerk/nextjs";
 import { toPortfolioData } from "@/lib/portfolio-data";
-
-const ADMIN_EMAILS = ["trimindai@trimindai.com", "90dalal@gmail.com", "test@trimindai.com"];
+import { ADMIN_EMAILS } from "@/lib/admin";
 
 function slugify(name: string): string {
   return name

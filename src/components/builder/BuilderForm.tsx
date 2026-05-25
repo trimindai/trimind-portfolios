@@ -88,9 +88,9 @@ export function BuilderForm({ portfolioId, initialData }: BuilderFormProps) {
     }
   };
 
-  const goPrev = () => {
+  const goPrev = async () => {
     if (currentStep > 0) {
-      save();
+      await save();
       setCurrentStep(currentStep - 1);
     }
   };
@@ -111,7 +111,7 @@ export function BuilderForm({ portfolioId, initialData }: BuilderFormProps) {
           {steps.map((step, i) => (
             <button
               key={i}
-              onClick={() => { save(); setCurrentStep(i); }}
+              onClick={async () => { await save(); setCurrentStep(i); }}
               className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm transition-all duration-300 ${
                 i === currentStep
                   ? "bg-[var(--land-accent)] text-white ring-1 ring-[var(--land-accent)]/20"
@@ -166,13 +166,12 @@ export function BuilderForm({ portfolioId, initialData }: BuilderFormProps) {
             Next &rarr;
           </button>
         ) : (
-          <a
-            href={`/${locale}/dashboard/${portfolioId}/preview`}
-            onClick={() => save()}
+          <button
+            onClick={async () => { await save(); window.location.href = `/${locale}/dashboard/${portfolioId}/preview`; }}
             className="min-w-[120px] rounded-lg bg-[var(--land-accent)] px-6 py-2.5 text-sm font-semibold text-white hover:bg-[var(--land-accent-hover)] transition-colors active:scale-[0.98] text-center"
           >
             Preview &rarr;
-          </a>
+          </button>
         )}
       </div>
     </div>
