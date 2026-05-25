@@ -61,10 +61,10 @@ export default function DashboardPage() {
           </p>
           <div className="rounded-2xl border border-[var(--land-accent)]/30 bg-[var(--land-surface)]/80 p-8 max-w-sm w-full text-center">
             <div className="text-5xl font-bold text-[var(--land-accent-hover)]">
-              1.500 KD
+              4.900 KD
             </div>
             <div className="mt-1 text-[var(--land-body)]">
-              One-time payment (~$5 USD)
+              One-time payment (~$16 USD)
             </div>
             <ul className="mt-6 space-y-2 text-start text-sm text-[var(--land-bright)]">
               <li className="flex items-center gap-2">
@@ -88,7 +88,7 @@ export default function DashboardPage() {
               onClick={handleNewPortfolio}
               className="mt-6 w-full rounded-lg bg-[var(--land-accent)] py-3 font-semibold text-white hover:bg-[var(--land-accent-hover)] transition-colors"
             >
-              Get Started — 1.500 KD
+              Get Started — 4.900 KD
             </button>
           </div>
         </div>

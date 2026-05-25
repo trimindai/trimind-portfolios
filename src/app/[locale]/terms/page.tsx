@@ -99,7 +99,7 @@ export default async function TermsPage({ params }: PageProps) {
       <h2>The service</h2>
       <p>
         Portfolio Pro lets you create and publish a professional portfolio for
-        a one-time fee of 1.500 KWD per portfolio.
+        a one-time fee of 4.900 KWD per portfolio.
       </p>
 
       <h2>Your account</h2>
@@ -128,7 +128,7 @@ export default async function TermsPage({ params }: PageProps) {
       <h2>Payment</h2>
       <ul>
         <li>
-          Fee: 1.500 KWD per portfolio, charged once at the time of publish.
+          Fee: 4.900 KWD per portfolio, charged once at the time of publish.
         </li>
         <li>
           Payments are processed by MyFatoorah; their terms apply to the
