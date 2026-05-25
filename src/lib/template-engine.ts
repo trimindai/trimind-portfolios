@@ -3,6 +3,7 @@ import corporateTemplateSource from "@/templates/corporate/template.hbs";
 import engineerTemplateSource from "@/templates/engineer/template.hbs";
 import engineerProjectDetailSource from "@/templates/engineer/project-detail.hbs";
 import creativeTemplateSource from "@/templates/creative/template.hbs";
+import creativeProjectDetailSource from "@/templates/creative/project-detail.hbs";
 import creatorTemplateSource from "@/templates/creator/template.hbs";
 import developerTemplateSource from "@/templates/developer/template.hbs";
 import medicalTemplateSource from "@/templates/medical/template.hbs";
@@ -137,10 +138,20 @@ Handlebars.registerHelper("json", function (context: any) {
   return new Handlebars.SafeString(JSON.stringify(context || {}));
 });
 
+Handlebars.registerHelper("initials", function (name: string) {
+  if (!name) return "";
+  const parts = String(name).trim().split(/\s+/).filter(Boolean);
+  if (!parts.length) return "";
+  const first = parts[0][0] || "";
+  const last = parts.length > 1 ? parts[parts.length - 1][0] : "";
+  return (first + last).toUpperCase();
+});
+
 let compiledCorporateTemplate: Handlebars.TemplateDelegate | null = null;
 let compiledEngineerTemplate: Handlebars.TemplateDelegate | null = null;
 let compiledEngineerProjectDetail: Handlebars.TemplateDelegate | null = null;
 let compiledCreativeTemplate: Handlebars.TemplateDelegate | null = null;
+let compiledCreativeProjectDetail: Handlebars.TemplateDelegate | null = null;
 let compiledCreatorTemplate: Handlebars.TemplateDelegate | null = null;
 let compiledDeveloperTemplate: Handlebars.TemplateDelegate | null = null;
 let compiledMedicalTemplate: Handlebars.TemplateDelegate | null = null;
@@ -238,6 +249,38 @@ export function renderEngineerProjectDetail(
 }
 
 /**
+ * Render a project detail page (/p/<portfolio>/projects/<slug>) in the Creative
+ * "My Eye Brain" style — cover image with zoom lightbox + plus-shape prev/next.
+ * Prev/next walk the slugged projects in array order (both directions).
+ */
+export function renderCreativeProjectDetail(
+  data: PortfolioData & { contentAr?: any; slug?: string },
+  projectSlug: string
+): string | null {
+  if (!data.projects?.length) return null;
+  const slugged = data.projects.filter((p) => p.slug);
+  const idx = slugged.findIndex((p) => p.slug === projectSlug);
+  if (idx === -1) return null;
+
+  const prevProject = idx > 0 ? slugged[idx - 1] : undefined;
+  const nextProject = idx < slugged.length - 1 ? slugged[idx + 1] : undefined;
+
+  if (!compiledCreativeProjectDetail) {
+    compiledCreativeProjectDetail = Handlebars.compile(
+      creativeProjectDetailSource as string
+    );
+  }
+
+  return compiledCreativeProjectDetail({
+    ...prepareTemplateData(data),
+    project: slugged[idx],
+    prevProject,
+    nextProject,
+    portfolioSlug: data.slug || "",
+  });
+}
+
+/**
  * Bulk-render every project that has a `slug` for a portfolio.
  * Used at publish time to populate `portfolio.generatedProjectPages`.
  */
@@ -245,11 +288,17 @@ export function renderAllProjectDetailPages(
   data: PortfolioData & { contentAr?: any; slug?: string }
 ): Array<{ slug: string; html: string }> {
   const templateId = data.templateId || "corporate";
-  if (templateId !== "engineer") return []; // Phase 1: Engineer only
-
   const slugged = (data.projects || []).filter((p) => p.slug);
+  const detailRenderer =
+    templateId === "engineer"
+      ? renderEngineerProjectDetail
+      : templateId === "creative"
+        ? renderCreativeProjectDetail
+        : null;
+  if (!detailRenderer) return [];
+
   return slugged.flatMap((p) => {
-    const html = renderEngineerProjectDetail(data, p.slug!);
+    const html = detailRenderer(data, p.slug!);
     return html ? [{ slug: p.slug!, html }] : [];
   });
 }

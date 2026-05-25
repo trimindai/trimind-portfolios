@@ -1,7 +1,10 @@
 import { NextRequest } from "next/server";
 import { convexClient } from "@/lib/convex";
 import { api } from "@convex/_generated/api";
-import { renderEngineerProjectDetail } from "@/lib/template-engine";
+import {
+  renderEngineerProjectDetail,
+  renderCreativeProjectDetail,
+} from "@/lib/template-engine";
 
 function notFound(): Response {
   return new Response(
@@ -82,11 +85,17 @@ export async function GET(
 
     // Fallback: render on the fly (covers portfolios published before this
     // feature shipped, or any case where publish-time render was skipped).
-    if (portfolio.templateId !== "engineer") {
+    const detailRenderer =
+      portfolio.templateId === "engineer"
+        ? renderEngineerProjectDetail
+        : portfolio.templateId === "creative"
+          ? renderCreativeProjectDetail
+          : null;
+    if (!detailRenderer) {
       return notFound();
     }
 
-    const html = renderEngineerProjectDetail(
+    const html = detailRenderer(
       {
         ...portfolio,
         locale: portfolio.locale,
