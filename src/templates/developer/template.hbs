@@ -753,6 +753,15 @@ html[dir="rtl"] .tl-item::before{left:auto;right:0}
           clearInterval(poll);
           host.classList.add("ready");
           finishLoad();
+          // Reveal the keycaps: the scene EXPORTS them hidden — mirror the source
+          // by switching on the desktop (or mobile) keycap objects, staggered.
+          try{
+            if(typeof app.getAllObjects === "function"){
+              var capName = (innerWidth < 768) ? "keycap-mobile" : "keycap-desktop";
+              var caps = app.getAllObjects().filter(function(o){ return o && (o.name === capName || o.name === "keycap"); });
+              caps.forEach(function(c, idx){ setTimeout(function(){ try{ c.visible = true; }catch(e){} }, 250 + idx * 55); });
+            }
+          }catch(e){}
           if(kbd){
             var active = document.body.getAttribute("data-active") || "hero";
             target = poseFor(active);
