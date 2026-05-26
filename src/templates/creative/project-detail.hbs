@@ -12,10 +12,10 @@
 <style>
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 :root {
-  --bg: {{#if customization.bgColor}}{{customization.bgColor}}{{else}}#1b1b1b{{/if}};
+  --bg: {{safeColor customization.bgColor "#1b1b1b"}};
   --bg-alt: #151515; --bg-card: #111111;
   --text: #e8e8e8; --text-dim: #a0a0a0; --text-muted: #6a6a6a; --border: #2a2a2a;
-  --accent: {{#if customization.accentColor}}{{customization.accentColor}}{{else}}#DFFF00{{/if}};
+  --accent: {{safeColor customization.accentColor "#DFFF00"}};
   --font-head: 'Geist', system-ui, sans-serif; --font-mono: 'Geist Mono', ui-monospace, monospace;
 }
 body { font-family: var(--font-head); background: var(--bg); color: var(--text); min-height: 100dvh; overflow-x: hidden; -webkit-font-smoothing: antialiased; }
@@ -116,7 +116,7 @@ figure figcaption { font-family: var(--font-mono); font-size: 10px; text-transfo
   <button type="button" class="hero-img" id="zoomBtn" aria-label="Zoom image">
     <span class="cross ic-tl"></span><span class="cross ic-tr"></span>
     <span class="cross ic-bl"></span><span class="cross ic-br"></span>
-    <img src="{{project.coverUrl}}" alt="{{project.title}}" id="heroImg">
+    <img src="{{safeUrl project.coverUrl}}" alt="{{project.title}}" id="heroImg">
     <span class="zoom-hint">Click to Zoom</span>
   </button>
   {{else}}
@@ -142,16 +142,16 @@ figure figcaption { font-family: var(--font-mono); font-size: 10px; text-transfo
   <div class="blocks">
     {{#each project.blocks}}
       {{#ifEq this.kind "paragraph"}}{{#if this.body}}<p class="blk-text">{{this.body}}</p>{{/if}}{{/ifEq}}
-      {{#ifEq this.kind "image"}}{{#if this.url}}<figure class="blk-img{{#if this.fullBleed}} full{{/if}}"><img src="{{this.url}}" alt="{{#if this.caption}}{{this.caption}}{{else}}{{../project.title}}{{/if}}" loading="lazy">{{#if this.caption}}<figcaption>{{this.caption}}</figcaption>{{/if}}</figure>{{/if}}{{/ifEq}}
-      {{#ifEq this.kind "imageGrid"}}{{#if this.images}}<div class="blk-grid">{{#each this.images}}{{#if this.url}}<figure><img src="{{this.url}}" alt="{{#if this.caption}}{{this.caption}}{{else}}image{{/if}}" loading="lazy">{{#if this.caption}}<figcaption>{{this.caption}}</figcaption>{{/if}}</figure>{{/if}}{{/each}}</div>{{/if}}{{/ifEq}}
+      {{#ifEq this.kind "image"}}{{#if this.url}}<figure class="blk-img{{#if this.fullBleed}} full{{/if}}"><img src="{{safeUrl this.url}}" alt="{{#if this.caption}}{{this.caption}}{{else}}{{../project.title}}{{/if}}" loading="lazy">{{#if this.caption}}<figcaption>{{this.caption}}</figcaption>{{/if}}</figure>{{/if}}{{/ifEq}}
+      {{#ifEq this.kind "imageGrid"}}{{#if this.images}}<div class="blk-grid">{{#each this.images}}{{#if this.url}}<figure><img src="{{safeUrl this.url}}" alt="{{#if this.caption}}{{this.caption}}{{else}}image{{/if}}" loading="lazy">{{#if this.caption}}<figcaption>{{this.caption}}</figcaption>{{/if}}</figure>{{/if}}{{/each}}</div>{{/if}}{{/ifEq}}
       {{#ifEq this.kind "video"}}{{#if this.url}}<figure class="blk-video">{{videoEmbed this.url}}{{#if this.caption}}<figcaption>{{this.caption}}</figcaption>{{/if}}</figure>{{/if}}{{/ifEq}}
     {{/each}}
   </div>
   {{/if}}
 
   {{#if project.links}}
-  <div class="links">{{#each project.links}}<a href="{{this.url}}" target="_blank" rel="noopener" class="lnk">{{this.label}} <span>&rarr;</span></a>{{/each}}</div>
-  {{else}}{{#if project.link}}<div class="links"><a href="{{project.link}}" target="_blank" rel="noopener" class="lnk">View Project <span>&rarr;</span></a></div>{{/if}}{{/if}}
+  <div class="links">{{#each project.links}}<a href="{{safeUrl this.url}}" target="_blank" rel="noopener" class="lnk">{{this.label}} <span>&rarr;</span></a>{{/each}}</div>
+  {{else}}{{#if project.link}}<div class="links"><a href="{{safeUrl project.link}}" target="_blank" rel="noopener" class="lnk">View Project <span>&rarr;</span></a></div>{{/if}}{{/if}}
 
   {{#if (or prevProject nextProject)}}
   <div class="pnav">
@@ -179,7 +179,7 @@ figure figcaption { font-family: var(--font-mono); font-size: 10px; text-transfo
   <span class="cross lc-bl"></span><span class="cross lc-br"></span>
   <button class="lb-close" id="lbClose">[ Close &times; ]</button>
   <div class="lb-stage" id="lbStage">
-    <img src="{{project.coverUrl}}" alt="{{project.title}}" id="lbImg" draggable="false">
+    <img src="{{safeUrl project.coverUrl}}" alt="{{project.title}}" id="lbImg" draggable="false">
   </div>
   <div class="lb-ctrl">
     <button id="zOut" aria-label="Zoom out">[ &minus; ]</button>

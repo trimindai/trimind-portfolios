@@ -148,6 +148,43 @@ Handlebars.registerHelper("initials", function (name: string) {
   return (first + last).toUpperCase();
 });
 
+// safeUrl(value) → allow only http(s)/mailto/tel/relative URLs in href/src.
+// Any other scheme (javascript:, data:, vbscript:, …) becomes "#" so a stored
+// URL on a published page cannot execute script. Output is still HTML-escaped
+// by Handlebars in the attribute context.
+Handlebars.registerHelper("safeUrl", function (value: any) {
+  if (value == null) return "";
+  let raw = "";
+  for (const ch of String(value).trim()) {
+    const code = ch.charCodeAt(0);
+    if (code <= 0x20 || code === 0x7f) continue; // drop whitespace + control chars
+    raw += ch;
+  }
+  if (!raw) return "";
+  const scheme = raw.match(/^([a-zA-Z][a-zA-Z0-9+.-]*):/);
+  if (scheme) {
+    const s = scheme[1].toLowerCase();
+    if (s !== "http" && s !== "https" && s !== "mailto" && s !== "tel") {
+      return "#";
+    }
+  }
+  return raw;
+});
+
+// safeColor(value, fallback) → only emit a value that is a plain CSS color
+// token (hex / rgb()/rgba()/hsl()/hsla() / named). Anything else returns the
+// fallback, so a crafted customization color can't break out of a <style> block.
+Handlebars.registerHelper("safeColor", function (value: any, fallback: any) {
+  const fb = typeof fallback === "string" ? fallback : "";
+  if (value == null) return fb;
+  const v = String(value).trim();
+  const ok =
+    /^#(?:[0-9a-fA-F]{3,4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$/.test(v) ||
+    /^(?:rgb|rgba|hsl|hsla)\([0-9.,%\s/]+\)$/.test(v) ||
+    /^[a-zA-Z]{3,20}$/.test(v);
+  return ok ? v : fb;
+});
+
 // Render a responsive video embed from a YouTube / Vimeo / direct-file URL.
 // IDs are matched and reinserted (safe); raw URLs are validated to http(s)
 // and escaped before being placed in attributes to avoid injection.
