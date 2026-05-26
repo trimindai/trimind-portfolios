@@ -70,9 +70,11 @@ img{display:block;max-width:100%}
 #stars{position:fixed;inset:0;z-index:-2;pointer-events:none}
 #scene{
   position:fixed;inset:0;z-index:-1;pointer-events:none;
-  opacity:0;transition:opacity 1.2s ease;
+  opacity:0;transition:opacity 1s ease;
+  animation:sceneIn 1.2s ease 4.5s forwards; /* CSS fallback: reveal even if JS never flags ready */
 }
-#scene.ready{opacity:1}
+#scene.ready{opacity:1;animation:none}
+@keyframes sceneIn{from{opacity:0}to{opacity:1}}
 #scene spline-viewer{width:100%;height:100%}
 /* let the keyboard be interactive only while the skills section is active */
 body[data-active="skills"] #scene{pointer-events:auto}
@@ -341,7 +343,7 @@ html[dir="rtl"] .tl-item::before{left:auto;right:0}
     <div class="sec-head">
       <div class="eyebrow">Tech Stack</div>
       <h2>Tech Stack</h2>
-      <p class="kbd-hint">(hint: hover the keys — the 3D keyboard behind is live)</p>
+      <p class="kbd-hint">(hint: press any key — the floating 3D keyboard is live)</p>
     </div>
     <div class="skill-grid">
       <div class="keycap" data-key tabindex="0">
@@ -729,6 +731,7 @@ html[dir="rtl"] .tl-item::before{left:auto;right:0}
           var id = e.target.id;
           document.body.setAttribute("data-active", id);
           navLinks.forEach(function(a){ a.classList.toggle("active", a.getAttribute("data-sec") === id); });
+          if(window.__setKbdSection){ window.__setKbdSection(id); }
         }
       });
     }, {threshold:0.4});
@@ -837,7 +840,19 @@ html[dir="rtl"] .tl-item::before{left:auto;right:0}
     document.head.appendChild(ls);
   }
 
-  /* ── mount the 3D keyboard once the custom element is defined ── */
+  /* ── mount the 3D keyboard + frame it per section (mirrors the source) ── */
+  // Keyboard poses in the scene's own units, per section, desktop + mobile.
+  var P = Math.PI;
+  var STATES = {
+    hero:       { d:{s:0.20, x:225, y:-100, rx:0,    ry:0,     rz:0}, m:{s:0.30, x:0, y:-210, rx:0, ry:0, rz:0} },
+    skills:     { d:{s:0.26, x:0,   y:-30,  rx:0,    ry:P/12,  rz:0}, m:{s:0.30, x:0, y:-40,  rx:0, ry:P/12, rz:0} },
+    experience: { d:{s:0.22, x:0,   y:-40,  rx:P/12, ry:-P/4,  rz:0}, m:{s:0.28, x:0, y:-40,  rx:P/8, ry:-P/6, rz:0} },
+    projects:   { d:{s:0.19, x:0,   y:-40,  rx:P/16, ry:P/6,   rz:0}, m:{s:0.26, x:0, y:-40,  rx:P/10, ry:P/8, rz:0} },
+    extras:     { d:{s:0.20, x:-150,y:-40,  rx:0,    ry:P/8,   rz:0}, m:{s:0.26, x:0, y:-40,  rx:0, ry:P/8, rz:0} },
+    contact:    { d:{s:0.20, x:200, y:-40,  rx:0,    ry:-P/9,  rz:0}, m:{s:0.26, x:0, y:-40,  rx:0, ry:-P/9, rz:0} }
+  };
+  function poseFor(sec){ var st = STATES[sec] || STATES.hero; return (innerWidth < 768) ? st.m : st.d; }
+
   function mountScene(){
     if(reduce){ return; }
     var host = document.getElementById("scene");
@@ -847,35 +862,49 @@ html[dir="rtl"] .tl-item::before{left:auto;right:0}
       var v = document.createElement("spline-viewer");
       v.setAttribute("url", splineUrl);
       v.setAttribute("loading-anim-type", "none");
-      v.setAttribute("events-target", "global");
+      v.setAttribute("events-target", "global"); /* lets physical keypresses drive the scene */
       v.style.width = "100%"; v.style.height = "100%";
-      v.addEventListener("load", function(){
-        host.classList.add("ready");
-        finishLoad();
-        /* gentle scroll-reactive rotation of the keyboard, if accessible */
-        try{
-          var app = v.application || (v._spline && v._spline.app);
-          if(app && app.findObjectByName){
-            var names = ["keyboard", "Keyboard", "kbd", "keycaps", "Keycaps", "Group"];
-            var obj = null, i;
-            for(i = 0; i < names.length; i++){ obj = app.findObjectByName(names[i]); if(obj){ break; } }
-            if(obj){
-              var base = { x: obj.rotation.x, y: obj.rotation.y };
-              window.addEventListener("scroll", function(){
-                var p = (window.scrollY || 0) / ((document.documentElement.scrollHeight - innerHeight) || 1);
-                obj.rotation.y = base.y + p * Math.PI * 0.6;
-                obj.rotation.x = base.x + Math.sin(p*Math.PI) * 0.18;
-              }, {passive:true});
-            }
-          }
-        }catch(err){}
-      });
-      v.addEventListener("error", function(){ host.style.display = "none"; });
+      v.addEventListener("error", function(){ host.style.display = "none"; finishLoad(); });
       host.appendChild(v);
-      /* if the scene never fires load, still reveal so the star-field shows through */
-      setTimeout(function(){ if(!host.classList.contains("ready")){ host.classList.add("ready"); } }, 4500);
+
+      var kbd = null, target = poseFor("hero"), tries = 0;
+      window.__setKbdSection = function(sec){ target = poseFor(sec); };
+
+      function applyPose(p, snap){
+        if(!kbd){ return; }
+        var t = snap ? 1 : 0.07;
+        kbd.scale.x = kbd.scale.y = kbd.scale.z = kbd.scale.x + (p.s - kbd.scale.x) * t;
+        kbd.position.x += (p.x - kbd.position.x) * t;
+        kbd.position.y += (p.y - kbd.position.y) * t;
+        kbd.rotation.x += (p.rx - kbd.rotation.x) * t;
+        kbd.rotation.y += (p.ry - kbd.rotation.y) * t;
+        kbd.rotation.z += (p.rz - kbd.rotation.z) * t;
+      }
+      function animate(){ applyPose(target, false); requestAnimationFrame(animate); }
+
+      // Poll for the runtime Application (sv._spline) — more reliable than the load event.
+      var poll = setInterval(function(){
+        tries++;
+        var app = v._spline;
+        if(app && typeof app.findObjectByName === "function"){
+          try{ kbd = app.findObjectByName("keyboard"); }catch(e){ kbd = null; }
+          clearInterval(poll);
+          host.classList.add("ready");
+          finishLoad();
+          if(kbd){
+            var active = document.body.getAttribute("data-active") || "hero";
+            target = poseFor(active);
+            applyPose(target, true);   // snap to the section's pose immediately
+            requestAnimationFrame(animate);
+          }
+        } else if(tries > 50){         // ~15s ceiling
+          clearInterval(poll);
+          host.classList.add("ready");
+          finishLoad();
+        }
+      }, 300);
     });
-    /* if the custom element is never defined (blocked CDN), stop waiting */
+    /* if the custom element is never defined (blocked CDN), stop waiting on it */
     setTimeout(function(){ if(!host.classList.contains("ready")){ finishLoad(); } }, 3500);
   }
   if(document.readyState !== "loading"){ mountScene(); }
