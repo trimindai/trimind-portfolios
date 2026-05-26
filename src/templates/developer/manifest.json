@@ -1,36 +1,34 @@
 {
   "id": "developer",
   "name": "Developer",
-  "description": "Cybersecurity-grade dark portfolio for engineers — deep-navy canvas, sky-blue glow, an interactive molecular-network hero, case-file projects, and a live terminal panel.",
+  "description": "Space-dark developer portfolio with a real 3D keyboard floating in a star-field — thin gradient display type, blur-in reveals, a timeline of experience, screenshot project cards with a detail modal, an elastic cursor, and buttery smooth scroll.",
   "category": "technology",
-  "targetProfessions": ["Cybersecurity Engineer", "Security Analyst", "Penetration Tester", "SOC Analyst", "DevSecOps Engineer", "Software Engineer", "Full Stack Developer", "Backend Developer", "DevOps Engineer", "SRE", "Cloud Architect", "Network Engineer", "Data Scientist", "ML Engineer", "AI Engineer", "Engineering Manager", "Technical Lead"],
+  "targetProfessions": ["Software Engineer", "Full Stack Developer", "Frontend Developer", "Backend Developer", "Creative Technologist", "Web Developer", "DevOps Engineer", "SRE", "Cloud Architect", "Mobile Developer", "Data Scientist", "ML Engineer", "AI Engineer", "Game Developer", "Engineering Manager", "Technical Lead", "Cybersecurity Engineer"],
   "colors": {
-    "bg": "#0a0e1a",
-    "bgDeep": "#060a14",
-    "bgCard": "rgba(16, 24, 48, 0.50)",
-    "primary": "#4AADDB",
-    "primaryGlow": "rgba(74, 173, 219, 0.40)",
-    "primaryDim": "rgba(74, 173, 219, 0.10)",
-    "secondary": "#1E6BAD",
-    "accent": "#00D4FF",
-    "accentGlow": "rgba(0, 212, 255, 0.35)",
-    "silver": "#A8B8C8",
-    "critical": "#FF4757",
-    "success": "#2ED573",
-    "accentPurple": "#8B5CF6",
-    "text": "#E8EDF5",
-    "textSecondary": "#8094B0",
-    "textTertiary": "#506580",
-    "border": "rgba(74, 173, 219, 0.08)"
+    "bg": "#020617",
+    "bgDeep": "#0b1222",
+    "bgCard": "rgba(15, 23, 42, 0.55)",
+    "primary": "#7C5CFF",
+    "primaryGlow": "rgba(124, 92, 255, 0.40)",
+    "primaryDim": "rgba(124, 92, 255, 0.12)",
+    "accent": "#38BDF8",
+    "accentGlow": "rgba(56, 189, 248, 0.38)",
+    "success": "#34D399",
+    "pink": "#F472B6",
+    "amber": "#FBBF24",
+    "text": "#F8FAFC",
+    "textSecondary": "#94A3B8",
+    "textTertiary": "#64748B",
+    "border": "rgba(148, 163, 184, 0.14)"
   },
   "fonts": {
-    "heading": "Inter",
+    "heading": "Archivo Black",
     "body": "Inter",
     "mono": "JetBrains Mono",
-    "googleFontsUrl": "https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap"
+    "googleFontsUrl": "https://fonts.googleapis.com/css2?family=Archivo+Black&family=Inter:wght@100;200;300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap"
   },
-  "sections": ["hero", "skills", "projects", "experience", "education", "certifications", "contact"],
+  "sections": ["hero", "skills", "experience", "projects", "education", "certifications", "contact"],
   "specialSections": ["skills", "projects", "contact"],
-  "features": ["interactive-molecular-network-canvas-hero", "mouse-reactive-particle-connections", "custom-trailing-cursor-ring", "typewriter-subtitle", "gradient-name-hero", "skill-pills-with-cycled-icon-colors", "metric-stat-bar", "gsap-scroll-reveals-with-no-gsap-fallback", "case-file-project-cards-with-status-and-id", "featured-project-block-with-metrics", "decrypt-hover-effect-on-project-titles", "3d-card-tilt-on-hover", "experience-timeline-with-folded-education", "credential-badge-grid-cycled-colors", "live-terminal-contact-panel-locked-ltr", "scroll-progress-bar", "section-numbering-and-glow-dividers"],
-  "designNotes": "The Developer template reads like a security operator's workstation: a deep-navy field lit by a sky-blue molecular network that reacts to the cursor, Inter for confident headings and prose with JetBrains Mono reserved for the terminal panel. Projects are presented as numbered 'case files' — a featured discovery up top, then a status-tagged grid — which frames engineering work as investigation rather than a list. Color is data-driven: skill, project, and credential accents cycle through the palette (sky, cyan, success-green, cerulean, purple, silver) so any number of items stays visually varied without per-item configuration. The contact terminal renders whoami / credentials / nmap from real portfolio data and is force-locked LTR so it stays readable in Arabic RTL layouts. All scroll-reveal content has a no-GSAP fallback so a blocked CDN never leaves the page blank."
+  "features": ["real-3d-spline-keyboard-floating-background", "scroll-reactive-keyboard-rotation", "mouse-parallax-canvas-starfield", "preloader-with-progress-and-slide-up-exit", "elastic-velocity-stretched-cursor", "lenis-smooth-scroll-progressive-enhancement", "blur-in-and-box-reveal-scroll-animations", "thin-gradient-display-name-hero", "tech-stack-keycap-grid-with-press-feedback", "experience-timeline-with-rail-and-nodes", "screenshot-project-cards-with-detail-modal", "floating-pill-section-nav-with-scrollspy", "scroll-progress-bar", "mailto-compose-contact-form", "education-and-certifications-cards", "rtl-arabic-support", "reduced-motion-and-blocked-cdn-fallbacks"],
+  "designNotes": "The Developer template — 'Spacebar' — reimagines an engineer's portfolio as a moment in deep space: a real 3D mechanical keyboard (a Spline scene embedded via the <spline-viewer> web component) floats and slowly rotates on scroll behind a mouse-parallax canvas star-field, on a near-black navy field lit by a single violet glow and a sky-blue counter-glow. Archivo Black carries the huge thin gradient hero name and section titles; Inter sets the prose; JetBrains Mono is reserved for eyebrows, dates and the loading readout. Content arrives through a preloader (simulated progress + slide-up reveal) and then blur-in / box-reveal scroll animations. The Tech Stack section renders the portfolio owner's skills as pressable keycaps (Font Awesome brand glyphs or a mono abbreviation, colour-cycled per category) echoing the live keyboard behind them. Experience is a rail-and-node timeline of cards; projects are screenshot cards that open a detail modal with metrics, tech badges, a gallery and links. A floating pill nav with scrollspy and an elastic, velocity-stretched cursor complete the feel. Everything degrades gracefully: a blocked Spline/Lenis CDN, reduced-motion, or touch devices fall back to the star-field and native scroll, and a hard timeout guarantees the preloader never traps the page. The 3D scene URL is overridable via customization.skillsSplineUrl. Design language adapted from Naresh Khatri's open-source 3D portfolio, credited in the footer."
 }
