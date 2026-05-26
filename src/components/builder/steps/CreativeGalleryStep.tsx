@@ -108,7 +108,7 @@ export function CreativeGalleryStep({ data, onChange }: CreativeGalleryStepProps
                 hint="Direct link to the image. Portrait (3:4) looks best in the cone."
               />
 
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <TextField
                   label="Type / Medium"
                   value={item.meta?.type || ""}
@@ -170,7 +170,7 @@ export function CreativeGalleryStep({ data, onChange }: CreativeGalleryStepProps
                     Leave the slug empty to keep it as a card only.
                   </p>
 
-                  <div className="grid grid-cols-2 gap-3">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <div>
                       <TextField
                         label="URL Slug"
@@ -198,7 +198,7 @@ export function CreativeGalleryStep({ data, onChange }: CreativeGalleryStepProps
                     />
                   </div>
 
-                  <div className="grid grid-cols-2 gap-3">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <TextField
                       label="Role / Context"
                       value={item.meta?.role || ""}
@@ -227,7 +227,7 @@ export function CreativeGalleryStep({ data, onChange }: CreativeGalleryStepProps
                       maxItems={6}
                       addLabel="Add Link"
                       renderItem={(link, _, updateLink) => (
-                        <div className="grid grid-cols-3 gap-3">
+                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                           <div>
                             <label className="text-sm font-medium text-[var(--land-bright)] mb-1.5 block">Type</label>
                             <select

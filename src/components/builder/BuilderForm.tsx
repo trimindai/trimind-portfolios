@@ -147,8 +147,8 @@ export function BuilderForm({ portfolioId, initialData }: BuilderFormProps) {
       </div>
 
       {/* Step content */}
-      <div className="bg-[var(--land-surface)]/40 border border-[var(--land-border)]/50 rounded-2xl p-8 mb-6 overflow-hidden">
-        <div className="h-px -mx-8 -mt-8 mb-8 bg-gradient-to-r from-transparent via-[var(--land-accent)]/30 to-transparent" />
+      <div className="bg-[var(--land-surface)]/40 border border-[var(--land-border)]/50 rounded-2xl p-4 sm:p-8 mb-6 overflow-hidden">
+        <div className="h-px -mx-4 sm:-mx-8 -mt-4 sm:-mt-8 mb-6 sm:mb-8 bg-gradient-to-r from-transparent via-[var(--land-accent)]/30 to-transparent" />
         <StepComponent data={formData} onChange={handleChange} />
       </div>
 

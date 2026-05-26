@@ -91,7 +91,7 @@ export function CreativeAboutStep({ data, onChange }: CreativeAboutStepProps) {
                 onChange={(v) => update({ company: v })}
                 placeholder="Contemporary Art Platform, Kuwait"
               />
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <TextField
                   label="Start / Year"
                   value={item.startDate}
@@ -168,7 +168,7 @@ export function CreativeAboutStep({ data, onChange }: CreativeAboutStepProps) {
           maxItems={5}
           addLabel="Add Stat"
           renderItem={(item, _, update) => (
-            <div className="grid grid-cols-2 gap-3 pr-16">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pr-16">
               <TextField
                 label="Value"
                 value={item.value}
