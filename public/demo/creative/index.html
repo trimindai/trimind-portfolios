@@ -20,9 +20,9 @@
       }
       /* The demo nav is `hidden md:flex` — show it on phones so the links appear. */
       @media (max-width: 767px) {
-        header > nav { display: flex !important; gap: 12px !important; }
-        header > nav .bracket-link { font-size: 10px !important; }
-        header > a:first-child { font-size: 11px !important; letter-spacing: 1px !important; }
+        header > nav { display: flex !important; gap: 9px !important; flex-shrink: 0; }
+        header > nav .bracket-link { font-size: 9px !important; letter-spacing: 0.5px !important; }
+        header > a:first-child { font-size: 10px !important; letter-spacing: 0.5px !important; white-space: nowrap !important; }
         /* Hero name clamp-floor (42px) too wide for phones — shrink + allow wrap. */
         #projects h1 { font-size: clamp(28px, 8vw, 44px) !important; overflow-wrap: anywhere; word-break: break-word; max-width: 100%; }
       }
