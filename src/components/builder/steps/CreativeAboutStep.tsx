@@ -14,6 +14,7 @@ export function CreativeAboutStep({ data, onChange }: CreativeAboutStepProps) {
   const experience = data.experience || [];
   const metrics = data.metrics || [];
   const certifications = data.certifications || [];
+  const endorsements = data.endorsements || [];
 
   return (
     <div className="space-y-10">
@@ -182,6 +183,53 @@ export function CreativeAboutStep({ data, onChange }: CreativeAboutStepProps) {
                 placeholder="Works"
                 examples={["Works", "Exhibitions", "Awards", "Collections"]}
               />
+            </div>
+          )}
+        />
+      </div>
+
+      {/* Testimonials / endorsements */}
+      <div>
+        <h2 className="text-xl font-semibold text-white mb-1">Testimonials</h2>
+        <p className="text-sm text-[var(--land-body)] mb-4">
+          What collectors, curators, or clients say about your work. Shown as quoted endorsements.
+        </p>
+        <DynamicList
+          items={endorsements}
+          onChange={(items) => onChange({ endorsements: items })}
+          createEmpty={() => ({ quote: "", name: "", title: "", company: "" })}
+          maxItems={8}
+          addLabel="Add Testimonial"
+          renderItem={(item, _, update) => (
+            <div className="space-y-3 pr-16">
+              <TextareaField
+                label="Quote"
+                value={item.quote}
+                onChange={(v) => update({ quote: v })}
+                placeholder="Her work transformed our space — bold, intimate, unforgettable."
+                rows={3}
+              />
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <TextField
+                  label="Name"
+                  value={item.name}
+                  onChange={(v) => update({ name: v })}
+                  placeholder="Sara Al-Mutairi"
+                />
+                <TextField
+                  label="Title"
+                  value={item.title}
+                  onChange={(v) => update({ title: v })}
+                  placeholder="Curator"
+                  examples={["Curator", "Gallery Director", "Collector", "Art Director"]}
+                />
+                <TextField
+                  label="Company"
+                  value={item.company}
+                  onChange={(v) => update({ company: v })}
+                  placeholder="Contemporary Art Platform"
+                />
+              </div>
             </div>
           )}
         />

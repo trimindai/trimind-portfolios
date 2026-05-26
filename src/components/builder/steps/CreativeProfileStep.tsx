@@ -121,6 +121,14 @@ export function CreativeProfileStep({ data, onChange }: CreativeProfileStepProps
         />
       </div>
 
+      <TextField
+        label="Resume / CV URL"
+        value={basics.resumeUrl}
+        onChange={(v) => updateBasics("resumeUrl", v)}
+        placeholder="https://… link to your PDF/CV"
+        hint="A downloadable resume or CV. Shown as a link visitors can open."
+      />
+
       <TextareaField
         label="Artist Bio"
         value={basics.bio}

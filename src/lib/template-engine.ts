@@ -316,6 +316,116 @@ Handlebars.registerHelper("kbAbbr", function (name: string) {
   return w.slice(0, 4);
 });
 
+// ── SEO / structured-data helpers ──────────────────────────────
+// Emit a JSON-LD <script> built entirely in JS (never from raw template
+// interpolation), so user data can't break out of the <script> block:
+// every "<" is escaped to < and empty values are pruned.
+function httpUrlOrEmpty(value: any): string {
+  if (value == null) return "";
+  const v = String(value).trim();
+  return /^https?:\/\//i.test(v) ? v : "";
+}
+
+function pruneEmpty(node: any): any {
+  if (Array.isArray(node)) {
+    const arr = node.map(pruneEmpty).filter((x) => x !== undefined);
+    return arr.length ? arr : undefined;
+  }
+  if (node && typeof node === "object") {
+    const out: Record<string, any> = {};
+    for (const [k, val] of Object.entries(node)) {
+      const c = pruneEmpty(val);
+      if (c !== undefined) out[k] = c;
+    }
+    return Object.keys(out).length ? out : undefined;
+  }
+  if (node === "" || node === null) return undefined;
+  return node;
+}
+
+function ldScript(obj: Record<string, any>): Handlebars.SafeString {
+  const cleaned = pruneEmpty(obj) || {};
+  const json = JSON.stringify(cleaned).replace(/</g, "\\u003c");
+  return new Handlebars.SafeString(
+    `<script type="application/ld+json">${json}</script>`
+  );
+}
+
+Handlebars.registerHelper("personJsonLd", function (basics: any, portfolioUrl: any) {
+  const b = basics || {};
+  const sameAs = [b.instagram, b.linkedin, b.github, b.website]
+    .map(httpUrlOrEmpty)
+    .filter(Boolean);
+  return ldScript({
+    "@context": "https://schema.org",
+    "@type": "Person",
+    name: b.fullName,
+    jobTitle: b.title,
+    description: b.subtitle || b.bio,
+    url: httpUrlOrEmpty(portfolioUrl),
+    image: httpUrlOrEmpty(b.photoUrl),
+    email: b.email,
+    address: b.location
+      ? { "@type": "PostalAddress", addressLocality: b.location }
+      : undefined,
+    sameAs,
+  });
+});
+
+Handlebars.registerHelper(
+  "creativeWorkJsonLd",
+  function (project: any, basics: any, portfolioUrl: any) {
+    const p = project || {};
+    const b = basics || {};
+    const url = httpUrlOrEmpty(portfolioUrl);
+    return ldScript({
+      "@context": "https://schema.org",
+      "@type": "CreativeWork",
+      name: p.title,
+      headline: p.tagline,
+      description: p.description,
+      image: httpUrlOrEmpty(p.coverUrl),
+      genre: p.meta?.type,
+      url: url && p.slug ? `${url}/projects/${p.slug}` : url,
+      creator: b.fullName
+        ? { "@type": "Person", name: b.fullName, url: url || undefined }
+        : undefined,
+    });
+  }
+);
+
+// faviconLink(fullName, accentColor, bgColor) → an inline SVG data-URI favicon
+// showing the monogram initials on the portfolio's background, in the accent
+// color. Colors are validated (same rule as safeColor) before use.
+Handlebars.registerHelper(
+  "faviconLink",
+  function (fullName: any, accentColor: any, bgColor: any) {
+    const colorOk = (v: any, fb: string) => {
+      const s = String(v ?? "").trim();
+      const ok =
+        /^#(?:[0-9a-fA-F]{3,4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$/.test(s) ||
+        /^(?:rgb|rgba|hsl|hsla)\([0-9.,%\s/]+\)$/.test(s) ||
+        /^[a-zA-Z]{3,20}$/.test(s);
+      return ok ? s : fb;
+    };
+    const parts = String(fullName || "").trim().split(/\s+/).filter(Boolean);
+    const a = parts[0]?.[0] || "";
+    const c = parts.length > 1 ? parts[parts.length - 1][0] : "";
+    const initials = (a + c).toUpperCase().replace(/[^A-Z0-9]/g, "") || "·";
+    const bg = colorOk(bgColor, "#1b1b1b");
+    const accent = colorOk(accentColor, "#DFFF00");
+    const svg =
+      `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">` +
+      `<rect width="64" height="64" rx="10" fill="${bg}"/>` +
+      `<text x="32" y="34" font-family="Geist,Arial,sans-serif" font-size="30" ` +
+      `font-weight="800" letter-spacing="-1" fill="${accent}" ` +
+      `text-anchor="middle" dominant-baseline="central">${initials}</text></svg>`;
+    return new Handlebars.SafeString(
+      `<link rel="icon" href="data:image/svg+xml,${encodeURIComponent(svg)}">`
+    );
+  }
+);
+
 let compiledCorporateTemplate: Handlebars.TemplateDelegate | null = null;
 let compiledEngineerTemplate: Handlebars.TemplateDelegate | null = null;
 let compiledEngineerProjectDetail: Handlebars.TemplateDelegate | null = null;

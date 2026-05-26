@@ -5,7 +5,20 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>{{project.title}} — {{basics.fullName}}</title>
 <meta name="description" content="{{#if project.tagline}}{{project.tagline}}{{else}}{{project.title}} by {{basics.fullName}}{{/if}}">
-<meta name="theme-color" content="#1b1b1b">
+<meta name="theme-color" content="{{safeColor customization.bgColor "#1b1b1b"}}">
+<link rel="canonical" href="{{portfolioUrl}}/projects/{{project.slug}}">
+{{{faviconLink basics.fullName customization.accentColor customization.bgColor}}}
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="{{basics.fullName}}">
+<meta property="og:url" content="{{portfolioUrl}}/projects/{{project.slug}}">
+<meta property="og:title" content="{{project.title}} | {{basics.fullName}}">
+<meta property="og:description" content="{{#if project.tagline}}{{project.tagline}}{{else}}{{project.title}} by {{basics.fullName}}{{/if}}">
+{{#if project.coverUrl}}<meta property="og:image" content="{{safeUrl project.coverUrl}}">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="{{safeUrl project.coverUrl}}">{{else}}<meta name="twitter:card" content="summary">{{/if}}
+<meta name="twitter:title" content="{{project.title}} | {{basics.fullName}}">
+<meta name="twitter:description" content="{{#if project.tagline}}{{project.tagline}}{{else}}{{project.title}}{{/if}}">
+{{{creativeWorkJsonLd project basics portfolioUrl}}}
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700;800;900&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -116,7 +129,7 @@ figure figcaption { font-family: var(--font-mono); font-size: 10px; text-transfo
   <button type="button" class="hero-img" id="zoomBtn" aria-label="Zoom image">
     <span class="cross ic-tl"></span><span class="cross ic-tr"></span>
     <span class="cross ic-bl"></span><span class="cross ic-br"></span>
-    <img src="{{safeUrl project.coverUrl}}" alt="{{project.title}}" id="heroImg">
+    <img src="{{safeUrl project.coverUrl}}" alt="{{project.title}}" id="heroImg" decoding="async">
     <span class="zoom-hint">Click to Zoom</span>
   </button>
   {{else}}
@@ -142,8 +155,8 @@ figure figcaption { font-family: var(--font-mono); font-size: 10px; text-transfo
   <div class="blocks">
     {{#each project.blocks}}
       {{#ifEq this.kind "paragraph"}}{{#if this.body}}<p class="blk-text">{{this.body}}</p>{{/if}}{{/ifEq}}
-      {{#ifEq this.kind "image"}}{{#if this.url}}<figure class="blk-img{{#if this.fullBleed}} full{{/if}}"><img src="{{safeUrl this.url}}" alt="{{#if this.caption}}{{this.caption}}{{else}}{{../project.title}}{{/if}}" loading="lazy">{{#if this.caption}}<figcaption>{{this.caption}}</figcaption>{{/if}}</figure>{{/if}}{{/ifEq}}
-      {{#ifEq this.kind "imageGrid"}}{{#if this.images}}<div class="blk-grid">{{#each this.images}}{{#if this.url}}<figure><img src="{{safeUrl this.url}}" alt="{{#if this.caption}}{{this.caption}}{{else}}image{{/if}}" loading="lazy">{{#if this.caption}}<figcaption>{{this.caption}}</figcaption>{{/if}}</figure>{{/if}}{{/each}}</div>{{/if}}{{/ifEq}}
+      {{#ifEq this.kind "image"}}{{#if this.url}}<figure class="blk-img{{#if this.fullBleed}} full{{/if}}"><img src="{{safeUrl this.url}}" alt="{{#if this.caption}}{{this.caption}}{{else}}{{../project.title}}{{/if}}" loading="lazy" decoding="async">{{#if this.caption}}<figcaption>{{this.caption}}</figcaption>{{/if}}</figure>{{/if}}{{/ifEq}}
+      {{#ifEq this.kind "imageGrid"}}{{#if this.images}}<div class="blk-grid">{{#each this.images}}{{#if this.url}}<figure><img src="{{safeUrl this.url}}" alt="{{#if this.caption}}{{this.caption}}{{else}}image{{/if}}" loading="lazy" decoding="async">{{#if this.caption}}<figcaption>{{this.caption}}</figcaption>{{/if}}</figure>{{/if}}{{/each}}</div>{{/if}}{{/ifEq}}
       {{#ifEq this.kind "video"}}{{#if this.url}}<figure class="blk-video">{{videoEmbed this.url}}{{#if this.caption}}<figcaption>{{this.caption}}</figcaption>{{/if}}</figure>{{/if}}{{/ifEq}}
     {{/each}}
   </div>
