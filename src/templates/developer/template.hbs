@@ -145,6 +145,7 @@ section{position:relative;z-index:1}
 /* ── hero ───────────────────────────────────────────────────── */
 #hero{min-height:100svh;display:flex;align-items:center;padding:120px 0 80px}
 #hero .grid{display:grid;grid-template-columns:minmax(0,1fr);gap:8px}
+@media(min-width:900px){#hero .grid{max-width:440px}} /* keep text in the left column; keyboard owns the right (two-column hero, like the source) */
 #hero .hello{font-family:var(--font-mono);color:var(--accent);font-size:.95rem;letter-spacing:.08em;margin-bottom:18px}
 #hero h1{
   font-family:var(--font-display);font-weight:400;
@@ -706,7 +707,7 @@ html[dir="rtl"] .tl-item::before{left:auto;right:0}
   // Keyboard poses in the scene's own units, per section, desktop + mobile.
   var P = Math.PI;
   var STATES = {
-    hero:       { d:{s:0.20, x:225, y:-100, rx:0,    ry:0,     rz:0}, m:{s:0.30, x:0, y:-210, rx:0, ry:0, rz:0} },
+    hero:       { d:{s:0.24, x:460, y:-55,  rx:0,    ry:0,     rz:0}, m:{s:0.36, x:0, y:-150, rx:0, ry:0, rz:0} },
     skills:     { d:{s:0.26, x:0,   y:-30,  rx:0,    ry:P/12,  rz:0}, m:{s:0.30, x:0, y:-40,  rx:0, ry:P/12, rz:0} },
     experience: { d:{s:0.22, x:0,   y:-40,  rx:P/12, ry:-P/4,  rz:0}, m:{s:0.28, x:0, y:-40,  rx:P/8, ry:-P/6, rz:0} },
     projects:   { d:{s:0.19, x:0,   y:-40,  rx:P/16, ry:P/6,   rz:0}, m:{s:0.26, x:0, y:-40,  rx:P/10, ry:P/8, rz:0} },
@@ -744,34 +745,33 @@ html[dir="rtl"] .tl-item::before{left:auto;right:0}
       }
       function animate(){ applyPose(target, false); requestAnimationFrame(animate); }
 
-      // Poll for the runtime Application (sv._spline) — more reliable than the load event.
+      // Poll for the runtime (sv._spline) AND the keyboard object — keep trying
+      // until the object resolves, otherwise it stays at the scene's (large,
+      // centered) default pose and covers the hero text.
       var poll = setInterval(function(){
         tries++;
         var app = v._spline;
-        if(app && typeof app.findObjectByName === "function"){
-          try{ kbd = app.findObjectByName("keyboard"); }catch(e){ kbd = null; }
+        var ready = app && typeof app.findObjectByName === "function" && typeof app.getAllObjects === "function";
+        if(ready){ try{ kbd = app.findObjectByName("keyboard"); }catch(e){ kbd = null; } }
+        if((ready && kbd) || tries > 60){   // wait for the keyboard; ~18s ceiling
           clearInterval(poll);
           host.classList.add("ready");
           finishLoad();
-          // Reveal the keycaps: the scene EXPORTS them hidden — mirror the source
-          // by switching on the desktop (or mobile) keycap objects, staggered.
-          try{
-            if(typeof app.getAllObjects === "function"){
+          if(ready){
+            // Reveal the keycaps: the scene EXPORTS them hidden — mirror the source
+            // by switching on the desktop (or mobile) keycap objects, staggered.
+            try{
               var capName = (innerWidth < 768) ? "keycap-mobile" : "keycap-desktop";
               var caps = app.getAllObjects().filter(function(o){ return o && (o.name === capName || o.name === "keycap"); });
               caps.forEach(function(c, idx){ setTimeout(function(){ try{ c.visible = true; }catch(e){} }, 250 + idx * 55); });
-            }
-          }catch(e){}
+            }catch(e){}
+          }
           if(kbd){
             var active = document.body.getAttribute("data-active") || "hero";
             target = poseFor(active);
             applyPose(target, true);   // snap to the section's pose immediately
             requestAnimationFrame(animate);
           }
-        } else if(tries > 50){         // ~15s ceiling
-          clearInterval(poll);
-          host.classList.add("ready");
-          finishLoad();
         }
       }, 300);
     });
