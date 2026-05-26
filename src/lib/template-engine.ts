@@ -24,6 +24,7 @@ export interface PortfolioData {
     website?: string;
     linkedin?: string;
     github?: string;
+    instagram?: string;
     photoUrl?: string;
     resumeUrl?: string;
   };
@@ -49,7 +50,7 @@ export interface PortfolioData {
     tagline?: string;
     coverUrl?: string;
     meta?: {
-      type?: "academic" | "industrial" | "personal" | "research";
+      type?: string;
       year?: string;
       courseCode?: string;
       institution?: string;
@@ -58,7 +59,7 @@ export interface PortfolioData {
       duration?: string;
     };
     blocks?: Array<{
-      kind: "paragraph" | "image" | "imageGrid" | "specs" | "standards" | "challenge";
+      kind: "paragraph" | "image" | "imageGrid" | "video" | "specs" | "standards" | "challenge";
       body?: string;
       caption?: string;
       url?: string;
@@ -145,6 +146,41 @@ Handlebars.registerHelper("initials", function (name: string) {
   const first = parts[0][0] || "";
   const last = parts.length > 1 ? parts[parts.length - 1][0] : "";
   return (first + last).toUpperCase();
+});
+
+// Render a responsive video embed from a YouTube / Vimeo / direct-file URL.
+// IDs are matched and reinserted (safe); raw URLs are validated to http(s)
+// and escaped before being placed in attributes to avoid injection.
+Handlebars.registerHelper("videoEmbed", function (url: string) {
+  if (!url) return "";
+  const u = String(url).trim();
+  const safe = Handlebars.escapeExpression(u);
+  const isHttp = /^https?:\/\//i.test(u);
+  let inner = "";
+  let m: RegExpMatchArray | null;
+  if ((m = u.match(/(?:youtube\.com\/(?:watch\?v=|embed\/|v\/)|youtu\.be\/)([\w-]{11})/))) {
+    inner = `<iframe src="https://www.youtube.com/embed/${m[1]}" title="Video" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy"></iframe>`;
+  } else if ((m = u.match(/vimeo\.com\/(?:video\/)?(\d+)/))) {
+    inner = `<iframe src="https://player.vimeo.com/video/${m[1]}" title="Video" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen loading="lazy"></iframe>`;
+  } else if (isHttp && /\.(mp4|webm|ogg)(\?|#|$)/i.test(u)) {
+    inner = `<video src="${safe}" controls preload="metadata" playsinline></video>`;
+  } else if (isHttp) {
+    return new Handlebars.SafeString(
+      `<a href="${safe}" target="_blank" rel="noopener" class="lnk">Watch video &rarr;</a>`
+    );
+  } else {
+    return "";
+  }
+  return new Handlebars.SafeString(`<div class="video-embed">${inner}</div>`);
+});
+
+// cycle(index, a, b, c, ...) → returns the option at index % count.
+// Used to rotate color/icon classes over an array without per-item data.
+Handlebars.registerHelper("cycle", function (...args: any[]) {
+  args.pop(); // Handlebars options object
+  const index = Number(args.shift()) || 0;
+  if (!args.length) return "";
+  return args[((index % args.length) + args.length) % args.length];
 });
 
 let compiledCorporateTemplate: Handlebars.TemplateDelegate | null = null;

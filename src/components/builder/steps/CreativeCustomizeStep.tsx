@@ -16,8 +16,9 @@ const PRESETS = [
 
 const SECTIONS = [
   { id: "portfolio-showcase", label: "Gallery Grid" },
-  { id: "skills", label: "Skills" },
+  { id: "skills", label: "Skills & Tools" },
   { id: "experience", label: "Experience / Journey" },
+  { id: "awards", label: "Awards & Certificates" },
 ];
 
 export function CreativeCustomizeStep({ data, onChange }: CreativeCustomizeStepProps) {

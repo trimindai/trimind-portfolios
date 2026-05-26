@@ -98,20 +98,26 @@ export function CreativeProfileStep({ data, onChange }: CreativeProfileStepProps
         />
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <TextField
+          label="Instagram URL"
+          value={basics.instagram}
+          onChange={(v) => updateBasics("instagram", v)}
+          placeholder="https://instagram.com/yourhandle"
+          hint="Where most artists & designers live"
+        />
         <TextField
           label="LinkedIn URL"
           value={basics.linkedin}
           onChange={(v) => updateBasics("linkedin", v)}
           placeholder="https://linkedin.com/in/yourname"
-          hint="Appears in the Contact section"
         />
         <TextField
           label="Website / Portfolio URL"
           value={basics.website}
           onChange={(v) => updateBasics("website", v)}
           placeholder="https://yourstudio.com"
-          hint="Personal site, Instagram, or Behance"
+          hint="Behance, Dribbble, or your own site"
         />
       </div>
 

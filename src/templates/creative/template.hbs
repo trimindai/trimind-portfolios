@@ -171,6 +171,14 @@ a { color: inherit; text-decoration: none; }
 .xp-meta { font-family: var(--font-mono); font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: var(--accent); margin: 4px 0 8px; }
 .xp-item p { font-size: 14px; color: var(--text-dim); line-height: 1.6; }
 
+/* ── Awards ── */
+.awards-grid { display: flex; flex-direction: column; }
+.award-item { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 12px; padding: 20px 0; border-top: 1px solid var(--border); }
+.award-item:last-child { border-bottom: 1px solid var(--border); }
+.award-name { font-size: 18px; font-weight: 600; }
+.award-issuer { font-size: 13px; color: var(--text-muted); margin-left: 12px; font-weight: 400; }
+.award-year { font-family: var(--font-mono); font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: var(--accent); white-space: nowrap; }
+
 /* ── Contact ── */
 .contact-grid { display: grid; grid-template-columns: 1fr; gap: 32px; }
 @media (min-width: 768px) { .contact-grid { grid-template-columns: repeat(2, 1fr); } }
@@ -193,6 +201,7 @@ a { color: inherit; text-decoration: none; }
   <nav class="nav-links">
     {{#if projects}}<a href="#gallery" class="nav-link"><span class="bk">[</span> Gallery <span class="bk">]</span></a>{{/if}}
     {{#if skills}}<a href="#skills" class="nav-link"><span class="bk">[</span> Skills <span class="bk">]</span></a>{{/if}}
+    {{#if certifications}}<a href="#awards" class="nav-link"><span class="bk">[</span> Awards <span class="bk">]</span></a>{{/if}}
     <a href="#contact" class="nav-link"><span class="bk">[</span> Contact <span class="bk">]</span></a>
   </nav>
 </header>
@@ -280,7 +289,7 @@ a { color: inherit; text-decoration: none; }
 <!-- Skills -->
 <section class="section" id="skills">
   <div class="container">
-    <div class="sec-head"><span class="section-label">Expertise &amp; Arsenal</span><span class="line"></span></div>
+    <div class="sec-head"><span class="section-label">Skills &amp; Tools</span><span class="line"></span></div>
     <div class="skills-wrap">
       {{#each skills}}
       <div class="skill-group">
@@ -312,6 +321,26 @@ a { color: inherit; text-decoration: none; }
 {{/unless}}
 {{/if}}
 
+{{#if certifications}}
+{{#unless (isHidden "awards")}}
+<!-- Awards & Certifications -->
+<section class="section" id="awards">
+  <div class="container">
+    <div class="sec-head"><span class="section-label">Recognition</span><span class="line"></span></div>
+    <h2 class="sec-title" style="margin-bottom: 40px;">Awards &amp; Certifications</h2>
+    <div class="awards-grid">
+      {{#each certifications}}
+      <div class="award-item">
+        <div><span class="award-name">{{this.name}}</span>{{#if this.issuer}}<span class="award-issuer">{{this.issuer}}</span>{{/if}}</div>
+        {{#if this.year}}<span class="award-year">{{this.year}}</span>{{/if}}
+      </div>
+      {{/each}}
+    </div>
+  </div>
+</section>
+{{/unless}}
+{{/if}}
+
 {{#if metrics}}
 <!-- Metrics marquee -->
 <div class="marquee-row">
@@ -331,6 +360,7 @@ a { color: inherit; text-decoration: none; }
       {{#if basics.email}}<div><p class="lbl">Email</p><a href="mailto:{{basics.email}}">{{basics.email}}</a></div>{{/if}}
       {{#if basics.phone}}<div><p class="lbl">Phone</p><a href="tel:{{basics.phone}}">{{basics.phone}}</a></div>{{/if}}
       <div><p class="lbl">Social</p><div class="contact-flex">
+        {{#if basics.instagram}}<a href="{{basics.instagram}}" target="_blank" rel="noopener">Instagram</a>{{/if}}
         {{#if basics.linkedin}}<a href="{{basics.linkedin}}" target="_blank" rel="noopener">LinkedIn</a>{{/if}}
         {{#if basics.github}}<a href="{{basics.github}}" target="_blank" rel="noopener">GitHub</a>{{/if}}
         {{#if basics.website}}<a href="{{basics.website}}" target="_blank" rel="noopener">Website</a>{{/if}}

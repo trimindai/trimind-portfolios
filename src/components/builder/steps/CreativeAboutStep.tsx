@@ -13,6 +13,7 @@ export function CreativeAboutStep({ data, onChange }: CreativeAboutStepProps) {
   const skills = data.skills || [];
   const experience = data.experience || [];
   const metrics = data.metrics || [];
+  const certifications = data.certifications || [];
 
   return (
     <div className="space-y-10">
@@ -109,6 +110,44 @@ export function CreativeAboutStep({ data, onChange }: CreativeAboutStepProps) {
                 onChange={(v) => update({ description: v })}
                 placeholder="A 30-piece show exploring desert ecology and memory."
                 rows={2}
+              />
+            </div>
+          )}
+        />
+      </div>
+
+      {/* Awards / certifications / licenses */}
+      <div>
+        <h2 className="text-xl font-semibold text-white mb-1">Awards, Certificates &amp; Licenses</h2>
+        <p className="text-sm text-[var(--land-body)] mb-4">
+          Show off recognition — awards, certifications, licenses, or honors. Shown in their own section.
+        </p>
+        <DynamicList
+          items={certifications}
+          onChange={(items) => onChange({ certifications: items })}
+          createEmpty={() => ({ name: "", issuer: "", year: "" })}
+          maxItems={12}
+          addLabel="Add Award / Certificate"
+          renderItem={(item, _, update) => (
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pr-16">
+              <TextField
+                label="Title"
+                value={item.name}
+                onChange={(v) => update({ name: v })}
+                placeholder="Best in Show"
+                examples={["Best in Show", "Adobe Certified Professional", "Interior Design License", "Gold — Dubai Lynx"]}
+              />
+              <TextField
+                label="Issuer"
+                value={item.issuer}
+                onChange={(v) => update({ issuer: v })}
+                placeholder="Kuwait Art Biennale"
+              />
+              <TextField
+                label="Year"
+                value={item.year || ""}
+                onChange={(v) => update({ year: v })}
+                placeholder="2024"
               />
             </div>
           )}

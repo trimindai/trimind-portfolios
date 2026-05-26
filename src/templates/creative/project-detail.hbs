@@ -18,7 +18,7 @@
   --accent: {{#if customization.accentColor}}{{customization.accentColor}}{{else}}#DFFF00{{/if}};
   --font-head: 'Geist', system-ui, sans-serif; --font-mono: 'Geist Mono', ui-monospace, monospace;
 }
-body { font-family: var(--font-head); background: var(--bg); color: var(--text); min-height: 100dvh; -webkit-font-smoothing: antialiased; }
+body { font-family: var(--font-head); background: var(--bg); color: var(--text); min-height: 100dvh; overflow-x: hidden; -webkit-font-smoothing: antialiased; }
 a { color: inherit; text-decoration: none; }
 .nav { position: fixed; top: 0; left: 0; right: 0; z-index: 50; display: flex; align-items: center; justify-content: space-between; height: 60px; padding: 0 24px; background: rgba(27,27,27,0.8); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); }
 .nav-brand { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; transition: color .25s; }
@@ -50,6 +50,19 @@ a { color: inherit; text-decoration: none; }
 .hero-img:hover .zoom-hint { opacity: 1; }
 .no-img { width: 100%; aspect-ratio: 16/10; display: flex; align-items: center; justify-content: center; border: 1px solid var(--border); border-radius: 2px; margin-bottom: 40px; background: linear-gradient(135deg, #222, #141414); font-family: var(--font-mono); font-size: 12px; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); }
 .desc { font-size: 15px; line-height: 1.7; color: var(--text-dim); margin-bottom: 32px; }
+/* Content blocks */
+.blocks { display: flex; flex-direction: column; gap: 28px; margin-bottom: 40px; }
+.blk-text { font-size: 15px; line-height: 1.8; color: var(--text-dim); }
+.blk-img { border: 1px solid var(--border); border-radius: 2px; overflow: hidden; }
+.blk-img img { width: 100%; height: auto; display: block; }
+.blk-img.full { margin-left: calc(50% - 50vw); margin-right: calc(50% - 50vw); width: 100vw; max-width: 100vw; border-left: 0; border-right: 0; border-radius: 0; }
+.blk-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+@media (min-width: 768px) { .blk-grid { grid-template-columns: repeat(3, 1fr); } }
+.blk-grid figure { border: 1px solid var(--border); border-radius: 2px; overflow: hidden; }
+.blk-grid img { width: 100%; height: 100%; aspect-ratio: 1; object-fit: cover; display: block; }
+figure figcaption { font-family: var(--font-mono); font-size: 10px; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); margin-top: 8px; }
+.blk-video .video-embed { position: relative; width: 100%; padding-top: 56.25%; border: 1px solid var(--border); border-radius: 2px; overflow: hidden; background: #000; }
+.blk-video .video-embed iframe, .blk-video .video-embed video { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; object-fit: contain; }
 .metabox { display: grid; grid-template-columns: 1fr; gap: 24px; padding: 24px; background: var(--bg-alt); border: 1px solid var(--border); margin-bottom: 32px; }
 @media (min-width: 768px) { .metabox { grid-template-columns: repeat(2, 1fr); } }
 .metabox .k { font-family: var(--font-mono); font-size: 9px; text-transform: uppercase; letter-spacing: 1.5px; color: var(--accent); margin-bottom: 8px; }
@@ -123,6 +136,17 @@ a { color: inherit; text-decoration: none; }
 
   {{#if project.technologies}}
   <div class="tags">{{#each project.technologies}}<span class="tag">{{this}}</span>{{/each}}</div>
+  {{/if}}
+
+  {{#if project.blocks}}
+  <div class="blocks">
+    {{#each project.blocks}}
+      {{#ifEq this.kind "paragraph"}}{{#if this.body}}<p class="blk-text">{{this.body}}</p>{{/if}}{{/ifEq}}
+      {{#ifEq this.kind "image"}}{{#if this.url}}<figure class="blk-img{{#if this.fullBleed}} full{{/if}}"><img src="{{this.url}}" alt="{{#if this.caption}}{{this.caption}}{{else}}{{../project.title}}{{/if}}" loading="lazy">{{#if this.caption}}<figcaption>{{this.caption}}</figcaption>{{/if}}</figure>{{/if}}{{/ifEq}}
+      {{#ifEq this.kind "imageGrid"}}{{#if this.images}}<div class="blk-grid">{{#each this.images}}{{#if this.url}}<figure><img src="{{this.url}}" alt="{{#if this.caption}}{{this.caption}}{{else}}image{{/if}}" loading="lazy">{{#if this.caption}}<figcaption>{{this.caption}}</figcaption>{{/if}}</figure>{{/if}}{{/each}}</div>{{/if}}{{/ifEq}}
+      {{#ifEq this.kind "video"}}{{#if this.url}}<figure class="blk-video">{{videoEmbed this.url}}{{#if this.caption}}<figcaption>{{this.caption}}</figcaption>{{/if}}</figure>{{/if}}{{/ifEq}}
+    {{/each}}
+  </div>
   {{/if}}
 
   {{#if project.links}}

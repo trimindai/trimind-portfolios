@@ -86,6 +86,7 @@ const basicsValidator = v.object({
   website: v.optional(v.string()),
   linkedin: v.optional(v.string()),
   github: v.optional(v.string()),
+  instagram: v.optional(v.string()),
   photoUrl: v.optional(v.string()),
   resumeUrl: v.optional(v.string()),
 });
@@ -160,14 +161,7 @@ export const update = mutation({
           coverUrl: v.optional(v.string()),
           meta: v.optional(
             v.object({
-              type: v.optional(
-                v.union(
-                  v.literal("academic"),
-                  v.literal("industrial"),
-                  v.literal("personal"),
-                  v.literal("research")
-                )
-              ),
+              type: v.optional(v.string()),
               year: v.optional(v.string()),
               courseCode: v.optional(v.string()),
               institution: v.optional(v.string()),
@@ -183,6 +177,7 @@ export const update = mutation({
                   v.literal("paragraph"),
                   v.literal("image"),
                   v.literal("imageGrid"),
+                  v.literal("video"),
                   v.literal("specs"),
                   v.literal("standards"),
                   v.literal("challenge")
