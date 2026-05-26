@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" dir="ltr">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Wadhah Almutairi — Cybersecurity Engineer</title>
-<meta name="description" content="Cybersecurity Engineer specializing in Penetration Testing, SIEM, Active Directory Security, and XDR.">
+<title>Wadhah Almutairi — Cybersecurity &amp; Computer Engineer</title>
+<meta name="description" content="Cybersecurity &amp; Computer Engineer specializing in penetration testing, Active Directory hardening, SIEM engineering, and security automation.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
@@ -12,8 +12,8 @@
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
 
 /* ═══════════════════════════════════════════════
-   COLOR PALETTE — Inspired by Wadhah's Artwork
-   Diamond shapes, molecular networks, sky blue + silver + cerulean
+   COLOR PALETTE — Cybersecurity / engineering theme
+   Molecular network motif: sky blue + silver + cerulean on deep navy
    ═══════════════════════════════════════════════ */
 :root{
   /* Core palette from artwork */
@@ -202,6 +202,38 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;padding:0 clamp(24px,4vw,64
 .skill-tag{font-family:var(--mono);font-size:11px;padding:4px 10px;border-radius:6px;background:rgba(74,173,219,0.04);color:var(--text-secondary);border:1px solid var(--border);transition:all .2s}
 .skill-card:hover .skill-tag{border-color:var(--border-hover);background:rgba(74,173,219,0.06)}
 
+/* ═══ TECH-STACK KEYBOARD (interactive isometric skill keyboard) ═══ */
+.kbd-wrap{direction:ltr;margin-top:4px}
+.kbd-readout{display:flex;align-items:center;gap:14px;justify-content:center;margin-bottom:6px;min-height:42px;flex-wrap:wrap}
+.kbd-readout-key{font-family:var(--mono);font-size:13px;font-weight:700;color:var(--bg-deep);background:var(--sky);min-width:30px;height:30px;display:inline-flex;align-items:center;justify-content:center;padding:0 9px;border-radius:7px;box-shadow:0 3px 0 rgba(0,0,0,.4);transition:all .2s}
+.kbd-readout-name{font-size:23px;font-weight:800;letter-spacing:-.5px;color:var(--text);transition:color .2s}
+.kbd-readout-cat{font-family:var(--mono);font-size:12px;color:var(--text-secondary);text-transform:lowercase}
+.kbd-scene{perspective:1600px;perspective-origin:50% 32%;display:flex;justify-content:center;padding:34px 0 54px;overflow:visible}
+.kbd-deck{position:relative;transform-style:preserve-3d;transform:rotateX(57deg) rotateZ(-44deg);transition:transform .7s cubic-bezier(.2,.8,.2,1)}
+.kbd-wrap:hover .kbd-deck{transform:rotateX(54deg) rotateZ(-44deg)}
+.kbd-base{position:absolute;inset:-22px;border-radius:22px;background:linear-gradient(150deg,#141d33,#0b1120);border:1px solid var(--border);box-shadow:0 44px 90px rgba(0,0,0,.6),inset 0 1px 0 rgba(255,255,255,.05);transform:translateZ(-16px)}
+.kbd-keys{display:grid;grid-template-columns:repeat(6,64px);gap:14px;transform-style:preserve-3d}
+.keycap{position:relative;width:64px;height:64px;border:none;border-radius:13px;cursor:none;background:linear-gradient(160deg,var(--cap-lt),var(--cap));transform-style:preserve-3d;transform:translateZ(0);transition:transform .16s cubic-bezier(.2,.9,.2,1),box-shadow .16s,filter .16s;box-shadow:0 7px 0 var(--cap-side),0 12px 18px rgba(0,0,0,.5)}
+.keycap .cap-inner{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;transform:rotateZ(44deg) rotateX(-57deg);color:#fff;font-size:24px;text-shadow:0 1px 3px rgba(0,0,0,.45)}
+.cap-abbr{font-family:var(--mono);font-weight:700;font-size:15px;letter-spacing:-.5px;color:#fff}
+.cap-legend{position:absolute;top:5px;left:8px;font-family:var(--mono);font-size:8px;font-weight:700;color:rgba(255,255,255,.6);transform:rotateZ(44deg) rotateX(-57deg);transform-origin:top left;pointer-events:none}
+.keycap:hover,.keycap.active{transform:translateZ(36px);box-shadow:0 15px 0 var(--cap-side),0 34px 42px rgba(0,0,0,.6),0 0 36px var(--cap-glow);filter:brightness(1.2) saturate(1.08);z-index:5}
+.keycap.pressed{filter:brightness(1.45) saturate(1.2)}
+.kc-sky{--cap-lt:#5fbfe8;--cap:#4AADDB;--cap-side:#256885;--cap-glow:rgba(74,173,219,.55)}
+.kc-cyan{--cap-lt:#4fe2ff;--cap:#00D4FF;--cap-side:#0a7d96;--cap-glow:rgba(0,212,255,.5)}
+.kc-success{--cap-lt:#5ee293;--cap:#2ED573;--cap-side:#1c8c4a;--cap-glow:rgba(46,213,115,.5)}
+.kc-cerulean{--cap-lt:#3a86c8;--cap:#1E6BAD;--cap-side:#123f66;--cap-glow:rgba(30,107,173,.55)}
+.kc-purple{--cap-lt:#a884f8;--cap:#8B5CF6;--cap-side:#5733a6;--cap-glow:rgba(139,92,246,.5)}
+.kc-silver{--cap-lt:#c3d0dd;--cap:#A8B8C8;--cap-side:#5f6e7d;--cap-glow:rgba(168,184,200,.45)}
+.kc-critical{--cap-lt:#ff6b78;--cap:#FF4757;--cap-side:#a32330;--cap-glow:rgba(255,71,87,.5)}
+.kbd-hint{text-align:center;font-family:var(--mono);font-size:12px;color:var(--text-secondary);margin-top:-22px}
+.kbd-hint i{color:var(--sky);margin-right:6px}
+.kbd-spline{height:520px;border-radius:18px;overflow:hidden;border:1px solid var(--border);background:var(--bg-deep)}
+.kbd-spline spline-viewer{width:100%;height:100%;display:block}
+.kbd-print{display:none}
+@media(max-width:900px){.kbd-keys{grid-template-columns:repeat(6,56px);gap:11px}.keycap{width:56px;height:56px}}
+@media(max-width:600px){.kbd-keys{grid-template-columns:repeat(5,48px);gap:9px}.keycap{width:48px;height:48px}.keycap .cap-inner{font-size:19px}.cap-abbr{font-size:13px}.kbd-deck{transform:rotateX(55deg) rotateZ(-44deg) scale(.92)}.kbd-readout-name{font-size:19px}}
+
 /* ═══ PROJECTS — PRO CYBERSECURITY CASE STUDY DISPLAY ═══ */
 .projects-showcase{display:flex;flex-direction:column;gap:24px}
 
@@ -349,7 +381,7 @@ footer span{font-family:var(--mono);font-size:11px;color:var(--text-tertiary)}
   .terminal-body{font-size:12px;padding:20px 16px}
   footer{flex-direction:column;gap:8px;text-align:center}
   .cursor,.cursor-glow{display:none!important}
-  a,button,.skill-card,.case-card,.case-featured,.cert-card,.hero-pill,.contact-link,.btn-primary,.btn-secondary,.nav-links a,.nav-cta,.exp-card,.hero-stat,.terminal{cursor:auto!important}
+  a,button,.skill-card,.keycap,.case-card,.case-featured,.cert-card,.hero-pill,.contact-link,.btn-primary,.btn-secondary,.nav-links a,.nav-cta,.exp-card,.hero-stat,.terminal{cursor:auto!important}
 }
 
 /* ═══ REDUCED MOTION ═══ */
@@ -412,16 +444,11 @@ footer span{font-family:var(--mono);font-size:11px;color:var(--text-tertiary)}
   #skills{padding:60px 24px 40px!important;background:var(--bg)!important;page-break-before:always!important;break-before:page!important;page-break-after:always!important;break-after:page!important;max-width:1200px!important;margin:0 auto!important}
   #skills .section-label{color:var(--sky)!important}
   #skills .section-title{color:var(--text)!important;margin-bottom:40px!important}
-  .skills-grid{grid-template-columns:repeat(2,1fr)!important;gap:16px!important}
-  .skill-card{background:var(--bg-card)!important;border:1px solid var(--border)!important;box-shadow:none!important;break-inside:avoid!important;padding:24px!important}
-  .skill-card h3{color:var(--text)!important}
-  .skill-tag{background:rgba(74,173,219,0.04)!important;color:var(--text-secondary)!important;border:1px solid var(--border)!important}
-  .skill-icon.sky{background:var(--sky-dim)!important;color:var(--sky)!important}
-  .skill-icon.cyan{background:var(--cyan-dim)!important;color:var(--cyan)!important}
-  .skill-icon.silver{background:var(--silver-dim)!important;color:var(--silver)!important}
-  .skill-icon.cerulean{background:var(--cerulean-dim)!important;color:var(--sky)!important}
-  .skill-icon.purple{background:var(--purple-dim)!important;color:var(--purple)!important}
-  .skill-icon.success{background:var(--success-dim)!important;color:var(--success)!important}
+  /* Keyboard does not print well → hide the 3D scene, show a readable list */
+  .kbd-scene,.kbd-hint,.kbd-readout,.kbd-spline{display:none!important}
+  .kbd-print{display:block!important}
+  .kbd-print-cat{color:var(--text-secondary)!important;font-family:var(--mono)!important;font-size:13px!important;line-height:1.8!important;break-inside:avoid!important;border-bottom:1px solid var(--border)!important;padding:9px 0!important}
+  .kbd-print-cat strong{color:var(--sky)!important}
 
   /* ── Projects / Cases — starts on new page ── */
   #projects{padding:60px 24px 40px!important;background:var(--bg)!important;page-break-before:always!important;break-before:page!important;max-width:1200px!important;margin:0 auto!important}
@@ -516,7 +543,7 @@ footer span{font-family:var(--mono);font-size:11px;color:var(--text-tertiary)}
 
 <!-- NAV -->
 <nav id="nav">
-  <div class="nav-logo">W<span>.</span>ALMUTAIRI</div>
+  <div class="nav-logo">WA<span>.</span></div>
   <ul class="nav-links">
     <li><a href="#skills">Skills</a></li>
     <li><a href="#projects">Cases</a></li>
@@ -533,24 +560,24 @@ footer span{font-family:var(--mono);font-size:11px;color:var(--text-tertiary)}
 <section class="hero" id="hero">
   <canvas id="heroCanvas"></canvas>
   <div class="hero-content">
-    <div class="hero-badge gs-reveal"><i class="fas fa-shield-halved"></i> Cybersecurity Engineer</div>
+    <div class="hero-badge gs-reveal"><i class="fas fa-shield-halved"></i> Cybersecurity &amp; Computer Engineer</div>
     <h1 class="hero-name gs-reveal">
-      <span>Wadhah</span><br>
-      <span class="gradient">Almutairi</span>
+      <span class="gradient">Wadhah Almutairi</span>
     </h1>
     <p class="hero-subtitle gs-reveal">
       <span class="typewriter" id="typewriter"></span>
     </p>
     <div class="hero-pills gs-reveal">
-      <span class="hero-pill"><i class="fas fa-crosshairs" style="color:var(--critical)"></i> Pen Testing</span>
-      <span class="hero-pill"><i class="fas fa-chart-line" style="color:var(--cyan)"></i> SIEM</span>
+      <span class="hero-pill"><i class="fas fa-crosshairs" style="color:var(--critical)"></i> Penetration Testing</span>
+      <span class="hero-pill"><i class="fas fa-chart-line" style="color:var(--cyan)"></i> SIEM Engineering</span>
       <span class="hero-pill"><i class="fas fa-network-wired" style="color:var(--success)"></i> Active Directory</span>
-      <span class="hero-pill"><i class="fas fa-eye" style="color:var(--sky)"></i> XDR</span>
-      <span class="hero-pill"><i class="fas fa-robot" style="color:var(--purple)"></i> Automation</span>
-      <span class="hero-pill"><i class="fab fa-docker" style="color:var(--silver)"></i> Docker</span>
+      <span class="hero-pill"><i class="fas fa-eye" style="color:var(--sky)"></i> XDR &amp; Threat Intel</span>
+      <span class="hero-pill"><i class="fas fa-robot" style="color:var(--purple)"></i> Programming</span>
+      <span class="hero-pill"><i class="fas fa-shield-halved" style="color:var(--silver)"></i> AI &amp; Data</span>
+      <span class="hero-pill"><i class="fas fa-crosshairs" style="color:var(--critical)"></i> DevSecOps</span>
     </div>
     <div class="hero-cta gs-reveal">
-      <a href="#projects" class="btn-primary"><i class="fas fa-folder-open"></i> View Cases</a>
+      <a href="#projects" class="btn-primary"><i class="fas fa-folder-open"></i> View Work</a>
       <a href="#contact" class="btn-secondary"><i class="fas fa-paper-plane"></i> Get in Touch</a>
     </div>
     <!-- Stats Bar -->
@@ -583,220 +610,267 @@ footer span{font-family:var(--mono);font-size:11px;color:var(--text-tertiary)}
   </div>
 </section>
 
+
 <div class="glow-divider"></div>
 
-<!-- SKILLS -->
+<!-- SKILLS — interactive tech-stack keyboard -->
 <section class="section" id="skills">
-  <div class="section-label gs-reveal">01 — Expertise</div>
+  <div class="section-label gs-reveal">01 — Tech Stack</div>
   <h2 class="section-title gs-reveal">What I Do</h2>
-  <div class="skills-grid">
-    <div class="skill-card gs-reveal">
-      <div class="skill-icon sky"><i class="fas fa-crosshairs"></i></div>
-      <h3>Penetration Testing</h3>
-      <div class="skill-tags">
-        <span class="skill-tag">SQL Injection</span><span class="skill-tag">XSS</span>
-        <span class="skill-tag">CEH</span><span class="skill-tag">Vuln Assessment</span>
+  <!-- Default: self-contained CSS/JS isometric keyboard, data-driven from skills -->
+  <div class="kbd-wrap gs-reveal" dir="ltr">
+    <div class="kbd-readout" id="kbdReadout">
+      <span class="kbd-readout-key" id="kbdReadoutKey">/</span>
+      <span class="kbd-readout-name" id="kbdReadoutName">My Tech Stack</span>
+      <span class="kbd-readout-cat" id="kbdReadoutCat">hover or press a key</span>
+    </div>
+    <div class="kbd-scene">
+      <div class="kbd-deck">
+        <div class="kbd-base"></div>
+        <div class="kbd-keys" id="kbdKeys">
+          <button type="button" class="keycap kc-sky" data-name="SQL Injection" data-cat="Penetration Testing" aria-label="SQL Injection — Penetration Testing">
+            <span class="cap-inner"><span class="cap-abbr">SI</span></span>
+            <span class="cap-legend"></span>
+          </button>
+          <button type="button" class="keycap kc-cyan" data-name="XSS" data-cat="Penetration Testing" aria-label="XSS — Penetration Testing">
+            <span class="cap-inner"><span class="cap-abbr">XSS</span></span>
+            <span class="cap-legend"></span>
+          </button>
+          <button type="button" class="keycap kc-success" data-name="Vuln Assessment" data-cat="Penetration Testing" aria-label="Vuln Assessment — Penetration Testing">
+            <span class="cap-inner"><span class="cap-abbr">VA</span></span>
+            <span class="cap-legend"></span>
+          </button>
+          <button type="button" class="keycap kc-cerulean" data-name="Incident Response" data-cat="Penetration Testing" aria-label="Incident Response — Penetration Testing">
+            <span class="cap-inner"><span class="cap-abbr">IR</span></span>
+            <span class="cap-legend"></span>
+          </button>
+          <button type="button" class="keycap kc-purple" data-name="Elastic Stack" data-cat="SIEM Engineering" aria-label="Elastic Stack — SIEM Engineering">
+            <span class="cap-inner"><span class="cap-abbr">ES</span></span>
+            <span class="cap-legend"></span>
+          </button>
+          <button type="button" class="keycap kc-silver" data-name="Winlogbeat" data-cat="SIEM Engineering" aria-label="Winlogbeat — SIEM Engineering">
+            <span class="cap-inner"><span class="cap-abbr">Winl</span></span>
+            <span class="cap-legend"></span>
+          </button>
+          <button type="button" class="keycap kc-critical" data-name="Kibana" data-cat="SIEM Engineering" aria-label="Kibana — SIEM Engineering">
+            <span class="cap-inner"><span class="cap-abbr">Kiba</span></span>
+            <span class="cap-legend"></span>
+          </button>
+          <button type="button" class="keycap kc-sky" data-name="Log Pipelines" data-cat="SIEM Engineering" aria-label="Log Pipelines — SIEM Engineering">
+            <span class="cap-inner"><span class="cap-abbr">LP</span></span>
+            <span class="cap-legend"></span>
+          </button>
+          <button type="button" class="keycap kc-cyan" data-name="GPO" data-cat="Active Directory" aria-label="GPO — Active Directory">
+            <span class="cap-inner"><span class="cap-abbr">GPO</span></span>
+            <span class="cap-legend"></span>
+          </button>
+          <button type="button" class="keycap kc-success" data-name="Domain Controller" data-cat="Active Directory" aria-label="Domain Controller — Active Directory">
+            <span class="cap-inner"><span class="cap-abbr">DC</span></span>
+            <span class="cap-legend"></span>
+          </button>
+          <button type="button" class="keycap kc-cerulean" data-name="DNS" data-cat="Active Directory" aria-label="DNS — Active Directory">
+            <span class="cap-inner"><i class="fas fa-network-wired"></i></span>
+            <span class="cap-legend"></span>
+          </button>
+          <button type="button" class="keycap kc-purple" data-name="IIS" data-cat="Active Directory" aria-label="IIS — Active Directory">
+            <span class="cap-inner"><span class="cap-abbr">IIS</span></span>
+            <span class="cap-legend"></span>
+          </button>
+          <button type="button" class="keycap kc-silver" data-name="Hardening" data-cat="Active Directory" aria-label="Hardening — Active Directory">
+            <span class="cap-inner"><span class="cap-abbr">Hard</span></span>
+            <span class="cap-legend"></span>
+          </button>
+          <button type="button" class="keycap kc-critical" data-name="Trend Micro" data-cat="XDR &amp; Threat Intel" aria-label="Trend Micro — XDR &amp; Threat Intel">
+            <span class="cap-inner"><span class="cap-abbr">TM</span></span>
+            <span class="cap-legend"></span>
+          </button>
+          <button type="button" class="keycap kc-sky" data-name="Vision One" data-cat="XDR &amp; Threat Intel" aria-label="Vision One — XDR &amp; Threat Intel">
+            <span class="cap-inner"><span class="cap-abbr">VO</span></span>
+            <span class="cap-legend"></span>
+          </button>
+          <button type="button" class="keycap kc-cyan" data-name="EDR" data-cat="XDR &amp; Threat Intel" aria-label="EDR — XDR &amp; Threat Intel">
+            <span class="cap-inner"><span class="cap-abbr">EDR</span></span>
+            <span class="cap-legend"></span>
+          </button>
+          <button type="button" class="keycap kc-success" data-name="Endpoint" data-cat="XDR &amp; Threat Intel" aria-label="Endpoint — XDR &amp; Threat Intel">
+            <span class="cap-inner"><span class="cap-abbr">Endp</span></span>
+            <span class="cap-legend"></span>
+          </button>
+          <button type="button" class="keycap kc-cerulean" data-name="Python" data-cat="Programming" aria-label="Python — Programming">
+            <span class="cap-inner"><i class="fab fa-python"></i></span>
+            <span class="cap-legend"></span>
+          </button>
+          <button type="button" class="keycap kc-purple" data-name="PowerShell" data-cat="Programming" aria-label="PowerShell — Programming">
+            <span class="cap-inner"><span class="cap-abbr">PS</span></span>
+            <span class="cap-legend"></span>
+          </button>
+          <button type="button" class="keycap kc-silver" data-name="Java" data-cat="Programming" aria-label="Java — Programming">
+            <span class="cap-inner"><i class="fab fa-java"></i></span>
+            <span class="cap-legend"></span>
+          </button>
+          <button type="button" class="keycap kc-critical" data-name="C" data-cat="Programming" aria-label="C — Programming">
+            <span class="cap-inner"><span class="cap-abbr">C</span></span>
+            <span class="cap-legend"></span>
+          </button>
+          <button type="button" class="keycap kc-sky" data-name="Machine Learning" data-cat="AI &amp; Data" aria-label="Machine Learning — AI &amp; Data">
+            <span class="cap-inner"><i class="fas fa-robot"></i></span>
+            <span class="cap-legend"></span>
+          </button>
+          <button type="button" class="keycap kc-cyan" data-name="NLP" data-cat="AI &amp; Data" aria-label="NLP — AI &amp; Data">
+            <span class="cap-inner"><span class="cap-abbr">NLP</span></span>
+            <span class="cap-legend"></span>
+          </button>
+          <button type="button" class="keycap kc-success" data-name="Pandas" data-cat="AI &amp; Data" aria-label="Pandas — AI &amp; Data">
+            <span class="cap-inner"><i class="fas fa-chart-line"></i></span>
+            <span class="cap-legend"></span>
+          </button>
+          <button type="button" class="keycap kc-cerulean" data-name="Docker" data-cat="DevSecOps" aria-label="Docker — DevSecOps">
+            <span class="cap-inner"><i class="fab fa-docker"></i></span>
+            <span class="cap-legend"></span>
+          </button>
+          <button type="button" class="keycap kc-purple" data-name="Containers" data-cat="DevSecOps" aria-label="Containers — DevSecOps">
+            <span class="cap-inner"><span class="cap-abbr">Cont</span></span>
+            <span class="cap-legend"></span>
+          </button>
+          <button type="button" class="keycap kc-silver" data-name="CI/CD" data-cat="DevSecOps" aria-label="CI/CD — DevSecOps">
+            <span class="cap-inner"><span class="cap-abbr">CC</span></span>
+            <span class="cap-legend"></span>
+          </button>
+        </div>
       </div>
     </div>
-    <div class="skill-card gs-reveal">
-      <div class="skill-icon cyan"><i class="fas fa-chart-line"></i></div>
-      <h3>SIEM Engineering</h3>
-      <div class="skill-tags">
-        <span class="skill-tag">Elastic Stack</span><span class="skill-tag">Winlogbeat</span>
-        <span class="skill-tag">Kibana</span><span class="skill-tag">Log Pipelines</span>
-      </div>
-    </div>
-    <div class="skill-card gs-reveal">
-      <div class="skill-icon success"><i class="fas fa-network-wired"></i></div>
-      <h3>Active Directory</h3>
-      <div class="skill-tags">
-        <span class="skill-tag">GPO</span><span class="skill-tag">Domain Controller</span>
-        <span class="skill-tag">Delegation</span><span class="skill-tag">Hardening</span>
-      </div>
-    </div>
-    <div class="skill-card gs-reveal">
-      <div class="skill-icon cerulean"><i class="fas fa-eye"></i></div>
-      <h3>XDR & Threat Intel</h3>
-      <div class="skill-tags">
-        <span class="skill-tag">Trend Micro</span><span class="skill-tag">Vision One</span>
-        <span class="skill-tag">EDR</span><span class="skill-tag">Endpoint</span>
-      </div>
-    </div>
-    <div class="skill-card gs-reveal">
-      <div class="skill-icon purple"><i class="fas fa-robot"></i></div>
-      <h3>Automation & AI</h3>
-      <div class="skill-tags">
-        <span class="skill-tag">Python</span><span class="skill-tag">PowerShell</span>
-        <span class="skill-tag">NLP</span><span class="skill-tag">ML</span>
-      </div>
-    </div>
-    <div class="skill-card gs-reveal">
-      <div class="skill-icon silver"><i class="fab fa-docker"></i></div>
-      <h3>DevSecOps</h3>
-      <div class="skill-tags">
-        <span class="skill-tag">Docker</span><span class="skill-tag">CI/CD</span>
-        <span class="skill-tag">Containers</span><span class="skill-tag">IaC</span>
-      </div>
-    </div>
+    <p class="kbd-hint"><i class="fas fa-keyboard"></i> hint: press a key — or hover a cap</p>
+  </div>
+  <!-- Print-only readable fallback (the iso keyboard does not print well) -->
+  <div class="kbd-print">
+    <div class="kbd-print-cat"><strong>Penetration Testing</strong>: SQL Injection, XSS, Vuln Assessment, Incident Response</div>
+    <div class="kbd-print-cat"><strong>SIEM Engineering</strong>: Elastic Stack, Winlogbeat, Kibana, Log Pipelines</div>
+    <div class="kbd-print-cat"><strong>Active Directory</strong>: GPO, Domain Controller, DNS, IIS, Hardening</div>
+    <div class="kbd-print-cat"><strong>XDR &amp; Threat Intel</strong>: Trend Micro, Vision One, EDR, Endpoint</div>
+    <div class="kbd-print-cat"><strong>Programming</strong>: Python, PowerShell, Java, C</div>
+    <div class="kbd-print-cat"><strong>AI &amp; Data</strong>: Machine Learning, NLP, Pandas</div>
+    <div class="kbd-print-cat"><strong>DevSecOps</strong>: Docker, Containers, CI/CD</div>
   </div>
 </section>
 
+
+
 <div class="glow-divider"></div>
 
-<!-- PROJECTS — PRO CYBERSECURITY CASE FILE DISPLAY -->
+<!-- PROJECTS — CASE FILE DISPLAY -->
 <section class="section" id="projects">
   <div class="section-label gs-reveal">02 — Case Files</div>
-  <h2 class="section-title gs-reveal">Security Projects</h2>
+  <h2 class="section-title gs-reveal">Projects</h2>
 
   <div class="projects-showcase">
-    <!-- Featured Critical Discovery -->
+    <!-- Featured Project -->
     <div class="case-featured gs-reveal">
       <div class="case-featured-header">
-        <div class="case-featured-icon"><i class="fas fa-skull-crossbones"></i></div>
+        <div class="case-featured-icon"><i class="fas fa-star"></i></div>
         <div>
-          <div class="case-severity severity-critical"><i class="fas fa-radiation"></i> Critical Severity</div>
-          <h3>Enterprise Vulnerability Discovery & Mitigation</h3>
-          <p>Discovered a critical security vulnerability in an enterprise system during authorized penetration testing. Executed rapid response and coordinated remediation, preventing a potential organizational breach.</p>
+          <div class="case-severity severity-critical"><i class="fas fa-bolt"></i> Featured Project</div>
+          <h3>Enterprise Penetration Testing &amp; Vulnerability Remediation</h3>
+          <p>Conducted authorized security assessments — SQL injection, information disclosure, and application vulnerabilities — across KUNA&#x27;s enterprise systems, delivered CEH-level penetration-testing reports, and coordinated remediation guidance.</p>
         </div>
       </div>
       <div class="case-metrics">
         <div class="case-metric">
-          <div class="case-metric-icon red"><i class="fas fa-shield-halved"></i></div>
-          <span>Organization Protected</span>
+          <div class="case-metric-icon red"><i class="fas fa-circle-check"></i></div>
+          <span>50+ Vulnerabilities Found</span>
         </div>
         <div class="case-metric">
-          <div class="case-metric-icon red"><i class="fas fa-bolt"></i></div>
-          <span>Rapid Response</span>
+          <div class="case-metric-icon red"><i class="fas fa-circle-check"></i></div>
+          <span>CEH Reports Delivered</span>
         </div>
         <div class="case-metric">
-          <div class="case-metric-icon red"><i class="fas fa-file-shield"></i></div>
-          <span>CEH Report Delivered</span>
-        </div>
-        <div class="case-metric">
-          <div class="case-metric-icon red"><i class="fas fa-clock"></i></div>
-          <span>24h Resolution</span>
+          <div class="case-metric-icon red"><i class="fas fa-circle-check"></i></div>
+          <span>KUNA Enterprise Scope</span>
         </div>
       </div>
     </div>
 
     <!-- Case Cards Grid -->
     <div class="cases-grid">
-      <!-- Case 001: XDR -->
+            
       <div class="case-card gs-reveal">
         <div class="case-header">
-          <div class="case-status status-complete"><div class="case-status-dot"></div> Deployed</div>
-          <div class="case-id">CASE-001</div>
+          <div class="case-status status-complete"><div class="case-status-dot"></div> Project</div>
+          <div class="case-id">CASE-1</div>
         </div>
         <div class="case-body">
-          <div class="case-icon ci-sky"><i class="fas fa-satellite-dish"></i></div>
-          <h3>Trend Micro Vision One (XDR)</h3>
-          <p>Integrated enterprise assets for unified threat visibility and automated incident response across KUNA's infrastructure.</p>
+          <div class="case-icon ci-cyan"><i class="fas fa-folder-open"></i></div>
+          <h3>Trend Micro Vision One (XDR) Integration</h3>
+          <p>Onboarded and integrated KUNA assets into Trend Micro Vision One for unified threat visibility and automated incident-response workflows.</p>
           <div class="case-tech">
-            <span>XDR</span><span>Endpoints</span><span>Automation</span><span>Trend Micro</span>
-          </div>
-          <div class="case-impact">
-            <i class="fas fa-arrow-trend-up"></i> Full endpoint coverage achieved
+            <span>Trend Micro</span><span>Vision One</span><span>XDR</span><span>Automation</span>
           </div>
         </div>
       </div>
-
-      <!-- Case 002: SIEM -->
+      
       <div class="case-card gs-reveal">
         <div class="case-header">
-          <div class="case-status status-complete"><div class="case-status-dot"></div> Deployed</div>
-          <div class="case-id">CASE-002</div>
+          <div class="case-status status-complete"><div class="case-status-dot"></div> Project</div>
+          <div class="case-id">CASE-2</div>
         </div>
         <div class="case-body">
-          <div class="case-icon ci-cyan"><i class="fas fa-database"></i></div>
-          <h3>Elastic Stack SIEM Pipeline</h3>
-          <p>Automated log extraction and parsing into structured databases using Python for real-time threat detection.</p>
+          <div class="case-icon ci-success"><i class="fas fa-folder-open"></i></div>
+          <h3>Logging Automation with Elastic Stack</h3>
+          <p>Developed Python automation to extract Elasticsearch logs into structured local databases, feeding Elastic Stack + Winlogbeat pipelines for real-time threat detection.</p>
           <div class="case-tech">
             <span>Elastic Stack</span><span>Python</span><span>Winlogbeat</span><span>Kibana</span>
           </div>
-          <div class="case-impact">
-            <i class="fas fa-arrow-trend-up"></i> Real-time monitoring enabled
-          </div>
         </div>
       </div>
-
-      <!-- Case 003: WOL -->
+      
       <div class="case-card gs-reveal">
         <div class="case-header">
-          <div class="case-status status-complete"><div class="case-status-dot"></div> Deployed</div>
-          <div class="case-id">CASE-003</div>
+          <div class="case-status status-complete"><div class="case-status-dot"></div> Project</div>
+          <div class="case-id">CASE-3</div>
         </div>
         <div class="case-body">
-          <div class="case-icon ci-success"><i class="fas fa-tower-broadcast"></i></div>
-          <h3>Wake-on-LAN Enterprise</h3>
-          <p>Engineered WOL solution across multi-VLAN environments enabling remote patching and maintenance operations.</p>
+          <div class="case-icon ci-cerulean"><i class="fas fa-folder-open"></i></div>
+          <h3>Wake-on-LAN Enterprise Deployment</h3>
+          <p>Engineered a Wake-on-LAN solution across multi-VLAN environments enabling remote patching and automated maintenance operations.</p>
           <div class="case-tech">
-            <span>Networking</span><span>VLAN</span><span>Automation</span><span>PowerShell</span>
-          </div>
-          <div class="case-impact">
-            <i class="fas fa-arrow-trend-up"></i> Remote patching across all VLANs
+            <span>Networking</span><span>VLAN</span><span>PowerShell</span><span>Automation</span>
           </div>
         </div>
       </div>
-
-      <!-- Case 004: Reporting -->
+      
       <div class="case-card gs-reveal">
         <div class="case-header">
-          <div class="case-status status-complete"><div class="case-status-dot"></div> Deployed</div>
-          <div class="case-id">CASE-004</div>
+          <div class="case-status status-complete"><div class="case-status-dot"></div> Project</div>
+          <div class="case-id">CASE-4</div>
         </div>
         <div class="case-body">
-          <div class="case-icon ci-cerulean"><i class="fas fa-file-code"></i></div>
-          <h3>Security Report Automation</h3>
-          <p>Built CEH-style structured security reports with automated documentation and evidence collection workflows.</p>
+          <div class="case-icon ci-purple"><i class="fas fa-folder-open"></i></div>
+          <h3>Security Reporting &amp; Vulnerability Automation</h3>
+          <p>Built CEH-style structured security reports with automated documentation and evidence-collection workflows, reducing repetitive reporting effort.</p>
           <div class="case-tech">
             <span>Python</span><span>CEH Framework</span><span>Reports</span><span>Automation</span>
           </div>
-          <div class="case-impact">
-            <i class="fas fa-arrow-trend-up"></i> Report generation time reduced 80%
-          </div>
         </div>
       </div>
-
-      <!-- Case 005: Chatbot -->
+      
       <div class="case-card gs-reveal">
         <div class="case-header">
-          <div class="case-status status-academic"><div class="case-status-dot"></div> Senior Project</div>
-          <div class="case-id">CASE-005</div>
+          <div class="case-status status-complete"><div class="case-status-dot"></div> Project</div>
+          <div class="case-id">CASE-5</div>
         </div>
         <div class="case-body">
-          <div class="case-icon ci-purple"><i class="fas fa-brain"></i></div>
-          <h3>AI Multilingual Chatbot</h3>
-          <p>NLP-powered chatbot with custom datasets enabling multilingual student support at university scale.</p>
+          <div class="case-icon ci-silver"><i class="fas fa-folder-open"></i></div>
+          <h3>AI-Powered Multilingual Chatbot</h3>
+          <p>University senior project: an intelligent multilingual chatbot that understands user questions and generates accurate automated responses. Designed the NLP pipeline, UI, and training datasets, and deployed it as a functional system for students.</p>
           <div class="case-tech">
-            <span>Python</span><span>NLP</span><span>Machine Learning</span><span>TensorFlow</span>
-          </div>
-          <div class="case-impact">
-            <i class="fas fa-graduation-cap"></i> University senior project
-          </div>
-        </div>
-      </div>
-
-      <!-- Case 006: LogonTracer -->
-      <div class="case-card gs-reveal">
-        <div class="case-header">
-          <div class="case-status status-forensic"><div class="case-status-dot"></div> Forensics</div>
-          <div class="case-id">CASE-006</div>
-        </div>
-        <div class="case-body">
-          <div class="case-icon ci-silver"><i class="fas fa-diagram-project"></i></div>
-          <h3>LogonTracer — AD Visualization</h3>
-          <p>Graph-based analysis of Windows Active Directory logs with PageRank anomaly detection for threat hunting.</p>
-          <div class="case-tech">
-            <span>LogonTracer</span><span>Active Directory</span><span>Forensics</span><span>PageRank</span>
-          </div>
-          <div class="case-impact">
-            <i class="fas fa-magnifying-glass"></i> Anomaly detection operational
+            <span>Python</span><span>NLP</span><span>Machine Learning</span><span>Pandas</span>
           </div>
         </div>
       </div>
     </div>
   </div>
 </section>
+
+
 
 <div class="glow-divider"></div>
 
@@ -808,35 +882,36 @@ footer span{font-family:var(--mono);font-size:11px;color:var(--text-tertiary)}
     <div class="exp-card gs-reveal">
       <div class="exp-header">
         <div class="exp-info">
-          <h3>Cybersecurity & IT Engineer</h3>
+          <h3>Cybersecurity &amp; IT Engineer</h3>
           <div class="company"><i class="fas fa-building-shield"></i> Kuwait News Agency (KUNA)</div>
         </div>
         <div class="exp-date">2024 — Present</div>
       </div>
       <div class="exp-highlights">
-        <div class="exp-highlight"><i class="fas fa-crosshairs"></i> Security assessments — SQL Injection, info disclosure</div>
-        <div class="exp-highlight"><i class="fas fa-file-shield"></i> CEH-level pen testing & reporting</div>
-        <div class="exp-highlight"><i class="fas fa-server"></i> Active Directory hardening & GPO security</div>
-        <div class="exp-highlight"><i class="fas fa-chart-bar"></i> Elastic Stack + Winlogbeat pipelines</div>
-        <div class="exp-highlight"><i class="fab fa-docker"></i> Docker for isolated testing environments</div>
-        <div class="exp-highlight"><i class="fas fa-tower-broadcast"></i> Wake-on-LAN across VLANs</div>
+        <div class="exp-highlight"><i class="fas fa-crosshairs"></i> Conducted security assessments — SQL injection, information disclosure, and application vulnerabilities</div>
+        <div class="exp-highlight"><i class="fas fa-file-shield"></i> Delivered CEH-level penetration-testing reports and remediation guidance</div>
+        <div class="exp-highlight"><i class="fas fa-server"></i> Managed Active Directory security — GPO hardening, delegated permissions, domain-controller protection</div>
+        <div class="exp-highlight"><i class="fas fa-chart-bar"></i> Built and optimized Elastic Stack + Winlogbeat logging pipelines</div>
+        <div class="exp-highlight"><i class="fas fa-code"></i> Used Docker for isolated testing, deployments, and tool environments</div>
+        <div class="exp-highlight"><i class="fas fa-tower-broadcast"></i> Designed and implemented Wake-on-LAN across VLANs for automated remote maintenance</div>
       </div>
     </div>
     <div class="exp-card gs-reveal">
       <div class="exp-header">
         <div class="exp-info">
           <h3>B.Sc. Computer Engineering</h3>
-          <div class="company"><i class="fas fa-graduation-cap"></i> American University of the Middle East</div>
+          <div class="company"><i class="fas fa-graduation-cap"></i> American University of the Middle East (AUM)</div>
         </div>
         <div class="exp-date">2019 — 2024</div>
       </div>
       <div class="exp-highlights">
-        <div class="exp-highlight"><i class="fas fa-brain"></i> Senior Project: AI Multilingual Chatbot</div>
-        <div class="exp-highlight"><i class="fas fa-code"></i> Machine Learning, NLP, Full-Stack Dev</div>
+        <div class="exp-highlight"><i class="fas fa-book"></i> Senior Project: AI-Powered Multilingual Chatbot — Machine Learning, NLP, and full-stack development.</div>
       </div>
     </div>
   </div>
 </section>
+
+
 
 <div class="glow-divider"></div>
 
@@ -847,21 +922,22 @@ footer span{font-family:var(--mono);font-size:11px;color:var(--text-tertiary)}
   <div class="certs-grid">
     <div class="cert-card gs-reveal">
       <div class="cert-badge" style="background:var(--critical-dim);color:var(--critical)"><i class="fas fa-user-secret"></i></div>
-      <h3>Certified Ethical Hacker</h3>
-      <p>EC-Council — CEH</p>
+      <h3>Certified Ethical Hacker (CEH)</h3>
+      <p>EC-Council</p>
     </div>
     <div class="cert-card gs-reveal">
-      <div class="cert-badge" style="background:var(--sky-dim);color:var(--sky)"><i class="fas fa-chart-bar"></i></div>
-      <h3>Data Science</h3>
-      <p>Coded Academy</p>
+      <div class="cert-badge" style="background:var(--sky-dim);color:var(--sky)"><i class="fas fa-certificate"></i></div>
+      <h3>Data Science Course</h3>
+      <p>CODED Academy</p>
     </div>
     <div class="cert-card gs-reveal">
-      <div class="cert-badge" style="background:var(--cyan-dim);color:var(--cyan)"><i class="fas fa-code"></i></div>
-      <h3>Web Development</h3>
-      <p>Coded Academy</p>
+      <div class="cert-badge" style="background:var(--cyan-dim);color:var(--cyan)"><i class="fas fa-award"></i></div>
+      <h3>Web Development Bootcamp</h3>
+      <p>CODED Academy</p>
     </div>
   </div>
 </section>
+
 
 <div class="glow-divider"></div>
 
@@ -871,37 +947,44 @@ footer span{font-family:var(--mono);font-size:11px;color:var(--text-tertiary)}
     <!-- Left: Text & Links -->
     <div class="contact-left">
       <div class="section-label gs-reveal">05 — Connect</div>
-      <h2 class="contact-title gs-reveal">Let's Talk Security</h2>
-      <p class="contact-sub gs-reveal">Open for opportunities, collaborations, and consulting.</p>
+      <h2 class="contact-title gs-reveal">Let's Connect</h2>
+      <p class="contact-sub gs-reveal">Cybersecurity &amp; Computer Engineer specializing in penetration testing, Active Directory hardening, SIEM engineering, and security automation.</p>
       <div class="contact-links gs-reveal">
         <a href="mailto:w.baazm@gmail.com" class="contact-link"><i class="fas fa-envelope"></i> w.baazm@gmail.com</a>
-        <a href="https://www.linkedin.com/in/wadha-a-685544322?utm_source=share_via&utm_content=profile&utm_medium=member_ios" target="_blank" rel="noopener noreferrer" class="contact-link"><i class="fab fa-linkedin"></i> LinkedIn</a>
+        
+        
+        
+        
         <a href="javascript:void(0)" class="contact-link" onclick="window.print()"><i class="fas fa-download"></i> Download CV</a>
       </div>
     </div>
     <!-- Right: Terminal -->
     <div class="contact-right gs-reveal">
-      <div class="terminal">
+      <div class="terminal" dir="ltr">
         <div class="terminal-bar">
           <div class="terminal-dot red"></div>
           <div class="terminal-dot yellow"></div>
           <div class="terminal-dot green"></div>
-          <span class="terminal-title">wadhah@kuna:~</span>
+          <span class="terminal-title">WA@portfolio:~</span>
         </div>
         <div class="terminal-body">
           <span class="terminal-line"><span class="terminal-prompt">$ </span><span class="terminal-cmd">whoami</span></span>
-          <span class="terminal-line"><span class="terminal-output">cybersecurity_engineer</span></span>
+          <span class="terminal-line"><span class="terminal-output">Cybersecurity &amp; Computer Engineer</span></span>
           <span class="terminal-line">&nbsp;</span>
           <span class="terminal-line"><span class="terminal-prompt">$ </span><span class="terminal-cmd">cat credentials.txt</span></span>
-          <span class="terminal-line"><span class="terminal-key">CEH</span> <span class="terminal-val">Certified Ethical Hacker</span></span>
-          <span class="terminal-line"><span class="terminal-key">B.Eng</span> <span class="terminal-val">Computer Engineering — AUM</span></span>
+          <span class="terminal-line"><span class="terminal-key">✓</span> <span class="terminal-val">Certified Ethical Hacker (CEH) — EC-Council</span></span>
+          <span class="terminal-line"><span class="terminal-key">✓</span> <span class="terminal-val">Data Science Course — CODED Academy</span></span>
+          <span class="terminal-line"><span class="terminal-key">✓</span> <span class="terminal-val">Web Development Bootcamp — CODED Academy</span></span>
           <span class="terminal-line">&nbsp;</span>
           <span class="terminal-line"><span class="terminal-prompt">$ </span><span class="terminal-cmd">nmap --top-skills</span></span>
           <span class="terminal-line"><span class="terminal-header">PORT</span> <span class="terminal-header">SERVICE</span></span>
           <span class="terminal-line"><span class="terminal-port">443</span>  <span class="terminal-val">Penetration Testing</span></span>
           <span class="terminal-line"><span class="terminal-port">514</span>  <span class="terminal-val">SIEM Engineering</span></span>
           <span class="terminal-line"><span class="terminal-port">389</span>  <span class="terminal-val">Active Directory</span></span>
-          <span class="terminal-line"><span class="terminal-port">5601</span> <span class="terminal-val">Elastic Stack</span></span>
+          <span class="terminal-line"><span class="terminal-port">5601</span>  <span class="terminal-val">XDR &amp; Threat Intel</span></span>
+          <span class="terminal-line"><span class="terminal-port">22</span>  <span class="terminal-val">Programming</span></span>
+          <span class="terminal-line"><span class="terminal-port">80</span>  <span class="terminal-val">AI &amp; Data</span></span>
+          <span class="terminal-line"><span class="terminal-port">443</span>  <span class="terminal-val">DevSecOps</span></span>
           <span class="terminal-line">&nbsp;</span>
           <span class="terminal-line"><span class="terminal-prompt">$ </span><span class="terminal-blink">_</span></span>
         </div>
@@ -912,14 +995,18 @@ footer span{font-family:var(--mono);font-size:11px;color:var(--text-tertiary)}
 
 <footer>
   <span>&copy; 2026 Wadhah Almutairi</span>
-  <span>Kuwait</span>
+  <span>Kuwait City, Kuwait</span>
 </footer>
 
 <!-- GSAP -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
 <script>
-// ═══ GSAP SCROLL ANIMATIONS ═══
+// ═══ GSAP SCROLL ANIMATIONS (with no-GSAP fallback) ═══
+if (typeof gsap === 'undefined') {
+  // CDN failed to load — reveal all content immediately so nothing stays hidden
+  document.querySelectorAll('.gs-reveal').forEach(function (el) { el.style.opacity = '1'; el.style.transform = 'none'; });
+} else {
 gsap.registerPlugin(ScrollTrigger);
 
 // Hero stagger — animate TO visible
@@ -961,6 +1048,7 @@ function setActiveNav(id) {
     a.classList.toggle('active', isActive);
   });
 }
+} // end GSAP guard
 
 // ═══ PARTICLE CANVAS — Molecular Network (inspired by artwork's interconnected nodes) ═══
 const canvas = document.getElementById('heroCanvas');
@@ -1098,7 +1186,7 @@ document.addEventListener('mousemove', e => {
 })();
 
 // Cursor hover states
-document.querySelectorAll('a,button,.skill-card,.case-card,.case-featured,.cert-card,.hero-pill,.contact-link,.exp-card,.hero-stat,.terminal').forEach(el => {
+document.querySelectorAll('a,button,.skill-card,.keycap,.case-card,.case-featured,.cert-card,.hero-pill,.contact-link,.exp-card,.hero-stat,.terminal').forEach(el => {
   el.addEventListener('mouseenter', () => cursorOuter.classList.add('hover'));
   el.addEventListener('mouseleave', () => cursorOuter.classList.remove('hover'));
 });
@@ -1122,11 +1210,10 @@ document.querySelectorAll('.skill-card,.case-card').forEach(card => {
 
 // ═══ TYPEWRITER ═══
 const phrases = [
-  'Securing enterprise systems.',
-  'Breaking what needs breaking.',
-  'SIEM pipelines & threat detection.',
-  'Ethical hacking & vulnerability research.'
-];
+  "Penetration Testing · SIEM Engineering · Active Directory",
+  "Cybersecurity & Computer Engineer specializing in penetration testing, Active Directory hardening, SIEM engineering, and security automation.",
+  "Cybersecurity & Computer Engineer"
+].filter(Boolean);
 let phraseIdx = 0, charIdx = 0, deleting = false;
 const tw = document.getElementById('typewriter');
 
@@ -1172,6 +1259,64 @@ document.querySelectorAll('nav a[href^="#"]').forEach(a => {
 window.addEventListener('scroll', () => {
   document.getElementById('nav').style.background = scrollY > 80 ? 'rgba(10,14,26,0.92)' : 'rgba(10,14,26,0.6)';
 });
+
+// ═══ TECH-STACK KEYBOARD ═══
+(function(){
+  const wrap = document.querySelector('.kbd-wrap');
+  if (!wrap) return; // Spline path or no skills — nothing to wire
+  const keysWrap = wrap.querySelector('.kbd-keys');
+  const keys = Array.from(wrap.querySelectorAll('.keycap'));
+  if (!keys.length) return;
+  const nameEl = document.getElementById('kbdReadoutName');
+  const catEl = document.getElementById('kbdReadoutCat');
+  const keyEl = document.getElementById('kbdReadoutKey');
+  const defName = nameEl ? nameEl.textContent : '';
+  const defCat = catEl ? catEl.textContent : '';
+  const LAYOUT = 'qwertyuiopasdfghjklzxcvbnm1234567890';
+  const byKey = {};
+  keys.forEach((cap, i) => {
+    const k = LAYOUT[i];
+    if (!k) return;
+    cap.dataset.key = k;
+    byKey[k] = cap;
+    const lg = cap.querySelector('.cap-legend');
+    if (lg) lg.textContent = k.toUpperCase();
+  });
+  let clearT;
+  function activate(cap){
+    keys.forEach(c => { if (c !== cap) c.classList.remove('active'); });
+    cap.classList.add('active');
+    if (nameEl) nameEl.textContent = cap.dataset.name || '';
+    if (catEl) catEl.textContent = cap.dataset.cat || '';
+    if (keyEl) keyEl.textContent = (cap.dataset.key || '/').toUpperCase();
+  }
+  function reset(){
+    keys.forEach(c => c.classList.remove('active'));
+    if (nameEl) nameEl.textContent = defName;
+    if (catEl) catEl.textContent = defCat;
+    if (keyEl) keyEl.textContent = '/';
+  }
+  keys.forEach(cap => {
+    cap.addEventListener('mouseenter', () => { clearTimeout(clearT); activate(cap); });
+    cap.addEventListener('focus', () => { clearTimeout(clearT); activate(cap); });
+    cap.addEventListener('click', () => { clearTimeout(clearT); activate(cap); });
+  });
+  if (keysWrap) keysWrap.addEventListener('mouseleave', reset);
+  document.addEventListener('keydown', e => {
+    if (e.metaKey || e.ctrlKey || e.altKey) return;
+    const ae = document.activeElement;
+    const tag = (ae && ae.tagName) || '';
+    if (tag === 'INPUT' || tag === 'TEXTAREA' || (ae && ae.isContentEditable)) return;
+    const cap = byKey[(e.key || '').toLowerCase()];
+    if (!cap) return;
+    clearTimeout(clearT);
+    activate(cap);
+    cap.classList.add('pressed');
+    clearTimeout(cap._pt);
+    cap._pt = setTimeout(() => cap.classList.remove('pressed'), 170);
+    clearT = setTimeout(reset, 1700);
+  });
+})();
 </script>
 </body>
 </html>

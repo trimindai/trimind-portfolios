@@ -202,6 +202,38 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;padding:0 clamp(24px,4vw,64
 .skill-tag{font-family:var(--mono);font-size:11px;padding:4px 10px;border-radius:6px;background:rgba(74,173,219,0.04);color:var(--text-secondary);border:1px solid var(--border);transition:all .2s}
 .skill-card:hover .skill-tag{border-color:var(--border-hover);background:rgba(74,173,219,0.06)}
 
+/* ═══ TECH-STACK KEYBOARD (interactive isometric skill keyboard) ═══ */
+.kbd-wrap{direction:ltr;margin-top:4px}
+.kbd-readout{display:flex;align-items:center;gap:14px;justify-content:center;margin-bottom:6px;min-height:42px;flex-wrap:wrap}
+.kbd-readout-key{font-family:var(--mono);font-size:13px;font-weight:700;color:var(--bg-deep);background:var(--sky);min-width:30px;height:30px;display:inline-flex;align-items:center;justify-content:center;padding:0 9px;border-radius:7px;box-shadow:0 3px 0 rgba(0,0,0,.4);transition:all .2s}
+.kbd-readout-name{font-size:23px;font-weight:800;letter-spacing:-.5px;color:var(--text);transition:color .2s}
+.kbd-readout-cat{font-family:var(--mono);font-size:12px;color:var(--text-secondary);text-transform:lowercase}
+.kbd-scene{perspective:1600px;perspective-origin:50% 32%;display:flex;justify-content:center;padding:34px 0 54px;overflow:visible}
+.kbd-deck{position:relative;transform-style:preserve-3d;transform:rotateX(57deg) rotateZ(-44deg);transition:transform .7s cubic-bezier(.2,.8,.2,1)}
+.kbd-wrap:hover .kbd-deck{transform:rotateX(54deg) rotateZ(-44deg)}
+.kbd-base{position:absolute;inset:-22px;border-radius:22px;background:linear-gradient(150deg,#141d33,#0b1120);border:1px solid var(--border);box-shadow:0 44px 90px rgba(0,0,0,.6),inset 0 1px 0 rgba(255,255,255,.05);transform:translateZ(-16px)}
+.kbd-keys{display:grid;grid-template-columns:repeat(6,64px);gap:14px;transform-style:preserve-3d}
+.keycap{position:relative;width:64px;height:64px;border:none;border-radius:13px;cursor:none;background:linear-gradient(160deg,var(--cap-lt),var(--cap));transform-style:preserve-3d;transform:translateZ(0);transition:transform .16s cubic-bezier(.2,.9,.2,1),box-shadow .16s,filter .16s;box-shadow:0 7px 0 var(--cap-side),0 12px 18px rgba(0,0,0,.5)}
+.keycap .cap-inner{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;transform:rotateZ(44deg) rotateX(-57deg);color:#fff;font-size:24px;text-shadow:0 1px 3px rgba(0,0,0,.45)}
+.cap-abbr{font-family:var(--mono);font-weight:700;font-size:15px;letter-spacing:-.5px;color:#fff}
+.cap-legend{position:absolute;top:5px;left:8px;font-family:var(--mono);font-size:8px;font-weight:700;color:rgba(255,255,255,.6);transform:rotateZ(44deg) rotateX(-57deg);transform-origin:top left;pointer-events:none}
+.keycap:hover,.keycap.active{transform:translateZ(36px);box-shadow:0 15px 0 var(--cap-side),0 34px 42px rgba(0,0,0,.6),0 0 36px var(--cap-glow);filter:brightness(1.2) saturate(1.08);z-index:5}
+.keycap.pressed{filter:brightness(1.45) saturate(1.2)}
+.kc-sky{--cap-lt:#5fbfe8;--cap:#4AADDB;--cap-side:#256885;--cap-glow:rgba(74,173,219,.55)}
+.kc-cyan{--cap-lt:#4fe2ff;--cap:#00D4FF;--cap-side:#0a7d96;--cap-glow:rgba(0,212,255,.5)}
+.kc-success{--cap-lt:#5ee293;--cap:#2ED573;--cap-side:#1c8c4a;--cap-glow:rgba(46,213,115,.5)}
+.kc-cerulean{--cap-lt:#3a86c8;--cap:#1E6BAD;--cap-side:#123f66;--cap-glow:rgba(30,107,173,.55)}
+.kc-purple{--cap-lt:#a884f8;--cap:#8B5CF6;--cap-side:#5733a6;--cap-glow:rgba(139,92,246,.5)}
+.kc-silver{--cap-lt:#c3d0dd;--cap:#A8B8C8;--cap-side:#5f6e7d;--cap-glow:rgba(168,184,200,.45)}
+.kc-critical{--cap-lt:#ff6b78;--cap:#FF4757;--cap-side:#a32330;--cap-glow:rgba(255,71,87,.5)}
+.kbd-hint{text-align:center;font-family:var(--mono);font-size:12px;color:var(--text-secondary);margin-top:-22px}
+.kbd-hint i{color:var(--sky);margin-right:6px}
+.kbd-spline{height:520px;border-radius:18px;overflow:hidden;border:1px solid var(--border);background:var(--bg-deep)}
+.kbd-spline spline-viewer{width:100%;height:100%;display:block}
+.kbd-print{display:none}
+@media(max-width:900px){.kbd-keys{grid-template-columns:repeat(6,56px);gap:11px}.keycap{width:56px;height:56px}}
+@media(max-width:600px){.kbd-keys{grid-template-columns:repeat(5,48px);gap:9px}.keycap{width:48px;height:48px}.keycap .cap-inner{font-size:19px}.cap-abbr{font-size:13px}.kbd-deck{transform:rotateX(55deg) rotateZ(-44deg) scale(.92)}.kbd-readout-name{font-size:19px}}
+
 /* ═══ PROJECTS — PRO CYBERSECURITY CASE STUDY DISPLAY ═══ */
 .projects-showcase{display:flex;flex-direction:column;gap:24px}
 
@@ -349,7 +381,7 @@ footer span{font-family:var(--mono);font-size:11px;color:var(--text-tertiary)}
   .terminal-body{font-size:12px;padding:20px 16px}
   footer{flex-direction:column;gap:8px;text-align:center}
   .cursor,.cursor-glow{display:none!important}
-  a,button,.skill-card,.case-card,.case-featured,.cert-card,.hero-pill,.contact-link,.btn-primary,.btn-secondary,.nav-links a,.nav-cta,.exp-card,.hero-stat,.terminal{cursor:auto!important}
+  a,button,.skill-card,.keycap,.case-card,.case-featured,.cert-card,.hero-pill,.contact-link,.btn-primary,.btn-secondary,.nav-links a,.nav-cta,.exp-card,.hero-stat,.terminal{cursor:auto!important}
 }
 
 /* ═══ REDUCED MOTION ═══ */
@@ -412,16 +444,11 @@ footer span{font-family:var(--mono);font-size:11px;color:var(--text-tertiary)}
   #skills{padding:60px 24px 40px!important;background:var(--bg)!important;page-break-before:always!important;break-before:page!important;page-break-after:always!important;break-after:page!important;max-width:1200px!important;margin:0 auto!important}
   #skills .section-label{color:var(--sky)!important}
   #skills .section-title{color:var(--text)!important;margin-bottom:40px!important}
-  .skills-grid{grid-template-columns:repeat(2,1fr)!important;gap:16px!important}
-  .skill-card{background:var(--bg-card)!important;border:1px solid var(--border)!important;box-shadow:none!important;break-inside:avoid!important;padding:24px!important}
-  .skill-card h3{color:var(--text)!important}
-  .skill-tag{background:rgba(74,173,219,0.04)!important;color:var(--text-secondary)!important;border:1px solid var(--border)!important}
-  .skill-icon.sky{background:var(--sky-dim)!important;color:var(--sky)!important}
-  .skill-icon.cyan{background:var(--cyan-dim)!important;color:var(--cyan)!important}
-  .skill-icon.silver{background:var(--silver-dim)!important;color:var(--silver)!important}
-  .skill-icon.cerulean{background:var(--cerulean-dim)!important;color:var(--sky)!important}
-  .skill-icon.purple{background:var(--purple-dim)!important;color:var(--purple)!important}
-  .skill-icon.success{background:var(--success-dim)!important;color:var(--success)!important}
+  /* Keyboard does not print well → hide the 3D scene, show a readable list */
+  .kbd-scene,.kbd-hint,.kbd-readout,.kbd-spline{display:none!important}
+  .kbd-print{display:block!important}
+  .kbd-print-cat{color:var(--text-secondary)!important;font-family:var(--mono)!important;font-size:13px!important;line-height:1.8!important;break-inside:avoid!important;border-bottom:1px solid var(--border)!important;padding:9px 0!important}
+  .kbd-print-cat strong{color:var(--sky)!important}
 
   /* ── Projects / Cases — starts on new page ── */
   #projects{padding:60px 24px 40px!important;background:var(--bg)!important;page-break-before:always!important;break-before:page!important;max-width:1200px!important;margin:0 auto!important}
@@ -573,23 +600,46 @@ footer span{font-family:var(--mono);font-size:11px;color:var(--text-tertiary)}
 {{#unless (isHidden "skills")}}{{#if skills}}
 <div class="glow-divider"></div>
 
-<!-- SKILLS -->
+<!-- SKILLS — interactive tech-stack keyboard -->
 <section class="section" id="skills">
-  <div class="section-label gs-reveal">01 — Expertise</div>
+  <div class="section-label gs-reveal">01 — Tech Stack</div>
   <h2 class="section-title gs-reveal">What I Do</h2>
-  <div class="skills-grid">
-    {{#each skills}}
-    <div class="skill-card gs-reveal">
-      <div class="skill-icon {{cycle @index "sky" "cyan" "success" "cerulean" "purple" "silver"}}"><i class="fas fa-{{cycle @index "crosshairs" "chart-line" "network-wired" "eye" "robot" "code"}}"></i></div>
-      <h3>{{this.category}}</h3>
-      {{#if this.items}}
-      <div class="skill-tags">
-        {{#each this.items}}<span class="skill-tag">{{this}}</span>{{/each}}
-      </div>
-      {{/if}}
+  {{#if customization.skillsSplineUrl}}
+  <!-- Opt-in upgrade: embed a custom Spline keyboard scene -->
+  <div class="kbd-spline gs-reveal">
+    <spline-viewer url="{{customization.skillsSplineUrl}}" loading-anim-type="spinner-small-dark"></spline-viewer>
+  </div>
+  <script type="module" src="https://unpkg.com/@splinetool/viewer@1.9.3/build/spline-viewer.js"></script>
+  {{else}}
+  <!-- Default: self-contained CSS/JS isometric keyboard, data-driven from skills -->
+  <div class="kbd-wrap gs-reveal" dir="ltr">
+    <div class="kbd-readout" id="kbdReadout">
+      <span class="kbd-readout-key" id="kbdReadoutKey">/</span>
+      <span class="kbd-readout-name" id="kbdReadoutName">My Tech Stack</span>
+      <span class="kbd-readout-cat" id="kbdReadoutCat">hover or press a key</span>
     </div>
+    <div class="kbd-scene">
+      <div class="kbd-deck">
+        <div class="kbd-base"></div>
+        <div class="kbd-keys" id="kbdKeys">
+          {{#each (flattenSkills skills)}}
+          <button type="button" class="keycap kc-{{cycle @index "sky" "cyan" "success" "cerulean" "purple" "silver" "critical"}}" data-name="{{this.name}}" data-cat="{{this.category}}" aria-label="{{this.name}}{{#if this.category}} — {{this.category}}{{/if}}">
+            <span class="cap-inner">{{#if (techIcon this.name)}}<i class="{{techIcon this.name}}"></i>{{else}}<span class="cap-abbr">{{kbAbbr this.name}}</span>{{/if}}</span>
+            <span class="cap-legend"></span>
+          </button>
+          {{/each}}
+        </div>
+      </div>
+    </div>
+    <p class="kbd-hint"><i class="fas fa-keyboard"></i> hint: press a key — or hover a cap</p>
+  </div>
+  <!-- Print-only readable fallback (the iso keyboard does not print well) -->
+  <div class="kbd-print">
+    {{#each skills}}
+    <div class="kbd-print-cat"><strong>{{this.category}}</strong>{{#if this.items}}: {{#each this.items}}{{this}}{{#unless @last}}, {{/unless}}{{/each}}{{/if}}</div>
     {{/each}}
   </div>
+  {{/if}}
 </section>
 {{/if}}{{/unless}}
 
@@ -752,7 +802,7 @@ footer span{font-family:var(--mono);font-size:11px;color:var(--text-tertiary)}
         {{#if basics.github}}<a href="{{basics.github}}" target="_blank" rel="noopener noreferrer" class="contact-link"><i class="fab fa-github"></i> GitHub</a>{{/if}}
         {{#if basics.website}}<a href="{{basics.website}}" target="_blank" rel="noopener noreferrer" class="contact-link"><i class="fas fa-globe"></i> Website</a>{{/if}}
         {{#if basics.phone}}<a href="tel:{{basics.phone}}" class="contact-link"><i class="fas fa-phone"></i> {{basics.phone}}</a>{{/if}}
-        <a href="javascript:void(0)" class="contact-link" onclick="window.print()"><i class="fas fa-download"></i> Download CV</a>
+        {{#if basics.resumeUrl}}<a href="{{safeUrl basics.resumeUrl}}" target="_blank" rel="noopener" class="contact-link" download><i class="fas fa-download"></i> Download CV</a>{{else}}<a href="javascript:void(0)" class="contact-link" onclick="window.print()"><i class="fas fa-download"></i> Download CV</a>{{/if}}
       </div>
     </div>
     <!-- Right: Terminal -->
@@ -984,7 +1034,7 @@ document.addEventListener('mousemove', e => {
 })();
 
 // Cursor hover states
-document.querySelectorAll('a,button,.skill-card,.case-card,.case-featured,.cert-card,.hero-pill,.contact-link,.exp-card,.hero-stat,.terminal').forEach(el => {
+document.querySelectorAll('a,button,.skill-card,.keycap,.case-card,.case-featured,.cert-card,.hero-pill,.contact-link,.exp-card,.hero-stat,.terminal').forEach(el => {
   el.addEventListener('mouseenter', () => cursorOuter.classList.add('hover'));
   el.addEventListener('mouseleave', () => cursorOuter.classList.remove('hover'));
 });
@@ -1057,6 +1107,64 @@ document.querySelectorAll('nav a[href^="#"]').forEach(a => {
 window.addEventListener('scroll', () => {
   document.getElementById('nav').style.background = scrollY > 80 ? 'rgba(10,14,26,0.92)' : 'rgba(10,14,26,0.6)';
 });
+
+// ═══ TECH-STACK KEYBOARD ═══
+(function(){
+  const wrap = document.querySelector('.kbd-wrap');
+  if (!wrap) return; // Spline path or no skills — nothing to wire
+  const keysWrap = wrap.querySelector('.kbd-keys');
+  const keys = Array.from(wrap.querySelectorAll('.keycap'));
+  if (!keys.length) return;
+  const nameEl = document.getElementById('kbdReadoutName');
+  const catEl = document.getElementById('kbdReadoutCat');
+  const keyEl = document.getElementById('kbdReadoutKey');
+  const defName = nameEl ? nameEl.textContent : '';
+  const defCat = catEl ? catEl.textContent : '';
+  const LAYOUT = 'qwertyuiopasdfghjklzxcvbnm1234567890';
+  const byKey = {};
+  keys.forEach((cap, i) => {
+    const k = LAYOUT[i];
+    if (!k) return;
+    cap.dataset.key = k;
+    byKey[k] = cap;
+    const lg = cap.querySelector('.cap-legend');
+    if (lg) lg.textContent = k.toUpperCase();
+  });
+  let clearT;
+  function activate(cap){
+    keys.forEach(c => { if (c !== cap) c.classList.remove('active'); });
+    cap.classList.add('active');
+    if (nameEl) nameEl.textContent = cap.dataset.name || '';
+    if (catEl) catEl.textContent = cap.dataset.cat || '';
+    if (keyEl) keyEl.textContent = (cap.dataset.key || '/').toUpperCase();
+  }
+  function reset(){
+    keys.forEach(c => c.classList.remove('active'));
+    if (nameEl) nameEl.textContent = defName;
+    if (catEl) catEl.textContent = defCat;
+    if (keyEl) keyEl.textContent = '/';
+  }
+  keys.forEach(cap => {
+    cap.addEventListener('mouseenter', () => { clearTimeout(clearT); activate(cap); });
+    cap.addEventListener('focus', () => { clearTimeout(clearT); activate(cap); });
+    cap.addEventListener('click', () => { clearTimeout(clearT); activate(cap); });
+  });
+  if (keysWrap) keysWrap.addEventListener('mouseleave', reset);
+  document.addEventListener('keydown', e => {
+    if (e.metaKey || e.ctrlKey || e.altKey) return;
+    const ae = document.activeElement;
+    const tag = (ae && ae.tagName) || '';
+    if (tag === 'INPUT' || tag === 'TEXTAREA' || (ae && ae.isContentEditable)) return;
+    const cap = byKey[(e.key || '').toLowerCase()];
+    if (!cap) return;
+    clearTimeout(clearT);
+    activate(cap);
+    cap.classList.add('pressed');
+    clearTimeout(cap._pt);
+    cap._pt = setTimeout(() => cap.classList.remove('pressed'), 170);
+    clearT = setTimeout(reset, 1700);
+  });
+})();
 </script>
 </body>
 </html>

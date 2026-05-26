@@ -100,6 +100,10 @@ export interface PortfolioData {
     accentColor?: string;
     fontFamily?: string;
     hiddenSections?: string[];
+    // Developer template: opt-in upgrade for the skills "keyboard" section.
+    // When set, the template embeds this Spline scene instead of rendering
+    // the built-in CSS/JS isometric keyboard. Must be a Spline .splinecode URL.
+    skillsSplineUrl?: string;
   };
   templateId?: string;
   locale: string;
@@ -218,6 +222,98 @@ Handlebars.registerHelper("cycle", function (...args: any[]) {
   const index = Number(args.shift()) || 0;
   if (!args.length) return "";
   return args[((index % args.length) + args.length) % args.length];
+});
+
+// flattenSkills(skills) → flat array of individual technologies for the
+// Developer template's "Tech Stack" keyboard. Each entry carries its source
+// category (used as the readout subtitle) and the category's index (used to
+// keep a category's keycaps in the same colour family). A category with no
+// items still yields one keycap so it is never dropped from the keyboard.
+Handlebars.registerHelper("flattenSkills", function (skills: any) {
+  if (!Array.isArray(skills)) return [];
+  const out: Array<{ name: string; category: string; catIndex: number }> = [];
+  skills.forEach((cat: any, catIndex: number) => {
+    const category = typeof cat?.category === "string" ? cat.category : "";
+    const items = Array.isArray(cat?.items) ? cat.items : [];
+    if (!items.length) {
+      if (category) out.push({ name: category, category, catIndex });
+      return;
+    }
+    items.forEach((it: any) => {
+      const name = typeof it === "string" ? it : String(it?.name ?? it ?? "");
+      if (name.trim()) out.push({ name: name.trim(), category, catIndex });
+    });
+  });
+  return out;
+});
+
+// techIcon(name) → a Font Awesome class for the technology, or "" when no
+// brand/solid glyph fits (the template then falls back to a short abbr label).
+// Keys are matched on the name with non-alphanumerics stripped.
+const TECH_ICONS: Record<string, string> = {
+  react: "fab fa-react", reactjs: "fab fa-react", reactnative: "fab fa-react",
+  javascript: "fab fa-js", js: "fab fa-js",
+  nodejs: "fab fa-node-js", node: "fab fa-node-js", express: "fab fa-node-js",
+  python: "fab fa-python", django: "fab fa-python", flask: "fab fa-python",
+  java: "fab fa-java", spring: "fab fa-java", springboot: "fab fa-java",
+  html: "fab fa-html5", html5: "fab fa-html5",
+  css: "fab fa-css3-alt", css3: "fab fa-css3-alt",
+  sass: "fab fa-sass", scss: "fab fa-sass",
+  php: "fab fa-php", laravel: "fab fa-laravel",
+  vue: "fab fa-vuejs", vuejs: "fab fa-vuejs",
+  angular: "fab fa-angular", angularjs: "fab fa-angular",
+  aws: "fab fa-aws", amazonwebservices: "fab fa-aws",
+  docker: "fab fa-docker", kubernetes: "fas fa-dharmachakra", k8s: "fas fa-dharmachakra",
+  git: "fab fa-git-alt", github: "fab fa-github", gitlab: "fab fa-gitlab", bitbucket: "fab fa-bitbucket",
+  linux: "fab fa-linux", ubuntu: "fab fa-ubuntu", windows: "fab fa-windows",
+  apple: "fab fa-apple", ios: "fab fa-apple", macos: "fab fa-apple",
+  android: "fab fa-android", swift: "fab fa-swift", rust: "fab fa-rust",
+  wordpress: "fab fa-wordpress", bootstrap: "fab fa-bootstrap",
+  npm: "fab fa-npm", yarn: "fab fa-yarn", figma: "fab fa-figma", sketch: "fab fa-sketch",
+  slack: "fab fa-slack", jira: "fab fa-jira", trello: "fab fa-trello", confluence: "fab fa-confluence",
+  unity: "fab fa-unity", stripe: "fab fa-stripe", cloudflare: "fab fa-cloudflare",
+  digitalocean: "fab fa-digital-ocean", raspberrypi: "fab fa-raspberry-pi", jenkins: "fab fa-jenkins",
+  // Solid-glyph mappings for concepts without a brand mark
+  sql: "fas fa-database", mysql: "fas fa-database", postgresql: "fas fa-database",
+  postgres: "fas fa-database", mongodb: "fas fa-database", database: "fas fa-database",
+  redis: "fas fa-database", sqlite: "fas fa-database", oracle: "fas fa-database",
+  cloud: "fas fa-cloud", azure: "fas fa-cloud", gcp: "fas fa-cloud", googlecloud: "fas fa-cloud",
+  security: "fas fa-shield-halved", cybersecurity: "fas fa-shield-halved", infosec: "fas fa-shield-halved",
+  api: "fas fa-plug", rest: "fas fa-plug", graphql: "fas fa-diagram-project",
+  mobile: "fas fa-mobile-screen", flutter: "fas fa-mobile-screen", reactnativemobile: "fas fa-mobile-screen",
+  ai: "fas fa-robot", ml: "fas fa-robot", machinelearning: "fas fa-robot",
+  tensorflow: "fas fa-robot", pytorch: "fas fa-robot", deeplearning: "fas fa-robot",
+  data: "fas fa-chart-line", analytics: "fas fa-chart-line", datascience: "fas fa-chart-line",
+  terraform: "fas fa-server", ansible: "fas fa-server", devops: "fas fa-infinity",
+  networking: "fas fa-network-wired", network: "fas fa-network-wired",
+};
+function normalizeTech(name: string): string {
+  return String(name || "").toLowerCase().replace(/[^a-z0-9]/g, "");
+}
+Handlebars.registerHelper("techIcon", function (name: string) {
+  return TECH_ICONS[normalizeTech(name)] || "";
+});
+
+// kbAbbr(name) → a short keycap label (2-5 chars) used when no icon matches.
+const TECH_ABBR: Record<string, string> = {
+  typescript: "TS", javascript: "JS", kubernetes: "K8s", graphql: "GQL",
+  postgresql: "PG", postgres: "PG", nextjs: "Next", nodejs: "Node",
+  tailwind: "TW", tailwindcss: "TW", mongodb: "Mongo", express: "Ex",
+  expressjs: "Ex", terraform: "TF", cplusplus: "C++", csharp: "C#",
+  dotnet: ".NET", objectivec: "Obj-C",
+};
+Handlebars.registerHelper("kbAbbr", function (name: string) {
+  const raw = String(name || "").trim();
+  if (!raw) return "";
+  const norm = normalizeTech(raw);
+  if (TECH_ABBR[norm]) return TECH_ABBR[norm];
+  const words = raw.split(/[\s/.\-_]+/).filter(Boolean);
+  if (words.length > 1) {
+    return words.slice(0, 3).map((w) => w[0].toUpperCase()).join("");
+  }
+  const w = words[0] || raw;
+  if (w.length <= 5) return w;
+  return w.slice(0, 4);
 });
 
 let compiledCorporateTemplate: Handlebars.TemplateDelegate | null = null;
