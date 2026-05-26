@@ -121,8 +121,6 @@ a { color: inherit; text-decoration: none; }
   box-shadow: 0 12px 30px rgba(0,0,0,0.5);
 }
 .cone-card img { width: 100%; height: 100%; object-fit: cover; display: block; }
-.cone-fallback { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; text-align: center; padding: 10px; background: linear-gradient(135deg, #222, #141414); }
-.cone-fallback span { font-family: var(--font-mono); font-size: 11px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 1px; }
 .cone-card .overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,0.85), transparent 60%); opacity: 0; transition: opacity .3s; }
 .cone-card:hover .overlay { opacity: 1; }
 .cone-card .info { position: absolute; left: 10px; right: 10px; bottom: 10px; opacity: 0; transform: translateY(6px); transition: all .3s; }
@@ -157,8 +155,6 @@ a { color: inherit; text-decoration: none; }
 .gal-card .ph { aspect-ratio: 3/4; overflow: hidden; }
 .gal-card img { width: 100%; height: 100%; object-fit: cover; transition: transform .5s; }
 .gal-card:hover img { transform: scale(1.05); }
-.gal-fallback { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; text-align: center; padding: 16px; background: linear-gradient(135deg, #222, #141414); }
-.gal-fallback span { font-family: var(--font-mono); font-size: 12px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 1px; }
 .gal-ov { position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: flex-end; padding: 16px; opacity: 0; transition: opacity .3s; background: linear-gradient(to top, rgba(17,17,17,0.94), rgba(17,17,17,0.35) 55%, transparent); }
 .gal-card:hover .gal-ov { opacity: 1; }
 .gal-ov .cat { font-family: var(--font-mono); font-size: 9px; text-transform: uppercase; letter-spacing: 1.5px; color: var(--accent); margin-bottom: 4px; }
@@ -285,14 +281,16 @@ a { color: inherit; text-decoration: none; }
       <div class="cone-tilt" id="cone-tilt">
         <div class="cone-spin" id="cone-spin">
           {{#each projects}}
+          {{#if this.coverUrl}}
           <a class="cone-card"{{#if this.slug}} href="{{../portfolioUrl}}/projects/{{this.slug}}"{{else}}{{#if this.link}} href="{{safeUrl this.link}}" target="_blank" rel="noopener"{{/if}}{{/if}}>
-            {{#if this.coverUrl}}<img src="{{safeUrl this.coverUrl}}" alt="{{this.title}}" loading="lazy" decoding="async" width="148" height="197">{{else}}<div class="cone-fallback"><span>{{this.title}}</span></div>{{/if}}
+            <img src="{{safeUrl this.coverUrl}}" alt="{{this.title}}" loading="lazy" decoding="async" width="148" height="197">
             <div class="overlay"></div>
             <div class="info">
               <div class="info-cat">{{#if this.meta.type}}{{this.meta.type}}{{else}}{{#if this.technologies.[0]}}{{this.technologies.[0]}}{{else}}Work{{/if}}{{/if}}</div>
               <div class="info-title">{{this.title}}</div>
             </div>
           </a>
+          {{/if}}
           {{/each}}
         </div>
       </div>
@@ -322,9 +320,10 @@ a { color: inherit; text-decoration: none; }
     <p class="mono" style="font-size:11px;text-transform:uppercase;letter-spacing:1.5px;color:var(--text-muted);margin-bottom:40px;">{{projects.length}} Projects</p>
     <div class="gal-grid">
       {{#each projects}}
-      <a class="gal-card{{#unless this.slug}}{{#unless this.link}}{{#if this.coverUrl}} gal-zoom{{/if}}{{/unless}}{{/unless}}"{{#if this.slug}} href="{{../portfolioUrl}}/projects/{{this.slug}}"{{else}}{{#if this.link}} href="{{safeUrl this.link}}" target="_blank" rel="noopener"{{else}}{{#if this.coverUrl}} href="#" data-full="{{safeUrl this.coverUrl}}" data-cap="{{this.title}}"{{/if}}{{/if}}{{/if}}>
+      {{#if this.coverUrl}}
+      <a class="gal-card{{#unless this.slug}}{{#unless this.link}} gal-zoom{{/unless}}{{/unless}}"{{#if this.slug}} href="{{../portfolioUrl}}/projects/{{this.slug}}"{{else}}{{#if this.link}} href="{{safeUrl this.link}}" target="_blank" rel="noopener"{{else}} href="#" data-full="{{safeUrl this.coverUrl}}" data-cap="{{this.title}}"{{/if}}{{/if}}>
         <div class="ph">
-          {{#if this.coverUrl}}<img src="{{safeUrl this.coverUrl}}" alt="{{this.title}}" loading="lazy" decoding="async">{{else}}<div class="gal-fallback"><span>{{this.title}}</span></div>{{/if}}
+          <img src="{{safeUrl this.coverUrl}}" alt="{{this.title}}" loading="lazy" decoding="async">
         </div>
         <div class="gal-ov">
           <div class="cat">{{#if this.meta.type}}{{this.meta.type}}{{else}}{{#if this.technologies.[0]}}{{this.technologies.[0]}}{{else}}Work{{/if}}{{/if}}</div>
@@ -333,6 +332,7 @@ a { color: inherit; text-decoration: none; }
         <span class="gal-corner gc-tl"></span><span class="gal-corner gc-tr"></span>
         <span class="gal-corner gc-bl"></span><span class="gal-corner gc-br"></span>
       </a>
+      {{/if}}
       {{/each}}
     </div>
   </div>
@@ -465,7 +465,7 @@ a { color: inherit; text-decoration: none; }
   var spin = document.getElementById('cone-spin');
   var cards = Array.prototype.slice.call(wrap.querySelectorAll('.cone-card'));
   var N = cards.length;
-  if (!N) return;
+  if (!N) { wrap.style.display = 'none'; return; }
 
   var PER_TURN = Math.max(6, Math.min(15, N));
   var TOP_R = 320, BOT_R = 220;

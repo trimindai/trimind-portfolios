@@ -61,7 +61,6 @@ a { color: inherit; text-decoration: none; }
 .hero-img .ic-bl { bottom: 12px; left: 12px; } .hero-img .ic-br { bottom: 12px; right: 12px; }
 .zoom-hint { position: absolute; bottom: 12px; left: 50%; transform: translateX(-50%); padding: 4px 12px; font-family: var(--font-mono); font-size: 9px; text-transform: uppercase; letter-spacing: 1.5px; color: #1b1b1b; background: var(--accent); border-radius: 2px; opacity: 0; transition: opacity .3s; }
 .hero-img:hover .zoom-hint { opacity: 1; }
-.no-img { width: 100%; aspect-ratio: 16/10; display: flex; align-items: center; justify-content: center; border: 1px solid var(--border); border-radius: 2px; margin-bottom: 40px; background: linear-gradient(135deg, #222, #141414); font-family: var(--font-mono); font-size: 12px; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); }
 .desc { font-size: 15px; line-height: 1.7; color: var(--text-dim); margin-bottom: 32px; }
 /* Content blocks */
 .blocks { display: flex; flex-direction: column; gap: 28px; margin-bottom: 40px; }
@@ -132,8 +131,6 @@ figure figcaption { font-family: var(--font-mono); font-size: 10px; text-transfo
     <img src="{{safeUrl project.coverUrl}}" alt="{{project.title}}" id="heroImg" decoding="async">
     <span class="zoom-hint">Click to Zoom</span>
   </button>
-  {{else}}
-  <div class="no-img">{{project.title}}</div>
   {{/if}}
 
   {{#if project.description}}<p class="desc">{{project.description}}</p>{{/if}}

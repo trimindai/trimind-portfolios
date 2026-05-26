@@ -10,6 +10,14 @@
     <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700;800;900&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
     <script type="module" crossorigin src="/demo/creative/assets/index-CGoTwJ9l.js"></script>
     <link rel="stylesheet" crossorigin href="/demo/creative/assets/index-B-AYu_JD.css">
+    <style>
+      /* Mobile/tablet fix: the 3D cone (preserve-3d, not clippable by overflow)
+         overflows over the hero + nav below the desktop row breakpoint. Hide it
+         under 1024px; the responsive artwork gallery grid is the small-screen
+         showcase (mirrors the Trimind Portfolios creative template). */
+      @media (max-width: 1023px) { .cone-wrap { display: none !important; } }
+      html, body { overflow-x: hidden; }
+    </style>
   </head>
   <body>
     <div id="root"></div>
