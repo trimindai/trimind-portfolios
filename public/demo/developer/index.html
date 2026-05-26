@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="{{locale}}" dir="{{#if isRTL}}rtl{{else}}ltr{{/if}}">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>{{basics.fullName}}{{#if basics.title}} — {{basics.title}}{{/if}}</title>
-<meta name="description" content="{{#if basics.valueProposition}}{{basics.valueProposition}}{{else if basics.bio}}{{basics.bio}}{{else}}{{basics.title}}{{/if}}">
+<title>Wadhah Almutairi — Cybersecurity Engineer</title>
+<meta name="description" content="Cybersecurity Engineer specializing in Penetration Testing, SIEM, Active Directory Security, and XDR.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
@@ -12,18 +12,18 @@
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
 
 /* ═══════════════════════════════════════════════
-   COLOR PALETTE — Cybersecurity / engineering theme
-   Molecular network motif: sky blue + silver + cerulean on deep navy
+   COLOR PALETTE — Inspired by Wadhah's Artwork
+   Diamond shapes, molecular networks, sky blue + silver + cerulean
    ═══════════════════════════════════════════════ */
 :root{
   /* Core palette from artwork */
-  --bg:{{#if customization.bgColor}}{{customization.bgColor}}{{else}}#0a0e1a{{/if}};
+  --bg:#0a0e1a;
   --bg-deep:#060a14;
   --bg-card:rgba(16,24,48,0.5);
   --bg-card-hover:rgba(22,32,60,0.7);
 
   /* Primary — Sky Blue (dominant color in artwork) */
-  --sky:{{#if customization.primaryColor}}{{customization.primaryColor}}{{else}}#4AADDB{{/if}};
+  --sky:#4AADDB;
   --sky-glow:rgba(74,173,219,0.4);
   --sky-dim:rgba(74,173,219,0.1);
   --sky-subtle:rgba(74,173,219,0.05);
@@ -33,7 +33,7 @@
   --cerulean-dim:rgba(30,107,173,0.12);
 
   /* Accent — Bright Cyan (the dot accents in artwork) */
-  --cyan:{{#if customization.accentColor}}{{customization.accentColor}}{{else}}#00D4FF{{/if}};
+  --cyan:#00D4FF;
   --cyan-glow:rgba(0,212,255,0.35);
   --cyan-dim:rgba(0,212,255,0.08);
 
@@ -516,13 +516,13 @@ footer span{font-family:var(--mono);font-size:11px;color:var(--text-tertiary)}
 
 <!-- NAV -->
 <nav id="nav">
-  <div class="nav-logo">{{initials basics.fullName}}<span>.</span></div>
+  <div class="nav-logo">W<span>.</span>ALMUTAIRI</div>
   <ul class="nav-links">
-    {{#unless (isHidden "skills")}}{{#if skills}}<li><a href="#skills">Skills</a></li>{{/if}}{{/unless}}
-    {{#unless (isHidden "projects")}}{{#if projects}}<li><a href="#projects">Cases</a></li>{{/if}}{{/unless}}
-    {{#unless (isHidden "experience")}}{{#if experience}}<li><a href="#experience">Career</a></li>{{/if}}{{/unless}}
-    {{#unless (isHidden "certs")}}{{#if certifications}}<li><a href="#certs">Certs</a></li>{{/if}}{{/unless}}
-    {{#unless (isHidden "contact")}}<li><a href="#contact">Contact</a></li>{{/unless}}
+    <li><a href="#skills">Skills</a></li>
+    <li><a href="#projects">Cases</a></li>
+    <li><a href="#experience">Career</a></li>
+    <li><a href="#certs">Certs</a></li>
+    <li><a href="#contact">Contact</a></li>
   </ul>
   <button class="nav-cta" onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth'})">
     <span class="dot"></span> Available for hire
@@ -533,36 +533,49 @@ footer span{font-family:var(--mono);font-size:11px;color:var(--text-tertiary)}
 <section class="hero" id="hero">
   <canvas id="heroCanvas"></canvas>
   <div class="hero-content">
-    {{#if basics.title}}<div class="hero-badge gs-reveal"><i class="fas fa-shield-halved"></i> {{basics.title}}</div>{{/if}}
+    <div class="hero-badge gs-reveal"><i class="fas fa-shield-halved"></i> Cybersecurity Engineer</div>
     <h1 class="hero-name gs-reveal">
-      <span class="gradient">{{basics.fullName}}</span>
+      <span>Wadhah</span><br>
+      <span class="gradient">Almutairi</span>
     </h1>
     <p class="hero-subtitle gs-reveal">
       <span class="typewriter" id="typewriter"></span>
     </p>
-    {{#if skills}}
     <div class="hero-pills gs-reveal">
-      {{#each skills}}
-      <span class="hero-pill"><i class="fas fa-{{cycle @index "crosshairs" "chart-line" "network-wired" "eye" "robot" "shield-halved"}}" style="color:var(--{{cycle @index "critical" "cyan" "success" "sky" "purple" "silver"}})"></i> {{this.category}}</span>
-      {{/each}}
+      <span class="hero-pill"><i class="fas fa-crosshairs" style="color:var(--critical)"></i> Pen Testing</span>
+      <span class="hero-pill"><i class="fas fa-chart-line" style="color:var(--cyan)"></i> SIEM</span>
+      <span class="hero-pill"><i class="fas fa-network-wired" style="color:var(--success)"></i> Active Directory</span>
+      <span class="hero-pill"><i class="fas fa-eye" style="color:var(--sky)"></i> XDR</span>
+      <span class="hero-pill"><i class="fas fa-robot" style="color:var(--purple)"></i> Automation</span>
+      <span class="hero-pill"><i class="fab fa-docker" style="color:var(--silver)"></i> Docker</span>
     </div>
-    {{/if}}
     <div class="hero-cta gs-reveal">
-      {{#if projects}}<a href="#projects" class="btn-primary"><i class="fas fa-folder-open"></i> View Work</a>{{/if}}
+      <a href="#projects" class="btn-primary"><i class="fas fa-folder-open"></i> View Cases</a>
       <a href="#contact" class="btn-secondary"><i class="fas fa-paper-plane"></i> Get in Touch</a>
     </div>
-    {{#if metrics}}
     <!-- Stats Bar -->
     <div class="hero-stats gs-reveal">
-      {{#each metrics}}
       <div class="hero-stat">
-        <span class="hero-stat-icon"><i class="fas fa-{{cycle @index "bug" "shield-halved" "certificate" "building-shield" "code" "server"}}"></i></span>
-        <div class="hero-stat-value">{{this.value}}</div>
-        <div class="hero-stat-label">{{this.label}}</div>
+        <span class="hero-stat-icon"><i class="fas fa-bug"></i></span>
+        <div class="hero-stat-value">50+</div>
+        <div class="hero-stat-label">Vulnerabilities Found</div>
       </div>
-      {{/each}}
+      <div class="hero-stat">
+        <span class="hero-stat-icon"><i class="fas fa-shield-halved"></i></span>
+        <div class="hero-stat-value">4</div>
+        <div class="hero-stat-label">Security Projects</div>
+      </div>
+      <div class="hero-stat">
+        <span class="hero-stat-icon"><i class="fas fa-certificate"></i></span>
+        <div class="hero-stat-value">CEH</div>
+        <div class="hero-stat-label">Certified Ethical Hacker</div>
+      </div>
+      <div class="hero-stat">
+        <span class="hero-stat-icon"><i class="fas fa-building-shield"></i></span>
+        <div class="hero-stat-value">KUNA</div>
+        <div class="hero-stat-label">Enterprise Security</div>
+      </div>
     </div>
-    {{/if}}
   </div>
   <div class="hero-scroll">
     <div class="hero-scroll-line"></div>
@@ -570,7 +583,6 @@ footer span{font-family:var(--mono);font-size:11px;color:var(--text-tertiary)}
   </div>
 </section>
 
-{{#unless (isHidden "skills")}}{{#if skills}}
 <div class="glow-divider"></div>
 
 <!-- SKILLS -->
@@ -578,95 +590,214 @@ footer span{font-family:var(--mono);font-size:11px;color:var(--text-tertiary)}
   <div class="section-label gs-reveal">01 — Expertise</div>
   <h2 class="section-title gs-reveal">What I Do</h2>
   <div class="skills-grid">
-    {{#each skills}}
     <div class="skill-card gs-reveal">
-      <div class="skill-icon {{cycle @index "sky" "cyan" "success" "cerulean" "purple" "silver"}}"><i class="fas fa-{{cycle @index "crosshairs" "chart-line" "network-wired" "eye" "robot" "code"}}"></i></div>
-      <h3>{{this.category}}</h3>
-      {{#if this.items}}
+      <div class="skill-icon sky"><i class="fas fa-crosshairs"></i></div>
+      <h3>Penetration Testing</h3>
       <div class="skill-tags">
-        {{#each this.items}}<span class="skill-tag">{{this}}</span>{{/each}}
+        <span class="skill-tag">SQL Injection</span><span class="skill-tag">XSS</span>
+        <span class="skill-tag">CEH</span><span class="skill-tag">Vuln Assessment</span>
       </div>
-      {{/if}}
     </div>
-    {{/each}}
+    <div class="skill-card gs-reveal">
+      <div class="skill-icon cyan"><i class="fas fa-chart-line"></i></div>
+      <h3>SIEM Engineering</h3>
+      <div class="skill-tags">
+        <span class="skill-tag">Elastic Stack</span><span class="skill-tag">Winlogbeat</span>
+        <span class="skill-tag">Kibana</span><span class="skill-tag">Log Pipelines</span>
+      </div>
+    </div>
+    <div class="skill-card gs-reveal">
+      <div class="skill-icon success"><i class="fas fa-network-wired"></i></div>
+      <h3>Active Directory</h3>
+      <div class="skill-tags">
+        <span class="skill-tag">GPO</span><span class="skill-tag">Domain Controller</span>
+        <span class="skill-tag">Delegation</span><span class="skill-tag">Hardening</span>
+      </div>
+    </div>
+    <div class="skill-card gs-reveal">
+      <div class="skill-icon cerulean"><i class="fas fa-eye"></i></div>
+      <h3>XDR & Threat Intel</h3>
+      <div class="skill-tags">
+        <span class="skill-tag">Trend Micro</span><span class="skill-tag">Vision One</span>
+        <span class="skill-tag">EDR</span><span class="skill-tag">Endpoint</span>
+      </div>
+    </div>
+    <div class="skill-card gs-reveal">
+      <div class="skill-icon purple"><i class="fas fa-robot"></i></div>
+      <h3>Automation & AI</h3>
+      <div class="skill-tags">
+        <span class="skill-tag">Python</span><span class="skill-tag">PowerShell</span>
+        <span class="skill-tag">NLP</span><span class="skill-tag">ML</span>
+      </div>
+    </div>
+    <div class="skill-card gs-reveal">
+      <div class="skill-icon silver"><i class="fab fa-docker"></i></div>
+      <h3>DevSecOps</h3>
+      <div class="skill-tags">
+        <span class="skill-tag">Docker</span><span class="skill-tag">CI/CD</span>
+        <span class="skill-tag">Containers</span><span class="skill-tag">IaC</span>
+      </div>
+    </div>
   </div>
 </section>
-{{/if}}{{/unless}}
 
-{{#unless (isHidden "projects")}}{{#if projects}}
 <div class="glow-divider"></div>
 
-<!-- PROJECTS — CASE FILE DISPLAY -->
+<!-- PROJECTS — PRO CYBERSECURITY CASE FILE DISPLAY -->
 <section class="section" id="projects">
   <div class="section-label gs-reveal">02 — Case Files</div>
-  <h2 class="section-title gs-reveal">Projects</h2>
+  <h2 class="section-title gs-reveal">Security Projects</h2>
 
   <div class="projects-showcase">
-    {{#each projects}}
-    {{#ifEq @index 0}}
-    <!-- Featured Project -->
+    <!-- Featured Critical Discovery -->
     <div class="case-featured gs-reveal">
       <div class="case-featured-header">
-        <div class="case-featured-icon"><i class="fas fa-star"></i></div>
+        <div class="case-featured-icon"><i class="fas fa-skull-crossbones"></i></div>
         <div>
-          <div class="case-severity severity-critical"><i class="fas fa-bolt"></i> Featured Project</div>
-          <h3>{{this.title}}</h3>
-          {{#if this.description}}<p>{{this.description}}</p>{{/if}}
+          <div class="case-severity severity-critical"><i class="fas fa-radiation"></i> Critical Severity</div>
+          <h3>Enterprise Vulnerability Discovery & Mitigation</h3>
+          <p>Discovered a critical security vulnerability in an enterprise system during authorized penetration testing. Executed rapid response and coordinated remediation, preventing a potential organizational breach.</p>
         </div>
       </div>
-      {{#if this.metrics}}
       <div class="case-metrics">
-        {{#each this.metrics}}
         <div class="case-metric">
-          <div class="case-metric-icon red"><i class="fas fa-circle-check"></i></div>
-          <span>{{#if this.value}}{{this.value}} {{/if}}{{this.label}}</span>
+          <div class="case-metric-icon red"><i class="fas fa-shield-halved"></i></div>
+          <span>Organization Protected</span>
         </div>
-        {{/each}}
+        <div class="case-metric">
+          <div class="case-metric-icon red"><i class="fas fa-bolt"></i></div>
+          <span>Rapid Response</span>
+        </div>
+        <div class="case-metric">
+          <div class="case-metric-icon red"><i class="fas fa-file-shield"></i></div>
+          <span>CEH Report Delivered</span>
+        </div>
+        <div class="case-metric">
+          <div class="case-metric-icon red"><i class="fas fa-clock"></i></div>
+          <span>24h Resolution</span>
+        </div>
       </div>
-      {{/if}}
     </div>
-    {{/ifEq}}
-    {{/each}}
 
-    {{#if (gt projects.length 1)}}
     <!-- Case Cards Grid -->
     <div class="cases-grid">
-      {{#each projects}}
-      {{#ifEq @index 0}}{{else}}
+      <!-- Case 001: XDR -->
       <div class="case-card gs-reveal">
         <div class="case-header">
-          <div class="case-status status-complete"><div class="case-status-dot"></div> {{#if this.link}}Live{{else}}Project{{/if}}</div>
-          <div class="case-id">CASE-{{@index}}</div>
+          <div class="case-status status-complete"><div class="case-status-dot"></div> Deployed</div>
+          <div class="case-id">CASE-001</div>
         </div>
         <div class="case-body">
-          <div class="case-icon {{cycle @index "ci-sky" "ci-cyan" "ci-success" "ci-cerulean" "ci-purple" "ci-silver"}}"><i class="fas fa-folder-open"></i></div>
-          <h3>{{this.title}}</h3>
-          {{#if this.description}}<p>{{this.description}}</p>{{/if}}
-          {{#if this.technologies}}
+          <div class="case-icon ci-sky"><i class="fas fa-satellite-dish"></i></div>
+          <h3>Trend Micro Vision One (XDR)</h3>
+          <p>Integrated enterprise assets for unified threat visibility and automated incident response across KUNA's infrastructure.</p>
           <div class="case-tech">
-            {{#each this.technologies}}<span>{{this}}</span>{{/each}}
+            <span>XDR</span><span>Endpoints</span><span>Automation</span><span>Trend Micro</span>
           </div>
-          {{/if}}
-          {{#if this.tagline}}
           <div class="case-impact">
-            <i class="fas fa-arrow-trend-up"></i> {{this.tagline}}
+            <i class="fas fa-arrow-trend-up"></i> Full endpoint coverage achieved
           </div>
-          {{else if this.link}}
-          <div class="case-impact">
-            <a href="{{this.link}}" target="_blank" rel="noopener noreferrer" style="color:inherit;text-decoration:none"><i class="fas fa-up-right-from-square"></i> View project</a>
-          </div>
-          {{/if}}
         </div>
       </div>
-      {{/ifEq}}
-      {{/each}}
+
+      <!-- Case 002: SIEM -->
+      <div class="case-card gs-reveal">
+        <div class="case-header">
+          <div class="case-status status-complete"><div class="case-status-dot"></div> Deployed</div>
+          <div class="case-id">CASE-002</div>
+        </div>
+        <div class="case-body">
+          <div class="case-icon ci-cyan"><i class="fas fa-database"></i></div>
+          <h3>Elastic Stack SIEM Pipeline</h3>
+          <p>Automated log extraction and parsing into structured databases using Python for real-time threat detection.</p>
+          <div class="case-tech">
+            <span>Elastic Stack</span><span>Python</span><span>Winlogbeat</span><span>Kibana</span>
+          </div>
+          <div class="case-impact">
+            <i class="fas fa-arrow-trend-up"></i> Real-time monitoring enabled
+          </div>
+        </div>
+      </div>
+
+      <!-- Case 003: WOL -->
+      <div class="case-card gs-reveal">
+        <div class="case-header">
+          <div class="case-status status-complete"><div class="case-status-dot"></div> Deployed</div>
+          <div class="case-id">CASE-003</div>
+        </div>
+        <div class="case-body">
+          <div class="case-icon ci-success"><i class="fas fa-tower-broadcast"></i></div>
+          <h3>Wake-on-LAN Enterprise</h3>
+          <p>Engineered WOL solution across multi-VLAN environments enabling remote patching and maintenance operations.</p>
+          <div class="case-tech">
+            <span>Networking</span><span>VLAN</span><span>Automation</span><span>PowerShell</span>
+          </div>
+          <div class="case-impact">
+            <i class="fas fa-arrow-trend-up"></i> Remote patching across all VLANs
+          </div>
+        </div>
+      </div>
+
+      <!-- Case 004: Reporting -->
+      <div class="case-card gs-reveal">
+        <div class="case-header">
+          <div class="case-status status-complete"><div class="case-status-dot"></div> Deployed</div>
+          <div class="case-id">CASE-004</div>
+        </div>
+        <div class="case-body">
+          <div class="case-icon ci-cerulean"><i class="fas fa-file-code"></i></div>
+          <h3>Security Report Automation</h3>
+          <p>Built CEH-style structured security reports with automated documentation and evidence collection workflows.</p>
+          <div class="case-tech">
+            <span>Python</span><span>CEH Framework</span><span>Reports</span><span>Automation</span>
+          </div>
+          <div class="case-impact">
+            <i class="fas fa-arrow-trend-up"></i> Report generation time reduced 80%
+          </div>
+        </div>
+      </div>
+
+      <!-- Case 005: Chatbot -->
+      <div class="case-card gs-reveal">
+        <div class="case-header">
+          <div class="case-status status-academic"><div class="case-status-dot"></div> Senior Project</div>
+          <div class="case-id">CASE-005</div>
+        </div>
+        <div class="case-body">
+          <div class="case-icon ci-purple"><i class="fas fa-brain"></i></div>
+          <h3>AI Multilingual Chatbot</h3>
+          <p>NLP-powered chatbot with custom datasets enabling multilingual student support at university scale.</p>
+          <div class="case-tech">
+            <span>Python</span><span>NLP</span><span>Machine Learning</span><span>TensorFlow</span>
+          </div>
+          <div class="case-impact">
+            <i class="fas fa-graduation-cap"></i> University senior project
+          </div>
+        </div>
+      </div>
+
+      <!-- Case 006: LogonTracer -->
+      <div class="case-card gs-reveal">
+        <div class="case-header">
+          <div class="case-status status-forensic"><div class="case-status-dot"></div> Forensics</div>
+          <div class="case-id">CASE-006</div>
+        </div>
+        <div class="case-body">
+          <div class="case-icon ci-silver"><i class="fas fa-diagram-project"></i></div>
+          <h3>LogonTracer — AD Visualization</h3>
+          <p>Graph-based analysis of Windows Active Directory logs with PageRank anomaly detection for threat hunting.</p>
+          <div class="case-tech">
+            <span>LogonTracer</span><span>Active Directory</span><span>Forensics</span><span>PageRank</span>
+          </div>
+          <div class="case-impact">
+            <i class="fas fa-magnifying-glass"></i> Anomaly detection operational
+          </div>
+        </div>
+      </div>
     </div>
-    {{/if}}
   </div>
 </section>
-{{/if}}{{/unless}}
 
-{{#unless (isHidden "experience")}}{{#if (or experience.length education.length)}}
 <div class="glow-divider"></div>
 
 <!-- EXPERIENCE -->
@@ -674,49 +805,39 @@ footer span{font-family:var(--mono);font-size:11px;color:var(--text-tertiary)}
   <div class="section-label gs-reveal">03 — Career</div>
   <h2 class="section-title gs-reveal">Experience</h2>
   <div class="exp-list">
-    {{#each experience}}
     <div class="exp-card gs-reveal">
       <div class="exp-header">
         <div class="exp-info">
-          <h3>{{this.title}}</h3>
-          {{#if this.company}}<div class="company"><i class="fas fa-building-shield"></i> {{this.company}}</div>{{/if}}
+          <h3>Cybersecurity & IT Engineer</h3>
+          <div class="company"><i class="fas fa-building-shield"></i> Kuwait News Agency (KUNA)</div>
         </div>
-        {{#if this.startDate}}<div class="exp-date">{{this.startDate}}{{#if this.endDate}} — {{this.endDate}}{{else}} — Present{{/if}}</div>{{/if}}
+        <div class="exp-date">2024 — Present</div>
       </div>
-      {{#if this.highlights.length}}
       <div class="exp-highlights">
-        {{#each this.highlights}}
-        <div class="exp-highlight"><i class="fas fa-{{cycle @index "crosshairs" "file-shield" "server" "chart-bar" "code" "tower-broadcast"}}"></i> {{this}}</div>
-        {{/each}}
+        <div class="exp-highlight"><i class="fas fa-crosshairs"></i> Security assessments — SQL Injection, info disclosure</div>
+        <div class="exp-highlight"><i class="fas fa-file-shield"></i> CEH-level pen testing & reporting</div>
+        <div class="exp-highlight"><i class="fas fa-server"></i> Active Directory hardening & GPO security</div>
+        <div class="exp-highlight"><i class="fas fa-chart-bar"></i> Elastic Stack + Winlogbeat pipelines</div>
+        <div class="exp-highlight"><i class="fab fa-docker"></i> Docker for isolated testing environments</div>
+        <div class="exp-highlight"><i class="fas fa-tower-broadcast"></i> Wake-on-LAN across VLANs</div>
       </div>
-      {{else if this.description}}
-      <div class="exp-highlights">
-        <div class="exp-highlight"><i class="fas fa-circle-info"></i> {{this.description}}</div>
-      </div>
-      {{/if}}
     </div>
-    {{/each}}
-    {{#each education}}
     <div class="exp-card gs-reveal">
       <div class="exp-header">
         <div class="exp-info">
-          <h3>{{this.degree}}</h3>
-          {{#if this.institution}}<div class="company"><i class="fas fa-graduation-cap"></i> {{this.institution}}</div>{{/if}}
+          <h3>B.Sc. Computer Engineering</h3>
+          <div class="company"><i class="fas fa-graduation-cap"></i> American University of the Middle East</div>
         </div>
-        {{#if this.year}}<div class="exp-date">{{this.year}}</div>{{/if}}
+        <div class="exp-date">2019 — 2024</div>
       </div>
-      {{#if this.description}}
       <div class="exp-highlights">
-        <div class="exp-highlight"><i class="fas fa-book"></i> {{this.description}}</div>
+        <div class="exp-highlight"><i class="fas fa-brain"></i> Senior Project: AI Multilingual Chatbot</div>
+        <div class="exp-highlight"><i class="fas fa-code"></i> Machine Learning, NLP, Full-Stack Dev</div>
       </div>
-      {{/if}}
     </div>
-    {{/each}}
   </div>
 </section>
-{{/if}}{{/unless}}
 
-{{#unless (isHidden "certs")}}{{#if certifications.length}}
 <div class="glow-divider"></div>
 
 <!-- CERTIFICATIONS -->
@@ -724,18 +845,24 @@ footer span{font-family:var(--mono);font-size:11px;color:var(--text-tertiary)}
   <div class="section-label gs-reveal">04 — Credentials</div>
   <h2 class="section-title gs-reveal">Certifications</h2>
   <div class="certs-grid">
-    {{#each certifications}}
     <div class="cert-card gs-reveal">
-      <div class="cert-badge" style="background:var(--{{cycle @index "critical" "sky" "cyan" "success" "purple"}}-dim);color:var(--{{cycle @index "critical" "sky" "cyan" "success" "purple"}})"><i class="fas fa-{{cycle @index "user-secret" "certificate" "award" "shield-halved" "star"}}"></i></div>
-      <h3>{{this.name}}</h3>
-      {{#if (or this.issuer this.year)}}<p>{{this.issuer}}{{#if this.year}}{{#if this.issuer}} — {{/if}}{{this.year}}{{/if}}</p>{{/if}}
+      <div class="cert-badge" style="background:var(--critical-dim);color:var(--critical)"><i class="fas fa-user-secret"></i></div>
+      <h3>Certified Ethical Hacker</h3>
+      <p>EC-Council — CEH</p>
     </div>
-    {{/each}}
+    <div class="cert-card gs-reveal">
+      <div class="cert-badge" style="background:var(--sky-dim);color:var(--sky)"><i class="fas fa-chart-bar"></i></div>
+      <h3>Data Science</h3>
+      <p>Coded Academy</p>
+    </div>
+    <div class="cert-card gs-reveal">
+      <div class="cert-badge" style="background:var(--cyan-dim);color:var(--cyan)"><i class="fas fa-code"></i></div>
+      <h3>Web Development</h3>
+      <p>Coded Academy</p>
+    </div>
   </div>
 </section>
-{{/if}}{{/unless}}
 
-{{#unless (isHidden "contact")}}
 <div class="glow-divider"></div>
 
 <!-- CONTACT -->
@@ -744,44 +871,37 @@ footer span{font-family:var(--mono);font-size:11px;color:var(--text-tertiary)}
     <!-- Left: Text & Links -->
     <div class="contact-left">
       <div class="section-label gs-reveal">05 — Connect</div>
-      <h2 class="contact-title gs-reveal">Let's Connect</h2>
-      <p class="contact-sub gs-reveal">{{#if basics.valueProposition}}{{basics.valueProposition}}{{else}}Open for opportunities, collaborations, and consulting.{{/if}}</p>
+      <h2 class="contact-title gs-reveal">Let's Talk Security</h2>
+      <p class="contact-sub gs-reveal">Open for opportunities, collaborations, and consulting.</p>
       <div class="contact-links gs-reveal">
-        {{#if basics.email}}<a href="mailto:{{basics.email}}" class="contact-link"><i class="fas fa-envelope"></i> {{basics.email}}</a>{{/if}}
-        {{#if basics.linkedin}}<a href="{{basics.linkedin}}" target="_blank" rel="noopener noreferrer" class="contact-link"><i class="fab fa-linkedin"></i> LinkedIn</a>{{/if}}
-        {{#if basics.github}}<a href="{{basics.github}}" target="_blank" rel="noopener noreferrer" class="contact-link"><i class="fab fa-github"></i> GitHub</a>{{/if}}
-        {{#if basics.website}}<a href="{{basics.website}}" target="_blank" rel="noopener noreferrer" class="contact-link"><i class="fas fa-globe"></i> Website</a>{{/if}}
-        {{#if basics.phone}}<a href="tel:{{basics.phone}}" class="contact-link"><i class="fas fa-phone"></i> {{basics.phone}}</a>{{/if}}
+        <a href="mailto:w.baazm@gmail.com" class="contact-link"><i class="fas fa-envelope"></i> w.baazm@gmail.com</a>
+        <a href="https://www.linkedin.com/in/wadha-a-685544322?utm_source=share_via&utm_content=profile&utm_medium=member_ios" target="_blank" rel="noopener noreferrer" class="contact-link"><i class="fab fa-linkedin"></i> LinkedIn</a>
         <a href="javascript:void(0)" class="contact-link" onclick="window.print()"><i class="fas fa-download"></i> Download CV</a>
       </div>
     </div>
     <!-- Right: Terminal -->
     <div class="contact-right gs-reveal">
-      <div class="terminal" dir="ltr">
+      <div class="terminal">
         <div class="terminal-bar">
           <div class="terminal-dot red"></div>
           <div class="terminal-dot yellow"></div>
           <div class="terminal-dot green"></div>
-          <span class="terminal-title">{{initials basics.fullName}}@portfolio:~</span>
+          <span class="terminal-title">wadhah@kuna:~</span>
         </div>
         <div class="terminal-body">
           <span class="terminal-line"><span class="terminal-prompt">$ </span><span class="terminal-cmd">whoami</span></span>
-          <span class="terminal-line"><span class="terminal-output">{{basics.title}}</span></span>
-          {{#if certifications.length}}
+          <span class="terminal-line"><span class="terminal-output">cybersecurity_engineer</span></span>
           <span class="terminal-line">&nbsp;</span>
           <span class="terminal-line"><span class="terminal-prompt">$ </span><span class="terminal-cmd">cat credentials.txt</span></span>
-          {{#each certifications}}
-          <span class="terminal-line"><span class="terminal-key">✓</span> <span class="terminal-val">{{this.name}}{{#if this.issuer}} — {{this.issuer}}{{/if}}</span></span>
-          {{/each}}
-          {{/if}}
-          {{#if skills.length}}
+          <span class="terminal-line"><span class="terminal-key">CEH</span> <span class="terminal-val">Certified Ethical Hacker</span></span>
+          <span class="terminal-line"><span class="terminal-key">B.Eng</span> <span class="terminal-val">Computer Engineering — AUM</span></span>
           <span class="terminal-line">&nbsp;</span>
           <span class="terminal-line"><span class="terminal-prompt">$ </span><span class="terminal-cmd">nmap --top-skills</span></span>
           <span class="terminal-line"><span class="terminal-header">PORT</span> <span class="terminal-header">SERVICE</span></span>
-          {{#each skills}}
-          <span class="terminal-line"><span class="terminal-port">{{cycle @index "443" "514" "389" "5601" "22" "80"}}</span>  <span class="terminal-val">{{this.category}}</span></span>
-          {{/each}}
-          {{/if}}
+          <span class="terminal-line"><span class="terminal-port">443</span>  <span class="terminal-val">Penetration Testing</span></span>
+          <span class="terminal-line"><span class="terminal-port">514</span>  <span class="terminal-val">SIEM Engineering</span></span>
+          <span class="terminal-line"><span class="terminal-port">389</span>  <span class="terminal-val">Active Directory</span></span>
+          <span class="terminal-line"><span class="terminal-port">5601</span> <span class="terminal-val">Elastic Stack</span></span>
           <span class="terminal-line">&nbsp;</span>
           <span class="terminal-line"><span class="terminal-prompt">$ </span><span class="terminal-blink">_</span></span>
         </div>
@@ -789,22 +909,17 @@ footer span{font-family:var(--mono);font-size:11px;color:var(--text-tertiary)}
     </div>
   </div>
 </section>
-{{/unless}}
 
 <footer>
-  <span>&copy; 2026 {{basics.fullName}}</span>
-  {{#if basics.location}}<span>{{basics.location}}</span>{{/if}}
+  <span>&copy; 2026 Wadhah Almutairi</span>
+  <span>Kuwait</span>
 </footer>
 
 <!-- GSAP -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
 <script>
-// ═══ GSAP SCROLL ANIMATIONS (with no-GSAP fallback) ═══
-if (typeof gsap === 'undefined') {
-  // CDN failed to load — reveal all content immediately so nothing stays hidden
-  document.querySelectorAll('.gs-reveal').forEach(function (el) { el.style.opacity = '1'; el.style.transform = 'none'; });
-} else {
+// ═══ GSAP SCROLL ANIMATIONS ═══
 gsap.registerPlugin(ScrollTrigger);
 
 // Hero stagger — animate TO visible
@@ -846,7 +961,6 @@ function setActiveNav(id) {
     a.classList.toggle('active', isActive);
   });
 }
-} // end GSAP guard
 
 // ═══ PARTICLE CANVAS — Molecular Network (inspired by artwork's interconnected nodes) ═══
 const canvas = document.getElementById('heroCanvas');
@@ -1008,10 +1122,11 @@ document.querySelectorAll('.skill-card,.case-card').forEach(card => {
 
 // ═══ TYPEWRITER ═══
 const phrases = [
-  {{#if basics.subtitle}}{{json basics.subtitle}},{{/if}}
-  {{#if basics.valueProposition}}{{json basics.valueProposition}},{{/if}}
-  {{json basics.title}}
-].filter(Boolean);
+  'Securing enterprise systems.',
+  'Breaking what needs breaking.',
+  'SIEM pipelines & threat detection.',
+  'Ethical hacking & vulnerability research.'
+];
 let phraseIdx = 0, charIdx = 0, deleting = false;
 const tw = document.getElementById('typewriter');
 
