@@ -26,7 +26,7 @@
   --text-dim: #a0a0a0;
   --text-muted: #6a6a6a;
   --border: #2a2a2a;
-  --accent: {{#if customization.primaryColor}}{{customization.primaryColor}}{{else}}#DFFF00{{/if}};
+  --accent: {{#if customization.accentColor}}{{customization.accentColor}}{{else}}#DFFF00{{/if}};
   --font-head: 'Geist', system-ui, sans-serif;
   --font-mono: 'Geist Mono', ui-monospace, monospace;
 }
@@ -224,7 +224,7 @@ a { color: inherit; text-decoration: none; }
             {{#if this.coverUrl}}<img src="{{this.coverUrl}}" alt="{{this.title}}" loading="lazy">{{else}}<div class="cone-fallback"><span>{{this.title}}</span></div>{{/if}}
             <div class="overlay"></div>
             <div class="info">
-              <div class="info-cat">{{#if this.meta.type}}{{this.meta.type}}{{else}}Work{{/if}}</div>
+              <div class="info-cat">{{#if this.meta.type}}{{this.meta.type}}{{else}}{{#if this.technologies.[0]}}{{this.technologies.[0]}}{{else}}Work{{/if}}{{/if}}</div>
               <div class="info-title">{{this.title}}</div>
             </div>
           </a>
@@ -262,7 +262,7 @@ a { color: inherit; text-decoration: none; }
           {{#if this.coverUrl}}<img src="{{this.coverUrl}}" alt="{{this.title}}" loading="lazy">{{else}}<div class="gal-fallback"><span>{{this.title}}</span></div>{{/if}}
         </div>
         <div class="gal-ov">
-          <div class="cat">{{#if this.meta.type}}{{this.meta.type}}{{else}}Work{{/if}}</div>
+          <div class="cat">{{#if this.meta.type}}{{this.meta.type}}{{else}}{{#if this.technologies.[0]}}{{this.technologies.[0]}}{{else}}Work{{/if}}{{/if}}</div>
           <div class="ttl">{{this.title}}</div>
         </div>
         <span class="gal-corner gc-tl"></span><span class="gal-corner gc-tr"></span>

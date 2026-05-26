@@ -16,6 +16,10 @@ import { EngineerBasicsStep } from "./steps/EngineerBasicsStep";
 import { EngineerProjectsStep } from "./steps/EngineerProjectsStep";
 import { EngineerBackgroundStep } from "./steps/EngineerBackgroundStep";
 import { EngineerCustomizeStep } from "./steps/EngineerCustomizeStep";
+import { CreativeProfileStep } from "./steps/CreativeProfileStep";
+import { CreativeGalleryStep } from "./steps/CreativeGalleryStep";
+import { CreativeAboutStep } from "./steps/CreativeAboutStep";
+import { CreativeCustomizeStep } from "./steps/CreativeCustomizeStep";
 
 type Step = { name: string; component: React.ComponentType<{ data: any; onChange: (updates: any) => void }> };
 
@@ -37,9 +41,18 @@ const ENGINEER_STEPS: Step[] = [
   { name: "Customize", component: EngineerCustomizeStep },
 ];
 
+// Artist gallery flow: Profile → Gallery (cone) → About → Customize
+const CREATIVE_STEPS: Step[] = [
+  { name: "Profile", component: CreativeProfileStep },
+  { name: "Gallery", component: CreativeGalleryStep },
+  { name: "About", component: CreativeAboutStep },
+  { name: "Customize", component: CreativeCustomizeStep },
+];
+
 const TEMPLATE_STEPS: Record<string, Step[]> = {
   corporate: CORPORATE_STEPS,
   engineer: ENGINEER_STEPS,
+  creative: CREATIVE_STEPS,
 };
 
 function getStepsForTemplate(templateId: string): Step[] {

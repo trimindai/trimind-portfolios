@@ -15,7 +15,7 @@
   --bg: {{#if customization.bgColor}}{{customization.bgColor}}{{else}}#1b1b1b{{/if}};
   --bg-alt: #151515; --bg-card: #111111;
   --text: #e8e8e8; --text-dim: #a0a0a0; --text-muted: #6a6a6a; --border: #2a2a2a;
-  --accent: {{#if customization.primaryColor}}{{customization.primaryColor}}{{else}}#DFFF00{{/if}};
+  --accent: {{#if customization.accentColor}}{{customization.accentColor}}{{else}}#DFFF00{{/if}};
   --font-head: 'Geist', system-ui, sans-serif; --font-mono: 'Geist Mono', ui-monospace, monospace;
 }
 body { font-family: var(--font-head); background: var(--bg); color: var(--text); min-height: 100dvh; -webkit-font-smoothing: antialiased; }
@@ -95,7 +95,7 @@ a { color: inherit; text-decoration: none; }
 <div class="wrap">
   <a href="{{portfolioUrl}}#gallery" class="back"><span>&larr;</span><span>Back to Gallery</span></a>
 
-  {{#if project.meta.type}}<p class="phase">{{project.meta.type}}{{#if project.meta.year}} &middot; {{project.meta.year}}{{/if}}</p>{{/if}}
+  {{#if project.meta.type}}<p class="phase">{{project.meta.type}}{{#if project.meta.year}} &middot; {{project.meta.year}}{{/if}}</p>{{else}}{{#if project.technologies.[0]}}<p class="phase">{{project.technologies.[0]}}{{#if project.meta.year}} &middot; {{project.meta.year}}{{/if}}</p>{{/if}}{{/if}}
   <h1 class="title">{{project.title}}</h1>
   {{#if project.tagline}}<p class="tagline">{{project.tagline}}</p>{{/if}}
 
