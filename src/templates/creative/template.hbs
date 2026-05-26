@@ -67,7 +67,24 @@ a { color: inherit; text-decoration: none; }
 .nav-link { font-family: var(--font-mono); font-size: 12px; text-transform: uppercase; letter-spacing: 1px; color: var(--text-dim); transition: color .25s; }
 .nav-link:hover { color: var(--accent); }
 .nav-link .bk { color: var(--text-muted); }
-@media (max-width: 768px) { .nav-links { display: none; } }
+.nav-toggle { display: none; }
+@media (max-width: 768px) {
+  .nav-toggle { display: flex; flex-direction: column; justify-content: center; gap: 5px; width: 40px; height: 40px; padding: 0; background: none; border: none; cursor: pointer; z-index: 60; }
+  .nav-toggle span { display: block; width: 22px; height: 2px; background: var(--text); transition: transform .3s, opacity .3s; }
+  .nav-toggle.is-open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+  .nav-toggle.is-open span:nth-child(2) { opacity: 0; }
+  .nav-toggle.is-open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+  .nav-links {
+    position: fixed; top: 60px; left: 0; right: 0;
+    flex-direction: column; align-items: stretch; gap: 0;
+    background: rgba(17,17,17,0.98); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    transform: translateY(-130%); transition: transform .35s cubic-bezier(.16,1,.3,1);
+    max-height: calc(100dvh - 60px); overflow-y: auto;
+  }
+  .nav-links.open { transform: translateY(0); }
+  .nav-link { padding: 18px 24px; border-top: 1px solid var(--border); font-size: 14px; }
+}
 
 /* ── Hero ── */
 .hero {
@@ -101,17 +118,20 @@ a { color: inherit; text-decoration: none; }
 .cta:hover { gap: 16px; }
 .cta-ghost { color: var(--text-dim); }
 .cta-ghost:hover { color: var(--accent); }
-/* The 3D cone is a desktop-only centrepiece: the hero only switches to the
-   side-by-side row layout at 1024px, and a preserve-3d cone is not reliably
-   clipped by overflow:hidden on smaller screens (cards bleed over the hero
-   text + fixed nav). Below 1024px the gallery grid is the showcase instead. */
-.hero-right { display: none; }
-@media (min-width: 1024px) { .hero-right { display: block; width: 64%; order: 2; margin-left: -5%; } }
+/* The cone shows at every size; on mobile it sits below the hero text (order 2)
+   and is scaled down (smaller radius via JS + smaller cards below) so it stays
+   contained. On desktop it's the 64% side column. */
+.hero-right { width: 100%; order: 2; }
+@media (min-width: 1024px) { .hero-right { width: 64%; margin-left: -5%; } }
 
 /* ── 3D Cone ── */
 .cone-wrap { position: relative; width: 100%; height: 620px; perspective: 1600px; overflow: hidden; cursor: grab; touch-action: pan-y; }
 .cone-wrap.dragging { cursor: grabbing; }
-@media (max-width: 1023px) { .cone-wrap { height: 460px; } }
+@media (max-width: 1023px) {
+  .cone-wrap { height: 380px; }
+  .cone-card { width: 104px; height: 138px; margin: -69px 0 0 -52px; }
+  .cone-hint { font-size: 8px; bottom: 8px; }
+}
 .cone-tilt { position: absolute; top: 50%; left: 50%; transform-style: preserve-3d; }
 .cone-spin { position: relative; transform-style: preserve-3d; }
 .cone-card {
@@ -248,7 +268,8 @@ a { color: inherit; text-decoration: none; }
 <!-- Navbar -->
 <header class="nav">
   <a href="#top" class="nav-brand">{{basics.fullName}}</a>
-  <nav class="nav-links">
+  <button class="nav-toggle" id="navToggle" aria-label="Open menu" aria-expanded="false" aria-controls="navLinks"><span></span><span></span><span></span></button>
+  <nav class="nav-links" id="navLinks">
     {{#if projects}}<a href="#gallery" class="nav-link"><span class="bk">[</span> Gallery <span class="bk">]</span></a>{{/if}}
     {{#if skills}}<a href="#skills" class="nav-link"><span class="bk">[</span> Skills <span class="bk">]</span></a>{{/if}}
     {{#if certifications}}<a href="#awards" class="nav-link"><span class="bk">[</span> Awards <span class="bk">]</span></a>{{/if}}
@@ -467,9 +488,12 @@ a { color: inherit; text-decoration: none; }
   var N = cards.length;
   if (!N) { wrap.style.display = 'none'; return; }
 
+  // Shrink the cone on small screens so it stays inside the viewport.
+  var SMALL = window.matchMedia('(max-width: 1023px)').matches;
+  var RS = SMALL ? 0.46 : 1;
   var PER_TURN = Math.max(6, Math.min(15, N));
-  var TOP_R = 320, BOT_R = 220;
-  var HEIGHT = Math.min(750, Math.max(160, N * 26));
+  var TOP_R = 320 * RS, BOT_R = 220 * RS;
+  var HEIGHT = Math.min(750, Math.max(160, N * 26)) * (SMALL ? 0.6 : 1);
   var BASE_TILT = -12, AUTO = 0.12, LERP = 0.07;
 
   cards.forEach(function (card, i) {
@@ -577,8 +601,20 @@ a { color: inherit; text-decoration: none; }
 </script>
 {{/if}}
 
-<!-- Scroll reveal — JS-applied so it degrades gracefully without JS -->
+<!-- Mobile nav toggle + scroll reveal -->
 <script>
+(function () {
+  var t = document.getElementById('navToggle'), l = document.getElementById('navLinks');
+  if (!t || !l) return;
+  t.addEventListener('click', function () {
+    var open = l.classList.toggle('open');
+    t.classList.toggle('is-open', open);
+    t.setAttribute('aria-expanded', open ? 'true' : 'false');
+  });
+  l.addEventListener('click', function (e) {
+    if (e.target.closest('a')) { l.classList.remove('open'); t.classList.remove('is-open'); t.setAttribute('aria-expanded', 'false'); }
+  });
+})();
 (function () {
   if (!('IntersectionObserver' in window)) return;
   var sel = '.sec-head, .sec-title, .gal-card, .quote-card, .xp-item, .award-item, .skill-group, .contact-grid > div';
