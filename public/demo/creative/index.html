@@ -16,6 +16,8 @@
          under 1024px; the responsive artwork gallery grid is the small-screen
          showcase (mirrors the Trimind Portfolios creative template). */
       @media (max-width: 1023px) { .cone-wrap { display: none !important; } }
+      /* Long hero name (clamp floor 42px) clipped on narrow phones — let it wrap. */
+      @media (max-width: 767px) { #projects h1 { overflow-wrap: anywhere; word-break: break-word; } }
       html, body { overflow-x: hidden; }
     </style>
   </head>
