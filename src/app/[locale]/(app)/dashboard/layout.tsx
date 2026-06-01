@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import { DashboardContext } from "@/contexts/DashboardContext";
 import { Id } from "@convex/_generated/dataModel";
 import { AdminLink } from "@/components/AdminLink";
+import { Link } from "@/i18n/navigation";
 
 export default function DashboardLayout({
   children,
@@ -46,9 +47,9 @@ export default function DashboardLayout({
       <div className="min-h-screen bg-[var(--land-bg)]">
         <header className="border-b border-[var(--land-border)] bg-[var(--land-bg)]/80 backdrop-blur-md">
           <div className="mx-auto max-w-7xl flex items-center justify-between px-6 py-4">
-            <span className="text-xl font-bold text-white tracking-tight">
+            <Link href="/" className="text-xl font-bold text-white tracking-tight hover:text-[var(--land-accent-hover)] transition-colors">
               Portfolio Pro
-            </span>
+            </Link>
             <div className="flex items-center gap-4">
               <AdminLink />
               <span className="text-sm text-[var(--land-body)]">
