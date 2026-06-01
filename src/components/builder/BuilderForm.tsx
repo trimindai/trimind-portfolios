@@ -22,6 +22,11 @@ import { CreativeGalleryStep } from "./steps/CreativeGalleryStep";
 import { CreativeAboutStep } from "./steps/CreativeAboutStep";
 import { CreativeCustomizeStep } from "./steps/CreativeCustomizeStep";
 import { CvFieldsStep } from "./steps/CvFieldsStep";
+import { DeveloperAboutStep } from "./steps/DeveloperAboutStep";
+import { DeveloperStackStep } from "./steps/DeveloperStackStep";
+import { DeveloperExperienceStep } from "./steps/DeveloperExperienceStep";
+import { DeveloperCredentialsStep } from "./steps/DeveloperCredentialsStep";
+import { DeveloperCustomizeStep } from "./steps/DeveloperCustomizeStep";
 
 type Step = {
   name: string;
@@ -59,11 +64,13 @@ const CREATIVE_STEPS: Step[] = [
 ];
 
 const DEVELOPER_STEPS: Step[] = [
-  { name: "About", labelKey: "basics", requiredFields: ["basics.fullName", "basics.title", "basics.email"], component: EngineerBasicsStep },
+  { name: "About", labelKey: "basics", requiredFields: ["basics.fullName", "basics.title", "basics.email"], component: DeveloperAboutStep },
+  { name: "Stack", labelKey: "skills", optional: true, component: DeveloperStackStep },
+  { name: "Experience", labelKey: "experience", optional: true, component: DeveloperExperienceStep },
   { name: "Projects", labelKey: "projects", requiredFields: ["projects"], component: EngineerProjectsStep },
-  { name: "Background", labelKey: "education", optional: true, component: EngineerBackgroundStep },
+  { name: "Background", labelKey: "education", optional: true, component: DeveloperCredentialsStep },
   { name: "CV Details", labelKey: "cv", optional: true, component: CvFieldsStep },
-  { name: "Customize", labelKey: "customize", component: EngineerCustomizeStep },
+  { name: "Customize", labelKey: "customize", component: DeveloperCustomizeStep },
 ];
 
 const TEMPLATE_STEPS: Record<string, Step[]> = {
@@ -187,7 +194,7 @@ export function BuilderForm({ portfolioId, initialData }: BuilderFormProps) {
             </p>
           </div>
           <div className="flex items-center gap-2 shrink-0">
-            <div className="w-16 h-1.5 rounded-full bg-[var(--land-border)]/50 overflow-hidden">
+            <div className="w-20 sm:w-24 h-2 rounded-full bg-[var(--land-border)]/50 overflow-hidden">
               <div
                 className="h-full bg-[var(--land-accent)] rounded-full transition-all duration-500"
                 style={{ width: `${progress}%` }}
@@ -289,9 +296,10 @@ export function BuilderForm({ portfolioId, initialData }: BuilderFormProps) {
           </button>
           <button
             onClick={async () => { await save(); window.location.href = `/${locale}/dashboard`; }}
-            className="hidden sm:inline-flex min-h-[44px] items-center justify-center gap-1.5 rounded-lg border border-[var(--land-border)] px-4 py-2.5 text-xs text-[var(--land-muted)] hover:text-[var(--land-bright)] hover:bg-[var(--land-surface-raised)] transition-colors"
+            className="inline-flex min-h-[44px] items-center justify-center rounded-lg border border-[var(--land-border)] px-3 sm:px-4 py-2.5 text-xs text-[var(--land-muted)] hover:text-[var(--land-bright)] hover:bg-[var(--land-surface-raised)] transition-colors"
           >
-            {isRTL ? "حفظ وخروج" : "Save & Exit"}
+            <span className="sm:hidden">&times;</span>
+            <span className="hidden sm:inline">{isRTL ? "حفظ وخروج" : "Save & Exit"}</span>
           </button>
         </div>
         <span className={`text-xs text-[var(--land-muted)] flex items-center gap-1 ${saving ? "animate-pulse" : ""}`}>
@@ -300,18 +308,27 @@ export function BuilderForm({ portfolioId, initialData }: BuilderFormProps) {
               <svg className="w-3 h-3 text-[var(--land-accent)]" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M2 6l3 3 5-5" />
               </svg>
-              <span className="hidden sm:inline">{tNav("autoSaved")}</span>
+              {tNav("autoSaved")}
             </>
           )}
         </span>
-        {currentStep < steps.length - 1 ? (
-          <button
-            onClick={goNext}
-            className="inline-flex min-h-[44px] min-w-[44px] items-center justify-center gap-1.5 rounded-lg bg-[var(--land-accent)] px-4 sm:px-6 py-2.5 text-sm font-medium text-white hover:bg-[var(--land-accent-hover)] transition-colors active:scale-[0.98]"
-          >
-            <span>{currentStepDef.optional ? (isRTL ? "تخطي / التالي" : "Skip / Next") : tNav("next")}</span>
-            <span aria-hidden className="rtl:rotate-180">&rarr;</span>
-          </button>
+        <div className="flex items-center gap-2">
+          {currentStepDef.optional && currentStep < steps.length - 1 && (
+            <button
+              onClick={goNext}
+              className="inline-flex min-h-[44px] items-center justify-center rounded-lg border border-[var(--land-border)] px-3 sm:px-4 py-2.5 text-sm text-[var(--land-muted)] hover:text-[var(--land-bright)] hover:bg-[var(--land-surface-raised)] transition-colors active:scale-[0.98]"
+            >
+              {isRTL ? "تخطي" : "Skip"}
+            </button>
+          )}
+          {currentStep < steps.length - 1 ? (
+            <button
+              onClick={goNext}
+              className="inline-flex min-h-[44px] min-w-[44px] items-center justify-center gap-1.5 rounded-lg bg-[var(--land-accent)] px-4 sm:px-6 py-2.5 text-sm font-medium text-white hover:bg-[var(--land-accent-hover)] transition-colors active:scale-[0.98]"
+            >
+              <span>{tNav("next")}</span>
+              <span aria-hidden className="rtl:rotate-180">&rarr;</span>
+            </button>
         ) : (
           <button
             onClick={async () => { await save(); window.location.href = `/${locale}/dashboard/${portfolioId}/preview`; }}
@@ -321,6 +338,7 @@ export function BuilderForm({ portfolioId, initialData }: BuilderFormProps) {
             <span aria-hidden className="rtl:rotate-180">&rarr;</span>
           </button>
         )}
+        </div>
       </div>
     </div>
   );

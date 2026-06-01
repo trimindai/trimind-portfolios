@@ -8,6 +8,7 @@ import { DashboardContext } from "@/contexts/DashboardContext";
 import { Id } from "@convex/_generated/dataModel";
 import { AdminLink } from "@/components/AdminLink";
 import { Link } from "@/i18n/navigation";
+import { useParams } from "next/navigation";
 
 export default function DashboardLayout({
   children,
@@ -15,6 +16,9 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   const { user, isLoaded } = useUser();
+  const params = useParams();
+  const locale = (params.locale as string) || "en";
+  const isRTL = locale === "ar";
   const upsertUser = useMutation(api.users.upsertFromClerk);
   const currentUser = useQuery(api.users.getCurrent);
   const [convexUserId, setConvexUserId] = useState<Id<"users"> | null>(null);
@@ -50,14 +54,14 @@ export default function DashboardLayout({
             <Link href="/" className="text-xl font-bold text-white tracking-tight hover:text-[var(--land-accent-hover)] transition-colors">
               Portfolio Pro
             </Link>
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-3 sm:gap-4">
               <AdminLink />
-              <span className="text-sm text-[var(--land-body)]">
+              <span className="hidden sm:inline text-sm text-[var(--land-body)]">
                 {user?.fullName || user?.primaryEmailAddress?.emailAddress}
               </span>
               <SignOutButton>
                 <button className="text-sm text-[var(--land-muted)] hover:text-white transition-colors">
-                  Sign out
+                  {isRTL ? "خروج" : "Sign out"}
                 </button>
               </SignOutButton>
             </div>

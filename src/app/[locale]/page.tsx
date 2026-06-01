@@ -207,8 +207,8 @@ export default async function LandingPage({
                 style={{ fontSize: "clamp(3rem, 6.5vw, 5.5rem)" }}
               >
                 {isRTL
-                  ? "البورتفوليو الذي تستحقه مسيرتك"
-                  : "The portfolio your career has earned"}
+                  ? "سيرة ذاتية + بورتفوليو احترافي في دقائق"
+                  : "Professional CV + Portfolio in Minutes"}
               </h1>
               <p className="mt-8 max-w-lg text-lg leading-relaxed text-[var(--land-body)]">
                 {isRTL
@@ -220,7 +220,7 @@ export default async function LandingPage({
                   href="/templates"
                   className="land-cta-glow inline-block rounded-xl bg-[var(--land-accent)] px-10 py-4 text-lg font-semibold text-white hover:bg-[var(--land-accent-hover)] transition-colors"
                 >
-                  {isRTL ? "ابنِ بورتفوليوك" : "Build yours"}
+                  {isRTL ? "ابدأ مجانًا" : "Start Free — Pay When Ready"}
                 </Link>
                 <a
                   href="#templates"
@@ -779,7 +779,7 @@ export default async function LandingPage({
                   href="/templates"
                   className="inline-block rounded-lg bg-[var(--land-accent)] px-8 py-3.5 text-base font-semibold text-white hover:bg-[var(--land-accent-hover)] transition-colors"
                 >
-                  {isRTL ? "ابنِ بورتفوليوك" : "Build yours"}
+                  {isRTL ? "ابدأ الآن" : "Start Now — It's Free"}
                 </Link>
                 <p className="mt-3 text-xs text-[var(--land-muted)]">
                   {isRTL
@@ -995,7 +995,7 @@ export default async function LandingPage({
               </li>
               <li>
                 <a
-                  href="https://wa.me/96560abortifoliopro"
+                  href="https://wa.me/96550439150"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="hover:text-[var(--land-bright)] transition-colors"

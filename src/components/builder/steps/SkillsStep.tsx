@@ -50,7 +50,7 @@ export function SkillsStep({ data, onChange }: SkillsStepProps) {
           maxItems={10}
           addLabel="Add Certification"
           renderItem={(item, _, update) => (
-            <div className="grid grid-cols-3 gap-3 pr-16">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pr-10 sm:pr-16">
               <TextField label="Name" value={item.name} onChange={(v) => update({ name: v })} placeholder="CFA" />
               <TextField label="Issuer" value={item.issuer} onChange={(v) => update({ issuer: v })} placeholder="CFA Institute" />
               <TextField label="Year" value={item.year || ""} onChange={(v) => update({ year: v })} placeholder="2022" />
