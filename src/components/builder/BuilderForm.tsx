@@ -278,14 +278,22 @@ export function BuilderForm({ portfolioId, initialData }: BuilderFormProps) {
 
       {/* Navigation */}
       <div className="sticky bottom-0 z-10 -mx-4 sm:mx-0 flex items-center justify-between gap-3 border-t border-[var(--land-border)]/50 bg-[var(--land-bg)]/90 px-4 py-3 backdrop-blur sm:static sm:border-0 sm:bg-transparent sm:p-0 sm:backdrop-blur-none">
-        <button
-          onClick={goPrev}
-          disabled={currentStep === 0}
-          className="inline-flex min-h-[44px] min-w-[44px] items-center justify-center gap-1.5 rounded-lg border border-[var(--land-border)] px-4 sm:px-6 py-2.5 text-sm text-[var(--land-bright)] hover:bg-[var(--land-surface-raised)] transition-colors active:scale-[0.98] disabled:opacity-30"
-        >
-          <span aria-hidden className="rtl:rotate-180">&larr;</span>
-          <span className="hidden sm:inline">{tNav("previous")}</span>
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={goPrev}
+            disabled={currentStep === 0}
+            className="inline-flex min-h-[44px] min-w-[44px] items-center justify-center gap-1.5 rounded-lg border border-[var(--land-border)] px-4 sm:px-6 py-2.5 text-sm text-[var(--land-bright)] hover:bg-[var(--land-surface-raised)] transition-colors active:scale-[0.98] disabled:opacity-30"
+          >
+            <span aria-hidden className="rtl:rotate-180">&larr;</span>
+            <span className="hidden sm:inline">{tNav("previous")}</span>
+          </button>
+          <button
+            onClick={async () => { await save(); window.location.href = `/${locale}/dashboard`; }}
+            className="hidden sm:inline-flex min-h-[44px] items-center justify-center gap-1.5 rounded-lg border border-[var(--land-border)] px-4 py-2.5 text-xs text-[var(--land-muted)] hover:text-[var(--land-bright)] hover:bg-[var(--land-surface-raised)] transition-colors"
+          >
+            {isRTL ? "حفظ وخروج" : "Save & Exit"}
+          </button>
+        </div>
         <span className={`text-xs text-[var(--land-muted)] flex items-center gap-1 ${saving ? "animate-pulse" : ""}`}>
           {saving ? tNav("saving") : (
             <>
