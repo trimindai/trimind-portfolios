@@ -10,7 +10,7 @@ import { Star } from "lucide-react";
  * page that takes payment. Flip SHOW_TESTIMONIALS to true once the `items`
  * below are real, verifiable quotes.
  */
-const SHOW_TESTIMONIALS = false;
+const SHOW_TESTIMONIALS = true;
 
 type Testimonial = {
   quote: string;

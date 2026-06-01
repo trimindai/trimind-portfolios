@@ -360,6 +360,29 @@ export const getBySlug = query({
   },
 });
 
+export const listPublishedSlugs = query({
+  handler: async (ctx) => {
+    const portfolios = await ctx.db.query("portfolios").collect();
+    return portfolios
+      .filter((p) => p.status === "published" && p.slug)
+      .map((p) => ({ slug: p.slug!, publishedAt: p.publishedAt ?? p.lastEditedAt }));
+  },
+});
+
+export const incrementViews = mutation({
+  args: { slug: v.string() },
+  handler: async (ctx, { slug }) => {
+    const portfolio = await ctx.db
+      .query("portfolios")
+      .withIndex("by_slug", (q) => q.eq("slug", slug))
+      .first();
+    if (!portfolio || portfolio.status !== "published") return;
+    await ctx.db.patch(portfolio._id, {
+      viewCount: (portfolio.viewCount ?? 0) + 1,
+    });
+  },
+});
+
 /**
  * Authenticated: check if a slug is taken (by ANY portfolio, including drafts).
  * Used by the publish form to validate slug availability before payment.
