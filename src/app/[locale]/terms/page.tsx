@@ -1,5 +1,5 @@
 import { LegalLayout } from "@/components/LegalLayout";
-import Link from "next/link";
+
 
 type PageProps = { params: Promise<{ locale: string }> };
 
@@ -53,8 +53,9 @@ export default async function TermsPage({ params }: PageProps) {
           <li>الرسم: ١٫٥ دينار كويتي لكل بورتفوليو، مرة واحدة عند النشر.</li>
           <li>تتم المعالجة عبر MyFatoorah — تطبق شروطهم على المعاملة.</li>
           <li>
-            بمجرد إتمام الدفع، تخضع طلبات الاسترداد لسياسة الاسترداد
-            المنفصلة.
+            جميع عمليات الدفع نهائية. لأنك تحصل على وصول فوري رقمي لبناء
+            وتحميل بورتفوليوك، لا نوفر استرجاع. ننصحك بمشاهدة كل القوالب
+            والعروض المباشرة قبل الشراء.
           </li>
         </ul>
 
@@ -135,8 +136,9 @@ export default async function TermsPage({ params }: PageProps) {
           transaction.
         </li>
         <li>
-          Refunds are governed by our separate{" "}
-          <Link href="/refund">Refund Policy</Link>.
+          All sales are final. Because you receive instant digital access to build
+          and download your portfolio, we do not offer refunds. We encourage you to
+          preview every template and live demo before purchasing.
         </li>
       </ul>
 

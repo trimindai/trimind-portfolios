@@ -51,8 +51,8 @@ export default async function LandingPage({
             : "اختر قالبًا، أضف تفاصيلك بالعربي أو الإنجليزي، ثم حمّل بورتفوليوك كملف PDF احترافي.",
         },
         {
-          q: "ماذا لو لم يعجبني بورتفوليوي؟",
-          a: "يمكنك التعديل في أي وقت من لوحة التحكم حتى يصبح كما تريده تمامًا.",
+          q: "هل أقدر أسترجع المبلغ؟",
+          a: "جميع عمليات الدفع نهائية. تحصل على وصول فوري لبناء ونشر ملفك، لذلك لا نوفر استرجاع. تقدر تشوف كل القوالب والعروض المباشرة كاملة قبل الدفع — ادفع فقط لما تكون جاهز.",
         },
         {
           q: "هل يمكنني تغيير القالب لاحقًا؟",
@@ -93,8 +93,8 @@ export default async function LandingPage({
             : "Pick a template, fill in your details in Arabic or English, and download your portfolio as a professional PDF.",
         },
         {
-          q: "What if I don't like my portfolio?",
-          a: "You can edit it anytime from your dashboard until it's exactly the way you want it.",
+          q: "Can I get a refund?",
+          a: "All sales are final. You get instant access to build and publish your portfolio, so we don't offer refunds. You can fully preview every template and live demo before paying — pay only when you're ready.",
         },
         {
           q: "Can I switch templates later?",
@@ -109,7 +109,7 @@ export default async function LandingPage({
 
   return (
     <div className="min-h-screen bg-[var(--land-bg)] text-[var(--land-bright)] land-grain">
-      {/* Schema.org structured data */}
+      {/* Schema.org: Product */}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
@@ -125,9 +125,24 @@ export default async function LandingPage({
               priceCurrency: "KWD",
               availability: "https://schema.org/InStock",
             },
-            description: "Create a stunning professional portfolio in minutes. Pick a template, fill your info, download your PDF. Arabic & English.",
+            description: "Create a professional CV + portfolio in minutes. Pick a template, fill your info, get your PDF.",
             url: "https://portfolio-trimind.com",
             provider: { "@type": "Organization", name: "TriMind", url: "https://trimind.ai" },
+          }),
+        }}
+      />
+      {/* Schema.org: FAQPage */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "FAQPage",
+            mainEntity: faqs.map((item) => ({
+              "@type": "Question",
+              name: item.q,
+              acceptedAnswer: { "@type": "Answer", text: item.a },
+            })),
           }),
         }}
       />
@@ -203,7 +218,7 @@ export default async function LandingPage({
               <div className="mt-10 flex flex-col items-start gap-4">
                 <Link
                   href="/templates"
-                  className="land-cta-glow inline-block rounded-xl bg-[var(--land-accent)] px-10 py-4 text-lg font-semibold text-white hover:bg-[var(--land-accent-hover)] transition-colors"
+                  className="land-cta-glow inline-block rounded-lg bg-[var(--land-accent)] px-10 py-4 text-lg font-semibold text-white hover:bg-[var(--land-accent-hover)] transition-colors active:scale-[0.98]"
                 >
                   {isRTL ? "ابدأ مجانًا" : "Start Free — Pay When Ready"}
                 </Link>
@@ -451,17 +466,16 @@ export default async function LandingPage({
             <ScrollReveal delay={300}>
               <div className="group h-full">
                 <div className="relative rounded-xl overflow-hidden border border-[var(--land-border)] transition-all duration-500 group-hover:translate-y-[-2px] group-hover:border-[var(--land-accent)]/30">
-                  <div
-                    className="flex aspect-[16/10] items-center justify-center"
-                    style={{ background: "linear-gradient(135deg, #1e1e1e, #0a0a0a)" }}
-                  >
-                    <span
-                      className="text-2xl font-bold tracking-tight"
-                      style={{ color: "#ec4899", textShadow: "0 2px 24px rgba(0,0,0,0.5)" }}
-                    >
-                      {isRTL ? "إبداعي" : "Creative"}
-                    </span>
-                  </div>
+                  {/* TODO: Drop /public/landing/mockup-creative.jpg (1200x800, same as corporate/engineer) */}
+                  <Image
+                    src="/landing/mockup-creative.jpg"
+                    alt="Creative portfolio template"
+                    width={1200}
+                    height={800}
+                    sizes="(min-width: 1024px) 400px, (min-width: 640px) 50vw, 100vw"
+                    className="w-full h-auto"
+                    quality={90}
+                  />
                   <span className="absolute top-3 start-3 z-10 rounded-full border border-[var(--land-accent)]/30 bg-[var(--land-bg)]/80 px-2.5 py-1 text-[10px] font-medium uppercase tracking-wider text-[var(--land-accent)] backdrop-blur">
                     {isRTL ? "إبداعي" : "Creative"}
                   </span>
@@ -841,7 +855,7 @@ export default async function LandingPage({
             <div className="mt-8 flex flex-col items-center">
               <Link
                 href="/templates"
-                className="land-cta-glow inline-block rounded-xl bg-[var(--land-accent)] px-10 py-4 text-lg font-semibold text-white transition-colors hover:bg-[var(--land-accent-hover)]"
+                className="land-cta-glow inline-block rounded-lg bg-[var(--land-accent)] px-10 py-4 text-lg font-semibold text-white transition-colors hover:bg-[var(--land-accent-hover)] active:scale-[0.98]"
               >
                 {isRTL ? "ابدأ البناء — ٤.٩٠٠ دك" : "Start Building — 4.900 KD"}
               </Link>
@@ -916,14 +930,6 @@ export default async function LandingPage({
                   className="hover:text-[var(--land-bright)] transition-colors"
                 >
                   {isRTL ? "الشروط" : "Terms"}
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/refund"
-                  className="hover:text-[var(--land-bright)] transition-colors"
-                >
-                  {isRTL ? "الاسترداد" : "Refund Policy"}
                 </Link>
               </li>
             </ul>
