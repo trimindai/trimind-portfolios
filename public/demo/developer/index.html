@@ -193,20 +193,22 @@ section{position:relative;z-index:1}
 .keycap.lit{border-color:var(--skill,var(--accent));box-shadow:0 4px 0 rgba(0,0,0,.35),0 0 0 1px var(--skill,var(--accent)),0 8px 24px rgba(0,0,0,.4)}
 
 /* ── skill detail panel (driven by the live 3D keyboard) ─────── */
-.skill-panel{margin-top:26px;display:flex;align-items:center;gap:18px;max-width:580px;min-height:90px;
-  padding:18px 20px;border-radius:16px;border:1px solid var(--border-strong);
-  background:linear-gradient(180deg,var(--card-hover),var(--card));
-  box-shadow:0 10px 30px rgba(0,0,0,.35);border-left:3px solid var(--skill,var(--accent));
-  opacity:0;transform:translateY(10px);transition:opacity .25s ease,transform .25s ease,border-color .25s ease}
-.skill-panel.show{opacity:1;transform:none}
-.skill-panel .sp-icon{width:54px;height:54px;flex:0 0 auto;display:flex;align-items:center;justify-content:center;
-  border-radius:12px;background:var(--bg-2);border:1px solid var(--border-strong)}
-.skill-panel .sp-icon .mono{font-family:var(--font-display);font-size:1.25rem;font-weight:800;letter-spacing:-.5px;color:var(--skill,var(--accent))}
-.skill-panel .sp-label{font-family:var(--font-display);font-size:1.15rem;color:#f1f5f9;line-height:1.1}
-.skill-panel .sp-desc{color:var(--muted);font-size:.85rem;margin-top:4px;line-height:1.4}
-.skill-panel .sp-key{margin-inline-start:auto;align-self:flex-start;font-family:var(--font-mono);font-size:.62rem;
-  color:var(--muted-2);border:1px solid var(--border-strong);border-radius:6px;padding:3px 7px}
-@media(max-width:560px){.skill-panel{gap:12px;padding:14px;min-height:78px}.skill-panel .sp-key{display:none}}
+/* skill NAME beside the live 3D keyboard — press a key → just the name (e.g. "Docker") */
+.skill-name{display:flex;align-items:center;flex-wrap:wrap;gap:14px;min-height:52px;margin:4px 0 22px}
+.skill-name .sn-dot{width:12px;height:12px;border-radius:50%;flex:0 0 auto;background:var(--skill,var(--accent));box-shadow:0 0 18px var(--skill,var(--accent));transition:background .2s ease,box-shadow .2s ease}
+.skill-name .sn-text{font-family:var(--font-display);font-size:clamp(1.6rem,4.5vw,2.6rem);font-weight:800;letter-spacing:-1px;line-height:1;color:#f1f5f9;transition:color .2s ease}
+.skill-name.show .sn-text{color:var(--skill,var(--accent))}
+.skill-name .sn-hint{font-family:var(--font-mono);font-size:.7rem;color:var(--muted-2)}
+.skill-name.show .sn-hint{display:none}
+.skill-more{margin-top:20px;display:inline-flex;align-items:center;gap:8px;cursor:pointer;
+  font-family:var(--font-mono);font-size:.8rem;color:#cbd5e1;
+  background:linear-gradient(180deg,var(--card-hover),var(--card));border:1px solid var(--border-strong);
+  border-radius:999px;padding:10px 18px;min-height:44px;transition:border-color .2s ease,transform .1s ease}
+.skill-more:hover{border-color:var(--skill,var(--accent));color:#f1f5f9}
+.skill-more:active{transform:translateY(1px)}
+.skill-more[hidden]{display:none}
+.keycap.is-rest{display:none}
+.skill-grid.show-all .keycap.is-rest{display:flex}
 
 /* ── experience timeline ────────────────────────────────────── */
 #experience{padding:90px 0}
@@ -363,7 +365,12 @@ html[dir="rtl"] .tl-item::before{left:auto;right:0}
       <h2>Tech Stack</h2>
       <p class="kbd-hint">(hint: press any key — the floating 3D keyboard is live)</p>
     </div>
-    <div class="skill-grid">
+    <div id="skillName" class="skill-name" aria-live="polite">
+      <span class="sn-dot"></span>
+      <span id="snText" class="sn-text">Press a key</span>
+      <span class="sn-hint">the floating keyboard is live — press any key</span>
+    </div>
+    <div class="skill-grid" id="skillGrid">
       <div class="keycap" data-key tabindex="0">
         <span class="cat">Frontend</span>
         <i class="fab fa-react kc-0"></i>
@@ -455,14 +462,9 @@ html[dir="rtl"] .tl-item::before{left:auto;right:0}
         <span class="label">Accessibility</span>
       </div>
     </div>
-    <div id="skillPanel" class="skill-panel" role="status" aria-live="polite" aria-label="Skill details">
-      <div class="sp-icon"><span id="spMono" class="mono">⌨</span></div>
-      <div>
-        <div id="spLabel" class="sp-label">Press a key on the keyboard</div>
-        <div id="spDesc" class="sp-desc">Every key on the 3D keyboard is a skill — press one to reveal it.</div>
-      </div>
-      <span class="sp-key" id="spKey"></span>
-    </div>
+    <button id="skillMore" class="skill-more" type="button" hidden
+            data-more="Show all skills"
+            data-less="Show less"></button>
   </div>
 </section>
 
@@ -866,6 +868,29 @@ html[dir="rtl"] .tl-item::before{left:auto;right:0}
     k.addEventListener("keydown", function(e){ if(e.key === "Enter" || e.key === " "){ e.preventDefault(); press(); } });
   });
 
+  /* ── show the most important skills; collapse the rest behind a button ── */
+  (function(){
+    var HEADLINE = 8;
+    var grid = document.getElementById("skillGrid");
+    var btn  = document.getElementById("skillMore");
+    if(!grid || !btn){ return; }
+    var caps = Array.prototype.slice.call(grid.querySelectorAll(".keycap"));
+    var rest = caps.slice(HEADLINE);
+    if(rest.length === 0){ return; }                 // nothing to hide → no button
+    rest.forEach(function(c){ c.classList.add("is-rest"); });
+    var more = btn.getAttribute("data-more") || "Show all skills";
+    var less = btn.getAttribute("data-less") || "Show less";
+    var open = false;
+    function render(){
+      grid.classList.toggle("show-all", open);
+      btn.textContent = open ? less : (more + " (+" + rest.length + ")");
+      btn.setAttribute("aria-expanded", open ? "true" : "false");
+    }
+    btn.addEventListener("click", function(){ open = !open; render(); });
+    btn.hidden = false;
+    render();
+  })();
+
   /* ── project modal ── */
   function openModal(i){ var m = document.getElementById("modal-" + i); if(m){ m.classList.add("open"); document.body.style.overflow = "hidden"; } }
   function closeModals(){ document.querySelectorAll(".modal.open").forEach(function(m){ m.classList.remove("open"); }); document.body.style.overflow = ""; }
@@ -931,13 +956,10 @@ html[dir="rtl"] .tl-item::before{left:auto;right:0}
      key via emitEvent. Everything is wrapped in try/catch so a blocked or
      differently-named scene degrades to the static keycap grid. */
   function wireKeyboardSkills(app){
-    var panel = document.getElementById("skillPanel");
-    if(!panel || app.__skillsWired){ return; }
+    var box = document.getElementById("skillName");
+    if(!box || app.__skillsWired){ return; }
     app.__skillsWired = true;
-    var mono  = document.getElementById("spMono");
-    var label = document.getElementById("spLabel");
-    var desc  = document.getElementById("spDesc");
-    var keyEl = document.getElementById("spKey");
+    var nameEl = document.getElementById("snText");
     var press = null, release = null;
     try{
       press = new Audio("/assets/keycap-sounds/press.mp3"); press.volume = 0.35;
@@ -953,15 +975,12 @@ html[dir="rtl"] .tl-item::before{left:auto;right:0}
     function show(slug){
       var s = SKILLS[slug]; if(!s){ return; }
       current = slug;
-      panel.style.setProperty("--skill", s.c);
-      if(mono){ mono.textContent = s.ab; mono.style.color = s.c; }
-      if(label){ label.textContent = s.l; }
-      if(desc){ desc.textContent = s.d; }
-      if(keyEl){ keyEl.textContent = slug; }
-      panel.classList.add("show");
+      box.style.setProperty("--skill", s.c);
+      if(nameEl){ nameEl.textContent = s.l; }    /* just the name, e.g. "Docker" */
+      box.classList.add("show");
       litKeycap(slug);
       if(press){ try{ press.currentTime = 0; press.play().catch(function(){}); }catch(e){} }
-      try{ app.setVariable("heading", s.l); app.setVariable("desc", s.d); }catch(e){}
+      try{ app.setVariable("heading", s.l); app.setVariable("desc", ""); }catch(e){}
     }
     function fade(){
       if(release){ try{ release.play().catch(function(){}); }catch(e){} }
