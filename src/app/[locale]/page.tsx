@@ -6,6 +6,7 @@ import { Testimonials } from "@/components/landing/Testimonials";
 import { Palette, Languages, FileDown, Globe, Plus, Eye } from "lucide-react";
 import Image from "next/image";
 import { HOSTING_ENABLED } from "@/lib/flags";
+import { AdminLink } from "@/components/AdminLink";
 
 export default async function LandingPage({
   params,
@@ -120,6 +121,7 @@ export default async function LandingPage({
             {tc("appName")}
           </Link>
           <div className="flex items-center gap-4">
+            <AdminLink />
             <Link
               href="/"
               locale={otherLocale}
