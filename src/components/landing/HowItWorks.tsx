@@ -110,7 +110,7 @@ export function HowItWorks({ isRTL }: { isRTL: boolean }) {
                     <span className="flex h-[4.5rem] w-[4.5rem] items-center justify-center rounded-full border border-[var(--land-accent)]/40 bg-[var(--land-bg)] text-[var(--land-accent)]">
                       <Icon className="h-7 w-7" strokeWidth={1.75} />
                     </span>
-                    <span className="absolute -top-1 flex h-6 w-6 items-center justify-center rounded-full bg-[var(--land-accent)] text-xs font-bold text-[var(--land-bright)] ltr:-right-1 rtl:-left-1">
+                    <span className="absolute -top-1 flex h-6 w-6 items-center justify-center rounded-full bg-[var(--land-accent)] text-xs font-bold text-white ltr:-right-1 rtl:-left-1">
                       {step.n}
                     </span>
                   </div>
@@ -132,7 +132,7 @@ export function HowItWorks({ isRTL }: { isRTL: boolean }) {
         <div className="mt-16 flex flex-col items-center">
           <Link
             href="/templates"
-            className="land-cta-glow inline-block rounded-xl bg-[var(--land-accent)] px-8 py-4 text-base font-semibold text-[var(--land-bright)] transition-colors hover:bg-[var(--land-accent-hover)]"
+            className="inline-block rounded-lg bg-[var(--land-accent)] px-8 py-4 text-base font-semibold text-white transition-colors hover:bg-[var(--land-accent-hover)] active:scale-[0.98] shadow-sm"
           >
             {isRTL ? "ابدأ البناء — ٤.٩٠٠ دك" : "Start Building — 4.900 KD"}
           </Link>

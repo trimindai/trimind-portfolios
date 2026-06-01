@@ -3,7 +3,7 @@ import { Link } from "@/i18n/navigation";
 import { ScrollReveal } from "@/components/landing/ScrollReveal";
 import { HowItWorks } from "@/components/landing/HowItWorks";
 import { Testimonials } from "@/components/landing/Testimonials";
-import { Palette, Languages, FileDown, Globe, Plus, Eye } from "lucide-react";
+import { Palette, Languages, FileDown, Globe, Plus, Eye, Check } from "lucide-react";
 import Image from "next/image";
 import { HOSTING_ENABLED } from "@/lib/flags";
 import { AdminLink } from "@/components/AdminLink";
@@ -157,7 +157,7 @@ export default async function LandingPage({
             <Link
               href="/"
               locale={otherLocale}
-              className="text-sm text-[var(--land-muted)] hover:text-[var(--land-bright)] transition-colors"
+              className="text-sm font-medium text-[var(--land-body)] hover:text-[var(--land-bright)] border border-[var(--land-border)] rounded-full px-3 py-1 transition-colors hover:border-[var(--land-accent)]/50"
             >
               {otherLabel}
             </Link>
@@ -218,7 +218,7 @@ export default async function LandingPage({
               <div className="mt-10 flex flex-col items-start gap-4">
                 <Link
                   href="/templates"
-                  className="land-cta-glow inline-block rounded-lg bg-[var(--land-accent)] px-10 py-4 text-lg font-semibold text-white hover:bg-[var(--land-accent-hover)] transition-colors active:scale-[0.98]"
+                  className="inline-block rounded-lg shadow-sm bg-[var(--land-accent)] px-10 py-4 text-lg font-semibold text-white hover:bg-[var(--land-accent-hover)] transition-colors active:scale-[0.98]"
                 >
                   {isRTL ? "ابدأ مجانًا" : "Start Free — Pay When Ready"}
                 </Link>
@@ -255,7 +255,7 @@ export default async function LandingPage({
                   : ["No subscription", "Secure payment (K-NET, Apple Pay)"]
                 ).map((b) => (
                   <li key={b} className="flex items-center gap-1.5">
-                    <span className="text-[var(--land-accent)]">✓</span>
+                    <Check className="h-4 w-4 text-[var(--land-accent)] shrink-0" />
                     {b}
                   </li>
                 ))}
@@ -338,7 +338,7 @@ export default async function LandingPage({
 
 
       {/* ── Template showcase ──────────────────── */}
-      <section id="templates" className="scroll-mt-20 pt-32 pb-24 px-6">
+      <section id="templates" className="scroll-mt-20 pt-16 sm:pt-32 pb-16 sm:pb-24 px-6">
         <ScrollReveal>
           <div className="mx-auto max-w-7xl">
             <p className="text-sm font-medium tracking-widest uppercase text-[var(--land-accent)]">
@@ -466,7 +466,6 @@ export default async function LandingPage({
             <ScrollReveal delay={300}>
               <div className="group h-full">
                 <div className="relative rounded-xl overflow-hidden border border-[var(--land-border)] transition-all duration-500 group-hover:translate-y-[-2px] group-hover:border-[var(--land-accent)]/30">
-                  {/* TODO: Drop /public/landing/mockup-creative.jpg (1200x800, same as corporate/engineer) */}
                   <Image
                     src="/landing/mockup-creative.jpg"
                     alt="Creative portfolio template"
@@ -545,7 +544,7 @@ export default async function LandingPage({
       <HowItWorks isRTL={isRTL} />
 
       {/* ── Features (2x2 grid) ────────────────── */}
-      <section className="py-28 px-6">
+      <section className="py-16 sm:py-28 px-6">
         <div className="mx-auto max-w-5xl">
           <ScrollReveal>
             <div className="grid gap-6 md:grid-cols-2">
@@ -658,7 +657,7 @@ export default async function LandingPage({
 
       {/* ── Pricing ────────────────────────────── */}
       <ScrollReveal>
-        <section className="relative py-24 px-6 bg-[var(--land-surface-raised)]">
+        <section className="relative py-16 sm:py-24 px-6 bg-[var(--land-surface-raised)]">
           <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[var(--land-accent)] to-transparent opacity-40" />
           <div className="mx-auto max-w-3xl lg:grid lg:grid-cols-[1fr_auto] gap-16 items-start">
             <div>
@@ -833,7 +832,7 @@ export default async function LandingPage({
 
       {/* ── Pre-footer CTA ─────────────────────── */}
       <ScrollReveal>
-        <section className="border-t border-[var(--land-border)] bg-[var(--land-surface-raised)] px-6 py-20 text-center">
+        <section className="border-t border-[var(--land-border)] bg-[var(--land-surface-raised)] px-6 py-14 sm:py-20 text-center">
           <div className="mx-auto max-w-2xl">
             <h2
               className="font-extrabold tracking-tighter"
@@ -855,7 +854,7 @@ export default async function LandingPage({
             <div className="mt-8 flex flex-col items-center">
               <Link
                 href="/templates"
-                className="land-cta-glow inline-block rounded-lg bg-[var(--land-accent)] px-10 py-4 text-lg font-semibold text-white transition-colors hover:bg-[var(--land-accent-hover)] active:scale-[0.98]"
+                className="inline-block rounded-lg shadow-sm bg-[var(--land-accent)] px-10 py-4 text-lg font-semibold text-white transition-colors hover:bg-[var(--land-accent-hover)] active:scale-[0.98]"
               >
                 {isRTL ? "ابدأ البناء — ٤.٩٠٠ دك" : "Start Building — 4.900 KD"}
               </Link>
