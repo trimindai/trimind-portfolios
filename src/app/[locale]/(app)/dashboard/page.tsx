@@ -37,8 +37,10 @@ export default function DashboardPage() {
   const t = useTranslations();
   const portfolios = useQuery(api.portfolios.listByUser, {});
   const removePortfolio = useMutation(api.portfolios.remove);
+  const duplicatePortfolio = useMutation(api.portfolios.duplicate);
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
+  const [duplicatingId, setDuplicatingId] = useState<string | null>(null);
 
   const handleNewPortfolio = () => {
     router.push(`/${locale}/dashboard/new`);
@@ -59,6 +61,15 @@ export default function DashboardPage() {
     } finally {
       setDeletingId(null);
       setConfirmDeleteId(null);
+    }
+  };
+
+  const handleDuplicate = async (id: string) => {
+    setDuplicatingId(id);
+    try {
+      await duplicatePortfolio({ id: id as Id<"portfolios"> });
+    } finally {
+      setDuplicatingId(null);
     }
   };
 
@@ -214,6 +225,14 @@ export default function DashboardPage() {
                       {isRTL ? "عرض" : "View"}
                     </a>
                   )}
+                  <button
+                    onClick={() => handleDuplicate(portfolio._id)}
+                    disabled={duplicatingId === portfolio._id}
+                    className="rounded-lg border border-[var(--land-border)] px-2 py-1.5 text-sm text-[var(--land-muted)] hover:text-[var(--land-accent)] hover:border-[var(--land-accent)]/30 transition-colors disabled:opacity-50"
+                    title={isRTL ? "نسخ" : "Duplicate"}
+                  >
+                    {duplicatingId === portfolio._id ? "..." : "⧉"}
+                  </button>
                   {confirmDeleteId === portfolio._id ? (
                     <div className="flex gap-1">
                       <button

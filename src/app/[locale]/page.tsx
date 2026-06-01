@@ -114,6 +114,28 @@ export default async function LandingPage({
 
   return (
     <div className="min-h-screen bg-[var(--land-bg)] text-[var(--land-bright)] land-grain">
+      {/* Schema.org structured data */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "SoftwareApplication",
+            name: "Portfolio Pro",
+            applicationCategory: "BusinessApplication",
+            operatingSystem: "Web",
+            offers: {
+              "@type": "Offer",
+              price: "4.900",
+              priceCurrency: "KWD",
+              availability: "https://schema.org/InStock",
+            },
+            description: "Create a stunning professional portfolio in minutes. Designed for GCC professionals. Arabic & English.",
+            url: "https://portfolio-trimind.com",
+            provider: { "@type": "Organization", name: "TriMind", url: "https://trimind.ai" },
+          }),
+        }}
+      />
       {/* ── Navbar ─────────────────────────────── */}
       <nav className="fixed top-0 z-50 w-full border-b border-[var(--land-border)]/50 bg-[var(--land-bg)]/80 backdrop-blur-md">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
@@ -970,6 +992,24 @@ export default async function LandingPage({
                 >
                   support@portfolio-trimind.com
                 </a>
+              </li>
+              <li>
+                <a
+                  href="https://wa.me/96560abortifoliopro"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-[var(--land-bright)] transition-colors"
+                >
+                  WhatsApp
+                </a>
+              </li>
+              <li>
+                <Link
+                  href="/dashboard"
+                  className="hover:text-[var(--land-bright)] transition-colors"
+                >
+                  {isRTL ? "لوحة التحكم" : "Dashboard"}
+                </Link>
               </li>
             </ul>
           </nav>

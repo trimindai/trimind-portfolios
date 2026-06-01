@@ -132,6 +132,27 @@ export const create = mutation({
   },
 });
 
+export const duplicate = mutation({
+  args: { id: v.id("portfolios") },
+  handler: async (ctx, { id }) => {
+    const user = await requireUser(ctx);
+    const original = await ctx.db.get(id);
+    if (!original) throw new Error("Portfolio not found");
+    if (original.userId !== user._id) throw new Error("Not your portfolio");
+
+    const now = Date.now();
+    const { _id, _creationTime, status, slug, slugReservedAt, generatedHtml, generatedProjectPages, paymentId, publishedAt, viewCount, createdAt, lastEditedAt, ...data } = original;
+    return await ctx.db.insert("portfolios", {
+      ...data,
+      name: `${original.name} (copy)`,
+      status: "draft",
+      slug: undefined,
+      lastEditedAt: now,
+      createdAt: now,
+    });
+  },
+});
+
 export const update = mutation({
   args: {
     id: v.id("portfolios"),
