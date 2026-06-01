@@ -6,6 +6,13 @@ import { Loader2 } from "lucide-react";
 interface PreviewFrameProps {
   portfolioData: Record<string, any>;
   deviceMode: "desktop" | "tablet" | "mobile";
+  /**
+   * Which artifact to render in the iframe.
+   * - "cv"   → the ATS A4 PDF CV (printed output, carries the QR)
+   * - "live" → the flashy live web portfolio template
+   * Defaults to "cv" so `print()` always produces the ATS CV.
+   */
+  view?: "cv" | "live";
 }
 
 export interface PreviewFrameHandle {
@@ -19,7 +26,7 @@ const deviceWidths: Record<string, string> = {
 };
 
 const PreviewFrame = forwardRef<PreviewFrameHandle, PreviewFrameProps>(
-  function PreviewFrame({ portfolioData, deviceMode }, ref) {
+  function PreviewFrame({ portfolioData, deviceMode, view = "cv" }, ref) {
     const iframeRef = useRef<HTMLIFrameElement>(null);
     const [html, setHtml] = useState<string>("");
     const [loading, setLoading] = useState(true);
@@ -36,7 +43,7 @@ const PreviewFrame = forwardRef<PreviewFrameHandle, PreviewFrameProps>(
     const lastDataRef = useRef<string>("");
 
     useEffect(() => {
-      const dataJson = JSON.stringify(portfolioData);
+      const dataJson = view + ":" + JSON.stringify(portfolioData);
       if (dataJson === lastDataRef.current) return;
       lastDataRef.current = dataJson;
 
@@ -46,7 +53,8 @@ const PreviewFrame = forwardRef<PreviewFrameHandle, PreviewFrameProps>(
         setLoading(true);
         setError(null);
         try {
-          const res = await fetch("/api/generate", {
+          const endpoint = view === "cv" ? "/api/generate-cv" : "/api/generate";
+          const res = await fetch(endpoint, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(portfolioData),
@@ -75,7 +83,7 @@ const PreviewFrame = forwardRef<PreviewFrameHandle, PreviewFrameProps>(
       return () => {
         cancelled = true;
       };
-    }, [portfolioData]);
+    }, [portfolioData, view]);
 
     const isNarrow = deviceMode !== "desktop";
     const width = deviceWidths[deviceMode];

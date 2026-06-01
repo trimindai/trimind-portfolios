@@ -7,7 +7,7 @@ import { Id } from "@convex/_generated/dataModel";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { useState, useMemo, useRef } from "react";
-import { Monitor, Tablet, Smartphone, ArrowLeft, Download, CheckCircle2 } from "lucide-react";
+import { Monitor, Tablet, Smartphone, ArrowLeft, Download, CheckCircle2, FileText, Globe } from "lucide-react";
 import { useUser } from "@clerk/nextjs";
 import PreviewFrame from "@/components/preview/PreviewFrame";
 import type { PreviewFrameHandle } from "@/components/preview/PreviewFrame";
@@ -16,6 +16,7 @@ import { HOSTING_ENABLED } from "@/lib/flags";
 import { ADMIN_EMAILS } from "@/lib/admin";
 
 type DeviceMode = "desktop" | "tablet" | "mobile";
+type PreviewView = "cv" | "live";
 
 export default function PreviewPage() {
   const params = useParams();
@@ -32,6 +33,20 @@ export default function PreviewPage() {
   });
 
   const [deviceMode, setDeviceMode] = useState<DeviceMode>("desktop");
+  // Which artifact to preview. The printed PDF is always the ATS CV, so any
+  // print action switches to the CV view first (see printCv below).
+  const [view, setView] = useState<PreviewView>("cv");
+
+  // Always print the ATS CV (carries the QR), regardless of the current view.
+  const printCv = () => {
+    if (view !== "cv") {
+      setView("cv");
+      // Let the CV iframe load before invoking the native print dialog.
+      window.setTimeout(() => previewRef.current?.print(), 600);
+    } else {
+      previewRef.current?.print();
+    }
+  };
 
   const portfolioData = useMemo(() => {
     if (!portfolio) return null;
@@ -63,6 +78,11 @@ export default function PreviewPage() {
     { mode: "mobile", icon: Smartphone, label: t("mobile") },
   ];
 
+  const views: { mode: PreviewView; icon: typeof FileText; label: string }[] = [
+    { mode: "cv", icon: FileText, label: t("cvView") },
+    { mode: "live", icon: Globe, label: t("liveView") },
+  ];
+
   // PDF gating (only relevant while hosting is disabled). Admins and anyone
   // who has paid (or, in the hosting era, published) can download the PDF.
   const isAdmin = ADMIN_EMAILS.includes(
@@ -91,22 +111,51 @@ export default function PreviewPage() {
           {t("backToEdit")}
         </Link>
 
-        <div className="flex items-center gap-1 rounded-lg bg-[var(--land-surface-raised)]/50 p-1">
-          {devices.map(({ mode, icon: Icon, label }) => (
-            <button
-              key={mode}
-              onClick={() => setDeviceMode(mode)}
-              className={`flex items-center gap-2 rounded-md px-3 py-1.5 text-sm transition-colors ${
-                deviceMode === mode
-                  ? "bg-[var(--land-accent)] text-white"
-                  : "text-[var(--land-body)] hover:bg-[var(--land-border)] hover:text-white"
-              }`}
-              title={label}
-            >
-              <Icon className="h-4 w-4" />
-              <span className="hidden sm:inline">{label}</span>
-            </button>
-          ))}
+        <div className="flex items-center gap-2">
+          {/* CV ⇄ Live portfolio toggle */}
+          <div
+            className="flex items-center gap-1 rounded-lg bg-[var(--land-surface-raised)]/50 p-1"
+            role="group"
+            aria-label={t("viewToggleLabel")}
+          >
+            {views.map(({ mode, icon: Icon, label }) => (
+              <button
+                key={mode}
+                onClick={() => setView(mode)}
+                aria-pressed={view === mode}
+                className={`flex min-h-[44px] items-center gap-2 rounded-md px-3 py-1.5 text-sm transition-colors sm:min-h-0 ${
+                  view === mode
+                    ? "bg-[var(--land-accent)] text-white"
+                    : "text-[var(--land-body)] hover:bg-[var(--land-border)] hover:text-white"
+                }`}
+                title={label}
+              >
+                <Icon className="h-4 w-4" />
+                <span className="hidden sm:inline">{label}</span>
+              </button>
+            ))}
+          </div>
+
+          {/* Device size toggle (live portfolio only) */}
+          {view === "live" && (
+            <div className="flex items-center gap-1 rounded-lg bg-[var(--land-surface-raised)]/50 p-1">
+              {devices.map(({ mode, icon: Icon, label }) => (
+                <button
+                  key={mode}
+                  onClick={() => setDeviceMode(mode)}
+                  className={`flex min-h-[44px] items-center gap-2 rounded-md px-3 py-1.5 text-sm transition-colors sm:min-h-0 ${
+                    deviceMode === mode
+                      ? "bg-[var(--land-accent)] text-white"
+                      : "text-[var(--land-body)] hover:bg-[var(--land-border)] hover:text-white"
+                  }`}
+                  title={label}
+                >
+                  <Icon className="h-4 w-4" />
+                  <span className="hidden sm:inline">{label}</span>
+                </button>
+              ))}
+            </div>
+          )}
         </div>
 
         {HOSTING_ENABLED ? (
@@ -118,7 +167,7 @@ export default function PreviewPage() {
           </Link>
         ) : canDownload ? (
           <button
-            onClick={() => previewRef.current?.print()}
+            onClick={printCv}
             className="flex items-center gap-2 rounded-lg bg-[var(--land-accent)] px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[var(--land-accent-hover)]"
           >
             <Download className="h-4 w-4" />
@@ -147,17 +196,22 @@ export default function PreviewPage() {
       {/* Preview area */}
       <div className="flex-1 overflow-hidden relative">
         {portfolioData && (
-          <PreviewFrame ref={previewRef} portfolioData={portfolioData} deviceMode={deviceMode} />
+          <PreviewFrame
+            ref={previewRef}
+            portfolioData={portfolioData}
+            deviceMode={view === "cv" ? "desktop" : deviceMode}
+            view={view}
+          />
         )}
 
         {/* Floating download button */}
         {HOSTING_ENABLED ? (
-          <button onClick={() => previewRef.current?.print()} className={pillClass}>
+          <button onClick={printCv} className={pillClass}>
             <Download className="h-4 w-4" />
             Save PDF / Print
           </button>
         ) : canDownload ? (
-          <button onClick={() => previewRef.current?.print()} className={pillClass}>
+          <button onClick={printCv} className={pillClass}>
             <Download className="h-4 w-4" />
             {downloadLabel}
           </button>
