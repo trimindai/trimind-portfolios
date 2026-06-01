@@ -30,7 +30,7 @@ async function main() {
     await page.goto(url, { waitUntil: "networkidle", timeout: 30000 });
     await page.waitForTimeout(1000);
 
-    const outPath = path.join(OUTPUT_DIR, `mockup-${template}.jpg`);
+    const outPath = path.join(OUTPUT_DIR, `mockup-${template}-v2.jpg`);
     await page.screenshot({
       path: outPath,
       type: "jpeg",
