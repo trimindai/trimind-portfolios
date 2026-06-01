@@ -2,6 +2,7 @@
 
 import { useState, useCallback, useMemo } from "react";
 import { useParams } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { useMutation } from "convex/react";
 import { api } from "@convex/_generated/api";
 import { Id } from "@convex/_generated/dataModel";
@@ -20,39 +21,60 @@ import { CreativeProfileStep } from "./steps/CreativeProfileStep";
 import { CreativeGalleryStep } from "./steps/CreativeGalleryStep";
 import { CreativeAboutStep } from "./steps/CreativeAboutStep";
 import { CreativeCustomizeStep } from "./steps/CreativeCustomizeStep";
+import { CvFieldsStep } from "./steps/CvFieldsStep";
 
-type Step = { name: string; component: React.ComponentType<{ data: any; onChange: (updates: any) => void }> };
+// `name` is the English fallback label; `labelKey` (when present) is looked up in
+// the `builder.steps` i18n namespace so the step indicator is bilingual.
+type Step = {
+  name: string;
+  labelKey?: string;
+  component: React.ComponentType<{ data: any; onChange: (updates: any) => void }>;
+};
 
 const CORPORATE_STEPS: Step[] = [
-  { name: "Basics", component: BasicsStep },
-  { name: "Experience", component: ExperienceStep },
+  { name: "Basics", labelKey: "basics", component: BasicsStep },
+  { name: "Experience", labelKey: "experience", component: ExperienceStep },
   { name: "Achievements", component: AchievementsStep },
-  { name: "Skills", component: SkillsStep },
-  { name: "Education", component: EducationStep },
+  { name: "Skills", labelKey: "skills", component: SkillsStep },
+  { name: "Education", labelKey: "education", component: EducationStep },
+  { name: "CV Details", labelKey: "cv", component: CvFieldsStep },
   { name: "Endorsements", component: EndorsementsStep },
-  { name: "Customize", component: CustomizeStep },
+  { name: "Customize", labelKey: "customize", component: CustomizeStep },
 ];
 
-// greglagana.com-inspired: About → Projects → Background → Customize
+// greglagana.com-inspired: About → Projects → Background → CV → Customize
 const ENGINEER_STEPS: Step[] = [
-  { name: "About", component: EngineerBasicsStep },
-  { name: "Projects", component: EngineerProjectsStep },
-  { name: "Background", component: EngineerBackgroundStep },
-  { name: "Customize", component: EngineerCustomizeStep },
+  { name: "About", labelKey: "basics", component: EngineerBasicsStep },
+  { name: "Projects", labelKey: "projects", component: EngineerProjectsStep },
+  { name: "Background", labelKey: "education", component: EngineerBackgroundStep },
+  { name: "CV Details", labelKey: "cv", component: CvFieldsStep },
+  { name: "Customize", labelKey: "customize", component: EngineerCustomizeStep },
 ];
 
-// Artist gallery flow: Profile → Gallery (cone) → About → Customize
+// Artist gallery flow: Profile → Gallery (cone) → About → CV → Customize
 const CREATIVE_STEPS: Step[] = [
-  { name: "Profile", component: CreativeProfileStep },
+  { name: "Profile", labelKey: "basics", component: CreativeProfileStep },
   { name: "Gallery", component: CreativeGalleryStep },
   { name: "About", component: CreativeAboutStep },
-  { name: "Customize", component: CreativeCustomizeStep },
+  { name: "CV Details", labelKey: "cv", component: CvFieldsStep },
+  { name: "Customize", labelKey: "customize", component: CreativeCustomizeStep },
+];
+
+// Developer mirrors the engineer flow (code-first profile) so it stops falling
+// back to the corporate step list. About → Projects → Background → CV → Customize.
+const DEVELOPER_STEPS: Step[] = [
+  { name: "About", labelKey: "basics", component: EngineerBasicsStep },
+  { name: "Projects", labelKey: "projects", component: EngineerProjectsStep },
+  { name: "Background", labelKey: "education", component: EngineerBackgroundStep },
+  { name: "CV Details", labelKey: "cv", component: CvFieldsStep },
+  { name: "Customize", labelKey: "customize", component: EngineerCustomizeStep },
 ];
 
 const TEMPLATE_STEPS: Record<string, Step[]> = {
   corporate: CORPORATE_STEPS,
   engineer: ENGINEER_STEPS,
   creative: CREATIVE_STEPS,
+  developer: DEVELOPER_STEPS,
 };
 
 function getStepsForTemplate(templateId: string): Step[] {
@@ -67,6 +89,8 @@ interface BuilderFormProps {
 export function BuilderForm({ portfolioId, initialData }: BuilderFormProps) {
   const params = useParams();
   const locale = (params.locale as string) || "en";
+  const tSteps = useTranslations("builder.steps");
+  const tNav = useTranslations("builder.nav");
   const [currentStep, setCurrentStep] = useState(0);
   const [formData, setFormData] = useState(initialData);
   const [saving, setSaving] = useState(false);
@@ -109,9 +133,24 @@ export function BuilderForm({ portfolioId, initialData }: BuilderFormProps) {
   };
 
   const StepComponent = steps[currentStep].component;
+  const stepLabel = (step: Step) => (step.labelKey ? tSteps(step.labelKey as any) : step.name);
+
+  const isRTL = locale === "ar";
 
   return (
     <div>
+      {/* Pricing context — sets expectations early */}
+      {formData.status === "draft" && (
+        <div className="mb-6 flex items-center gap-3 rounded-xl border border-[var(--land-accent)]/20 bg-[var(--land-accent)]/5 px-4 py-3">
+          <span className="text-[var(--land-accent)] text-lg">&#9998;</span>
+          <p className="text-sm text-[var(--land-bright)]">
+            {isRTL
+              ? "أنت تبني مسودة مجانية. ادفع 4.900 د.ك فقط عند تجهيز PDF الاحترافي."
+              : "You’re building a free draft. Pay 4.900 KD only when your professional PDF is ready."}
+          </p>
+        </div>
+      )}
+
       {/* Step indicator */}
       <div className="relative mb-8">
         {/* Progress bar track */}
@@ -125,7 +164,7 @@ export function BuilderForm({ portfolioId, initialData }: BuilderFormProps) {
             <button
               key={i}
               onClick={async () => { await save(); setCurrentStep(i); }}
-              className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm transition-all duration-300 ${
+              className={`flex items-center gap-2 px-3 py-2 min-h-[44px] rounded-lg text-sm transition-all duration-300 ${
                 i === currentStep
                   ? "bg-[var(--land-accent)] text-white ring-1 ring-[var(--land-accent)]/20"
                   : i < currentStep
@@ -140,7 +179,7 @@ export function BuilderForm({ portfolioId, initialData }: BuilderFormProps) {
                   </svg>
                 ) : i + 1}
               </span>
-              <span className="hidden sm:inline">{step.name}</span>
+              <span className="hidden sm:inline">{stepLabel(step)}</span>
             </button>
           ))}
         </div>
@@ -152,38 +191,41 @@ export function BuilderForm({ portfolioId, initialData }: BuilderFormProps) {
         <StepComponent data={formData} onChange={handleChange} />
       </div>
 
-      {/* Navigation */}
-      <div className="flex items-center justify-between">
+      {/* Navigation — sticky on mobile so next/back are always reachable */}
+      <div className="sticky bottom-0 z-10 -mx-4 sm:mx-0 flex items-center justify-between gap-3 border-t border-[var(--land-border)]/50 bg-[var(--land-bg)]/90 px-4 py-3 backdrop-blur sm:static sm:border-0 sm:bg-transparent sm:p-0 sm:backdrop-blur-none">
         <button
           onClick={goPrev}
           disabled={currentStep === 0}
-          className="min-w-[120px] rounded-lg border border-[var(--land-border)] px-6 py-2.5 text-sm text-[var(--land-bright)] hover:bg-[var(--land-surface-raised)] transition-colors active:scale-[0.98] disabled:opacity-30"
+          className="inline-flex min-h-[44px] min-w-[44px] items-center justify-center gap-1.5 rounded-lg border border-[var(--land-border)] px-4 sm:px-6 py-2.5 text-sm text-[var(--land-bright)] hover:bg-[var(--land-surface-raised)] transition-colors active:scale-[0.98] disabled:opacity-30"
         >
-          &larr; Previous
+          <span aria-hidden className="rtl:rotate-180">&larr;</span>
+          <span className="hidden sm:inline">{tNav("previous")}</span>
         </button>
         <span className={`text-xs text-[var(--land-muted)] flex items-center gap-1 ${saving ? "animate-pulse" : ""}`}>
-          {saving ? "Saving..." : (
+          {saving ? tNav("saving") : (
             <>
               <svg className="w-3 h-3 text-[var(--land-accent)]" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M2 6l3 3 5-5" />
               </svg>
-              Auto-saved
+              <span className="hidden sm:inline">{tNav("autoSaved")}</span>
             </>
           )}
         </span>
         {currentStep < steps.length - 1 ? (
           <button
             onClick={goNext}
-            className="min-w-[120px] rounded-lg bg-[var(--land-accent)] px-6 py-2.5 text-sm font-medium text-white hover:bg-[var(--land-accent-hover)] transition-colors active:scale-[0.98]"
+            className="inline-flex min-h-[44px] min-w-[44px] items-center justify-center gap-1.5 rounded-lg bg-[var(--land-accent)] px-4 sm:px-6 py-2.5 text-sm font-medium text-white hover:bg-[var(--land-accent-hover)] transition-colors active:scale-[0.98]"
           >
-            Next &rarr;
+            <span>{tNav("next")}</span>
+            <span aria-hidden className="rtl:rotate-180">&rarr;</span>
           </button>
         ) : (
           <button
             onClick={async () => { await save(); window.location.href = `/${locale}/dashboard/${portfolioId}/preview`; }}
-            className="min-w-[120px] rounded-lg bg-[var(--land-accent)] px-6 py-2.5 text-sm font-semibold text-white hover:bg-[var(--land-accent-hover)] transition-colors active:scale-[0.98] text-center"
+            className="inline-flex min-h-[44px] min-w-[44px] items-center justify-center gap-1.5 rounded-lg bg-[var(--land-accent)] px-4 sm:px-6 py-2.5 text-sm font-semibold text-white hover:bg-[var(--land-accent-hover)] transition-colors active:scale-[0.98] text-center"
           >
-            Preview &rarr;
+            <span>{tNav("preview")}</span>
+            <span aria-hidden className="rtl:rotate-180">&rarr;</span>
           </button>
         )}
       </div>
