@@ -1,16 +1,19 @@
 "use client";
 
-import { useParams } from "next/navigation";
+import { useParams, useSearchParams } from "next/navigation";
 import { useQuery } from "convex/react";
 import { api } from "@convex/_generated/api";
 import { Id } from "@convex/_generated/dataModel";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { useState, useMemo, useRef } from "react";
-import { Monitor, Tablet, Smartphone, ArrowLeft, Download } from "lucide-react";
+import { Monitor, Tablet, Smartphone, ArrowLeft, Download, CheckCircle2 } from "lucide-react";
+import { useUser } from "@clerk/nextjs";
 import PreviewFrame from "@/components/preview/PreviewFrame";
 import type { PreviewFrameHandle } from "@/components/preview/PreviewFrame";
 import { toPortfolioData } from "@/lib/portfolio-data";
+import { HOSTING_ENABLED } from "@/lib/flags";
+import { ADMIN_EMAILS } from "@/lib/admin";
 
 type DeviceMode = "desktop" | "tablet" | "mobile";
 
@@ -21,6 +24,8 @@ export default function PreviewPage() {
   const t = useTranslations("preview");
   const tc = useTranslations("common");
   const previewRef = useRef<PreviewFrameHandle>(null);
+  const searchParams = useSearchParams();
+  const { user: clerkUser } = useUser();
 
   const portfolio = useQuery(api.portfolios.get, {
     id: id as Id<"portfolios">,
@@ -58,6 +63,22 @@ export default function PreviewPage() {
     { mode: "mobile", icon: Smartphone, label: t("mobile") },
   ];
 
+  // PDF gating (only relevant while hosting is disabled). Admins and anyone
+  // who has paid (or, in the hosting era, published) can download the PDF.
+  const isAdmin = ADMIN_EMAILS.includes(
+    clerkUser?.primaryEmailAddress?.emailAddress || ""
+  );
+  const canDownload =
+    isAdmin ||
+    portfolio.status === "paid" ||
+    portfolio.status === "published";
+  const justPaid = searchParams.get("paid") === "1";
+  const getPdfLabel = locale === "ar" ? "احصل على PDF — ٤.٩٠٠ د.ك" : "Get PDF — 4.900 KD";
+  const downloadLabel = locale === "ar" ? "حمّل PDF" : "Download PDF";
+
+  const pillClass =
+    "fixed bottom-6 right-6 z-50 flex items-center gap-2 rounded-full bg-[var(--land-accent)] px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-emerald-600/25 hover:bg-[var(--land-accent-hover)] hover:shadow-emerald-500/30 transition-all hover:-translate-y-0.5";
+
   return (
     <div className="flex h-screen flex-col bg-[var(--land-bg)]">
       {/* Top toolbar */}
@@ -88,13 +109,40 @@ export default function PreviewPage() {
           ))}
         </div>
 
-        <Link
-          href={`/dashboard/${id}/publish`}
-          className="rounded-lg bg-[var(--land-accent)] px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[var(--land-accent-hover)]"
-        >
-          {tc("publish")}
-        </Link>
+        {HOSTING_ENABLED ? (
+          <Link
+            href={`/dashboard/${id}/publish`}
+            className="rounded-lg bg-[var(--land-accent)] px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[var(--land-accent-hover)]"
+          >
+            {tc("publish")}
+          </Link>
+        ) : canDownload ? (
+          <button
+            onClick={() => previewRef.current?.print()}
+            className="flex items-center gap-2 rounded-lg bg-[var(--land-accent)] px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[var(--land-accent-hover)]"
+          >
+            <Download className="h-4 w-4" />
+            {downloadLabel}
+          </button>
+        ) : (
+          <Link
+            href={`/dashboard/${id}/publish`}
+            className="rounded-lg bg-[var(--land-accent)] px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[var(--land-accent-hover)]"
+          >
+            {getPdfLabel}
+          </Link>
+        )}
       </div>
+
+      {/* Post-payment confirmation banner */}
+      {!HOSTING_ENABLED && justPaid && canDownload && (
+        <div className="flex items-center justify-center gap-2 border-b border-[var(--land-border)] bg-[var(--land-accent-subtle)] px-4 py-2.5 text-sm text-[var(--land-accent)]">
+          <CheckCircle2 className="h-4 w-4" />
+          {locale === "ar"
+            ? "تم الدفع بنجاح — اضغط “حمّل PDF” لحفظ بورتفوليوك."
+            : "Payment complete — click “Download PDF” to save your portfolio."}
+        </div>
+      )}
 
       {/* Preview area */}
       <div className="flex-1 overflow-hidden relative">
@@ -102,14 +150,23 @@ export default function PreviewPage() {
           <PreviewFrame ref={previewRef} portfolioData={portfolioData} deviceMode={deviceMode} />
         )}
 
-        {/* Floating Save PDF button */}
-        <button
-          onClick={() => previewRef.current?.print()}
-          className="fixed bottom-6 right-6 z-50 flex items-center gap-2 rounded-full bg-[var(--land-accent)] px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-emerald-600/25 hover:bg-[var(--land-accent-hover)] hover:shadow-emerald-500/30 transition-all hover:-translate-y-0.5"
-        >
-          <Download className="h-4 w-4" />
-          Save PDF / Print
-        </button>
+        {/* Floating download button */}
+        {HOSTING_ENABLED ? (
+          <button onClick={() => previewRef.current?.print()} className={pillClass}>
+            <Download className="h-4 w-4" />
+            Save PDF / Print
+          </button>
+        ) : canDownload ? (
+          <button onClick={() => previewRef.current?.print()} className={pillClass}>
+            <Download className="h-4 w-4" />
+            {downloadLabel}
+          </button>
+        ) : (
+          <Link href={`/dashboard/${id}/publish`} className={pillClass}>
+            <Download className="h-4 w-4" />
+            {getPdfLabel}
+          </Link>
+        )}
       </div>
     </div>
   );

@@ -15,10 +15,12 @@ import {
   Copy,
   Loader2,
   CheckCircle2,
+  Download,
 } from "lucide-react";
 import { useUser } from "@clerk/nextjs";
 import { toPortfolioData } from "@/lib/portfolio-data";
 import { ADMIN_EMAILS } from "@/lib/admin";
+import { HOSTING_ENABLED } from "@/lib/flags";
 
 function slugify(name: string): string {
   return name
@@ -31,6 +33,15 @@ function slugify(name: string): string {
 }
 
 export default function PublishPage() {
+  // While hosting is disabled, this route is a PDF checkout — no slug, no
+  // hosted URL. Flip HOSTING_ENABLED back on to restore the publish flow.
+  if (!HOSTING_ENABLED) {
+    return <PdfCheckout />;
+  }
+  return <HostingPublishPage />;
+}
+
+function HostingPublishPage() {
   const params = useParams();
   const id = params.id as string;
   const locale = (params.locale as string) || "en";
@@ -416,6 +427,227 @@ export default function PublishPage() {
               t("payAndPublish")
             ) : (
               tc("publish")
+            )}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/**
+ * PDF checkout (shown while HOSTING_ENABLED is false). The 4.900 KD payment
+ * unlocks the downloadable PDF instead of a hosted URL. No slug, no hosting.
+ * After a successful payment the user is sent back to the preview page where
+ * the now-unlocked "Download PDF" button saves the portfolio.
+ */
+function PdfCheckout() {
+  const params = useParams();
+  const id = params.id as string;
+  const locale = (params.locale as string) || "en";
+  const isRTL = locale === "ar";
+  const tc = useTranslations("common");
+
+  const { user: clerkUser } = useUser();
+  const isAdmin = ADMIN_EMAILS.includes(
+    clerkUser?.primaryEmailAddress?.emailAddress || ""
+  );
+
+  const portfolio = useQuery(api.portfolios.get, {
+    id: id as Id<"portfolios">,
+  });
+
+  const [working, setWorking] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  // Absolute (locale-prefixed) so window.location redirects keep the locale.
+  const previewHref = `/${locale}/dashboard/${id}/preview?paid=1`;
+
+  // Surface payment errors / success returned via query string.
+  const [paidViaCallback, setPaidViaCallback] = useState(false);
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const sp = new URLSearchParams(window.location.search);
+    if (sp.get("success") === "1") setPaidViaCallback(true);
+    const err = sp.get("error");
+    if (err) {
+      const map: Record<string, string> = {
+        payment_failed: "Payment was not completed. Please try again.",
+        amount_mismatch: "Payment amount did not match. Please try again.",
+        payment_cancelled: "Payment was cancelled.",
+        verification_failed:
+          "Could not verify payment. If you were charged, contact support.",
+      };
+      setError(map[err] || "Payment error. Please try again.");
+    }
+  }, []);
+
+  const unlocked =
+    isAdmin ||
+    portfolio?.status === "paid" ||
+    portfolio?.status === "published" ||
+    paidViaCallback;
+
+  const handleGetPdf = useCallback(async () => {
+    if (!portfolio) return;
+
+    // Admins and already-paid users go straight to the download.
+    if (
+      isAdmin ||
+      portfolio.status === "paid" ||
+      portfolio.status === "published"
+    ) {
+      window.location.href = previewHref;
+      return;
+    }
+
+    setWorking(true);
+    setError(null);
+    try {
+      // Free-access allowlist first (server checks FREE_ACCESS_EMAILS).
+      const freeRes = await fetch("/api/free-access", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ portfolioId: id }),
+      });
+
+      if (freeRes.ok) {
+        window.location.href = previewHref;
+        return;
+      }
+
+      if (freeRes.status !== 403) {
+        throw new Error("Something went wrong. Please try again.");
+      }
+
+      // Not eligible for free access → MyFatoorah payment.
+      const payRes = await fetch("/api/myfatoorah/initiate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ portfolioId: id, locale }),
+      });
+      const payData = await payRes.json();
+      if (!payRes.ok) throw new Error(payData.error || "Failed to start payment");
+
+      if (payData.alreadyPaid) {
+        window.location.href = previewHref;
+        return;
+      }
+      if (!payData.paymentUrl) throw new Error("Failed to start payment");
+      window.location.href = payData.paymentUrl;
+    } catch (err) {
+      const raw = err instanceof Error ? err.message : "";
+      const cleaned = raw.replace(/\[CONVEX [A-Z]\([^\)]*\)\]\s*/g, "").trim();
+      setError(cleaned || "Something went wrong. Please try again.");
+      setWorking(false);
+    }
+  }, [portfolio, isAdmin, id, locale, previewHref]);
+
+  // Loading / not found
+  if (portfolio === undefined) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-[var(--land-bg)]">
+        <div className="flex flex-col items-center gap-3">
+          <Loader2 className="h-8 w-8 animate-spin text-[var(--land-accent)]" />
+          <span className="text-sm text-[var(--land-body)]">{tc("loading")}</span>
+        </div>
+      </div>
+    );
+  }
+  if (portfolio === null) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-[var(--land-bg)]">
+        <p className="text-[var(--land-body)]">Portfolio not found.</p>
+      </div>
+    );
+  }
+
+  // Already unlocked → confirmation + download CTA.
+  if (unlocked) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-[var(--land-bg)] px-4">
+        <div className="w-full max-w-lg rounded-2xl border border-[var(--land-border)] bg-[var(--land-surface)] p-8 text-center">
+          <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-[var(--land-accent-subtle)]">
+            <CheckCircle2 className="h-12 w-12 text-[var(--land-accent)]" />
+          </div>
+          <h1 className="text-2xl font-bold text-white">
+            {isRTL ? "بورتفوليوك جاهز" : "Your portfolio is ready"}
+          </h1>
+          <p className="mt-3 text-sm text-[var(--land-body)]">
+            {isRTL
+              ? "اضغط الزر أدناه لمعاينة بورتفوليوك وحفظه كملف PDF."
+              : "Open your portfolio below to preview it and save it as a PDF."}
+          </p>
+          <a
+            href={previewHref}
+            className="mt-6 inline-flex items-center justify-center gap-2 rounded-lg bg-[var(--land-accent)] px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-[var(--land-accent-hover)]"
+          >
+            <Download className="h-4 w-4" />
+            {isRTL ? "افتح وحمّل PDF" : "Open & download PDF"}
+          </a>
+          <Link
+            href="/dashboard"
+            className="mt-6 block text-sm text-[var(--land-muted)] transition-colors hover:text-[var(--land-bright)]"
+          >
+            {isRTL ? "العودة للوحة التحكم" : "Back to Dashboard"}
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
+  // Checkout
+  return (
+    <div className="flex min-h-screen items-center justify-center bg-[var(--land-bg)] px-4">
+      <div className="w-full max-w-lg">
+        <Link
+          href={`/dashboard/${id}/preview`}
+          className="mb-6 inline-flex items-center gap-2 text-sm text-[var(--land-body)] transition-colors hover:text-white"
+        >
+          <ArrowLeft className="h-4 w-4" />
+          {isRTL ? "العودة للمعاينة" : "Back to Preview"}
+        </Link>
+
+        <div className="rounded-2xl border border-[var(--land-border)] bg-[var(--land-surface)] p-8">
+          <h1 className="text-2xl font-bold text-white">
+            {isRTL ? "احصل على بورتفوليوك بصيغة PDF" : "Get your portfolio as a PDF"}
+          </h1>
+          <p className="mt-2 text-sm text-[var(--land-body)]">
+            {isRTL
+              ? "دفعة واحدة. سيرة ذاتية احترافية جاهزة للطباعة والمشاركة."
+              : "One-time payment. A polished, print-ready PDF you can share anywhere."}
+          </p>
+
+          <div className="mt-6 flex items-baseline gap-2">
+            <span className="text-3xl font-bold text-white">
+              {isRTL ? "٤٫٩٠٠ د.ك" : "4.900 KD"}
+            </span>
+            <span className="text-sm text-[var(--land-muted)]">
+              {isRTL ? "لمرة واحدة" : "one-time"}
+            </span>
+          </div>
+
+          {error && (
+            <div className="mt-4 rounded-lg bg-red-950/50 p-3 text-sm text-red-400">
+              {error}
+            </div>
+          )}
+
+          <button
+            onClick={handleGetPdf}
+            disabled={working}
+            className="mt-6 flex w-full items-center justify-center gap-2 rounded-lg bg-[var(--land-accent)] px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-[var(--land-accent-hover)] disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            {working ? (
+              <>
+                <Loader2 className="h-4 w-4 animate-spin" />
+                {isRTL ? "جارٍ التحويل للدفع..." : "Redirecting to payment..."}
+              </>
+            ) : (
+              <>
+                <Download className="h-4 w-4" />
+                {isRTL ? "ادفع وحمّل PDF" : "Pay & download PDF"}
+              </>
             )}
           </button>
         </div>

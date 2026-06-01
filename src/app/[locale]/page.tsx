@@ -5,6 +5,7 @@ import { HowItWorks } from "@/components/landing/HowItWorks";
 import { Testimonials } from "@/components/landing/Testimonials";
 import { Palette, Languages, FileDown, Globe, Plus, Eye } from "lucide-react";
 import Image from "next/image";
+import { HOSTING_ENABLED } from "@/lib/flags";
 
 export default async function LandingPage({
   params,
@@ -44,7 +45,9 @@ export default async function LandingPage({
         },
         {
           q: "كيف أبدأ؟",
-          a: "اختر قالبًا، أضف تفاصيلك بالعربي أو الإنجليزي، واضغط نشر. يصبح بورتفوليوك حيًا فورًا برابط خاص.",
+          a: HOSTING_ENABLED
+            ? "اختر قالبًا، أضف تفاصيلك بالعربي أو الإنجليزي، واضغط نشر. يصبح بورتفوليوك حيًا فورًا برابط خاص."
+            : "اختر قالبًا، أضف تفاصيلك بالعربي أو الإنجليزي، ثم حمّل بورتفوليوك كملف PDF احترافي.",
         },
         {
           q: "ماذا لو لم يعجبني بورتفوليوي؟",
@@ -65,8 +68,10 @@ export default async function LandingPage({
           a: "No. Portfolio Pro is a one-time payment of 4.900 KD. No subscriptions, no renewals, no hidden fees.",
         },
         {
-          q: "Can I edit after publishing?",
-          a: "Yes. Your portfolio updates instantly whenever you make changes from your dashboard.",
+          q: HOSTING_ENABLED ? "Can I edit after publishing?" : "Can I edit my portfolio?",
+          a: HOSTING_ENABLED
+            ? "Yes. Your portfolio updates instantly whenever you make changes from your dashboard."
+            : "Yes. Update your details anytime from your dashboard, then download a fresh PDF.",
         },
         {
           q: "Which payment methods are accepted?",
@@ -82,7 +87,9 @@ export default async function LandingPage({
         },
         {
           q: "How do I get started?",
-          a: "Pick a template, fill in your details in Arabic or English, and click publish. Your portfolio goes live instantly with its own URL.",
+          a: HOSTING_ENABLED
+            ? "Pick a template, fill in your details in Arabic or English, and click publish. Your portfolio goes live instantly with its own URL."
+            : "Pick a template, fill in your details in Arabic or English, and download your portfolio as a professional PDF.",
         },
         {
           q: "What if I don't like my portfolio?",
@@ -620,16 +627,27 @@ export default async function LandingPage({
                   <FileDown className="h-5 w-5" />
                 </span>
                 <h3 className="mt-4 text-xl font-bold tracking-tight">
-                  {isRTL ? "سيرة ذاتية PDF مع باركود" : "CV page with scannable barcode"}
+                  {HOSTING_ENABLED
+                    ? isRTL
+                      ? "سيرة ذاتية PDF مع باركود"
+                      : "CV page with scannable barcode"
+                    : isRTL
+                      ? "سيرة ذاتية PDF احترافية"
+                      : "Professional PDF download"}
                 </h3>
                 <p className="mt-3 text-sm text-[var(--land-body)] leading-relaxed">
-                  {isRTL
-                    ? "حمّل صفحة سيرة ذاتية احترافية كملف PDF مع باركود يوجّه مباشرة إلى بورتفوليوك الحي."
-                    : "Download a professional CV page as PDF with a scannable barcode that links directly to your live portfolio."}
+                  {HOSTING_ENABLED
+                    ? isRTL
+                      ? "حمّل صفحة سيرة ذاتية احترافية كملف PDF مع باركود يوجّه مباشرة إلى بورتفوليوك الحي."
+                      : "Download a professional CV page as PDF with a scannable barcode that links directly to your live portfolio."
+                    : isRTL
+                      ? "حمّل بورتفوليوك كصفحة سيرة ذاتية احترافية بصيغة PDF جاهزة للطباعة والمشاركة."
+                      : "Download your portfolio as a polished, print-ready PDF you can share anywhere."}
                 </p>
               </div>
 
-              {/* Feature 4 */}
+              {/* Feature 4 — hosted URL (only while hosting is enabled) */}
+              {HOSTING_ENABLED && (
               <div className="rounded-2xl border border-[var(--land-border)] bg-[var(--land-surface)] p-7">
                 <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-[var(--land-accent-subtle)] text-[var(--land-accent)]">
                   <Globe className="h-5 w-5" />
@@ -643,6 +661,7 @@ export default async function LandingPage({
                     : "Your portfolio gets its own hosted URL. Update anytime from your dashboard; changes appear instantly."}
                 </p>
               </div>
+              )}
             </div>
           </ScrollReveal>
         </div>
@@ -687,26 +706,32 @@ export default async function LandingPage({
               <div className="mt-8 grid grid-cols-1 gap-y-3 text-sm text-[var(--land-body)] sm:grid-cols-2 sm:gap-x-6">
                 {(isRTL
                   ? [
-                      "رابط بورتفوليو مستضاف",
+                      HOSTING_ENABLED ? "رابط بورتفوليو مستضاف" : null,
                       "عربي + إنجليزي",
                       "تصدير PDF جاهز للطباعة",
-                      "صفحة سيرة ذاتية مع باركود",
+                      HOSTING_ENABLED
+                        ? "صفحة سيرة ذاتية مع باركود"
+                        : "تحميل PDF احترافي",
                       "ثيمات ألوان مخصصة",
                       "رفع صورة شخصية",
                       "تحديثات فورية",
                       "وصول لمرة واحدة",
                     ]
                   : [
-                      "Hosted portfolio URL",
+                      HOSTING_ENABLED ? "Hosted portfolio URL" : null,
                       "Arabic + English bilingual",
                       "Print-optimized PDF export",
-                      "CV page with scannable barcode",
+                      HOSTING_ENABLED
+                        ? "CV page with scannable barcode"
+                        : "Professional PDF download",
                       "Custom color themes",
                       "Photo upload",
                       "Instant updates",
                       "One-time access",
                     ]
-                ).map((item) => (
+                )
+                  .filter((item): item is string => Boolean(item))
+                  .map((item) => (
                   <div key={item} className="flex items-center gap-2">
                     <span className="shrink-0 text-[var(--land-accent)]">✓</span>
                     {item}
@@ -833,9 +858,13 @@ export default async function LandingPage({
                 : "The portfolio your career has earned"}
             </h2>
             <p className="mt-4 text-[var(--land-body)]">
-              {isRTL
-                ? "اختر قالبًا وانشر بورتفوليوك خلال دقائق."
-                : "Pick a template and publish your portfolio in minutes."}
+              {HOSTING_ENABLED
+                ? isRTL
+                  ? "اختر قالبًا وانشر بورتفوليوك خلال دقائق."
+                  : "Pick a template and publish your portfolio in minutes."
+                : isRTL
+                  ? "اختر قالبًا وحمّل بورتفوليوك كملف PDF خلال دقائق."
+                  : "Pick a template and download your portfolio as a PDF in minutes."}
             </p>
             <div className="mt-8 flex flex-col items-center">
               <Link

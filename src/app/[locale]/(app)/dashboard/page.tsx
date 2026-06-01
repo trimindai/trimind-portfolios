@@ -7,6 +7,7 @@ import { Link } from "@/i18n/navigation";
 import { useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { Id } from "@convex/_generated/dataModel";
+import { HOSTING_ENABLED } from "@/lib/flags";
 
 export default function DashboardPage() {
   const { userId } = useDashboard();
@@ -76,12 +77,16 @@ export default function DashboardPage() {
                 Custom colors & fonts
               </li>
               <li className="flex items-center gap-2">
-                <span className="text-[var(--land-accent)]">&#10003;</span> PDF
-                with QR code
+                <span className="text-[var(--land-accent)]">&#10003;</span>{" "}
+                {HOSTING_ENABLED
+                  ? "PDF with QR code"
+                  : "Professional PDF download"}
               </li>
               <li className="flex items-center gap-2">
                 <span className="text-[var(--land-accent)]">&#10003;</span>{" "}
-                Hosted on portfolio-trimind.com
+                {HOSTING_ENABLED
+                  ? "Hosted on portfolio-trimind.com"
+                  : "Edit & re-download anytime"}
               </li>
             </ul>
             <button

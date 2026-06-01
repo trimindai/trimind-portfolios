@@ -1,8 +1,9 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { LayoutGrid, PenTool, Globe } from "lucide-react";
+import { LayoutGrid, PenTool, Globe, Download } from "lucide-react";
 import { Link } from "@/i18n/navigation";
+import { HOSTING_ENABLED } from "@/lib/flags";
 
 /**
  * Visual 3-step timeline. The connecting line draws in on scroll via
@@ -26,14 +27,23 @@ export function HowItWorks({ isRTL }: { isRTL: boolean }) {
         ? "أضف تفاصيلك بالعربي أو الإنجليزي أو كلاهما"
         : "Add your details in Arabic, English, or both",
     },
-    {
-      icon: Globe,
-      n: "3",
-      title: isRTL ? "انشر" : "Publish",
-      desc: isRTL
-        ? "بنقرة واحدة يصبح بورتفوليوك حيًا برابط خاص"
-        : "One click and your portfolio is live with its own URL",
-    },
+    HOSTING_ENABLED
+      ? {
+          icon: Globe,
+          n: "3",
+          title: isRTL ? "انشر" : "Publish",
+          desc: isRTL
+            ? "بنقرة واحدة يصبح بورتفوليوك حيًا برابط خاص"
+            : "One click and your portfolio is live with its own URL",
+        }
+      : {
+          icon: Download,
+          n: "3",
+          title: isRTL ? "حمّل" : "Download",
+          desc: isRTL
+            ? "حمّل بورتفوليوك كملف PDF احترافي جاهز للمشاركة"
+            : "Download your portfolio as a polished, ready-to-share PDF",
+        },
   ];
 
   return (
