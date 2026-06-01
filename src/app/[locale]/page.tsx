@@ -169,28 +169,18 @@ export default async function LandingPage({
 
       {/* ── Hero ───────────────────────────────── */}
       <section className="relative min-h-[100dvh] flex items-center overflow-hidden">
-        {/* Hero background image */}
-        <Image
-          src="/landing/hero-bg.jpg"
-          alt=""
-          fill
-          sizes="100vw"
-          className="object-cover object-center opacity-40 pointer-events-none"
-          priority
-          quality={60}
-        />
-        {/* Background glows — vivid and dramatic */}
+        {/* Soft gradient background */}
         <div
           className="absolute inset-0 pointer-events-none"
           style={{
-            background: `radial-gradient(ellipse 80% 60% at ${isRTL ? "25%" : "75%"} 35%, oklch(0.25 0.12 160 / 0.7), transparent 70%), radial-gradient(circle at ${isRTL ? "85%" : "15%"} 85%, oklch(0.2 0.08 160 / 0.4), transparent 50%), radial-gradient(circle at 50% 0%, oklch(0.15 0.05 160 / 0.3), transparent 60%)`,
+            background: `radial-gradient(ellipse 80% 60% at ${isRTL ? "25%" : "75%"} 35%, rgba(5,150,105,0.06), transparent 70%), radial-gradient(circle at ${isRTL ? "85%" : "15%"} 85%, rgba(5,150,105,0.04), transparent 50%), linear-gradient(180deg, #f8fafc 0%, #ffffff 100%)`,
           }}
         />
-        {/* Grid pattern overlay */}
+        {/* Subtle grid pattern */}
         <div
-          className="absolute inset-0 pointer-events-none opacity-[0.04]"
+          className="absolute inset-0 pointer-events-none opacity-[0.03]"
           style={{
-            backgroundImage: `linear-gradient(var(--land-border) 1px, transparent 1px), linear-gradient(90deg, var(--land-border) 1px, transparent 1px)`,
+            backgroundImage: `linear-gradient(#cbd5e1 1px, transparent 1px), linear-gradient(90deg, #cbd5e1 1px, transparent 1px)`,
             backgroundSize: "64px 64px",
           }}
         />
@@ -412,7 +402,7 @@ export default async function LandingPage({
                   <span className="absolute top-3 start-3 z-10 rounded-full border border-[var(--land-accent)]/30 bg-[var(--land-bg)]/80 px-2.5 py-1 text-[10px] font-medium uppercase tracking-wider text-[var(--land-accent)] backdrop-blur">
                     {isRTL ? "مؤسسي" : "Corporate"}
                   </span>
-                  <div className="absolute inset-0 bg-[oklch(0.08_0.02_260_/_0)] group-hover:bg-[oklch(0.08_0.02_260_/_0.6)] transition-all duration-300 flex items-center justify-center">
+                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-all duration-300 flex items-center justify-center">
                     <span className="text-sm font-medium text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center gap-2">
                       <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path strokeLinecap="round" strokeLinejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
                       {isRTL ? "عرض مباشر" : "View live demo"}
@@ -463,7 +453,7 @@ export default async function LandingPage({
                   <span className="absolute top-3 start-3 z-10 rounded-full border border-[var(--land-accent)]/30 bg-[var(--land-bg)]/80 px-2.5 py-1 text-[10px] font-medium uppercase tracking-wider text-[var(--land-accent)] backdrop-blur">
                     {isRTL ? "هندسي" : "Engineering"}
                   </span>
-                  <div className="absolute inset-0 bg-[oklch(0.08_0.02_260_/_0)] group-hover:bg-[oklch(0.08_0.02_260_/_0.6)] transition-all duration-300 flex items-center justify-center">
+                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-all duration-300 flex items-center justify-center">
                     <span className="text-sm font-medium text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center gap-2">
                       <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path strokeLinecap="round" strokeLinejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
                       {isRTL ? "عرض مباشر" : "View live demo"}
@@ -505,7 +495,7 @@ export default async function LandingPage({
                 <div className="relative rounded-xl overflow-hidden border border-[var(--land-border)] transition-all duration-500 group-hover:translate-y-[-2px] group-hover:border-[var(--land-accent)]/30">
                   <div
                     className="flex aspect-[16/10] items-center justify-center"
-                    style={{ background: "linear-gradient(135deg, #0a0a0a, #050505)" }}
+                    style={{ background: "linear-gradient(135deg, #1e1e1e, #0a0a0a)" }}
                   >
                     <span
                       className="text-2xl font-bold tracking-tight"
@@ -626,7 +616,7 @@ export default async function LandingPage({
                       English (LTR)
                     </div>
                     <div className="space-y-1.5 p-2.5">
-                      <div className="h-2 w-16 rounded-full bg-[oklch(0.8_0.01_250)]" />
+                      <div className="h-2 w-16 rounded-full bg-[var(--land-border)]" />
                       <div className="h-1.5 w-full rounded-full bg-[var(--land-border)]" />
                       <div className="h-1.5 w-4/5 rounded-full bg-[var(--land-border)]" />
                     </div>
@@ -637,7 +627,7 @@ export default async function LandingPage({
                       العربية (RTL)
                     </div>
                     <div className="space-y-1.5 p-2.5">
-                      <div className="ms-0 h-2 w-16 rounded-full bg-[oklch(0.8_0.01_250)]" />
+                      <div className="ms-0 h-2 w-16 rounded-full bg-[var(--land-border)]" />
                       <div className="h-1.5 w-full rounded-full bg-[var(--land-border)]" />
                       <div className="h-1.5 w-4/5 rounded-full bg-[var(--land-border)]" />
                     </div>

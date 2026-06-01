@@ -147,7 +147,7 @@ export function EngineerProjectsStep({ data, onChange }: EngineerProjectsStepPro
                   value={(item.technologies || []).join(", ")}
                   onChange={(e) => update({ technologies: e.target.value.split(",").map((s: string) => s.trim()).filter(Boolean) })}
                   placeholder="Arduino, Raspberry Pi, Python, SolidWorks, MATLAB"
-                  className="w-full bg-[var(--land-surface-raised)] border border-[var(--land-border)] rounded-lg px-4 py-2.5 text-[var(--land-bright)] placeholder:text-[var(--land-muted)] focus:border-[var(--land-accent)] focus:ring-1 focus:ring-[var(--land-accent)] outline-none transition-colors"
+                  className="w-full bg-white border border-[var(--land-border)] rounded-lg px-4 py-2.5 text-[var(--land-bright)] placeholder:text-[var(--land-muted)] shadow-sm focus:border-[var(--land-accent)] focus:ring-1 focus:ring-[var(--land-accent)] outline-none transition-colors"
                 />
                 <p className="text-xs text-[var(--land-muted)] mt-1">Comma-separated</p>
               </div>
