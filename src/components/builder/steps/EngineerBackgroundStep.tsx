@@ -10,14 +10,13 @@ interface EngineerBackgroundStepProps {
   onChange: (updates: any) => void;
 }
 
-type Section = "experience" | "skills" | "education" | "certifications" | "languages";
+type Section = "experience" | "skills" | "education" | "certifications";
 
 const SECTION_TABS: { id: Section; label: string }[] = [
   { id: "experience", label: "Experience" },
   { id: "skills", label: "Skills" },
   { id: "education", label: "Education" },
   { id: "certifications", label: "Certifications" },
-  { id: "languages", label: "Languages" },
 ];
 
 export function EngineerBackgroundStep({ data, onChange }: EngineerBackgroundStepProps) {
@@ -27,7 +26,6 @@ export function EngineerBackgroundStep({ data, onChange }: EngineerBackgroundSte
   const skills = data.skills || [];
   const education = data.education || [];
   const certifications = data.certifications || [];
-  const languages = data.languages || [];
 
   return (
     <div className="space-y-6">
@@ -46,8 +44,7 @@ export function EngineerBackgroundStep({ data, onChange }: EngineerBackgroundSte
             tab.id === "experience" ? experience.length :
             tab.id === "skills" ? skills.length :
             tab.id === "education" ? education.length :
-            tab.id === "certifications" ? certifications.length :
-            languages.length;
+            certifications.length;
 
           return (
             <button
@@ -190,37 +187,6 @@ export function EngineerBackgroundStep({ data, onChange }: EngineerBackgroundSte
         </div>
       )}
 
-      {/* Languages */}
-      {activeSection === "languages" && (
-        <div className="space-y-4">
-          <DynamicList
-            items={languages}
-            onChange={(items) => onChange({ languages: items })}
-            createEmpty={() => ({ name: "", level: "Fluent" })}
-            maxItems={6}
-            addLabel="Add Language"
-            renderItem={(item, _, update) => (
-              <div className="grid grid-cols-2 gap-3 pr-16">
-                <TextField label="Language" value={item.name} onChange={(v) => update({ name: v })} placeholder="Arabic" />
-                <div>
-                  <label className="text-sm font-medium text-[var(--land-bright)] mb-1.5 block">Level</label>
-                  <select
-                    value={item.level}
-                    onChange={(e) => update({ level: e.target.value })}
-                    className="w-full bg-[var(--land-surface-raised)] border border-[var(--land-border)] rounded-lg px-4 py-2.5 text-white focus:border-[var(--land-accent)] focus:ring-1 focus:ring-[var(--land-accent)] outline-none transition-colors"
-                  >
-                    <option value="Native">Native</option>
-                    <option value="Fluent">Fluent</option>
-                    <option value="Advanced">Advanced</option>
-                    <option value="Intermediate">Intermediate</option>
-                    <option value="Basic">Basic</option>
-                  </select>
-                </div>
-              </div>
-            )}
-          />
-        </div>
-      )}
     </div>
   );
 }

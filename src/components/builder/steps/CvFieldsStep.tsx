@@ -25,10 +25,12 @@ export function CvFieldsStep({ data, onChange }: CvFieldsStepProps) {
   const basics = data.basics || {};
 
   // GCC defaults: pre-fill Arabic + English the first time this step is opened
-  // and no CV languages exist yet. Stored on basics.languages (the CV template reads it).
+  // and no languages exist yet. Stored on the top-level `languages` field — the
+  // single source of truth read by BOTH the CV (cv.hbs) and the web templates
+  // (corporate/engineer). This is the ONLY place languages are collected.
   const languages: Array<{ name: string; level?: string }> =
-    basics.languages && basics.languages.length > 0
-      ? basics.languages
+    data.languages && data.languages.length > 0
+      ? data.languages
       : [
           { name: "Arabic", level: "Native" },
           { name: "English", level: "Fluent" },
@@ -64,7 +66,7 @@ export function CvFieldsStep({ data, onChange }: CvFieldsStepProps) {
         <p className="text-xs text-[var(--land-muted)] mb-3">{t("languagesHint")}</p>
         <DynamicList
           items={languages}
-          onChange={(items) => updateBasics("languages", items)}
+          onChange={(items) => onChange({ languages: items })}
           createEmpty={() => ({ name: "", level: "Fluent" })}
           maxItems={6}
           addLabel={t("addLanguage")}

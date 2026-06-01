@@ -87,11 +87,13 @@ const fullFixture = {
     website: "https://maya.dev",
     summary:
       "Senior engineer with 8 years building resilient platforms for GCC fintech. Ships measurable outcomes across web, cloud and data.",
-    languages: [
-      { name: "English", level: "Native" },
-      { name: "Arabic", level: "Professional" },
-    ],
   },
+  // Single source of truth: top-level `languages` (read by both the CV and the
+  // web templates; collected once in CvFieldsStep).
+  languages: [
+    { name: "English", level: "Native" },
+    { name: "Arabic", level: "Professional" },
+  ],
   experience: [
     {
       title: "Lead Engineer",
