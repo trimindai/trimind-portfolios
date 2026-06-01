@@ -8,6 +8,7 @@ import creatorTemplateSource from "@/templates/creator/template.hbs";
 import developerTemplateSource from "@/templates/developer/template.hbs";
 import medicalTemplateSource from "@/templates/medical/template.hbs";
 import educatorTemplateSource from "@/templates/educator/template.hbs";
+import cvTemplateSource from "@/templates/_cv/cv.hbs";
 
 export interface PortfolioData {
   basics: {
@@ -438,6 +439,7 @@ let compiledCreatorTemplate: Handlebars.TemplateDelegate | null = null;
 let compiledDeveloperTemplate: Handlebars.TemplateDelegate | null = null;
 let compiledMedicalTemplate: Handlebars.TemplateDelegate | null = null;
 let compiledEducatorTemplate: Handlebars.TemplateDelegate | null = null;
+let compiledCvTemplate: Handlebars.TemplateDelegate | null = null;
 
 function prepareTemplateData(data: PortfolioData & { contentAr?: any }) {
   const templateData: any = { ...data };
@@ -497,6 +499,34 @@ export function renderEducatorTemplate(data: PortfolioData & { contentAr?: any }
     compiledEducatorTemplate = Handlebars.compile(educatorTemplateSource as string);
   }
   return compiledEducatorTemplate(prepareTemplateData(data));
+}
+
+/**
+ * Render the shared ATS PDF CV (`_cv/cv.hbs`).
+ *
+ * One quiet, A4, print-optimised CV for every discipline: all job-application
+ * sections, hide-if-empty, discipline accent pulled from
+ * `customization.accentColor`, and a QR code in the header that points at the
+ * candidate's live portfolio. Supports EN (LTR) and AR (RTL) via the data's
+ * `locale` / `isRTL`. Reuses the engine's existing helpers (isHidden, ifEq,
+ * safeColor, safeUrl, …).
+ *
+ * @param data       the full `PortfolioData`
+ * @param qrDataUrl  PNG data-URL for the QR (see `portfolioQrDataUrl`)
+ * @param liveUrl    the live portfolio URL printed beneath the QR
+ */
+export function renderCvPdf(
+  data: PortfolioData & { contentAr?: any },
+  { qrDataUrl, liveUrl }: { qrDataUrl?: string; liveUrl?: string } = {}
+): string {
+  if (!compiledCvTemplate) {
+    compiledCvTemplate = Handlebars.compile(cvTemplateSource as string);
+  }
+  return compiledCvTemplate({
+    ...prepareTemplateData(data),
+    qrDataUrl: qrDataUrl || "",
+    liveUrl: liveUrl || "",
+  });
 }
 
 /**

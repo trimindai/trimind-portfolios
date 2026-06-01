@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="{{locale}}" dir="{{#if isRTL}}rtl{{else}}ltr{{/if}}">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{{basics.fullName}} — {{basics.title}}</title>
+<meta name="description" content="{{basics.title}}{{#if basics.location}} · {{basics.location}}{{/if}}">
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ══════════════════════════════════════════════════════
+   ATS PDF CV — quiet, professional, GCC hiring context.
+   Single primary column (ATS-safe). One discipline accent.
+   A4, print-optimised. EN (LTR) + AR (RTL).
+   ══════════════════════════════════════════════════════ */
+
+:root {
+    --accent: {{safeColor customization.accentColor "#0f172a"}};
+    --ink: #111827;
+    --ink-soft: #374151;
+    --ink-dim: #6b7280;
+    --line: #e5e7eb;
+    --line-strong: #d1d5db;
+    --paper: #ffffff;
+    --accent-tint: rgba(15, 23, 42, 0.04);
+    --font: {{#if isRTL}}'IBM Plex Sans Arabic', 'Inter'{{else}}'Inter', 'IBM Plex Sans Arabic'{{/if}}, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+}
+
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+@page { size: A4; margin: 14mm; }
+
+html { font-size: 15px; }
+body {
+    font-family: var(--font);
+    color: var(--ink);
+    background: #f3f4f6;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+}
+
+.sheet {
+    max-width: 210mm;
+    min-height: 297mm;
+    margin: 0 auto;
+    background: var(--paper);
+    padding: 14mm;
+}
+
+a { color: inherit; text-decoration: none; }
+
+/* ── Header ─────────────────────────────────────────── */
+.cv-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 18px;
+    padding-bottom: 14px;
+    border-bottom: 2px solid var(--accent);
+}
+.cv-id { flex: 1; min-width: 0; }
+.cv-name {
+    font-size: 1.9rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+    color: var(--ink);
+}
+.cv-title {
+    font-size: 1.02rem;
+    font-weight: 500;
+    color: var(--accent);
+    margin-top: 3px;
+}
+.cv-contact {
+    margin-top: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 14px;
+    font-size: 0.82rem;
+    color: var(--ink-soft);
+}
+.cv-contact span { display: inline-flex; align-items: center; gap: 5px; }
+.cv-contact .sep { color: var(--line-strong); }
+.cv-contact a { color: var(--ink-soft); }
+.cv-contact a:hover { color: var(--accent); }
+
+/* ── QR ─────────────────────────────────────────────── */
+.cv-qr {
+    flex: 0 0 auto;
+    text-align: center;
+    width: 104px;
+}
+.cv-qr img {
+    width: 92px;
+    height: 92px;
+    display: block;
+    margin: 0 auto;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    background: #fff;
+}
+.cv-qr-label {
+    font-size: 0.62rem;
+    font-weight: 600;
+    color: var(--ink-soft);
+    margin-top: 5px;
+    line-height: 1.25;
+}
+.cv-qr-url {
+    font-size: 0.56rem;
+    color: var(--ink-dim);
+    word-break: break-all;
+    margin-top: 2px;
+}
+
+/* ── Sections ───────────────────────────────────────── */
+.cv-section { margin-top: 18px; }
+.cv-section h2 {
+    font-size: 0.74rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--accent);
+    padding-bottom: 4px;
+    margin-bottom: 10px;
+    border-bottom: 1px solid var(--line);
+}
+
+.cv-summary { font-size: 0.9rem; color: var(--ink-soft); }
+
+/* ── Entry (experience / education) ─────────────────── */
+.cv-entry { margin-bottom: 12px; }
+.cv-entry:last-child { margin-bottom: 0; }
+.cv-entry-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 12px;
+}
+.cv-entry-role { font-size: 0.95rem; font-weight: 600; color: var(--ink); }
+.cv-entry-org { font-size: 0.88rem; color: var(--ink-soft); font-weight: 500; }
+.cv-entry-meta {
+    flex: 0 0 auto;
+    font-size: 0.78rem;
+    color: var(--ink-dim);
+    text-align: {{#if isRTL}}left{{else}}right{{/if}};
+    white-space: nowrap;
+}
+.cv-entry-desc { font-size: 0.85rem; color: var(--ink-soft); margin-top: 3px; }
+.cv-bullets {
+    margin-top: 5px;
+    padding-{{#if isRTL}}right{{else}}left{{/if}}: 18px;
+}
+.cv-bullets li {
+    font-size: 0.85rem;
+    color: var(--ink-soft);
+    margin-bottom: 2px;
+}
+
+/* ── Skills ─────────────────────────────────────────── */
+.cv-skills { display: flex; flex-direction: column; gap: 7px; }
+.cv-skill-group {
+    display: grid;
+    grid-template-columns: 140px 1fr;
+    gap: 10px;
+    align-items: baseline;
+}
+.cv-skill-cat { font-size: 0.84rem; font-weight: 600; color: var(--ink); }
+.cv-skill-items { font-size: 0.84rem; color: var(--ink-soft); }
+
+/* ── Projects ───────────────────────────────────────── */
+.cv-project { margin-bottom: 9px; }
+.cv-project:last-child { margin-bottom: 0; }
+.cv-project-title { font-size: 0.9rem; font-weight: 600; color: var(--ink); }
+.cv-project-title .lnk { font-size: 0.76rem; font-weight: 500; color: var(--accent); margin-{{#if isRTL}}right{{else}}left{{/if}}: 6px; }
+.cv-project-desc { font-size: 0.84rem; color: var(--ink-soft); }
+.cv-project-tech { font-size: 0.76rem; color: var(--ink-dim); margin-top: 1px; }
+
+/* ── Two-column lists (certs, langs, refs) ──────────── */
+.cv-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 20px; }
+.cv-grid-item { font-size: 0.85rem; color: var(--ink-soft); }
+.cv-grid-item strong { color: var(--ink); font-weight: 600; }
+.cv-grid-item .muted { color: var(--ink-dim); }
+
+.cv-refs-note { font-size: 0.85rem; color: var(--ink-soft); font-style: italic; }
+
+/* ── Print ──────────────────────────────────────────── */
+@media print {
+    body { background: #fff; }
+    .sheet { max-width: none; min-height: 0; margin: 0; padding: 0; box-shadow: none; }
+    .cv-section { break-inside: avoid-page; }
+    .cv-entry, .cv-project { break-inside: avoid; }
+    .cv-header { break-after: avoid; }
+    a { color: inherit; }
+}
+</style>
+</head>
+<body>
+<div class="sheet">
+
+    {{!-- 1. HEADER --}}
+    <header class="cv-header">
+        <div class="cv-id">
+            <div class="cv-name">{{basics.fullName}}</div>
+            {{#if basics.title}}<div class="cv-title">{{basics.title}}</div>{{/if}}
+            <div class="cv-contact">
+                {{#if basics.email}}<span><a href="mailto:{{basics.email}}">{{basics.email}}</a></span>{{/if}}
+                {{#if basics.phone}}<span class="sep">·</span><span><a href="tel:{{basics.phone}}" dir="ltr">{{basics.phone}}</a></span>{{/if}}
+                {{#if basics.location}}<span class="sep">·</span><span>{{basics.location}}</span>{{/if}}
+                {{#if basics.nationality}}<span class="sep">·</span><span>{{#ifEq locale "ar"}}الجنسية: {{else}}Nationality: {{/ifEq}}{{basics.nationality}}</span>{{/if}}
+                {{#if basics.linkedin}}<span class="sep">·</span><span><a href="{{safeUrl basics.linkedin}}">LinkedIn</a></span>{{/if}}
+                {{#if basics.github}}<span class="sep">·</span><span><a href="{{safeUrl basics.github}}">GitHub</a></span>{{/if}}
+                {{#if basics.website}}<span class="sep">·</span><span><a href="{{safeUrl basics.website}}">{{#ifEq locale "ar"}}الموقع{{else}}Website{{/ifEq}}</a></span>{{/if}}
+            </div>
+        </div>
+        {{#if qrDataUrl}}
+        <div class="cv-qr">
+            <img src="{{qrDataUrl}}" alt="{{#ifEq locale "ar"}}امسح لعرض الملف المباشر{{else}}Scan for live portfolio{{/ifEq}}">
+            <div class="cv-qr-label">{{#ifEq locale "ar"}}امسح لعرض الملف المباشر{{else}}Scan for live portfolio{{/ifEq}}</div>
+            {{#if liveUrl}}<div class="cv-qr-url" dir="ltr">{{liveUrl}}</div>{{/if}}
+        </div>
+        {{/if}}
+    </header>
+
+    {{!-- 2. PROFESSIONAL SUMMARY --}}
+    {{#if basics.summary}}
+    {{#unless (isHidden "summary")}}
+    <section class="cv-section">
+        <h2>{{#ifEq locale "ar"}}الملخص المهني{{else}}Professional Summary{{/ifEq}}</h2>
+        <p class="cv-summary">{{basics.summary}}</p>
+    </section>
+    {{/unless}}
+    {{/if}}
+
+    {{!-- 3. WORK EXPERIENCE --}}
+    {{#if experience.length}}
+    {{#unless (isHidden "experience")}}
+    <section class="cv-section">
+        <h2>{{#ifEq locale "ar"}}الخبرة العملية{{else}}Work Experience{{/ifEq}}</h2>
+        {{#each experience}}
+        <div class="cv-entry">
+            <div class="cv-entry-head">
+                <div>
+                    <span class="cv-entry-role">{{this.title}}</span>{{#if this.company}}<span class="cv-entry-org"> — {{this.company}}</span>{{/if}}
+                </div>
+                <div class="cv-entry-meta">
+                    {{#if this.startDate}}{{this.startDate}}{{#if this.endDate}} – {{this.endDate}}{{else}} – {{#ifEq ../locale "ar"}}حتى الآن{{else}}Present{{/ifEq}}{{/if}}{{/if}}{{#if this.location}} · {{this.location}}{{/if}}
+                </div>
+            </div>
+            {{#if this.description}}<p class="cv-entry-desc">{{this.description}}</p>{{/if}}
+            {{#if this.highlights.length}}
+            <ul class="cv-bullets">
+                {{#each this.highlights}}<li>{{this}}</li>{{/each}}
+            </ul>
+            {{/if}}
+        </div>
+        {{/each}}
+    </section>
+    {{/unless}}
+    {{/if}}
+
+    {{!-- 4. EDUCATION --}}
+    {{#if education.length}}
+    {{#unless (isHidden "education")}}
+    <section class="cv-section">
+        <h2>{{#ifEq locale "ar"}}التعليم{{else}}Education{{/ifEq}}</h2>
+        {{#each education}}
+        <div class="cv-entry">
+            <div class="cv-entry-head">
+                <div>
+                    <span class="cv-entry-role">{{this.degree}}</span>{{#if this.institution}}<span class="cv-entry-org"> — {{this.institution}}</span>{{/if}}
+                </div>
+                {{#if this.year}}<div class="cv-entry-meta">{{this.year}}</div>{{/if}}
+            </div>
+            {{#if this.description}}<p class="cv-entry-desc">{{this.description}}</p>{{/if}}
+        </div>
+        {{/each}}
+    </section>
+    {{/unless}}
+    {{/if}}
+
+    {{!-- 5. SKILLS --}}
+    {{#if skills.length}}
+    {{#unless (isHidden "skills")}}
+    <section class="cv-section">
+        <h2>{{#ifEq locale "ar"}}المهارات{{else}}Skills{{/ifEq}}</h2>
+        <div class="cv-skills">
+            {{#each skills}}
+            <div class="cv-skill-group">
+                <div class="cv-skill-cat">{{this.category}}</div>
+                <div class="cv-skill-items">{{#each this.items}}{{this}}{{#unless @last}} · {{/unless}}{{/each}}</div>
+            </div>
+            {{/each}}
+        </div>
+    </section>
+    {{/unless}}
+    {{/if}}
+
+    {{!-- 6. PROJECTS --}}
+    {{#if projects.length}}
+    {{#unless (isHidden "projects")}}
+    <section class="cv-section">
+        <h2>{{#ifEq locale "ar"}}المشاريع{{else}}Projects{{/ifEq}}</h2>
+        {{#each projects}}
+        <div class="cv-project">
+            <div class="cv-project-title">{{this.title}}{{#if this.link}}<a class="lnk" href="{{safeUrl this.link}}" dir="ltr">{{#ifEq ../locale "ar"}}عرض ↗{{else}}View ↗{{/ifEq}}</a>{{/if}}</div>
+            {{#if this.description}}<p class="cv-project-desc">{{this.description}}</p>{{/if}}
+            {{#if this.technologies.length}}<div class="cv-project-tech">{{#each this.technologies}}{{this}}{{#unless @last}} · {{/unless}}{{/each}}</div>{{/if}}
+        </div>
+        {{/each}}
+    </section>
+    {{/unless}}
+    {{/if}}
+
+    {{!-- 7. CERTIFICATIONS & AWARDS --}}
+    {{#if certifications.length}}
+    {{#unless (isHidden "certifications")}}
+    <section class="cv-section">
+        <h2>{{#ifEq locale "ar"}}الشهادات والجوائز{{else}}Certifications &amp; Awards{{/ifEq}}</h2>
+        <div class="cv-grid">
+            {{#each certifications}}
+            <div class="cv-grid-item">
+                <strong>{{this.name}}</strong>{{#if this.issuer}} <span class="muted">— {{this.issuer}}</span>{{/if}}{{#if this.year}} <span class="muted">({{this.year}})</span>{{/if}}
+            </div>
+            {{/each}}
+        </div>
+    </section>
+    {{/unless}}
+    {{/if}}
+
+    {{!-- 8. LANGUAGES --}}
+    {{#if basics.languages.length}}
+    {{#unless (isHidden "languages")}}
+    <section class="cv-section">
+        <h2>{{#ifEq locale "ar"}}اللغات{{else}}Languages{{/ifEq}}</h2>
+        <div class="cv-grid">
+            {{#each basics.languages}}
+            <div class="cv-grid-item">
+                <strong>{{this.name}}</strong>{{#if this.level}} <span class="muted">— {{this.level}}</span>{{/if}}
+            </div>
+            {{/each}}
+        </div>
+    </section>
+    {{/unless}}
+    {{/if}}
+
+    {{!-- 9. REFERENCES --}}
+    {{#unless (isHidden "references")}}
+    <section class="cv-section">
+        <h2>{{#ifEq locale "ar"}}المراجع{{else}}References{{/ifEq}}</h2>
+        {{#if references.length}}
+        <div class="cv-grid">
+            {{#each references}}
+            <div class="cv-grid-item">
+                <strong>{{this.name}}</strong>{{#if this.title}} <span class="muted">— {{this.title}}</span>{{/if}}{{#if this.contact}}<br><span class="muted" dir="ltr">{{this.contact}}</span>{{/if}}
+            </div>
+            {{/each}}
+        </div>
+        {{else}}
+        <p class="cv-refs-note">{{#ifEq locale "ar"}}متاحة عند الطلب{{else}}Available on request{{/ifEq}}</p>
+        {{/if}}
+    </section>
+    {{/unless}}
+
+</div>
+</body>
+</html>
