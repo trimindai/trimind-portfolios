@@ -176,7 +176,7 @@ section{position:relative;z-index:1}
 .skill-grid{display:flex;flex-wrap:wrap;gap:12px;margin-top:8px}
 .keycap{
   position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;
-  width:96px;height:96px;border-radius:14px;cursor:default;
+  width:96px;height:96px;border-radius:14px;cursor:pointer;
   background:linear-gradient(180deg,var(--card-hover),var(--card));
   border:1px solid var(--border-strong);
   box-shadow:0 6px 0 rgba(0,0,0,.35),0 10px 24px rgba(0,0,0,.35),inset 0 1px 0 rgba(255,255,255,.06);
@@ -190,6 +190,23 @@ section{position:relative;z-index:1}
 .keycap .cat{position:absolute;top:-9px;right:-6px;font-family:var(--font-mono);font-size:.55rem;padding:1px 6px;border-radius:999px;background:var(--bg-2);border:1px solid var(--border-strong);color:var(--muted)}
 .kc-0{color:#a78bfa}.kc-1{color:#38bdf8}.kc-2{color:#34d399}.kc-3{color:#f472b6}.kc-4{color:#fbbf24}.kc-5{color:#fb7185}
 @media(max-width:560px){.keycap{width:76px;height:76px}.keycap i{font-size:1.35rem}}
+.keycap.lit{border-color:var(--skill,var(--accent));box-shadow:0 4px 0 rgba(0,0,0,.35),0 0 0 1px var(--skill,var(--accent)),0 8px 24px rgba(0,0,0,.4)}
+
+/* ── skill detail panel (driven by the live 3D keyboard) ─────── */
+.skill-panel{margin-top:26px;display:flex;align-items:center;gap:18px;max-width:580px;min-height:90px;
+  padding:18px 20px;border-radius:16px;border:1px solid var(--border-strong);
+  background:linear-gradient(180deg,var(--card-hover),var(--card));
+  box-shadow:0 10px 30px rgba(0,0,0,.35);border-left:3px solid var(--skill,var(--accent));
+  opacity:0;transform:translateY(10px);transition:opacity .25s ease,transform .25s ease,border-color .25s ease}
+.skill-panel.show{opacity:1;transform:none}
+.skill-panel .sp-icon{width:54px;height:54px;flex:0 0 auto;display:flex;align-items:center;justify-content:center;
+  border-radius:12px;background:var(--bg-2);border:1px solid var(--border-strong)}
+.skill-panel .sp-icon .mono{font-family:var(--font-display);font-size:1.25rem;font-weight:800;letter-spacing:-.5px;color:var(--skill,var(--accent))}
+.skill-panel .sp-label{font-family:var(--font-display);font-size:1.15rem;color:#f1f5f9;line-height:1.1}
+.skill-panel .sp-desc{color:var(--muted);font-size:.85rem;margin-top:4px;line-height:1.4}
+.skill-panel .sp-key{margin-inline-start:auto;align-self:flex-start;font-family:var(--font-mono);font-size:.62rem;
+  color:var(--muted-2);border:1px solid var(--border-strong);border-radius:6px;padding:3px 7px}
+@media(max-width:560px){.skill-panel{gap:12px;padding:14px;min-height:78px}.skill-panel .sp-key{display:none}}
 
 /* ── experience timeline ────────────────────────────────────── */
 #experience{padding:90px 0}
@@ -438,6 +455,14 @@ html[dir="rtl"] .tl-item::before{left:auto;right:0}
         <span class="label">Accessibility</span>
       </div>
     </div>
+    <div id="skillPanel" class="skill-panel" role="status" aria-live="polite" aria-label="Skill details">
+      <div class="sp-icon"><span id="spMono" class="mono">⌨</span></div>
+      <div>
+        <div id="spLabel" class="sp-label">Press a key on the keyboard</div>
+        <div id="spDesc" class="sp-desc">Every key on the 3D keyboard is a skill — press one to reveal it.</div>
+      </div>
+      <span class="sp-key" id="spKey"></span>
+    </div>
   </div>
 </section>
 
@@ -679,6 +704,45 @@ html[dir="rtl"] .tl-item::before{left:auto;right:0}
   var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion:reduce)").matches;
   var splineUrl = "/assets/skills-keyboard.spline";
 
+  /* ── Clickable keyboard: each Spline key object (named by skill slug) maps to
+        a skill, exactly like nareshkhatri.site/#skills. Press/click/hover a key
+        → the panel updates + the scene's on-model text (heading/desc) is set. ── */
+  var SKILLS = {
+    js:{l:"JavaScript",ab:"JS",c:"#f7df1e",d:"The language of the web — async flows, events, and the DOM."},
+    ts:{l:"TypeScript",ab:"TS",c:"#3178c6",d:"Typed JavaScript that scales to large, refactor-safe codebases."},
+    html:{l:"HTML5",ab:"H5",c:"#e34f26",d:"Semantic, accessible markup — the foundation of every page."},
+    css:{l:"CSS3",ab:"C3",c:"#33a9dc",d:"Modern layout, animation, and responsive design."},
+    react:{l:"React",ab:"Re",c:"#61dafb",d:"Component-driven UIs with a fast, declarative render model."},
+    vue:{l:"Vue",ab:"Vue",c:"#42b883",d:"Approachable, reactive framework for building interfaces."},
+    nextjs:{l:"Next.js",ab:"N",c:"#cbd5e1",d:"React framework with SSR, routing, and edge rendering."},
+    tailwind:{l:"Tailwind CSS",ab:"TW",c:"#38bdf8",d:"Utility-first styling for fast, consistent design systems."},
+    nodejs:{l:"Node.js",ab:"No",c:"#539e43",d:"JavaScript on the server — fast, event-driven I/O."},
+    express:{l:"Express",ab:"Ex",c:"#cbd5e1",d:"Minimal, flexible Node.js web framework."},
+    postgres:{l:"PostgreSQL",ab:"PG",c:"#5a9fd4",d:"Powerful, reliable relational database."},
+    mongodb:{l:"MongoDB",ab:"M",c:"#47a248",d:"Document database for flexible, JSON-like data."},
+    git:{l:"Git",ab:"Git",c:"#f05032",d:"Distributed version control for every project."},
+    github:{l:"GitHub",ab:"GH",c:"#cbd5e1",d:"Code hosting, review, and CI/CD with Actions."},
+    prettier:{l:"Prettier",ab:"Pr",c:"#f7b93e",d:"Opinionated formatter that keeps code consistent."},
+    npm:{l:"npm",ab:"npm",c:"#cb3837",d:"Package manager for the JavaScript ecosystem."},
+    firebase:{l:"Firebase",ab:"Fb",c:"#ffca28",d:"Realtime backend, auth, and hosting."},
+    wordpress:{l:"WordPress",ab:"WP",c:"#4a90d9",d:"The web's most widely used CMS."},
+    linux:{l:"Linux",ab:"Lx",c:"#fcc624",d:"The OS that runs the servers of the world."},
+    docker:{l:"Docker",ab:"Dk",c:"#2496ed",d:"Containerize apps for reproducible deploys."},
+    nginx:{l:"Nginx",ab:"Nx",c:"#009639",d:"High-performance web server and reverse proxy."},
+    aws:{l:"AWS",ab:"AWS",c:"#ff9900",d:"Cloud infrastructure at global scale."},
+    gcp:{l:"Google Cloud",ab:"GC",c:"#4285f4",d:"Managed cloud compute, data, and ML."},
+    vim:{l:"Vim",ab:"Vim",c:"#33b955",d:"Keyboard-driven editing, everywhere."},
+    vercel:{l:"Vercel",ab:"▲",c:"#cbd5e1",d:"Frontend cloud — deploy and scale instantly."}
+  };
+  function skillSlug(raw){
+    var n = String(raw || "").toLowerCase().replace(/[^a-z0-9]/g, "");
+    var alias = { javascript:"js", typescript:"ts", html5:"html", css3:"css",
+      reactjs:"react", reactnative:"react", vuejs:"vue", next:"nextjs", nuxt:"vue",
+      tailwindcss:"tailwind", node:"nodejs", expressjs:"express", postgresql:"postgres",
+      mongo:"mongodb", googlecloud:"gcp", amazonwebservices:"aws", githubactions:"github" };
+    return alias[n] || n;
+  }
+
   /* ── year ── */
   var y = document.getElementById("year"); if(y){ y.textContent = new Date().getFullYear(); }
 
@@ -790,7 +854,14 @@ html[dir="rtl"] .tl-item::before{left:auto;right:0}
 
   /* ── keycap press feedback (mirror "press a key") ── */
   document.querySelectorAll("[data-key]").forEach(function(k){
-    function press(){ k.classList.add("pressed"); setTimeout(function(){ k.classList.remove("pressed"); }, 150); }
+    var lbl = k.querySelector(".label");
+    var slug = skillSlug(lbl ? lbl.textContent : "");
+    if(SKILLS[slug]){ k.setAttribute("data-skill", slug); k.setAttribute("role", "button"); k.setAttribute("aria-label", SKILLS[slug].l); }
+    function press(){
+      k.classList.add("pressed"); setTimeout(function(){ k.classList.remove("pressed"); }, 150);
+      // Drive the live 3D keyboard + skill panel when this maps to a real key.
+      if(SKILLS[slug] && typeof window.__pressSkill === "function"){ window.__pressSkill(slug); }
+    }
     k.addEventListener("mousedown", press);
     k.addEventListener("keydown", function(e){ if(e.key === "Enter" || e.key === " "){ e.preventDefault(); press(); } });
   });
@@ -854,6 +925,64 @@ html[dir="rtl"] .tl-item::before{left:auto;right:0}
   };
   function poseFor(sec){ var st = STATES[sec] || STATES.hero; return (innerWidth < 768) ? st.m : st.d; }
 
+  /* Faithful clone of nareshkhatri.site/#skills: listen to the Spline runtime's
+     key events (each key object is named after the skill slug), update the panel
+     + the scene's on-model heading/desc, and let external HTML keycaps trigger a
+     key via emitEvent. Everything is wrapped in try/catch so a blocked or
+     differently-named scene degrades to the static keycap grid. */
+  function wireKeyboardSkills(app){
+    var panel = document.getElementById("skillPanel");
+    if(!panel || app.__skillsWired){ return; }
+    app.__skillsWired = true;
+    var mono  = document.getElementById("spMono");
+    var label = document.getElementById("spLabel");
+    var desc  = document.getElementById("spDesc");
+    var keyEl = document.getElementById("spKey");
+    var press = null, release = null;
+    try{
+      press = new Audio("/assets/keycap-sounds/press.mp3"); press.volume = 0.35;
+      release = new Audio("/assets/keycap-sounds/release.mp3"); release.volume = 0.3;
+    }catch(e){}
+    var current = null;
+    function litKeycap(slug){
+      document.querySelectorAll(".keycap.lit").forEach(function(k){ k.classList.remove("lit"); k.style.removeProperty("--skill"); });
+      if(!slug){ return; }
+      var el = document.querySelector('.keycap[data-skill="' + slug + '"]');
+      if(el){ el.style.setProperty("--skill", SKILLS[slug].c); el.classList.add("lit"); }
+    }
+    function show(slug){
+      var s = SKILLS[slug]; if(!s){ return; }
+      current = slug;
+      panel.style.setProperty("--skill", s.c);
+      if(mono){ mono.textContent = s.ab; mono.style.color = s.c; }
+      if(label){ label.textContent = s.l; }
+      if(desc){ desc.textContent = s.d; }
+      if(keyEl){ keyEl.textContent = slug; }
+      panel.classList.add("show");
+      litKeycap(slug);
+      if(press){ try{ press.currentTime = 0; press.play().catch(function(){}); }catch(e){} }
+      try{ app.setVariable("heading", s.l); app.setVariable("desc", s.d); }catch(e){}
+    }
+    function fade(){
+      if(release){ try{ release.play().catch(function(){}); }catch(e){} }
+      try{ app.setVariable("heading", ""); app.setVariable("desc", ""); }catch(e){}
+    }
+    function nameOf(e){ return (e && e.target && e.target.name) ? e.target.name : ""; }
+    function onDown(e){ var n = nameOf(e); if(n === "body" || n === "platform"){ return; } if(SKILLS[n]){ show(n); } }
+    function onHover(e){ var n = nameOf(e); if(n === "body" || n === "platform"){ return; } if(SKILLS[n] && n !== current){ show(n); } }
+    try{ app.addEventListener("mouseDown", onDown); }catch(e){}
+    try{ app.addEventListener("keyDown", onDown); }catch(e){}
+    try{ app.addEventListener("mouseHover", onHover); }catch(e){}
+    try{ app.addEventListener("keyUp", fade); }catch(e){}
+    /* external HTML keycaps → press the matching 3D key + panel */
+    window.__pressSkill = function(slug){
+      if(!SKILLS[slug]){ return false; }
+      try{ app.emitEvent("mouseDown", slug); }catch(e){}
+      show(slug);
+      return true;
+    };
+  }
+
   function mountScene(){
     if(reduce){ return; }
     var host = document.getElementById("scene");
@@ -903,6 +1032,7 @@ html[dir="rtl"] .tl-item::before{left:auto;right:0}
               var caps = app.getAllObjects().filter(function(o){ return o && (o.name === capName || o.name === "keycap"); });
               caps.forEach(function(c, idx){ setTimeout(function(){ try{ c.visible = true; }catch(e){} }, 250 + idx * 55); });
             }catch(e){}
+            try{ wireKeyboardSkills(app); }catch(e){}
           }
           if(kbd){
             var active = document.body.getAttribute("data-active") || "hero";
