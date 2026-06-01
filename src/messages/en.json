@@ -40,8 +40,8 @@
         "description": "Download your portfolio as PDF with a QR code linking to your live site."
       },
       "hosted": {
-        "title": "Hosted URL",
-        "description": "Get your own portfolio URL that you can share with anyone."
+        "title": "Always editable",
+        "description": "Update your details anytime and download a fresh PDF."
       }
     },
     "templates": {
@@ -54,7 +54,7 @@
       "price": "5 KWD",
       "perPortfolio": "per portfolio",
       "includes": [
-        "Hosted portfolio URL",
+        "Professional PDF download",
         "PDF download with QR code",
         "Arabic & English support",
         "Custom colors & fonts",
