@@ -188,8 +188,8 @@ export default async function LandingPage({
               </h1>
               <p className="mt-8 max-w-lg text-lg leading-relaxed text-[var(--land-body)]">
                 {isRTL
-                  ? "بورتفوليوهات احترافية لمهندسي النفط والغاز والقيادات والمتخصصين في الكويت. ثنائية اللغة. جاهزة للطباعة. جاهزة في دقائق."
-                  : "Professional portfolios for Kuwait's oil and gas engineers, corporate leaders, and technical specialists. Bilingual. Print-ready. Live in minutes."}
+                  ? "سيرة ذاتية PDF احترافية مع باركود QR يفتح بورتفوليوك الحيّ — لمهندسي النفط والغاز والقيادات والمتخصصين في الخليج. ثنائية اللغة. جاهزة في دقائق."
+                  : "A professional CV PDF with a QR code that opens your live portfolio — for the GCC's oil & gas engineers, corporate leaders, and technical specialists. Bilingual. Ready in minutes."}
               </p>
               <div className="mt-10 flex flex-col items-start gap-4">
                 <Link
@@ -629,8 +629,8 @@ export default async function LandingPage({
                 <h3 className="mt-4 text-xl font-bold tracking-tight">
                   {HOSTING_ENABLED
                     ? isRTL
-                      ? "سيرة ذاتية PDF مع باركود"
-                      : "CV page with scannable barcode"
+                      ? "سيرة ذاتية PDF مع باركود QR"
+                      : "CV PDF with a QR code"
                     : isRTL
                       ? "سيرة ذاتية PDF احترافية"
                       : "Professional PDF download"}
@@ -638,8 +638,8 @@ export default async function LandingPage({
                 <p className="mt-3 text-sm text-[var(--land-body)] leading-relaxed">
                   {HOSTING_ENABLED
                     ? isRTL
-                      ? "حمّل صفحة سيرة ذاتية احترافية كملف PDF مع باركود يوجّه مباشرة إلى بورتفوليوك الحي."
-                      : "Download a professional CV page as PDF with a scannable barcode that links directly to your live portfolio."
+                      ? "سيرة ذاتية احترافية جاهزة لأنظمة التوظيف (ATS) بصيغة PDF، تحمل باركود QR يفتح بورتفوليوك الحيّ عند مسحه — تطبعها وتشاركها في أي مقابلة."
+                      : "An ATS-ready professional CV as a PDF, carrying a QR code that opens your live portfolio when scanned — print it, attach it, share it in any interview."
                     : isRTL
                       ? "حمّل بورتفوليوك كصفحة سيرة ذاتية احترافية بصيغة PDF جاهزة للطباعة والمشاركة."
                       : "Download your portfolio as a polished, print-ready PDF you can share anywhere."}
@@ -710,7 +710,7 @@ export default async function LandingPage({
                       "عربي + إنجليزي",
                       "تصدير PDF جاهز للطباعة",
                       HOSTING_ENABLED
-                        ? "صفحة سيرة ذاتية مع باركود"
+                        ? "سيرة ذاتية PDF مع باركود QR"
                         : "تحميل PDF احترافي",
                       "ثيمات ألوان مخصصة",
                       "رفع صورة شخصية",
@@ -722,7 +722,7 @@ export default async function LandingPage({
                       "Arabic + English bilingual",
                       "Print-optimized PDF export",
                       HOSTING_ENABLED
-                        ? "CV page with scannable barcode"
+                        ? "CV PDF with a QR code"
                         : "Professional PDF download",
                       "Custom color themes",
                       "Photo upload",

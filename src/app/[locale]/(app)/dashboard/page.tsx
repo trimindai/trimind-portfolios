@@ -85,7 +85,7 @@ export default function DashboardPage() {
             {[
               { step: "1", en: "Pick a template", ar: "اختر قالبًا", icon: "📋" },
               { step: "2", en: "Fill your info", ar: "أدخل بياناتك", icon: "✏️" },
-              { step: "3", en: HOSTING_ENABLED ? "Publish online" : "Download PDF", ar: HOSTING_ENABLED ? "انشر أونلاين" : "حمّل PDF", icon: "🚀" },
+              { step: "3", en: HOSTING_ENABLED ? "Get your CV PDF + QR" : "Download PDF", ar: HOSTING_ENABLED ? "احصل على سيرتك + باركود" : "حمّل PDF", icon: "🚀" },
             ].map((s) => (
               <div key={s.step} className="text-center p-4 rounded-xl border border-[var(--land-border)] bg-[var(--land-surface)]/30">
                 <div className="text-2xl mb-2">{s.icon}</div>
@@ -122,7 +122,7 @@ export default function DashboardPage() {
               <li className="flex items-center gap-2">
                 <span className="text-[var(--land-accent)]">&#10003;</span>
                 {HOSTING_ENABLED
-                  ? (isRTL ? "PDF + رابط أونلاين" : "PDF + hosted URL")
+                  ? (isRTL ? "سيرة ذاتية PDF + بورتفوليو حيّ بباركود QR" : "CV PDF + live portfolio via QR")
                   : (isRTL ? "تحميل PDF احترافي" : "Professional PDF download")}
               </li>
             </ul>

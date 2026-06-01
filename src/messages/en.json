@@ -40,8 +40,8 @@
         "description": "Download your portfolio as PDF with a QR code linking to your live site."
       },
       "hosted": {
-        "title": "Always editable",
-        "description": "Update your details anytime and download a fresh PDF."
+        "title": "A live portfolio behind the QR",
+        "description": "Your CV's QR code opens a hosted, mobile-perfect portfolio. Update anytime from your dashboard — changes appear instantly."
       }
     },
     "templates": {
@@ -54,8 +54,9 @@
       "price": "5 KWD",
       "perPortfolio": "per portfolio",
       "includes": [
-        "Professional PDF download",
-        "PDF download with QR code",
+        "ATS-ready CV PDF",
+        "QR code to your live portfolio",
+        "Hosted, mobile-perfect portfolio URL",
         "Arabic & English support",
         "Custom colors & fonts",
         "Print-optimized layout"
