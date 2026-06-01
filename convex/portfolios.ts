@@ -77,6 +77,7 @@ const basicsValidator = v.object({
   title: v.string(),
   subtitle: v.optional(v.string()),
   bio: v.optional(v.string()),
+  summary: v.optional(v.string()),
   valueProposition: v.optional(v.string()),
   location: v.optional(v.string()),
   nationality: v.optional(v.string()),
@@ -89,6 +90,14 @@ const basicsValidator = v.object({
   instagram: v.optional(v.string()),
   photoUrl: v.optional(v.string()),
   resumeUrl: v.optional(v.string()),
+  languages: v.optional(
+    v.array(
+      v.object({
+        name: v.string(),
+        level: v.optional(v.string()),
+      })
+    )
+  ),
 });
 
 const customizationValidator = v.optional(
@@ -245,6 +254,15 @@ export const update = mutation({
           name: v.string(),
           title: v.string(),
           company: v.string(),
+        })
+      )
+    ),
+    references: v.optional(
+      v.array(
+        v.object({
+          name: v.string(),
+          title: v.optional(v.string()),
+          contact: v.optional(v.string()),
         })
       )
     ),

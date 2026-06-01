@@ -15,6 +15,7 @@ export interface PortfolioData {
     title: string;
     subtitle?: string;
     bio?: string;
+    summary?: string;
     valueProposition?: string;
     location?: string;
     nationality?: string;
@@ -27,6 +28,7 @@ export interface PortfolioData {
     instagram?: string;
     photoUrl?: string;
     resumeUrl?: string;
+    languages?: Array<{ name: string; level?: string }>;
   };
   metrics?: Array<{ value: string; label: string }>;
   experience?: Array<{
@@ -89,6 +91,7 @@ export interface PortfolioData {
     title: string;
     company: string;
   }>;
+  references?: Array<{ name: string; title?: string; contact?: string }>;
   professionalAffiliations?: Array<{ name: string; role?: string }>;
   continuousDevelopment?: Array<{
     name: string;
