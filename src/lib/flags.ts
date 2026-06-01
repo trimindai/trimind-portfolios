@@ -1,17 +1,24 @@
 /**
  * Feature flags.
  *
- * HOSTING_ENABLED — temporary kill-switch for public portfolio hosting.
+ * HOSTING_ENABLED — public portfolio hosting switch for the hybrid model.
  *
- * While `false`:
- *   - The public `/p/<slug>` portfolio pages are turned off (show a
- *     "coming soon" notice instead of the live portfolio).
- *   - The product deliverable is the downloadable PDF only — the 4.900 KD
- *     payment now unlocks the PDF download instead of a hosted URL.
- *   - All "published portfolio / hosted URL / your own domain" marketing
- *     is hidden from the landing page and dashboard.
+ * The product now ships TWO outputs from one dataset:
+ *   1. A clean, ATS-ready **PDF CV** (all job-application sections) carrying
+ *      an embedded **QR code**.
+ *   2. A **mobile-perfect live web portfolio** served at `/p/<slug>`.
  *
- * Flip back to `true` to fully restore hosting once the templates are
- * finished and tested — no other code needs to change.
+ * The QR on the printed CV points at the live portfolio, so a hiring team
+ * that scans it lands on the candidate's hosted page. Hosting therefore
+ * MUST stay enabled — it is the QR's live target.
+ *
+ * While `true`:
+ *   - The public `/p/<slug>` portfolio pages serve the live portfolio.
+ *   - The QR embedded in the PDF CV resolves to a working page.
+ *   - Landing/dashboard copy may surface the live portfolio URL.
+ *
+ * Set to `false` only to temporarily pause public hosting (the QR target
+ * goes dark and `/p/<slug>` shows a "coming soon" notice instead) — no
+ * other code needs to change.
  */
-export const HOSTING_ENABLED = false;
+export const HOSTING_ENABLED = true;
