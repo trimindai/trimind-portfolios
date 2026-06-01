@@ -14,7 +14,7 @@ export function EducationStep({ data, onChange }: EducationStepProps) {
   return (
     <div className="space-y-8">
       <div>
-        <h2 className="text-xl font-semibold text-white mb-2">Education</h2>
+        <h2 className="text-xl font-semibold text-[var(--land-bright)] mb-2">Education</h2>
         <DynamicList
           items={education}
           onChange={(items) => onChange({ education: items })}

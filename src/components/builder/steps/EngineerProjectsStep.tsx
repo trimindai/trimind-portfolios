@@ -50,7 +50,7 @@ export function EngineerProjectsStep({ data, onChange }: EngineerProjectsStepPro
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-xl font-semibold text-white">Projects</h2>
+        <h2 className="text-xl font-semibold text-[var(--land-bright)]">Projects</h2>
         <p className="text-sm text-[var(--land-body)] mt-1">
           Showcase your engineering work. Each project gets a card on the main page.
           Add a slug to create a full detail page with narrative blocks.
@@ -126,7 +126,7 @@ export function EngineerProjectsStep({ data, onChange }: EngineerProjectsStepPro
                   <select
                     value={item.meta?.type || ""}
                     onChange={(e) => update({ meta: { ...item.meta, type: e.target.value } })}
-                    className="w-full bg-[var(--land-surface-raised)] border border-[var(--land-border)] rounded-lg px-4 py-2.5 text-white focus:border-[var(--land-accent)] focus:ring-1 focus:ring-[var(--land-accent)] outline-none transition-colors"
+                    className="w-full bg-[var(--land-surface-raised)] border border-[var(--land-border)] rounded-lg px-4 py-2.5 text-[var(--land-bright)] focus:border-[var(--land-accent)] focus:ring-1 focus:ring-[var(--land-accent)] outline-none transition-colors"
                   >
                     {PROJECT_TYPES.map((t) => (
                       <option key={t.value} value={t.value}>{t.label}</option>
@@ -147,7 +147,7 @@ export function EngineerProjectsStep({ data, onChange }: EngineerProjectsStepPro
                   value={(item.technologies || []).join(", ")}
                   onChange={(e) => update({ technologies: e.target.value.split(",").map((s: string) => s.trim()).filter(Boolean) })}
                   placeholder="Arduino, Raspberry Pi, Python, SolidWorks, MATLAB"
-                  className="w-full bg-[var(--land-surface-raised)] border border-[var(--land-border)] rounded-lg px-4 py-2.5 text-white placeholder:text-[var(--land-muted)] focus:border-[var(--land-accent)] focus:ring-1 focus:ring-[var(--land-accent)] outline-none transition-colors"
+                  className="w-full bg-[var(--land-surface-raised)] border border-[var(--land-border)] rounded-lg px-4 py-2.5 text-[var(--land-bright)] placeholder:text-[var(--land-muted)] focus:border-[var(--land-accent)] focus:ring-1 focus:ring-[var(--land-accent)] outline-none transition-colors"
                 />
                 <p className="text-xs text-[var(--land-muted)] mt-1">Comma-separated</p>
               </div>
@@ -267,7 +267,7 @@ export function EngineerProjectsStep({ data, onChange }: EngineerProjectsStepPro
                             <select
                               value={link.kind}
                               onChange={(e) => updateLink({ kind: e.target.value })}
-                              className="w-full bg-[var(--land-surface-raised)] border border-[var(--land-border)] rounded-lg px-4 py-2.5 text-white focus:border-[var(--land-accent)] focus:ring-1 focus:ring-[var(--land-accent)] outline-none transition-colors"
+                              className="w-full bg-[var(--land-surface-raised)] border border-[var(--land-border)] rounded-lg px-4 py-2.5 text-[var(--land-bright)] focus:border-[var(--land-accent)] focus:ring-1 focus:ring-[var(--land-accent)] outline-none transition-colors"
                             >
                               {LINK_KINDS.map((k) => (
                                 <option key={k.value} value={k.value}>{k.label}</option>
@@ -300,7 +300,7 @@ export function EngineerProjectsStep({ data, onChange }: EngineerProjectsStepPro
                             <select
                               value={block.kind}
                               onChange={(e) => updateBlock({ kind: e.target.value })}
-                              className="w-full bg-[var(--land-surface-raised)] border border-[var(--land-border)] rounded-lg px-4 py-2.5 text-white focus:border-[var(--land-accent)] focus:ring-1 focus:ring-[var(--land-accent)] outline-none transition-colors"
+                              className="w-full bg-[var(--land-surface-raised)] border border-[var(--land-border)] rounded-lg px-4 py-2.5 text-[var(--land-bright)] focus:border-[var(--land-accent)] focus:ring-1 focus:ring-[var(--land-accent)] outline-none transition-colors"
                             >
                               {BLOCK_KINDS.map((k) => (
                                 <option key={k.value} value={k.value}>{k.label}</option>

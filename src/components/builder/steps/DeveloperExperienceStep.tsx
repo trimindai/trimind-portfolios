@@ -18,7 +18,7 @@ export function DeveloperExperienceStep({ data, onChange }: DeveloperExperienceS
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-xl font-semibold text-white">{t("experienceHeading")}</h2>
+        <h2 className="text-xl font-semibold text-[var(--land-bright)]">{t("experienceHeading")}</h2>
         <p className="text-sm text-[var(--land-body)] mt-1">{t("experienceIntro")}</p>
       </div>
 

@@ -39,11 +39,11 @@ export function DeveloperCustomizeStep({ data, onChange }: DeveloperCustomizeSte
 
   return (
     <div className="space-y-8">
-      <h2 className="text-xl font-semibold text-white">{t("customizeHeading")}</h2>
+      <h2 className="text-xl font-semibold text-[var(--land-bright)]">{t("customizeHeading")}</h2>
 
       {/* Colors */}
       <div>
-        <h3 className="text-lg font-medium text-white mb-2">{t("colorsHeading")}</h3>
+        <h3 className="text-lg font-medium text-[var(--land-bright)] mb-2">{t("colorsHeading")}</h3>
         <p className="text-sm text-[var(--land-body)] mb-4">{t("colorsHint")}</p>
 
         <div className="grid grid-cols-3 sm:grid-cols-6 gap-2 mb-6">
@@ -94,7 +94,7 @@ export function DeveloperCustomizeStep({ data, onChange }: DeveloperCustomizeSte
 
       {/* Advanced: custom Spline keyboard scene */}
       <div className="bg-[var(--land-surface-raised)]/30 border border-[var(--land-border)] rounded-lg p-4">
-        <h3 className="text-lg font-medium text-white mb-2">{t("splineHeading")}</h3>
+        <h3 className="text-lg font-medium text-[var(--land-bright)] mb-2">{t("splineHeading")}</h3>
         <TextField
           label={t("splineLabel")}
           value={customization.skillsSplineUrl || ""}

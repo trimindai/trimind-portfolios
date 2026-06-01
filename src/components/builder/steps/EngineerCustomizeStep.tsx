@@ -70,7 +70,7 @@ export function EngineerCustomizeStep({ data, onChange }: EngineerCustomizeStepP
 
   return (
     <div className="space-y-8">
-      <h2 className="text-xl font-semibold text-white">Customize Your Portfolio</h2>
+      <h2 className="text-xl font-semibold text-[var(--land-bright)]">Customize Your Portfolio</h2>
 
       <PhotoUpload
         value={data.basics?.photoUrl || ""}
@@ -79,7 +79,7 @@ export function EngineerCustomizeStep({ data, onChange }: EngineerCustomizeStepP
 
       {/* Colors */}
       <div>
-        <h3 className="text-lg font-medium text-white mb-3">Color Scheme</h3>
+        <h3 className="text-lg font-medium text-[var(--land-bright)] mb-3">Color Scheme</h3>
         <p className="text-sm text-[var(--land-body)] mb-4">Pick a preset or customize individual colors.</p>
 
         <div className="grid grid-cols-3 sm:grid-cols-6 gap-2 mb-6">
@@ -130,14 +130,14 @@ export function EngineerCustomizeStep({ data, onChange }: EngineerCustomizeStepP
 
       {/* Fonts */}
       <div>
-        <h3 className="text-lg font-medium text-white mb-3">Typography</h3>
+        <h3 className="text-lg font-medium text-[var(--land-bright)] mb-3">Typography</h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
             <label className="text-sm font-medium text-[var(--land-bright)] mb-1.5 block">Heading Font</label>
             <select
               value={customization.fontFamily || "Space Grotesk"}
               onChange={(e) => updateCustomization("fontFamily", e.target.value)}
-              className="w-full bg-[var(--land-surface-raised)] border border-[var(--land-border)] rounded-lg px-4 py-2.5 text-white focus:border-[var(--land-accent)] focus:ring-1 focus:ring-[var(--land-accent)] outline-none transition-colors"
+              className="w-full bg-[var(--land-surface-raised)] border border-[var(--land-border)] rounded-lg px-4 py-2.5 text-[var(--land-bright)] focus:border-[var(--land-accent)] focus:ring-1 focus:ring-[var(--land-accent)] outline-none transition-colors"
             >
               {HEADING_FONTS.map((f) => (
                 <option key={f.value} value={f.value}>{f.label}</option>
@@ -150,7 +150,7 @@ export function EngineerCustomizeStep({ data, onChange }: EngineerCustomizeStepP
             <select
               value={customization.bodyFont || "Inter"}
               onChange={(e) => updateCustomization("bodyFont", e.target.value)}
-              className="w-full bg-[var(--land-surface-raised)] border border-[var(--land-border)] rounded-lg px-4 py-2.5 text-white focus:border-[var(--land-accent)] focus:ring-1 focus:ring-[var(--land-accent)] outline-none transition-colors"
+              className="w-full bg-[var(--land-surface-raised)] border border-[var(--land-border)] rounded-lg px-4 py-2.5 text-[var(--land-bright)] focus:border-[var(--land-accent)] focus:ring-1 focus:ring-[var(--land-accent)] outline-none transition-colors"
             >
               {BODY_FONTS.map((f) => (
                 <option key={f.value} value={f.value}>{f.label}</option>
@@ -162,7 +162,7 @@ export function EngineerCustomizeStep({ data, onChange }: EngineerCustomizeStepP
         {/* Font preview */}
         <div className="mt-4 bg-[var(--land-surface-raised)]/50 border border-[var(--land-border)] rounded-lg p-4">
           <p className="text-xs text-[var(--land-muted)] mb-2">Preview</p>
-          <p style={{ fontFamily: `'${customization.fontFamily || "Space Grotesk"}', sans-serif` }} className="text-lg text-white font-semibold">
+          <p style={{ fontFamily: `'${customization.fontFamily || "Space Grotesk"}', sans-serif` }} className="text-lg text-[var(--land-bright)] font-semibold">
             {data.basics?.fullName || "Your Name Here"}
           </p>
           <p style={{ fontFamily: `'${customization.bodyFont || "Inter"}', sans-serif` }} className="text-sm text-[var(--land-body)] mt-1">
@@ -173,7 +173,7 @@ export function EngineerCustomizeStep({ data, onChange }: EngineerCustomizeStepP
 
       {/* Section Visibility */}
       <div>
-        <h3 className="text-lg font-medium text-white mb-3">Section Visibility</h3>
+        <h3 className="text-lg font-medium text-[var(--land-bright)] mb-3">Section Visibility</h3>
         <p className="text-sm text-[var(--land-body)] mb-4">Uncheck sections you want to hide. Empty sections are auto-hidden anyway.</p>
         <div className="grid grid-cols-2 gap-1">
           {SECTIONS.map((section) => (

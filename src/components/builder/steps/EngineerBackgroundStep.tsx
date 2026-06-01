@@ -30,7 +30,7 @@ export function EngineerBackgroundStep({ data, onChange }: EngineerBackgroundSte
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-xl font-semibold text-white">Background</h2>
+        <h2 className="text-xl font-semibold text-[var(--land-bright)]">Background</h2>
         <p className="text-sm text-[var(--land-body)] mt-1">
           Optional sections — all auto-hide when empty. Fill in what applies to you.
           Your projects are the star; this adds professional context.
@@ -53,8 +53,8 @@ export function EngineerBackgroundStep({ data, onChange }: EngineerBackgroundSte
               onClick={() => setActiveSection(tab.id)}
               className={`px-3 py-1.5 rounded-md text-sm font-medium transition-colors flex items-center gap-1.5 ${
                 activeSection === tab.id
-                  ? "bg-[var(--land-accent)] text-white"
-                  : "text-[var(--land-body)] hover:text-white"
+                  ? "bg-[var(--land-accent)] text-[var(--land-bright)]"
+                  : "text-[var(--land-body)] hover:text-[var(--land-bright)]"
               }`}
             >
               {tab.label}
@@ -132,7 +132,7 @@ export function EngineerBackgroundStep({ data, onChange }: EngineerBackgroundSte
                     value={item.items.join(", ")}
                     onChange={(e) => update({ items: e.target.value.split(",").map((s: string) => s.trim()).filter(Boolean) })}
                     placeholder="MATLAB, AutoCAD, SolidWorks, PLC Programming, SCADA"
-                    className="w-full bg-[var(--land-surface-raised)] border border-[var(--land-border)] rounded-lg px-4 py-2.5 text-white placeholder:text-[var(--land-muted)] focus:border-[var(--land-accent)] focus:ring-1 focus:ring-[var(--land-accent)] outline-none transition-colors"
+                    className="w-full bg-[var(--land-surface-raised)] border border-[var(--land-border)] rounded-lg px-4 py-2.5 text-[var(--land-bright)] placeholder:text-[var(--land-muted)] focus:border-[var(--land-accent)] focus:ring-1 focus:ring-[var(--land-accent)] outline-none transition-colors"
                   />
                 </div>
               </div>

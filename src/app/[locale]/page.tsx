@@ -197,7 +197,7 @@ export default async function LandingPage({
         <div className="relative z-10 mx-auto w-full max-w-7xl px-6 pt-28 pb-16 lg:pt-0">
           <div className="flex flex-col lg:grid lg:grid-cols-[1fr_1.2fr] items-center gap-12 lg:gap-20">
             <div className="land-stagger">
-              <p className="text-xs font-medium tracking-[0.2em] uppercase text-emerald-400">
+              <p className="text-xs font-medium tracking-[0.2em] uppercase text-[var(--land-accent)]">
                 {isRTL
                   ? "منشئ بورتفوليو لمحترفي الخليج"
                   : "Portfolio builder for GCC professionals"}

@@ -18,13 +18,13 @@ export function DeveloperCredentialsStep({ data, onChange }: DeveloperCredential
   return (
     <div className="space-y-8">
       <div>
-        <h2 className="text-xl font-semibold text-white">{t("credentialsHeading")}</h2>
+        <h2 className="text-xl font-semibold text-[var(--land-bright)]">{t("credentialsHeading")}</h2>
         <p className="text-sm text-[var(--land-body)] mt-1">{t("credentialsIntro")}</p>
       </div>
 
       {/* Education */}
       <div>
-        <h3 className="text-lg font-medium text-white mb-3">{t("educationHeading")}</h3>
+        <h3 className="text-lg font-medium text-[var(--land-bright)] mb-3">{t("educationHeading")}</h3>
         <DynamicList
           items={education}
           onChange={(items) => onChange({ education: items })}
@@ -60,7 +60,7 @@ export function DeveloperCredentialsStep({ data, onChange }: DeveloperCredential
 
       {/* Certifications */}
       <div>
-        <h3 className="text-lg font-medium text-white mb-3">{t("certificationsHeading")}</h3>
+        <h3 className="text-lg font-medium text-[var(--land-bright)] mb-3">{t("certificationsHeading")}</h3>
         <DynamicList
           items={certifications}
           onChange={(items) => onChange({ certifications: items })}

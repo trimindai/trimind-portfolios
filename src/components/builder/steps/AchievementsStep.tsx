@@ -16,7 +16,7 @@ export function AchievementsStep({ data, onChange }: AchievementsStepProps) {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-xl font-semibold text-white">Selected Achievements</h2>
+        <h2 className="text-xl font-semibold text-[var(--land-bright)]">Selected Achievements</h2>
         <p className="text-sm text-[var(--land-body)] mt-1">
           Showcase 1-3 major impact stories. The first one marked as &quot;Featured&quot; gets a larger card.
         </p>
@@ -102,7 +102,7 @@ export function AchievementsStep({ data, onChange }: AchievementsStepProps) {
                 value={(item.technologies || []).join(", ")}
                 onChange={(e) => update({ technologies: e.target.value.split(",").map((s: string) => s.trim()).filter(Boolean) })}
                 placeholder="Python, Bloomberg, Power BI, SQL, Risk Analytics"
-                className="w-full bg-[var(--land-surface-raised)] border border-[var(--land-border)] rounded-lg px-4 py-2.5 text-white placeholder:text-[var(--land-muted)] focus:border-[var(--land-accent)] focus:ring-1 focus:ring-[var(--land-accent)] outline-none transition-colors"
+                className="w-full bg-[var(--land-surface-raised)] border border-[var(--land-border)] rounded-lg px-4 py-2.5 text-[var(--land-bright)] placeholder:text-[var(--land-muted)] focus:border-[var(--land-accent)] focus:ring-1 focus:ring-[var(--land-accent)] outline-none transition-colors"
               />
               <p className="text-xs text-[var(--land-muted)] mt-1">Comma-separated</p>
             </div>

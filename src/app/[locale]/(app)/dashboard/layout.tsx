@@ -51,7 +51,7 @@ export default function DashboardLayout({
       <div className="min-h-screen bg-[var(--land-bg)]">
         <header className="border-b border-[var(--land-border)] bg-[var(--land-bg)]/80 backdrop-blur-md">
           <div className="mx-auto max-w-7xl flex items-center justify-between px-6 py-4">
-            <Link href="/" className="text-xl font-bold text-white tracking-tight hover:text-[var(--land-accent-hover)] transition-colors">
+            <Link href="/" className="text-xl font-bold text-[var(--land-bright)] tracking-tight hover:text-[var(--land-accent-hover)] transition-colors">
               Portfolio Pro
             </Link>
             <div className="flex items-center gap-3 sm:gap-4">
@@ -60,7 +60,7 @@ export default function DashboardLayout({
                 {user?.fullName || user?.primaryEmailAddress?.emailAddress}
               </span>
               <SignOutButton>
-                <button className="text-sm text-[var(--land-muted)] hover:text-white transition-colors">
+                <button className="text-sm text-[var(--land-muted)] hover:text-[var(--land-bright)] transition-colors">
                   {isRTL ? "خروج" : "Sign out"}
                 </button>
               </SignOutButton>

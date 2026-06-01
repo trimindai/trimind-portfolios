@@ -23,7 +23,7 @@ export function DeveloperAboutStep({ data, onChange }: DeveloperAboutStepProps) 
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-xl font-semibold text-white">{t("aboutHeading")}</h2>
+        <h2 className="text-xl font-semibold text-[var(--land-bright)]">{t("aboutHeading")}</h2>
         <p className="text-sm text-[var(--land-body)] mt-1">{t("aboutIntro")}</p>
       </div>
 
@@ -146,7 +146,7 @@ export function DeveloperAboutStep({ data, onChange }: DeveloperAboutStepProps) 
 
       {/* Hero stat counters → top-level `metrics` */}
       <div>
-        <h3 className="text-lg font-medium text-white mb-1">{t("metricsHeading")}</h3>
+        <h3 className="text-lg font-medium text-[var(--land-bright)] mb-1">{t("metricsHeading")}</h3>
         <p className="text-xs text-[var(--land-muted)] mb-3">{t("metricsHint")}</p>
         <DynamicList
           items={metrics}

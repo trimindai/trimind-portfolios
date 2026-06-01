@@ -105,7 +105,7 @@ export default function PreviewPage() {
       <div className="flex items-center justify-between border-b border-[var(--land-border)] bg-[var(--land-surface)] px-4 py-3">
         <Link
           href={`/dashboard/${id}/edit`}
-          className="flex items-center gap-2 text-sm text-[var(--land-body)] transition-colors hover:text-white"
+          className="flex items-center gap-2 text-sm text-[var(--land-body)] transition-colors hover:text-[var(--land-bright)]"
         >
           <ArrowLeft className="h-4 w-4" />
           {t("backToEdit")}
@@ -126,7 +126,7 @@ export default function PreviewPage() {
                 className={`flex min-h-[44px] items-center gap-2 rounded-md px-3 py-1.5 text-sm transition-colors sm:min-h-0 ${
                   view === mode
                     ? "bg-[var(--land-accent)] text-white"
-                    : "text-[var(--land-body)] hover:bg-[var(--land-border)] hover:text-white"
+                    : "text-[var(--land-body)] hover:bg-[var(--land-border)] hover:text-[var(--land-bright)]"
                 }`}
                 title={label}
               >
@@ -146,7 +146,7 @@ export default function PreviewPage() {
                   className={`flex min-h-[44px] items-center gap-2 rounded-md px-3 py-1.5 text-sm transition-colors sm:min-h-0 ${
                     deviceMode === mode
                       ? "bg-[var(--land-accent)] text-white"
-                      : "text-[var(--land-body)] hover:bg-[var(--land-border)] hover:text-white"
+                      : "text-[var(--land-body)] hover:bg-[var(--land-border)] hover:text-[var(--land-bright)]"
                   }`}
                   title={label}
                 >

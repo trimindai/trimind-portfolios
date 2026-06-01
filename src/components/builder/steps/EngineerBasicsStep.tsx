@@ -18,7 +18,7 @@ export function EngineerBasicsStep({ data, onChange }: EngineerBasicsStepProps) 
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-xl font-semibold text-white">Basic Information</h2>
+        <h2 className="text-xl font-semibold text-[var(--land-bright)]">Basic Information</h2>
         <p className="text-sm text-[var(--land-body)] mt-1">
           Your engineering identity. The published portfolio auto-hides empty fields.
         </p>

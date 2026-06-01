@@ -76,7 +76,7 @@ export default function DashboardPage() {
   return (
     <div>
       <div className="flex items-center justify-between mb-8">
-        <h1 className="text-2xl font-bold text-white">{t("dashboard.title")}</h1>
+        <h1 className="text-2xl font-bold text-[var(--land-bright)]">{t("dashboard.title")}</h1>
         <button
           onClick={handleNewPortfolio}
           className="rounded-lg bg-[var(--land-accent)] px-4 py-2 text-sm font-medium text-white hover:bg-[var(--land-accent-hover)] transition-colors"
@@ -155,7 +155,7 @@ export default function DashboardPage() {
                 className="rounded-xl border border-[var(--land-border)] bg-[var(--land-surface)]/50 p-5"
               >
                 <div className="flex items-start justify-between mb-1">
-                  <h3 className="font-semibold text-white truncate">
+                  <h3 className="font-semibold text-[var(--land-bright)] truncate">
                     {portfolio.basics.fullName || portfolio.name}
                   </h3>
                   <span className={`text-xs px-2 py-0.5 rounded-full font-medium shrink-0 ${isRTL ? "mr-2" : "ml-2"} ${statusCfg.class}`}>

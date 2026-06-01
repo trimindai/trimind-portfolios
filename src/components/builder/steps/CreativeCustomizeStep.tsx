@@ -45,7 +45,7 @@ export function CreativeCustomizeStep({ data, onChange }: CreativeCustomizeStepP
   return (
     <div className="space-y-8">
       <div>
-        <h2 className="text-xl font-semibold text-white">Look &amp; Feel</h2>
+        <h2 className="text-xl font-semibold text-[var(--land-bright)]">Look &amp; Feel</h2>
         <p className="text-sm text-[var(--land-body)] mt-1">
           The creative template is dark by design. Pick an accent and background, and choose which sections to show.
         </p>
@@ -53,7 +53,7 @@ export function CreativeCustomizeStep({ data, onChange }: CreativeCustomizeStepP
 
       {/* Presets */}
       <div>
-        <h3 className="text-lg font-medium text-white mb-3">Theme Presets</h3>
+        <h3 className="text-lg font-medium text-[var(--land-bright)] mb-3">Theme Presets</h3>
         <div className="grid grid-cols-3 sm:grid-cols-6 gap-2">
           {PRESETS.map((p) => {
             const active = accent.toLowerCase() === p.accent.toLowerCase() && bg.toLowerCase() === p.bg.toLowerCase();
@@ -80,7 +80,7 @@ export function CreativeCustomizeStep({ data, onChange }: CreativeCustomizeStepP
 
       {/* Custom colors */}
       <div>
-        <h3 className="text-lg font-medium text-white mb-3">Custom Colors</h3>
+        <h3 className="text-lg font-medium text-[var(--land-bright)] mb-3">Custom Colors</h3>
         <div className="grid grid-cols-2 gap-6">
           <div>
             <label className="text-sm font-medium text-[var(--land-bright)] mb-2 block">Accent</label>
@@ -113,7 +113,7 @@ export function CreativeCustomizeStep({ data, onChange }: CreativeCustomizeStepP
 
       {/* Section visibility */}
       <div>
-        <h3 className="text-lg font-medium text-white mb-3">Section Visibility</h3>
+        <h3 className="text-lg font-medium text-[var(--land-bright)] mb-3">Section Visibility</h3>
         <p className="text-sm text-[var(--land-body)] mb-4">
           The hero and contact always show. Empty sections are auto-hidden.
         </p>

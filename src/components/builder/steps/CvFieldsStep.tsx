@@ -46,7 +46,7 @@ export function CvFieldsStep({ data, onChange }: CvFieldsStepProps) {
   return (
     <div className="space-y-8">
       <div>
-        <h2 className="text-xl font-semibold text-white mb-1">{t("heading")}</h2>
+        <h2 className="text-xl font-semibold text-[var(--land-bright)] mb-1">{t("heading")}</h2>
         <p className="text-sm text-[var(--land-body)]">{t("intro")}</p>
       </div>
 
@@ -62,7 +62,7 @@ export function CvFieldsStep({ data, onChange }: CvFieldsStepProps) {
 
       {/* Languages */}
       <div>
-        <h3 className="text-lg font-medium text-white mb-1">{t("languagesHeading")}</h3>
+        <h3 className="text-lg font-medium text-[var(--land-bright)] mb-1">{t("languagesHeading")}</h3>
         <p className="text-xs text-[var(--land-muted)] mb-3">{t("languagesHint")}</p>
         <DynamicList
           items={languages}
@@ -85,7 +85,7 @@ export function CvFieldsStep({ data, onChange }: CvFieldsStepProps) {
                 <select
                   value={item.level || "Fluent"}
                   onChange={(e) => update({ level: e.target.value })}
-                  className="w-full min-h-[44px] bg-[var(--land-surface-raised)] border border-[var(--land-border)] rounded-lg px-4 py-2.5 text-white focus:border-[var(--land-accent)] focus:ring-1 focus:ring-[var(--land-accent)] outline-none transition-colors"
+                  className="w-full min-h-[44px] bg-[var(--land-surface-raised)] border border-[var(--land-border)] rounded-lg px-4 py-2.5 text-[var(--land-bright)] focus:border-[var(--land-accent)] focus:ring-1 focus:ring-[var(--land-accent)] outline-none transition-colors"
                 >
                   {LEVELS.map((lvl) => (
                     <option key={lvl} value={lvl}>
@@ -112,7 +112,7 @@ export function CvFieldsStep({ data, onChange }: CvFieldsStepProps) {
 
       {/* References (or "available on request") */}
       <div>
-        <h3 className="text-lg font-medium text-white mb-1">{t("referencesHeading")}</h3>
+        <h3 className="text-lg font-medium text-[var(--land-bright)] mb-1">{t("referencesHeading")}</h3>
         <p className="text-xs text-[var(--land-muted)] mb-3">{t("referencesHint")}</p>
         {references.length === 0 && (
           <p className="mb-3 rounded-lg border border-dashed border-[var(--land-border)] bg-[var(--land-surface-raised)]/40 px-4 py-3 text-xs text-[var(--land-muted)]">

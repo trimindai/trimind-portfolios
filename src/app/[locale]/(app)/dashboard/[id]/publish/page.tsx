@@ -269,7 +269,7 @@ function HostingPublishPage() {
             <CheckCircle2 className="h-12 w-12 text-[var(--land-accent)] animate-in zoom-in duration-500" />
           </div>
 
-          <h1 className="text-2xl font-bold text-white">{t("published")}</h1>
+          <h1 className="text-2xl font-bold text-[var(--land-bright)]">{t("published")}</h1>
 
           {/* URL display */}
           <div className="mt-6 rounded-lg bg-[var(--land-surface-raised)] p-3">
@@ -291,7 +291,7 @@ function HostingPublishPage() {
             </a>
             <button
               onClick={handleCopyUrl}
-              className="inline-flex items-center justify-center gap-2 rounded-lg border border-[var(--land-border)] bg-[var(--land-surface-raised)] px-6 py-3 text-sm font-medium text-[var(--land-bright)] transition-colors hover:bg-[var(--land-border)] hover:text-white"
+              className="inline-flex items-center justify-center gap-2 rounded-lg border border-[var(--land-border)] bg-[var(--land-surface-raised)] px-6 py-3 text-sm font-medium text-[var(--land-bright)] transition-colors hover:bg-[var(--land-border)] hover:text-[var(--land-bright)]"
             >
               {copied ? (
                 <Check className="h-4 w-4 text-[var(--land-accent)]" />
@@ -321,7 +321,7 @@ function HostingPublishPage() {
         {/* Back link */}
         <Link
           href={`/dashboard/${id}/preview`}
-          className="mb-6 inline-flex items-center gap-2 text-sm text-[var(--land-body)] transition-colors hover:text-white"
+          className="mb-6 inline-flex items-center gap-2 text-sm text-[var(--land-body)] transition-colors hover:text-[var(--land-bright)]"
         >
           <ArrowLeft className="h-4 w-4" />
           Back to Preview
@@ -329,7 +329,7 @@ function HostingPublishPage() {
 
         {/* Card */}
         <div className="rounded-2xl border border-[var(--land-border)] bg-[var(--land-surface)] p-8">
-          <h1 className="text-2xl font-bold text-white">{t("title")}</h1>
+          <h1 className="text-2xl font-bold text-[var(--land-bright)]">{t("title")}</h1>
           <p className="mt-2 text-sm text-[var(--land-body)]">{t("chooseSlug")}</p>
 
           {/* Slug input */}
@@ -345,7 +345,7 @@ function HostingPublishPage() {
                 type="text"
                 value={slug}
                 onChange={(e) => setSlug(slugify(e.target.value))}
-                className="flex-1 bg-transparent px-3 py-2.5 text-sm text-white placeholder-[var(--land-muted)] outline-none"
+                className="flex-1 bg-transparent px-3 py-2.5 text-sm text-[var(--land-bright)] placeholder-[var(--land-muted)] outline-none"
                 placeholder="your-name"
               />
               {/* Availability indicator */}
@@ -386,7 +386,7 @@ function HostingPublishPage() {
                       key={s}
                       type="button"
                       onClick={() => setSlug(s)}
-                      className="rounded-full border border-[var(--land-border)] bg-[var(--land-surface-raised)] px-3 py-1 font-mono text-xs text-[var(--land-accent-hover)] transition-colors hover:border-[var(--land-accent)] hover:text-white"
+                      className="rounded-full border border-[var(--land-border)] bg-[var(--land-surface-raised)] px-3 py-1 font-mono text-xs text-[var(--land-accent-hover)] transition-colors hover:border-[var(--land-accent)] hover:text-[var(--land-bright)]"
                     >
                       {s}
                     </button>
@@ -570,7 +570,7 @@ function PdfCheckout() {
           <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-[var(--land-accent-subtle)]">
             <CheckCircle2 className="h-12 w-12 text-[var(--land-accent)]" />
           </div>
-          <h1 className="text-2xl font-bold text-white">
+          <h1 className="text-2xl font-bold text-[var(--land-bright)]">
             {isRTL ? "بورتفوليوك جاهز" : "Your portfolio is ready"}
           </h1>
           <p className="mt-3 text-sm text-[var(--land-body)]">
@@ -602,14 +602,14 @@ function PdfCheckout() {
       <div className="w-full max-w-lg">
         <Link
           href={`/dashboard/${id}/preview`}
-          className="mb-6 inline-flex items-center gap-2 text-sm text-[var(--land-body)] transition-colors hover:text-white"
+          className="mb-6 inline-flex items-center gap-2 text-sm text-[var(--land-body)] transition-colors hover:text-[var(--land-bright)]"
         >
           <ArrowLeft className="h-4 w-4" />
           {isRTL ? "العودة للمعاينة" : "Back to Preview"}
         </Link>
 
         <div className="rounded-2xl border border-[var(--land-border)] bg-[var(--land-surface)] p-8">
-          <h1 className="text-2xl font-bold text-white">
+          <h1 className="text-2xl font-bold text-[var(--land-bright)]">
             {isRTL ? "احصل على بورتفوليوك بصيغة PDF" : "Get your portfolio as a PDF"}
           </h1>
           <p className="mt-2 text-sm text-[var(--land-body)]">
@@ -619,7 +619,7 @@ function PdfCheckout() {
           </p>
 
           <div className="mt-6 flex items-baseline gap-2">
-            <span className="text-3xl font-bold text-white">
+            <span className="text-3xl font-bold text-[var(--land-bright)]">
               {isRTL ? "٤٫٩٠٠ د.ك" : "4.900 KD"}
             </span>
             <span className="text-sm text-[var(--land-muted)]">

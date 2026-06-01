@@ -18,7 +18,7 @@ export function CreativeProfileStep({ data, onChange }: CreativeProfileStepProps
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-xl font-semibold text-white">Your Profile</h2>
+        <h2 className="text-xl font-semibold text-[var(--land-bright)]">Your Profile</h2>
         <p className="text-sm text-[var(--land-body)] mt-1">
           The headline of your portfolio. Your initials become the monogram — no profile photo needed.
         </p>
