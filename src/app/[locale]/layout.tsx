@@ -58,14 +58,20 @@ export default async function LocaleLayout({
 }
 
 function LocaleHead({ locale, isRTL }: { locale: string; isRTL: boolean }) {
-  // Set html lang/dir at runtime since root layout can't access [locale] param.
-  // locale is validated above — only "en" or "ar".
   return (
-    <script
-      suppressHydrationWarning
-      dangerouslySetInnerHTML={{
-        __html: `document.documentElement.lang=${JSON.stringify(locale)};${isRTL ? 'document.documentElement.dir="rtl"' : 'document.documentElement.removeAttribute("dir")'}`,
-      }}
-    />
+    <>
+      {/* Set html lang/dir at runtime since root layout can't access [locale] param */}
+      <script
+        suppressHydrationWarning
+        dangerouslySetInnerHTML={{
+          __html: `document.documentElement.lang=${JSON.stringify(locale)};${isRTL ? 'document.documentElement.dir="rtl"' : 'document.documentElement.removeAttribute("dir")'}`,
+        }}
+      />
+      {/* TODO: Replace G-XXXXXXXXXX with real GA4 measurement ID */}
+      {/*
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX" />
+      <script dangerouslySetInnerHTML={{ __html: `window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','G-XXXXXXXXXX');` }} />
+      */}
+    </>
   );
 }

@@ -13,10 +13,10 @@ const DEMO_DATA: Record<string, any> = {
     basics: {
       fullName: "Sarah Al-Rashidi",
       title: "Senior Financial Analyst",
-      subtitle: "CFA Charterholder | 12 Years in GCC Banking",
-      bio: "Results-driven financial analyst with expertise in portfolio management, risk assessment, and strategic investment planning across Kuwait, UAE, and Saudi Arabia. Led analysis teams managing $2B+ in assets.",
+      subtitle: "CFA Charterholder | 12 Years in Banking",
+      bio: "Results-driven financial analyst with expertise in portfolio management, risk assessment, and strategic investment planning. Led analysis teams managing $2B+ in assets across multiple markets.",
       location: "Kuwait City, Kuwait",
-      email: "sarah@example.com",
+      email: "name@example.com",
       phone: "+965 9XXX XXXX",
       linkedin: "https://linkedin.com/in/example",
       photoUrl: "",
@@ -29,7 +29,7 @@ const DEMO_DATA: Record<string, any> = {
     experience: [
       {
         title: "Senior Financial Analyst",
-        company: "Kuwait National Bank",
+        company: "Leading National Bank",
         startDate: "2019",
         endDate: "Present",
         description: "Lead analyst for institutional investment portfolio.",
@@ -37,10 +37,10 @@ const DEMO_DATA: Record<string, any> = {
       },
       {
         title: "Financial Analyst",
-        company: "Gulf Investment Corp",
+        company: "Regional Investment Corp",
         startDate: "2014",
         endDate: "2019",
-        description: "Cross-border investment analysis for GCC markets.",
+        description: "Cross-border investment analysis for regional markets.",
         highlights: ["Analyzed 200+ investment opportunities", "Published quarterly market outlook reports"],
       },
     ],
@@ -49,15 +49,15 @@ const DEMO_DATA: Record<string, any> = {
       { category: "Tools", items: ["Bloomberg Terminal", "Excel VBA", "Python", "Tableau", "SAP"] },
     ],
     education: [
-      { degree: "MBA, Finance", institution: "American University of Kuwait", year: "2014" },
-      { degree: "BSc, Accounting", institution: "Kuwait University", year: "2012" },
+      { degree: "MBA, Finance", institution: "University of Kuwait", year: "2014" },
+      { degree: "BSc, Accounting", institution: "University of Kuwait", year: "2012" },
     ],
     certifications: [
       { name: "CFA Charterholder", issuer: "CFA Institute", year: "2017" },
       { name: "FRM Certified", issuer: "GARP", year: "2015" },
     ],
     endorsements: [
-      { quote: "Sarah's analytical rigor is exceptional. She consistently delivers insights that drive real investment decisions.", name: "Dr. Faisal Al-Mutairi", title: "Chief Investment Officer", company: "Kuwait National Bank" },
+      { quote: "Sarah's analytical rigor is exceptional. She consistently delivers insights that drive real investment decisions.", name: "Dr. Faisal M.", title: "Chief Investment Officer", company: "National Bank" },
     ],
     customization: { primaryColor: "#1e3a5f", accentColor: "#c5a55a" },
   },
@@ -68,15 +68,15 @@ const DEMO_DATA: Record<string, any> = {
       fullName: "Omar Al-Sabah",
       title: "Mechanical Engineer",
       subtitle: "Oil & Gas | Process Design | 8 Years",
-      bio: "Mechanical engineer specializing in downstream process design and plant optimization. Experienced in FEED studies, P&ID development, and commissioning for refineries across the GCC.",
-      location: "Ahmadi, Kuwait",
-      email: "omar@example.com",
+      bio: "Mechanical engineer specializing in downstream process design and plant optimization. Experienced in FEED studies, P&ID development, and commissioning for refineries.",
+      location: "Kuwait City, Kuwait",
+      email: "name@example.com",
       linkedin: "https://linkedin.com/in/example",
     },
     projects: [
       {
-        title: "Clean Fuel Project — KNPC",
-        description: "Led mechanical design for the hydrogen recovery unit in Kuwait's $12B clean fuel project.",
+        title: "Clean Fuel Project",
+        description: "Led mechanical design for the hydrogen recovery unit in a $12B clean fuel project.",
         technologies: ["AutoCAD Plant 3D", "CAESAR II", "HTRI"],
         metrics: [{ value: "99.5%", label: "Uptime" }, { value: "$12B", label: "Project Value" }],
         isFeatured: true,
@@ -94,10 +94,10 @@ const DEMO_DATA: Record<string, any> = {
     ],
     education: [
       { degree: "MSc, Mechanical Engineering", institution: "University of Manchester", year: "2016" },
-      { degree: "BSc, Mechanical Engineering", institution: "Kuwait University", year: "2014" },
+      { degree: "BSc, Mechanical Engineering", institution: "University of Kuwait", year: "2014" },
     ],
     certifications: [
-      { name: "Professional Engineer (PE)", issuer: "Kuwait Society of Engineers", year: "2020" },
+      { name: "Professional Engineer (PE)", issuer: "Society of Engineers", year: "2020" },
     ],
     customization: { primaryColor: "#0f172a", accentColor: "#059669" },
   },
@@ -110,25 +110,25 @@ const DEMO_DATA: Record<string, any> = {
       subtitle: "Branding | Digital Art | Exhibition Design",
       bio: "Multidisciplinary designer creating visual identities for luxury brands, cultural institutions, and tech startups across the Middle East.",
       location: "Kuwait City",
-      email: "nora@example.com",
+      email: "name@example.com",
       instagram: "https://instagram.com/example",
       website: "https://example.com",
     },
     projects: [
       {
-        title: "Kuwait Pavilion — Expo 2025",
-        description: "Art directed the visual identity and spatial design for Kuwait's national pavilion.",
+        title: "National Pavilion — Expo 2025",
+        description: "Art directed the visual identity and spatial design for a national pavilion.",
         technologies: ["Figma", "Cinema 4D", "After Effects"],
         isFeatured: true,
       },
       {
-        title: "Sadu House Rebrand",
-        description: "Complete visual identity redesign for Kuwait's premier textile heritage museum.",
+        title: "Heritage Museum Rebrand",
+        description: "Complete visual identity redesign for a premier textile heritage museum.",
         technologies: ["Illustrator", "InDesign", "Photography"],
       },
       {
         title: "FinTech Startup Identity",
-        description: "Brand system, app UI, and marketing collateral for a Kuwait-based digital banking startup.",
+        description: "Brand system, app UI, and marketing collateral for a digital banking startup.",
         technologies: ["Figma", "Protopie", "Lottie"],
       },
     ],
@@ -145,9 +145,9 @@ const DEMO_DATA: Record<string, any> = {
       fullName: "Yusuf Al-Hajri",
       title: "Full-Stack Developer",
       subtitle: "React | Node.js | Cloud Architecture",
-      bio: "Building scalable web applications and cloud infrastructure for startups and enterprise clients in Kuwait. Open source contributor and tech community organizer.",
-      location: "Hawalli, Kuwait",
-      email: "yusuf@example.com",
+      bio: "Building scalable web applications and cloud infrastructure for startups and enterprise clients. Open source contributor and tech community organizer.",
+      location: "Kuwait City, Kuwait",
+      email: "name@example.com",
       github: "https://github.com/example",
       linkedin: "https://linkedin.com/in/example",
     },
@@ -171,7 +171,7 @@ const DEMO_DATA: Record<string, any> = {
       { category: "DevOps", items: ["AWS", "Docker", "Kubernetes", "CI/CD", "Terraform"] },
     ],
     education: [
-      { degree: "BSc, Computer Science", institution: "Kuwait University", year: "2018" },
+      { degree: "BSc, Computer Science", institution: "University of Kuwait", year: "2018" },
     ],
     customization: { primaryColor: "#0f172a", accentColor: "#3b82f6" },
   },
@@ -182,6 +182,13 @@ const RENDERERS: Record<string, (data: any) => string> = {
   engineer: renderEngineerTemplate,
   creative: renderCreativeTemplate,
   developer: renderDeveloperTemplate,
+};
+
+const THEME_COLORS: Record<string, string> = {
+  corporate: "#1e3a5f",
+  engineer: "#0f172a",
+  creative: "#0a0a0a",
+  developer: "#0f172a",
 };
 
 export async function GET(
@@ -198,15 +205,48 @@ export async function GET(
 
   const html = render(data);
 
-  const banner = `
-    <div style="position:fixed;bottom:0;left:0;right:0;z-index:9999;background:linear-gradient(135deg,#059669,#047857);color:white;text-align:center;padding:12px 20px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:14px;display:flex;align-items:center;justify-content:center;gap:12px;">
-      <span>This is a demo portfolio.</span>
-      <a href="/" style="color:white;background:rgba(255,255,255,0.2);padding:6px 16px;border-radius:6px;text-decoration:none;font-weight:600;">Create yours for 4.900 KD &rarr;</a>
+  const themeColor = THEME_COLORS[templateId] || "#059669";
+
+  const topBanner = `
+    <div id="demo-top" style="position:fixed;top:0;left:0;right:0;z-index:9999;background:#ffffff;border-bottom:1px solid #e2e8f0;text-align:center;padding:10px 20px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:13px;display:flex;align-items:center;justify-content:center;gap:12px;color:#64748b;">
+      <span style="background:#f1f5f9;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600;color:#94a3b8;letter-spacing:0.05em;">SAMPLE</span>
+      <span>This is a sample portfolio — build your own in minutes</span>
+      <a href="/en/dashboard/new?template=${templateId}" style="color:white;background:#059669;padding:6px 16px;border-radius:6px;text-decoration:none;font-weight:600;font-size:12px;">Use this template — 4.900 KD</a>
     </div>`;
 
-  const htmlWithBanner = html.replace("</body>", `${banner}\n</body>`);
+  const bottomBanner = `
+    <div style="position:fixed;bottom:0;left:0;right:0;z-index:9999;background:#059669;color:white;text-align:center;padding:12px 20px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:14px;display:flex;align-items:center;justify-content:center;gap:12px;">
+      <span>Ready to build yours?</span>
+      <a href="/en/dashboard/new?template=${templateId}" style="color:#059669;background:white;padding:8px 20px;border-radius:6px;text-decoration:none;font-weight:700;font-size:13px;">Start Free — 4.900 KD &rarr;</a>
+    </div>`;
 
-  return new Response(htmlWithBanner, {
+  const seoMeta = `
+    <meta name="theme-color" content="${themeColor}" />
+    <meta property="og:title" content="${data.basics.fullName} — ${data.basics.title} | Portfolio Pro Demo" />
+    <meta property="og:description" content="Sample ${templateId} portfolio. Build your own professional CV + portfolio in minutes." />
+    <meta property="og:type" content="profile" />
+    <meta property="og:url" content="https://portfolio-trimind.com/demo/${templateId}" />
+    <meta property="og:site_name" content="Portfolio Pro" />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://portfolio-trimind.com/demo/${templateId}" />
+    <script type="application/ld+json">${JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "ProfilePage",
+      mainEntity: {
+        "@type": "Person",
+        name: data.basics.fullName,
+        jobTitle: data.basics.title,
+        description: data.basics.bio,
+      },
+      isPartOf: { "@type": "WebSite", name: "Portfolio Pro", url: "https://portfolio-trimind.com" },
+    })}</script>`;
+
+  const htmlFinal = html
+    .replace("</head>", `${seoMeta}\n</head>`)
+    .replace("<body", `<body style="padding-top:44px;padding-bottom:52px;"`)
+    .replace("</body>", `${topBanner}\n${bottomBanner}\n</body>`);
+
+  return new Response(htmlFinal, {
     headers: {
       "Content-Type": "text/html; charset=utf-8",
       "Cache-Control": "public, max-age=86400",
