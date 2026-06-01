@@ -8,6 +8,8 @@ import { useState, useMemo, useEffect, Component, type ReactNode } from "react";
 import { Link } from "@/i18n/navigation";
 import { ADMIN_EMAILS } from "@/lib/admin";
 
+const TEST_EMAILS = ["test@trimindai.com", "trimindai@trimindai.com"];
+
 type Tab = "users" | "portfolios" | "payments";
 
 class AdminErrorBoundary extends Component<
@@ -21,12 +23,12 @@ class AdminErrorBoundary extends Component<
   render() {
     if (this.state.error) {
       return (
-        <div className="min-h-screen bg-gray-50 dark:bg-slate-950 flex flex-col items-center justify-center">
+        <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center">
           <p className="text-red-400 text-lg mb-4">Admin panel error</p>
-          <p className="text-gray-500 dark:text-gray-400 text-sm mb-6 max-w-md text-center">
-            Could not load admin data. Check that ADMIN_EMAILS is configured in the Convex dashboard.
+          <p className="text-gray-500 text-sm mb-6 max-w-md text-center">
+            Could not load admin data.
           </p>
-          <Link href="/" className="text-blue-600 hover:text-blue-500">Back to Home</Link>
+          <Link href="/" className="text-emerald-600 hover:text-emerald-500">Back to Home</Link>
         </div>
       );
     }
@@ -45,6 +47,7 @@ export default function AdminPage() {
 function AdminPageInner() {
   const { user, isLoaded } = useUser();
   const [activeTab, setActiveTab] = useState<Tab>("users");
+  const [hideTestAccounts, setHideTestAccounts] = useState(true);
 
   const email = user?.primaryEmailAddress?.emailAddress;
   const isAdmin = !!email && ADMIN_EMAILS.includes(email);
@@ -56,168 +59,165 @@ function AdminPageInner() {
 
   if (!isLoaded) {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-slate-950 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600" />
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-600" />
       </div>
     );
   }
 
   if (!isAdmin) {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-slate-950 flex flex-col items-center justify-center">
+      <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center">
         <p className="text-red-400 text-lg mb-4">Access Denied</p>
-        <p className="text-gray-500 dark:text-gray-400 text-sm mb-6">You don&apos;t have admin privileges.</p>
-        <Link href="/" className="text-blue-600 hover:text-blue-500">Back to Home</Link>
+        <p className="text-gray-500 text-sm mb-6">You don&apos;t have admin privileges.</p>
+        <Link href="/" className="text-emerald-600 hover:text-emerald-500">Back to Home</Link>
       </div>
     );
   }
 
-  const totalUsers = stats?.totalUsers ?? 0;
-  const signupsThisWeek = (() => {
-    if (!users) return 0;
-    const weekAgo = Date.now() - 7 * 24 * 60 * 60 * 1000;
-    return users.filter((u) => u.createdAt > weekAgo).length;
-  })();
+  const realUsers = hideTestAccounts
+    ? (users ?? []).filter((u) => !TEST_EMAILS.includes(u.email))
+    : (users ?? []);
+
+  const totalUsers = hideTestAccounts
+    ? realUsers.length
+    : (stats?.totalUsers ?? 0);
+
   const pendingPaymentsCount = stats?.pendingPayments ?? 0;
 
   const tabs: { id: Tab; label: string; count?: number }[] = [
     { id: "users", label: "Users", count: totalUsers },
     { id: "portfolios", label: "Portfolios", count: stats?.totalPortfolios },
-    { id: "payments", label: "Payments", count: stats ? stats.completedPayments + stats.pendingPayments + stats.failedPayments : undefined },
+    { id: "payments", label: "Payments", count: pendingPaymentsCount > 0 ? pendingPaymentsCount : undefined },
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-slate-950">
+    <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <header className="bg-white dark:bg-slate-900 border-b border-gray-200 dark:border-slate-800">
+      <header className="bg-white border-b border-gray-200">
         <div className="mx-auto max-w-7xl flex items-center justify-between px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex items-center gap-3">
-            <Link href="/" className="text-xl font-bold text-gray-900 dark:text-gray-100 tracking-tight">Portfolio Pro</Link>
+            <Link href="/" className="text-xl font-bold text-gray-900 tracking-tight">Portfolio Pro</Link>
             <span className="text-xs bg-red-600 text-white px-2 py-0.5 rounded-full font-medium">ADMIN</span>
           </div>
           <div className="flex items-center gap-4">
-            <span className="text-sm text-gray-500 dark:text-gray-400">{email}</span>
-            <Link href="/dashboard" className="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">Dashboard</Link>
+            <span className="hidden sm:inline text-sm text-gray-500">{email}</span>
+            <Link href="/dashboard" className="text-sm text-gray-500 hover:text-gray-900 transition-colors">Dashboard</Link>
           </div>
         </div>
       </header>
 
-      <main className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-10">
-        <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-2">Admin Dashboard</h1>
-        <p className="text-gray-500 dark:text-gray-400 mb-8">Manage users, portfolios, and payments</p>
+      <main className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-6 sm:py-10">
+        <div className="flex items-center justify-between mb-6">
+          <div>
+            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Admin Dashboard</h1>
+            <p className="text-gray-500 text-sm mt-1">Manage users, portfolios, and payments</p>
+          </div>
+          <label className="flex items-center gap-2 text-xs text-gray-500 cursor-pointer">
+            <input
+              type="checkbox"
+              checked={hideTestAccounts}
+              onChange={(e) => setHideTestAccounts(e.target.checked)}
+              className="rounded border-gray-300 text-emerald-600 focus:ring-emerald-500"
+            />
+            Hide test accounts
+          </label>
+        </div>
 
         {/* Stats Cards */}
         {stats ? (
-          <div className="grid grid-cols-2 lg:grid-cols-5 gap-4 mb-6">
-            <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-md dark:shadow-slate-900/50 p-5">
-              <p className="text-3xl font-bold text-blue-600">{stats.totalUsers}</p>
-              <p className="text-gray-500 dark:text-gray-400 text-sm">Total Users</p>
-              {signupsThisWeek > 0 && (
-                <span className="inline-block mt-1 text-xs bg-blue-100 text-blue-600 px-2 py-0.5 rounded-full">
-                  +{signupsThisWeek} this week
-                </span>
-              )}
-            </div>
-            <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-md dark:shadow-slate-900/50 p-5">
-              <p className="text-3xl font-bold text-green-600">{stats.publishedCount}</p>
-              <p className="text-gray-500 dark:text-gray-400 text-sm">Published</p>
-              <span className="inline-block mt-1 text-xs bg-green-100 text-green-600 px-2 py-0.5 rounded-full">
-                {stats.conversionRate}% conversion
-              </span>
-            </div>
-            <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-md dark:shadow-slate-900/50 p-5">
-              <p className="text-3xl font-bold text-teal-600">{stats.totalRevenue.toFixed(3)} KD</p>
-              <p className="text-gray-500 dark:text-gray-400 text-sm">Total Revenue</p>
-            </div>
-            <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-md dark:shadow-slate-900/50 p-5">
-              <p className="text-3xl font-bold text-emerald-600">{stats.totalPortfolios}</p>
-              <p className="text-gray-500 dark:text-gray-400 text-sm">Total Portfolios</p>
-              <span className="inline-block mt-1 text-xs bg-emerald-100 text-emerald-600 px-2 py-0.5 rounded-full">
-                {stats.draftCount} draft, {stats.paidCount} paid
-              </span>
-            </div>
-            <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-md dark:shadow-slate-900/50 p-5">
-              <p className="text-3xl font-bold text-purple-600">{stats.completedPayments}</p>
-              <p className="text-gray-500 dark:text-gray-400 text-sm">Successful Payments</p>
-            </div>
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4 mb-6">
+            <StatCard value={`${stats.totalRevenue.toFixed(3)} KD`} label="Revenue" color="emerald" />
+            <StatCard value={`${stats.conversionRate}%`} label="Conversion" sub="signup → paid" color="emerald" />
+            <StatCard value={totalUsers} label="Users" color="gray" />
+            <StatCard value={stats.totalPortfolios} label="Portfolios" sub={`${stats.publishedCount} live`} color="gray" />
+            <StatCard value={stats.completedPayments} label="Payments" color="gray" />
           </div>
         ) : (
-          <div className="grid grid-cols-2 lg:grid-cols-5 gap-4 mb-6">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4 mb-6">
             {[1, 2, 3, 4, 5].map((i) => (
-              <div key={i} className="bg-white dark:bg-slate-800 rounded-2xl shadow-md p-5 animate-pulse">
-                <div className="h-8 w-16 bg-gray-200 dark:bg-slate-700 rounded mb-2" />
-                <div className="h-4 w-24 bg-gray-200 dark:bg-slate-700 rounded" />
+              <div key={i} className="bg-white rounded-xl border border-gray-200 p-4 animate-pulse">
+                <div className="h-7 w-16 bg-gray-100 rounded mb-2" />
+                <div className="h-4 w-20 bg-gray-100 rounded" />
               </div>
             ))}
           </div>
         )}
 
-        {/* Quick Actions Bar */}
-        <div className="flex flex-wrap gap-3 mb-6">
-          {pendingPaymentsCount > 0 && (
-            <div className="flex items-center gap-2 bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800 rounded-xl px-4 py-2">
-              <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse" />
-              <span className="text-sm text-amber-700 dark:text-amber-400">
-                {pendingPaymentsCount} pending payment{pendingPaymentsCount > 1 ? "s" : ""}
-              </span>
-              <button
-                onClick={() => setActiveTab("payments")}
-                className="text-xs text-amber-600 dark:text-amber-400 underline"
-              >
-                View
-              </button>
+        {/* Pending payments alert */}
+        {pendingPaymentsCount > 0 && (
+          <button
+            onClick={() => setActiveTab("payments")}
+            className="w-full flex items-center justify-between gap-3 bg-amber-50 border border-amber-200 rounded-xl px-4 py-3 mb-6 hover:bg-amber-100 transition-colors text-left"
+          >
+            <div className="flex items-center gap-3">
+              <span className="flex h-8 w-8 items-center justify-center rounded-full bg-amber-100 text-amber-600 font-bold text-sm">{pendingPaymentsCount}</span>
+              <div>
+                <p className="text-sm font-medium text-amber-800">Pending payments</p>
+                <p className="text-xs text-amber-600">Potential stuck revenue — review now</p>
+              </div>
             </div>
-          )}
-          {stats && stats.draftCount > 0 && (
-            <div className="flex items-center gap-2 bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-800 rounded-xl px-4 py-2">
-              <span className="text-sm text-blue-700 dark:text-blue-400">
-                {stats.draftCount} draft portfolio{stats.draftCount > 1 ? "s" : ""}
-              </span>
-              <button
-                onClick={() => setActiveTab("portfolios")}
-                className="text-xs text-blue-600 dark:text-blue-400 underline"
-              >
-                View
-              </button>
-            </div>
-          )}
-        </div>
+            <span className="text-amber-600 text-sm font-medium">View &rarr;</span>
+          </button>
+        )}
 
         {/* Tabs */}
-        <div className="flex gap-2 mb-6">
+        <div className="flex gap-2 mb-6 overflow-x-auto">
           {tabs.map((tab) => (
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              className={`px-4 py-2 rounded-lg font-medium text-sm transition-colors ${
+              className={`px-4 py-2 rounded-lg font-medium text-sm transition-colors whitespace-nowrap ${
                 activeTab === tab.id
-                  ? "bg-blue-600 text-white"
-                  : "bg-gray-100 dark:bg-slate-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-slate-700"
+                  ? "bg-gray-900 text-white"
+                  : "bg-white border border-gray-200 text-gray-700 hover:bg-gray-50"
               }`}
             >
-              {tab.label}{tab.count !== undefined ? ` (${tab.count})` : ""}
+              {tab.label}
+              {tab.count !== undefined && (
+                <span className={`ml-1.5 text-xs ${activeTab === tab.id ? "text-gray-400" : "text-gray-400"}`}>
+                  {tab.count}
+                </span>
+              )}
             </button>
           ))}
         </div>
 
         {/* Tab Content */}
-        {activeTab === "users" && (users ? <UsersTab users={users} /> : <LoadingSkeleton />)}
-        {activeTab === "portfolios" && (portfolios && users ? <PortfoliosTab portfolios={portfolios} users={users} /> : <LoadingSkeleton />)}
-        {activeTab === "payments" && (payments && users ? <PaymentsTab payments={payments} users={users} portfolios={portfolios ?? []} /> : <LoadingSkeleton />)}
+        {activeTab === "users" && (realUsers.length > 0 ? <UsersTab users={realUsers} /> : <EmptyState label="No users found" />)}
+        {activeTab === "portfolios" && (portfolios && users ? <PortfoliosTab portfolios={portfolios} users={users} /> : <EmptyState label="Loading..." />)}
+        {activeTab === "payments" && (payments && users ? <PaymentsTab payments={payments} users={users} portfolios={portfolios ?? []} /> : <EmptyState label="Loading..." />)}
       </main>
     </div>
   );
 }
 
-function LoadingSkeleton() {
+function StatCard({ value, label, sub, color }: { value: string | number; label: string; sub?: string; color: "emerald" | "gray" }) {
+  const textColor = color === "emerald" ? "text-emerald-700" : "text-gray-900";
   return (
-    <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-md p-8 animate-pulse">
-      <div className="h-4 w-32 bg-gray-200 dark:bg-slate-700 rounded mb-4" />
-      <div className="space-y-3">
-        {[1, 2, 3, 4].map((i) => (
-          <div key={i} className="h-10 bg-gray-200 dark:bg-slate-700 rounded" />
-        ))}
-      </div>
+    <div className="bg-white rounded-xl border border-gray-200 p-4">
+      <p className={`text-2xl font-bold ${textColor}`}>{value}</p>
+      <p className="text-gray-500 text-sm">{label}</p>
+      {sub && <p className="text-xs text-gray-400 mt-0.5">{sub}</p>}
+    </div>
+  );
+}
+
+function EmptyState({ label }: { label: string }) {
+  return (
+    <div className="bg-white rounded-xl border border-gray-200 p-12 text-center">
+      <p className="text-gray-400 text-sm">{label}</p>
+    </div>
+  );
+}
+
+function Pagination({ page, totalPages, setPage }: { page: number; totalPages: number; setPage: (fn: (p: number) => number) => void }) {
+  if (totalPages <= 1) return null;
+  return (
+    <div className="flex items-center justify-between px-4 py-3 border-t border-gray-100">
+      <button onClick={() => setPage((p) => Math.max(1, p - 1))} disabled={page <= 1} className="px-3 py-1.5 text-sm rounded-lg bg-gray-50 text-gray-600 hover:bg-gray-100 disabled:opacity-40">Prev</button>
+      <span className="text-xs text-gray-400">{page} / {totalPages}</span>
+      <button onClick={() => setPage((p) => Math.min(totalPages, p + 1))} disabled={page >= totalPages} className="px-3 py-1.5 text-sm rounded-lg bg-gray-50 text-gray-600 hover:bg-gray-100 disabled:opacity-40">Next</button>
     </div>
   );
 }
@@ -229,11 +229,7 @@ function UsersTab({ users }: { users: any[] }) {
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
   const LIMIT = 20;
-
-  // User detail slide-over
   const [selectedUser, setSelectedUser] = useState<any | null>(null);
-
-  // Convex queries for selected user's portfolios/payments
   const allPortfolios = useQuery(api.admin.getAllPortfolios, selectedUser ? {} : "skip");
   const allPayments = useQuery(api.admin.getAllPayments, selectedUser ? {} : "skip");
 
@@ -245,183 +241,120 @@ function UsersTab({ users }: { users: any[] }) {
   const filtered = useMemo(() => {
     if (!search) return users;
     const q = search.toLowerCase();
-    return users.filter(
-      (u) =>
-        (u.email?.toLowerCase().includes(q)) ||
-        (u.name?.toLowerCase().includes(q))
-    );
+    return users.filter((u) => u.email?.toLowerCase().includes(q) || u.name?.toLowerCase().includes(q));
   }, [users, search]);
 
   const totalPages = Math.max(1, Math.ceil(filtered.length / LIMIT));
   const paged = filtered.slice((page - 1) * LIMIT, page * LIMIT);
-
-  const userPortfolios = useMemo(() => {
-    if (!selectedUser || !allPortfolios) return [];
-    return allPortfolios.filter((p) => p.userId === selectedUser._id);
-  }, [selectedUser, allPortfolios]);
-
-  const userPayments = useMemo(() => {
-    if (!selectedUser || !allPayments) return [];
-    return allPayments.filter((p) => p.userId === selectedUser._id);
-  }, [selectedUser, allPayments]);
+  const userPortfolios = useMemo(() => !selectedUser || !allPortfolios ? [] : allPortfolios.filter((p) => p.userId === selectedUser._id), [selectedUser, allPortfolios]);
+  const userPayments = useMemo(() => !selectedUser || !allPayments ? [] : allPayments.filter((p) => p.userId === selectedUser._id), [selectedUser, allPayments]);
 
   return (
     <>
-      {/* Search */}
-      <div className="flex flex-col sm:flex-row gap-3 mb-4">
-        <input
-          type="text"
-          placeholder="Search by email or name..."
-          value={searchInput}
-          onChange={(e) => setSearchInput(e.target.value)}
-          className="flex-1 px-4 py-2 border border-gray-200 dark:border-slate-700 rounded-xl text-sm bg-white dark:bg-slate-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
-      </div>
+      <input
+        type="text"
+        placeholder="Search by email or name..."
+        value={searchInput}
+        onChange={(e) => setSearchInput(e.target.value)}
+        className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-emerald-500 mb-4"
+      />
 
-      <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-md dark:shadow-slate-900/50 overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead className="bg-gray-50 dark:bg-slate-900">
-              <tr>
-                <th className="text-left py-3 px-4 text-sm font-medium text-gray-500 dark:text-gray-400">Email</th>
-                <th className="text-left py-3 px-4 text-sm font-medium text-gray-500 dark:text-gray-400">Name</th>
-                <th className="text-left py-3 px-4 text-sm font-medium text-gray-500 dark:text-gray-400">Signed Up</th>
-                <th className="text-left py-3 px-4 text-sm font-medium text-gray-500 dark:text-gray-400">ID</th>
+      {/* Desktop table */}
+      <div className="hidden md:block bg-white rounded-xl border border-gray-200 overflow-hidden">
+        <table className="w-full">
+          <thead className="bg-gray-50 border-b border-gray-100">
+            <tr>
+              <th className="text-left py-3 px-4 text-xs font-medium text-gray-500 uppercase tracking-wider">User</th>
+              <th className="text-left py-3 px-4 text-xs font-medium text-gray-500 uppercase tracking-wider">Joined</th>
+              <th className="text-left py-3 px-4 text-xs font-medium text-gray-500 uppercase tracking-wider">Role</th>
+            </tr>
+          </thead>
+          <tbody>
+            {paged.map((u) => (
+              <tr key={u._id} className="border-t border-gray-50 cursor-pointer hover:bg-gray-50 transition-colors" onClick={() => setSelectedUser(u)}>
+                <td className="py-3 px-4">
+                  <p className="text-sm font-medium text-gray-900">{u.name || "—"}</p>
+                  <p className="text-xs text-gray-400">{u.email}</p>
+                </td>
+                <td className="py-3 px-4 text-sm text-gray-500">{new Date(u.createdAt).toLocaleDateString()}</td>
+                <td className="py-3 px-4">
+                  {ADMIN_EMAILS.includes(u.email) && <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-purple-50 text-purple-700">admin</span>}
+                </td>
               </tr>
-            </thead>
-            <tbody>
-              {paged.map((user) => (
-                <tr
-                  key={user._id}
-                  className="border-t border-gray-100 dark:border-slate-700/50 cursor-pointer hover:bg-gray-50 dark:hover:bg-slate-900 transition-colors"
-                  onClick={() => setSelectedUser(user)}
-                >
-                  <td className="py-3 px-4 text-sm text-gray-800 dark:text-gray-200">{user.email}</td>
-                  <td className="py-3 px-4 text-sm text-gray-600 dark:text-gray-400">{user.name || "—"}</td>
-                  <td className="py-3 px-4 text-sm text-gray-500 dark:text-gray-400">{new Date(user.createdAt).toLocaleDateString()}</td>
-                  <td className="py-3 px-4 text-xs font-mono text-gray-400">{user._id.slice(0, 12)}...</td>
-                </tr>
-              ))}
-              {paged.length === 0 && (
-                <tr><td colSpan={4} className="px-4 py-8 text-center text-gray-400">No users found</td></tr>
-              )}
-            </tbody>
-          </table>
-        </div>
-        {totalPages > 1 && (
-          <div className="flex items-center justify-between px-4 py-3 border-t border-gray-200 dark:border-slate-700">
-            <button
-              onClick={() => setPage((p) => Math.max(1, p - 1))}
-              disabled={page <= 1}
-              className="px-3 py-1.5 text-sm font-medium rounded-lg bg-gray-100 dark:bg-slate-700 hover:bg-gray-200 dark:hover:bg-slate-600 text-gray-700 dark:text-gray-300 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              Previous
-            </button>
-            <span className="text-sm text-gray-500 dark:text-gray-400">{page} / {totalPages}</span>
-            <button
-              onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-              disabled={page >= totalPages}
-              className="px-3 py-1.5 text-sm font-medium rounded-lg bg-gray-100 dark:bg-slate-700 hover:bg-gray-200 dark:hover:bg-slate-600 text-gray-700 dark:text-gray-300 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              Next
-            </button>
-          </div>
-        )}
+            ))}
+            {paged.length === 0 && <tr><td colSpan={3} className="px-4 py-8 text-center text-gray-400 text-sm">No users found</td></tr>}
+          </tbody>
+        </table>
+        <Pagination page={page} totalPages={totalPages} setPage={setPage} />
       </div>
 
-      {/* User Detail Slide-Over */}
+      {/* Mobile cards */}
+      <div className="md:hidden space-y-2">
+        {paged.map((u) => (
+          <button key={u._id} onClick={() => setSelectedUser(u)} className="w-full text-left bg-white rounded-xl border border-gray-200 p-4 hover:border-gray-300 transition-colors">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-gray-900">{u.name || "—"}</p>
+                <p className="text-xs text-gray-400">{u.email}</p>
+              </div>
+              <div className="text-right">
+                <p className="text-xs text-gray-400">{new Date(u.createdAt).toLocaleDateString()}</p>
+                {ADMIN_EMAILS.includes(u.email) && <span className="text-[10px] text-purple-600 font-medium">admin</span>}
+              </div>
+            </div>
+          </button>
+        ))}
+        {paged.length === 0 && <EmptyState label="No users found" />}
+        <Pagination page={page} totalPages={totalPages} setPage={setPage} />
+      </div>
+
+      {/* Slide-over */}
       {selectedUser && (
         <div className="fixed inset-0 bg-black/30 z-50 flex justify-end" onClick={() => setSelectedUser(null)}>
-          <div
-            className="bg-white dark:bg-slate-800 w-full max-w-lg h-full overflow-y-auto shadow-xl"
-            onClick={(e) => e.stopPropagation()}
-          >
+          <div className="bg-white w-full max-w-lg h-full overflow-y-auto shadow-xl" onClick={(e) => e.stopPropagation()}>
             <div className="p-6">
-              {/* Header */}
               <div className="flex items-center justify-between mb-6">
-                <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100">User Details</h2>
-                <button
-                  onClick={() => setSelectedUser(null)}
-                  className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 text-2xl leading-none"
-                >
-                  &times;
-                </button>
+                <h2 className="text-lg font-bold text-gray-900">User Details</h2>
+                <button onClick={() => setSelectedUser(null)} className="text-gray-400 hover:text-gray-600 text-2xl">&times;</button>
               </div>
-
-              {/* User Info */}
-              <div className="bg-gray-50 dark:bg-slate-900 rounded-xl p-4 mb-6">
-                <p className="font-semibold text-gray-800 dark:text-gray-200 text-lg">{selectedUser.name || selectedUser.email}</p>
-                {selectedUser.name && <p className="text-sm text-gray-500 dark:text-gray-400">{selectedUser.email}</p>}
-                <div className="flex gap-2 mt-2">
-                  {ADMIN_EMAILS.includes(selectedUser.email) && (
-                    <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-700">admin</span>
-                  )}
-                </div>
-                <p className="text-xs text-gray-400 mt-2">
-                  Joined: {new Date(selectedUser.createdAt).toLocaleDateString()}
-                </p>
+              <div className="bg-gray-50 rounded-xl p-4 mb-6">
+                <p className="font-semibold text-gray-900">{selectedUser.name || selectedUser.email}</p>
+                {selectedUser.name && <p className="text-sm text-gray-500">{selectedUser.email}</p>}
+                <p className="text-xs text-gray-400 mt-2">Joined {new Date(selectedUser.createdAt).toLocaleDateString()}</p>
               </div>
-
-              {/* Portfolios */}
               <div className="grid grid-cols-3 gap-3 mb-6">
-                <div className="bg-blue-50 dark:bg-blue-950/30 rounded-xl p-3 text-center">
-                  <p className="text-xl font-bold text-blue-600">{userPortfolios.length}</p>
-                  <p className="text-xs text-gray-500 dark:text-gray-400">Portfolios</p>
-                </div>
-                <div className="bg-green-50 dark:bg-green-950/30 rounded-xl p-3 text-center">
-                  <p className="text-xl font-bold text-green-600">{userPortfolios.filter((p) => p.status === "published").length}</p>
-                  <p className="text-xs text-gray-500 dark:text-gray-400">Published</p>
-                </div>
-                <div className="bg-purple-50 dark:bg-purple-950/30 rounded-xl p-3 text-center">
-                  <p className="text-xl font-bold text-purple-600">{userPayments.filter((p) => p.status === "completed").length}</p>
-                  <p className="text-xs text-gray-500 dark:text-gray-400">Payments</p>
-                </div>
+                <MiniStat value={userPortfolios.length} label="Portfolios" color="gray" />
+                <MiniStat value={userPortfolios.filter((p) => p.status === "published").length} label="Published" color="emerald" />
+                <MiniStat value={userPayments.filter((p) => p.status === "completed").length} label="Paid" color="emerald" />
               </div>
-
-              {/* User Portfolios List */}
               {userPortfolios.length > 0 && (
                 <>
-                  <h3 className="font-semibold text-gray-800 dark:text-gray-200 mb-3">Portfolios</h3>
+                  <h3 className="font-semibold text-gray-800 mb-3 text-sm">Portfolios</h3>
                   <div className="space-y-2 mb-6">
                     {userPortfolios.map((p) => (
-                      <div key={p._id} className="flex items-center justify-between bg-gray-50 dark:bg-slate-900 rounded-lg px-3 py-2 text-sm">
-                        <div>
-                          <span className="text-gray-700 dark:text-gray-300">{p.basics?.fullName || p.name || "Untitled"}</span>
-                          {p.slug && <span className="text-gray-400 text-xs ml-2">/p/{p.slug}</span>}
-                        </div>
-                        <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${
-                          p.status === "published" ? "bg-green-100 text-green-700" :
-                          p.status === "paid" ? "bg-amber-100 text-amber-700" :
-                          "bg-gray-100 text-gray-600"
-                        }`}>{p.status}</span>
+                      <div key={p._id} className="flex items-center justify-between bg-gray-50 rounded-lg px-3 py-2 text-sm">
+                        <span className="text-gray-700">{p.basics?.fullName || p.name || "Untitled"}</span>
+                        <StatusBadge status={p.status} />
                       </div>
                     ))}
                   </div>
                 </>
               )}
-
-              {/* User Payments List */}
               {userPayments.length > 0 && (
                 <>
-                  <h3 className="font-semibold text-gray-800 dark:text-gray-200 mb-3">Payments</h3>
+                  <h3 className="font-semibold text-gray-800 mb-3 text-sm">Payments</h3>
                   <div className="space-y-2">
                     {userPayments.map((p) => (
-                      <div key={p._id} className="flex items-center justify-between bg-gray-50 dark:bg-slate-900 rounded-lg px-3 py-2 text-sm">
-                        <span className="text-gray-700 dark:text-gray-300">{p.amount.toFixed(3)} {p.currency}</span>
-                        <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${
-                          p.status === "completed" ? "bg-green-100 text-green-700" :
-                          p.status === "pending" ? "bg-amber-100 text-amber-700" :
-                          "bg-red-100 text-red-700"
-                        }`}>{p.status}</span>
-                        <span className="text-gray-400 text-xs">{new Date(p.createdAt).toLocaleDateString()}</span>
+                      <div key={p._id} className="flex items-center justify-between bg-gray-50 rounded-lg px-3 py-2 text-sm">
+                        <span className="text-gray-700">{p.amount.toFixed(3)} {p.currency}</span>
+                        <StatusBadge status={p.status} />
                       </div>
                     ))}
                   </div>
                 </>
               )}
-
               {userPortfolios.length === 0 && userPayments.length === 0 && (
-                <p className="text-gray-400 text-sm text-center py-6">No portfolios or payments yet</p>
+                <p className="text-gray-400 text-sm text-center py-6">No activity yet</p>
               )}
             </div>
           </div>
@@ -438,7 +371,6 @@ function PortfoliosTab({ portfolios, users }: { portfolios: any[]; users: any[] 
   const markPaid = useMutation(api.admin.markPortfolioPaid);
   const deletePortfolio = useMutation(api.admin.deletePortfolio);
   const [confirmDelete, setConfirmDelete] = useState<string | null>(null);
-
   const [searchInput, setSearchInput] = useState("");
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
@@ -456,166 +388,108 @@ function PortfoliosTab({ portfolios, users }: { portfolios: any[]; users: any[] 
       const q = search.toLowerCase();
       result = result.filter((p) => {
         const owner = p.userId ? userMap.get(p.userId) : null;
-        return (
-          (p.basics?.fullName?.toLowerCase().includes(q)) ||
-          (p.name?.toLowerCase().includes(q)) ||
-          (p.slug?.toLowerCase().includes(q)) ||
-          (owner?.email?.toLowerCase().includes(q))
-        );
+        return p.basics?.fullName?.toLowerCase().includes(q) || p.name?.toLowerCase().includes(q) || owner?.email?.toLowerCase().includes(q);
       });
     }
-    if (statusFilter !== "all") {
-      result = result.filter((p) => p.status === statusFilter);
-    }
+    if (statusFilter !== "all") result = result.filter((p) => p.status === statusFilter);
     return result;
   }, [portfolios, search, statusFilter, userMap]);
 
   const totalPages = Math.max(1, Math.ceil(filtered.length / LIMIT));
   const paged = filtered.slice((page - 1) * LIMIT, page * LIMIT);
 
-  const handleMarkPaid = async (id: Id<"portfolios">) => {
-    await markPaid({ id });
-  };
-
-  const handleDelete = async (id: Id<"portfolios">) => {
-    await deletePortfolio({ id });
-    setConfirmDelete(null);
-  };
-
   return (
     <>
-      {/* Search & Filter */}
       <div className="flex flex-col sm:flex-row gap-3 mb-4">
-        <input
-          type="text"
-          placeholder="Search by name, slug, or owner..."
-          value={searchInput}
-          onChange={(e) => setSearchInput(e.target.value)}
-          className="flex-1 px-4 py-2 border border-gray-200 dark:border-slate-700 rounded-xl text-sm bg-white dark:bg-slate-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
-        <select
-          value={statusFilter}
-          onChange={(e) => { setStatusFilter(e.target.value); setPage(1); }}
-          className="px-4 py-2 border border-gray-200 dark:border-slate-700 rounded-xl text-sm bg-white dark:bg-slate-800 text-gray-900 dark:text-gray-100"
-        >
-          <option value="all">All Statuses</option>
+        <input type="text" placeholder="Search..." value={searchInput} onChange={(e) => setSearchInput(e.target.value)} className="flex-1 px-4 py-2.5 border border-gray-200 rounded-xl text-sm bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+        <select value={statusFilter} onChange={(e) => { setStatusFilter(e.target.value); setPage(1); }} className="px-4 py-2.5 border border-gray-200 rounded-xl text-sm bg-white text-gray-900">
+          <option value="all">All</option>
           <option value="draft">Draft</option>
           <option value="paid">Paid</option>
           <option value="published">Published</option>
         </select>
       </div>
 
-      <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-md dark:shadow-slate-900/50 overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead className="bg-gray-50 dark:bg-slate-900">
-              <tr>
-                <th className="text-left py-3 px-4 text-sm font-medium text-gray-500 dark:text-gray-400">Portfolio</th>
-                <th className="text-left py-3 px-4 text-sm font-medium text-gray-500 dark:text-gray-400">Owner</th>
-                <th className="text-left py-3 px-4 text-sm font-medium text-gray-500 dark:text-gray-400">Status</th>
-                <th className="text-left py-3 px-4 text-sm font-medium text-gray-500 dark:text-gray-400">Slug</th>
-                <th className="text-left py-3 px-4 text-sm font-medium text-gray-500 dark:text-gray-400">Last Edited</th>
-                <th className="text-left py-3 px-4 text-sm font-medium text-gray-500 dark:text-gray-400">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {paged.map((p) => {
-                const owner = p.userId ? userMap.get(p.userId) : null;
-                return (
-                  <tr key={p._id} className="border-t border-gray-100 dark:border-slate-700/50 hover:bg-gray-50 dark:hover:bg-slate-900 transition-colors">
-                    <td className="py-3 px-4 text-sm text-gray-800 dark:text-gray-200">{p.basics?.fullName || p.name || "Untitled"}</td>
-                    <td className="py-3 px-4 text-sm text-gray-600 dark:text-gray-400">{owner?.email || "—"}</td>
-                    <td className="py-3 px-4">
-                      <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${
-                        p.status === "published" ? "bg-green-100 text-green-700" :
-                        p.status === "paid" ? "bg-amber-100 text-amber-700" :
-                        "bg-gray-100 text-gray-600"
-                      }`}>{p.status}</span>
-                    </td>
-                    <td className="py-3 px-4 text-xs font-mono text-gray-500 dark:text-gray-400">{p.slug || "—"}</td>
-                    <td className="py-3 px-4 text-sm text-gray-500 dark:text-gray-400">{new Date(p.lastEditedAt).toLocaleDateString()}</td>
-                    <td className="py-3 px-4">
-                      <div className="flex items-center gap-2 flex-wrap">
-                        <Link
-                          href={`/dashboard/${p._id}/edit`}
-                          className="px-3 py-1 rounded-lg text-xs font-medium bg-blue-100 text-blue-700 hover:bg-blue-200 transition-colors"
-                        >
-                          Edit
-                        </Link>
-                        <Link
-                          href={`/dashboard/${p._id}/preview`}
-                          className="px-3 py-1 rounded-lg text-xs font-medium bg-gray-100 text-gray-700 hover:bg-gray-200 transition-colors"
-                        >
-                          Preview
-                        </Link>
-                        {p.slug && (
-                          <a href={`/p/${p.slug}`} target="_blank" rel="noopener" className="px-3 py-1 rounded-lg text-xs font-medium bg-green-100 text-green-700 hover:bg-green-200 transition-colors">
-                            View
-                          </a>
-                        )}
-                        {p.status === "draft" && (
-                          <button
-                            onClick={() => handleMarkPaid(p._id)}
-                            className="px-3 py-1 rounded-lg text-xs font-medium bg-amber-100 text-amber-700 hover:bg-amber-200 transition-colors"
-                          >
-                            Mark Paid
-                          </button>
-                        )}
-                        {confirmDelete === p._id ? (
-                          <span className="flex items-center gap-1">
-                            <button
-                              onClick={() => handleDelete(p._id)}
-                              className="px-3 py-1 rounded-lg text-xs font-medium bg-red-100 text-red-700 hover:bg-red-200 transition-colors"
-                            >
-                              Confirm
-                            </button>
-                            <button
-                              onClick={() => setConfirmDelete(null)}
-                              className="px-3 py-1 rounded-lg text-xs font-medium bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors"
-                            >
-                              Cancel
-                            </button>
-                          </span>
-                        ) : (
-                          <button
-                            onClick={() => setConfirmDelete(p._id)}
-                            className="px-3 py-1 rounded-lg text-xs font-medium bg-red-100 text-red-700 hover:bg-red-200 transition-colors"
-                          >
-                            Delete
-                          </button>
-                        )}
-                      </div>
-                    </td>
-                  </tr>
-                );
-              })}
-              {paged.length === 0 && (
-                <tr><td colSpan={6} className="px-4 py-8 text-center text-gray-400">No portfolios found</td></tr>
-              )}
-            </tbody>
-          </table>
-        </div>
-        {totalPages > 1 && (
-          <div className="flex items-center justify-between px-4 py-3 border-t border-gray-200 dark:border-slate-700">
-            <button
-              onClick={() => setPage((p) => Math.max(1, p - 1))}
-              disabled={page <= 1}
-              className="px-3 py-1.5 text-sm font-medium rounded-lg bg-gray-100 dark:bg-slate-700 hover:bg-gray-200 dark:hover:bg-slate-600 text-gray-700 dark:text-gray-300 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              Previous
-            </button>
-            <span className="text-sm text-gray-500 dark:text-gray-400">{page} / {totalPages}</span>
-            <button
-              onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-              disabled={page >= totalPages}
-              className="px-3 py-1.5 text-sm font-medium rounded-lg bg-gray-100 dark:bg-slate-700 hover:bg-gray-200 dark:hover:bg-slate-600 text-gray-700 dark:text-gray-300 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              Next
-            </button>
-          </div>
-        )}
+      {/* Desktop */}
+      <div className="hidden md:block bg-white rounded-xl border border-gray-200 overflow-hidden">
+        <table className="w-full">
+          <thead className="bg-gray-50 border-b border-gray-100">
+            <tr>
+              <th className="text-left py-3 px-4 text-xs font-medium text-gray-500 uppercase tracking-wider">Portfolio</th>
+              <th className="text-left py-3 px-4 text-xs font-medium text-gray-500 uppercase tracking-wider">Owner</th>
+              <th className="text-left py-3 px-4 text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+              <th className="text-left py-3 px-4 text-xs font-medium text-gray-500 uppercase tracking-wider">Edited</th>
+              <th className="text-left py-3 px-4 text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {paged.map((p) => {
+              const owner = p.userId ? userMap.get(p.userId) : null;
+              return (
+                <tr key={p._id} className="border-t border-gray-50 hover:bg-gray-50 transition-colors">
+                  <td className="py-3 px-4">
+                    <p className="text-sm font-medium text-gray-900">{p.basics?.fullName || p.name || "Untitled"}</p>
+                    {p.slug && <p className="text-xs text-gray-400 font-mono">/p/{p.slug}</p>}
+                  </td>
+                  <td className="py-3 px-4 text-sm text-gray-500">{owner?.email || "—"}</td>
+                  <td className="py-3 px-4"><StatusBadge status={p.status} /></td>
+                  <td className="py-3 px-4 text-sm text-gray-400">{new Date(p.lastEditedAt).toLocaleDateString()}</td>
+                  <td className="py-3 px-4">
+                    <PortfolioActions p={p} confirmDelete={confirmDelete} setConfirmDelete={setConfirmDelete} markPaid={markPaid} deletePortfolio={deletePortfolio} />
+                  </td>
+                </tr>
+              );
+            })}
+            {paged.length === 0 && <tr><td colSpan={5} className="px-4 py-8 text-center text-gray-400 text-sm">No portfolios found</td></tr>}
+          </tbody>
+        </table>
+        <Pagination page={page} totalPages={totalPages} setPage={setPage} />
+      </div>
+
+      {/* Mobile */}
+      <div className="md:hidden space-y-2">
+        {paged.map((p) => {
+          const owner = p.userId ? userMap.get(p.userId) : null;
+          return (
+            <div key={p._id} className="bg-white rounded-xl border border-gray-200 p-4">
+              <div className="flex items-start justify-between mb-2">
+                <div>
+                  <p className="text-sm font-medium text-gray-900">{p.basics?.fullName || p.name || "Untitled"}</p>
+                  <p className="text-xs text-gray-400">{owner?.email || "—"}</p>
+                </div>
+                <StatusBadge status={p.status} />
+              </div>
+              <div className="flex items-center justify-between text-xs text-gray-400 mb-3">
+                <span>{new Date(p.lastEditedAt).toLocaleDateString()}</span>
+                {p.slug && <span className="font-mono">/p/{p.slug}</span>}
+              </div>
+              <PortfolioActions p={p} confirmDelete={confirmDelete} setConfirmDelete={setConfirmDelete} markPaid={markPaid} deletePortfolio={deletePortfolio} />
+            </div>
+          );
+        })}
+        {paged.length === 0 && <EmptyState label="No portfolios found" />}
+        <Pagination page={page} totalPages={totalPages} setPage={setPage} />
       </div>
     </>
+  );
+}
+
+function PortfolioActions({ p, confirmDelete, setConfirmDelete, markPaid, deletePortfolio }: any) {
+  return (
+    <div className="flex items-center gap-1.5 flex-wrap">
+      <Link href={`/dashboard/${p._id}/edit`} className="px-2.5 py-1 rounded-lg text-xs font-medium bg-gray-100 text-gray-700 hover:bg-gray-200">Edit</Link>
+      <Link href={`/dashboard/${p._id}/preview`} className="px-2.5 py-1 rounded-lg text-xs font-medium bg-gray-100 text-gray-700 hover:bg-gray-200">Preview</Link>
+      {p.slug && <a href={`/p/${p.slug}`} target="_blank" rel="noopener" className="px-2.5 py-1 rounded-lg text-xs font-medium bg-emerald-50 text-emerald-700 hover:bg-emerald-100">View</a>}
+      {p.status === "draft" && <button onClick={() => markPaid({ id: p._id })} className="px-2.5 py-1 rounded-lg text-xs font-medium bg-amber-50 text-amber-700 hover:bg-amber-100">Mark Paid</button>}
+      {confirmDelete === p._id ? (
+        <>
+          <button onClick={async () => { await deletePortfolio({ id: p._id }); setConfirmDelete(null); }} className="px-2.5 py-1 rounded-lg text-xs font-medium bg-red-100 text-red-700 hover:bg-red-200">Confirm</button>
+          <button onClick={() => setConfirmDelete(null)} className="px-2.5 py-1 rounded-lg text-xs font-medium bg-gray-100 text-gray-600 hover:bg-gray-200">Cancel</button>
+        </>
+      ) : (
+        <button onClick={() => setConfirmDelete(p._id)} className="px-2.5 py-1 rounded-lg text-xs font-medium bg-red-50 text-red-600 hover:bg-red-100">Delete</button>
+      )}
+    </div>
   );
 }
 
@@ -624,7 +498,6 @@ function PortfoliosTab({ portfolios, users }: { portfolios: any[]; users: any[] 
 function PaymentsTab({ payments, users, portfolios }: { payments: any[]; users: any[]; portfolios: any[] }) {
   const userMap = new Map(users.map((u) => [u._id, u]));
   const portfolioMap = new Map(portfolios.map((p) => [p._id, p]));
-
   const [searchInput, setSearchInput] = useState("");
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
@@ -642,112 +515,108 @@ function PaymentsTab({ payments, users, portfolios }: { payments: any[]; users: 
       const q = search.toLowerCase();
       result = result.filter((p) => {
         const owner = p.userId ? userMap.get(p.userId) : null;
-        const portfolio = portfolioMap.get(p.portfolioId);
-        return (
-          (owner?.email?.toLowerCase().includes(q)) ||
-          (owner?.name?.toLowerCase().includes(q)) ||
-          (p.myfatoorahInvoiceId?.toLowerCase().includes(q)) ||
-          (portfolio?.basics?.fullName?.toLowerCase().includes(q))
-        );
+        return owner?.email?.toLowerCase().includes(q) || owner?.name?.toLowerCase().includes(q) || p.myfatoorahInvoiceId?.toLowerCase().includes(q);
       });
     }
-    if (statusFilter !== "all") {
-      result = result.filter((p) => p.status === statusFilter);
-    }
+    if (statusFilter !== "all") result = result.filter((p) => p.status === statusFilter);
     return result;
-  }, [payments, search, statusFilter, userMap, portfolioMap]);
+  }, [payments, search, statusFilter, userMap]);
 
   const totalPages = Math.max(1, Math.ceil(filtered.length / LIMIT));
   const paged = filtered.slice((page - 1) * LIMIT, page * LIMIT);
 
   return (
     <>
-      {/* Search & Filter */}
       <div className="flex flex-col sm:flex-row gap-3 mb-4">
-        <input
-          type="text"
-          placeholder="Search by email, name, or invoice..."
-          value={searchInput}
-          onChange={(e) => setSearchInput(e.target.value)}
-          className="flex-1 px-4 py-2 border border-gray-200 dark:border-slate-700 rounded-xl text-sm bg-white dark:bg-slate-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
-        <select
-          value={statusFilter}
-          onChange={(e) => { setStatusFilter(e.target.value); setPage(1); }}
-          className="px-4 py-2 border border-gray-200 dark:border-slate-700 rounded-xl text-sm bg-white dark:bg-slate-800 text-gray-900 dark:text-gray-100"
-        >
-          <option value="all">All Statuses</option>
+        <input type="text" placeholder="Search..." value={searchInput} onChange={(e) => setSearchInput(e.target.value)} className="flex-1 px-4 py-2.5 border border-gray-200 rounded-xl text-sm bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+        <select value={statusFilter} onChange={(e) => { setStatusFilter(e.target.value); setPage(1); }} className="px-4 py-2.5 border border-gray-200 rounded-xl text-sm bg-white text-gray-900">
+          <option value="all">All</option>
           <option value="completed">Completed</option>
           <option value="pending">Pending</option>
           <option value="failed">Failed</option>
         </select>
       </div>
 
-      <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-md dark:shadow-slate-900/50 overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead className="bg-gray-50 dark:bg-slate-900">
-              <tr>
-                <th className="text-left py-3 px-4 text-sm font-medium text-gray-500 dark:text-gray-400">Invoice ID</th>
-                <th className="text-left py-3 px-4 text-sm font-medium text-gray-500 dark:text-gray-400">User</th>
-                <th className="text-left py-3 px-4 text-sm font-medium text-gray-500 dark:text-gray-400">Portfolio</th>
-                <th className="text-left py-3 px-4 text-sm font-medium text-gray-500 dark:text-gray-400">Amount</th>
-                <th className="text-left py-3 px-4 text-sm font-medium text-gray-500 dark:text-gray-400">Status</th>
-                <th className="text-left py-3 px-4 text-sm font-medium text-gray-500 dark:text-gray-400">Date</th>
-              </tr>
-            </thead>
-            <tbody>
-              {paged.map((p) => {
-                const owner = p.userId ? userMap.get(p.userId) : null;
-                const portfolio = portfolioMap.get(p.portfolioId);
-                return (
-                  <tr key={p._id} className="border-t border-gray-100 dark:border-slate-700/50 hover:bg-gray-50 dark:hover:bg-slate-900 transition-colors">
-                    <td className="py-3 px-4 text-sm font-mono text-gray-800 dark:text-gray-200">{p.myfatoorahInvoiceId || "—"}</td>
-                    <td className="py-3 px-4 text-sm">
-                      <div>
-                        <p className="text-gray-800 dark:text-gray-200">{owner?.name || "—"}</p>
-                        <p className="text-gray-400 text-xs">{owner?.email || "—"}</p>
-                      </div>
-                    </td>
-                    <td className="py-3 px-4 text-sm text-gray-600 dark:text-gray-400">{portfolio?.basics?.fullName || portfolio?.name || "—"}</td>
-                    <td className="py-3 px-4 text-sm font-medium text-gray-800 dark:text-gray-200">{p.amount.toFixed(3)} {p.currency}</td>
-                    <td className="py-3 px-4">
-                      <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${
-                        p.status === "completed" ? "bg-green-100 text-green-700" :
-                        p.status === "pending" ? "bg-amber-100 text-amber-700" :
-                        "bg-red-100 text-red-700"
-                      }`}>{p.status}</span>
-                    </td>
-                    <td className="py-3 px-4 text-sm text-gray-500 dark:text-gray-400">{new Date(p.createdAt).toLocaleDateString()}</td>
-                  </tr>
-                );
-              })}
-              {paged.length === 0 && (
-                <tr><td colSpan={6} className="px-4 py-8 text-center text-gray-400">No payments found</td></tr>
-              )}
-            </tbody>
-          </table>
-        </div>
-        {totalPages > 1 && (
-          <div className="flex items-center justify-between px-4 py-3 border-t border-gray-200 dark:border-slate-700">
-            <button
-              onClick={() => setPage((p) => Math.max(1, p - 1))}
-              disabled={page <= 1}
-              className="px-3 py-1.5 text-sm font-medium rounded-lg bg-gray-100 dark:bg-slate-700 hover:bg-gray-200 dark:hover:bg-slate-600 text-gray-700 dark:text-gray-300 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              Previous
-            </button>
-            <span className="text-sm text-gray-500 dark:text-gray-400">{page} / {totalPages}</span>
-            <button
-              onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-              disabled={page >= totalPages}
-              className="px-3 py-1.5 text-sm font-medium rounded-lg bg-gray-100 dark:bg-slate-700 hover:bg-gray-200 dark:hover:bg-slate-600 text-gray-700 dark:text-gray-300 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              Next
-            </button>
-          </div>
-        )}
+      {/* Desktop */}
+      <div className="hidden md:block bg-white rounded-xl border border-gray-200 overflow-hidden">
+        <table className="w-full">
+          <thead className="bg-gray-50 border-b border-gray-100">
+            <tr>
+              <th className="text-left py-3 px-4 text-xs font-medium text-gray-500 uppercase tracking-wider">User</th>
+              <th className="text-left py-3 px-4 text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
+              <th className="text-left py-3 px-4 text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+              <th className="text-left py-3 px-4 text-xs font-medium text-gray-500 uppercase tracking-wider">Invoice</th>
+              <th className="text-left py-3 px-4 text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+            </tr>
+          </thead>
+          <tbody>
+            {paged.map((p) => {
+              const owner = p.userId ? userMap.get(p.userId) : null;
+              return (
+                <tr key={p._id} className="border-t border-gray-50 hover:bg-gray-50 transition-colors">
+                  <td className="py-3 px-4">
+                    <p className="text-sm font-medium text-gray-900">{owner?.name || "—"}</p>
+                    <p className="text-xs text-gray-400">{owner?.email || "—"}</p>
+                  </td>
+                  <td className="py-3 px-4 text-sm font-medium text-gray-900">{p.amount.toFixed(3)} {p.currency}</td>
+                  <td className="py-3 px-4"><StatusBadge status={p.status} /></td>
+                  <td className="py-3 px-4 text-xs font-mono text-gray-400">{p.myfatoorahInvoiceId ? p.myfatoorahInvoiceId.slice(0, 12) : "—"}</td>
+                  <td className="py-3 px-4 text-sm text-gray-400">{new Date(p.createdAt).toLocaleDateString()}</td>
+                </tr>
+              );
+            })}
+            {paged.length === 0 && <tr><td colSpan={5} className="px-4 py-8 text-center text-gray-400 text-sm">No payments found</td></tr>}
+          </tbody>
+        </table>
+        <Pagination page={page} totalPages={totalPages} setPage={setPage} />
+      </div>
+
+      {/* Mobile */}
+      <div className="md:hidden space-y-2">
+        {paged.map((p) => {
+          const owner = p.userId ? userMap.get(p.userId) : null;
+          return (
+            <div key={p._id} className="bg-white rounded-xl border border-gray-200 p-4">
+              <div className="flex items-start justify-between mb-2">
+                <div>
+                  <p className="text-sm font-medium text-gray-900">{owner?.name || owner?.email || "—"}</p>
+                  <p className="text-xs text-gray-400">{p.amount.toFixed(3)} {p.currency}</p>
+                </div>
+                <StatusBadge status={p.status} />
+              </div>
+              <div className="flex items-center justify-between text-xs text-gray-400">
+                <span>{new Date(p.createdAt).toLocaleDateString()}</span>
+                {p.myfatoorahInvoiceId && <span className="font-mono">{p.myfatoorahInvoiceId.slice(0, 12)}</span>}
+              </div>
+            </div>
+          );
+        })}
+        {paged.length === 0 && <EmptyState label="No payments found" />}
+        <Pagination page={page} totalPages={totalPages} setPage={setPage} />
       </div>
     </>
+  );
+}
+
+// ─── Shared ─────────────────────────────────────────────────────────────────
+
+function StatusBadge({ status }: { status: string }) {
+  const styles: Record<string, string> = {
+    published: "bg-emerald-50 text-emerald-700",
+    completed: "bg-emerald-50 text-emerald-700",
+    paid: "bg-amber-50 text-amber-700",
+    pending: "bg-amber-50 text-amber-700",
+    draft: "bg-gray-100 text-gray-600",
+    failed: "bg-red-50 text-red-700",
+  };
+  return <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${styles[status] || styles.draft}`}>{status}</span>;
+}
+
+function MiniStat({ value, label, color }: { value: number; label: string; color: "emerald" | "gray" }) {
+  return (
+    <div className={`rounded-xl p-3 text-center ${color === "emerald" ? "bg-emerald-50" : "bg-gray-50"}`}>
+      <p className={`text-xl font-bold ${color === "emerald" ? "text-emerald-700" : "text-gray-900"}`}>{value}</p>
+      <p className="text-xs text-gray-500">{label}</p>
+    </div>
   );
 }
