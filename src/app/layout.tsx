@@ -5,11 +5,11 @@ import { Providers } from "./providers";
 export const metadata: Metadata = {
   title: "Portfolio Pro — Build Your Professional Portfolio",
   description:
-    "Create a stunning professional portfolio in minutes. Pick a template, fill your info, and publish. Designed for GCC professionals. Arabic & English.",
+    "Create a stunning professional portfolio in minutes. Pick a template, fill your info, and publish. Pick a template, fill your info, get your PDF. Arabic & English.",
   metadataBase: new URL("https://portfolio-trimind.com"),
   openGraph: {
     title: "Portfolio Pro — Build Your Professional Portfolio",
-    description: "Create a stunning professional portfolio in minutes. Designed for GCC professionals. Arabic & English. One-time payment.",
+    description: "Create a stunning professional portfolio in minutes. Pick a template, fill your info, get your PDF. Arabic & English. One-time payment.",
     url: "https://portfolio-trimind.com",
     siteName: "Portfolio Pro",
     type: "website",
@@ -19,7 +19,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "Portfolio Pro — Build Your Professional Portfolio",
-    description: "Create a stunning professional portfolio in minutes. Designed for GCC professionals.",
+    description: "Create a stunning professional portfolio in minutes. Pick a template, fill your info, get your PDF.",
   },
   alternates: {
     canonical: "https://portfolio-trimind.com",

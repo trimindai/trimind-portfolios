@@ -106,11 +106,6 @@ export default async function LandingPage({
         },
       ];
 
-  const regions = [
-    { flag: "🇰🇼", en: "Kuwait", ar: "الكويت" },
-    { flag: "🇦🇪", en: "UAE", ar: "الإمارات" },
-    { flag: "🇸🇦", en: "Saudi Arabia", ar: "السعودية" },
-  ];
 
   return (
     <div className="min-h-screen bg-[var(--land-bg)] text-[var(--land-bright)] land-grain">
@@ -130,7 +125,7 @@ export default async function LandingPage({
               priceCurrency: "KWD",
               availability: "https://schema.org/InStock",
             },
-            description: "Create a stunning professional portfolio in minutes. Designed for GCC professionals. Arabic & English.",
+            description: "Create a stunning professional portfolio in minutes. Pick a template, fill your info, download your PDF. Arabic & English.",
             url: "https://portfolio-trimind.com",
             provider: { "@type": "Organization", name: "TriMind", url: "https://trimind.ai" },
           }),
@@ -189,8 +184,8 @@ export default async function LandingPage({
             <div className="land-stagger">
               <p className="text-xs font-medium tracking-[0.2em] uppercase text-[var(--land-accent)]">
                 {isRTL
-                  ? "منشئ بورتفوليو لمحترفي الخليج"
-                  : "Portfolio builder for GCC professionals"}
+                  ? "أنشئ سيرتك الذاتية وبورتفوليوك"
+                  : "Build your CV & portfolio"}
               </p>
               <h1
                 className="mt-4 font-extrabold leading-[1] tracking-tighter"
@@ -202,8 +197,8 @@ export default async function LandingPage({
               </h1>
               <p className="mt-8 max-w-lg text-lg leading-relaxed text-[var(--land-body)]">
                 {isRTL
-                  ? "سيرة ذاتية PDF احترافية مع باركود QR يفتح بورتفوليوك الحيّ — لمهندسي النفط والغاز والقيادات والمتخصصين في الخليج. ثنائية اللغة. جاهزة في دقائق."
-                  : "A professional CV PDF with a QR code that opens your live portfolio — for the GCC's oil & gas engineers, corporate leaders, and technical specialists. Bilingual. Ready in minutes."}
+                  ? "اختر قالبًا، أدخل بياناتك، واحصل على سيرة ذاتية PDF احترافية في دقائق. بالعربي والإنجليزي."
+                  : "Pick a template, fill your info, and get a professional PDF portfolio in minutes. Arabic & English supported."}
               </p>
               <div className="mt-10 flex flex-col items-start gap-4">
                 <Link
@@ -326,43 +321,6 @@ export default async function LandingPage({
         </div>
       </section>
 
-      {/* ── Social proof bar ───────────────────── */}
-      <div className="border-y border-[var(--land-border)]/50 bg-[#0f1612] py-6 px-6">
-        <div className="mx-auto max-w-5xl">
-          {/* Desktop: static centered */}
-          <div className="hidden flex-wrap items-center justify-center gap-x-8 gap-y-3 sm:flex">
-            <p className="text-sm text-[var(--land-muted)]">
-              {isRTL ? "موثوق من محترفين في" : "Trusted by professionals in"}
-            </p>
-            {regions.map((r) => (
-              <span
-                key={r.en}
-                className="flex items-center gap-2 text-sm font-medium text-[var(--land-body)]"
-              >
-                <span className="text-base">{r.flag}</span>
-                {isRTL ? r.ar : r.en}
-              </span>
-            ))}
-          </div>
-          {/* Mobile: marquee */}
-          <div className="overflow-hidden sm:hidden">
-            <p className="mb-3 text-center text-sm text-[var(--land-muted)]">
-              {isRTL ? "موثوق من محترفين في" : "Trusted by professionals in"}
-            </p>
-            <div className="land-marquee flex w-max gap-8">
-              {[...regions, ...regions, ...regions, ...regions].map((r, i) => (
-                <span
-                  key={i}
-                  className="flex shrink-0 items-center gap-2 text-sm font-medium text-[var(--land-body)]"
-                >
-                  <span className="text-base">{r.flag}</span>
-                  {isRTL ? r.ar : r.en}
-                </span>
-              ))}
-            </div>
-          </div>
-        </div>
-      </div>
 
       {/* ── Template showcase ──────────────────── */}
       <section id="templates" className="scroll-mt-20 pt-32 pb-24 px-6">

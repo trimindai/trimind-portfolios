@@ -43,7 +43,7 @@ export function Testimonials({ isRTL }: { isRTL: boolean }) {
         },
         {
           quote:
-            "أخيرًا أداة بورتفوليو تفهم سوق الخليج. دفعة واحدة، بلا تعقيد. كان بورتفوليوي جاهزًا قبل أن تبرد قهوتي.",
+            "أخيرًا أداة بورتفوليو بسيطة وسريعة. دفعة واحدة، بلا تعقيد. كان بورتفوليوي جاهزًا قبل أن تبرد قهوتي.",
           name: "خالد العتيبي",
           role: "مدير مشاريع، السعودية",
           initials: "خ.ع",
@@ -66,7 +66,7 @@ export function Testimonials({ isRTL }: { isRTL: boolean }) {
         },
         {
           quote:
-            "Finally a portfolio tool that understands the Gulf market. One payment, no nonsense. My portfolio was live before my coffee got cold.",
+            "Finally a portfolio tool that's simple and fast. One payment, no nonsense. My portfolio was ready before my coffee got cold.",
           name: "Khalid Al-Otaibi",
           role: "Project Manager, Saudi Arabia",
           initials: "KO",
@@ -108,7 +108,7 @@ export function Testimonials({ isRTL }: { isRTL: boolean }) {
           className="text-center font-extrabold tracking-tighter"
           style={{ fontSize: "clamp(2rem, 4vw, 3rem)" }}
         >
-          {isRTL ? "موثوق من محترفي الخليج" : "Trusted by GCC Professionals"}
+          {isRTL ? "ماذا يقول مستخدمونا" : "What Our Users Say"}
         </h2>
 
         {/* Desktop: 3-col grid */}

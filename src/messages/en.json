@@ -46,7 +46,7 @@
     },
     "templates": {
       "title": "Templates for Every Profession",
-      "subtitle": "Designed specifically for GCC professionals"
+      "subtitle": "Designed for every profession"
     },
     "pricing": {
       "title": "Simple Pricing",
@@ -94,7 +94,7 @@
     },
     "cvFields": {
       "heading": "CV Details",
-      "intro": "A few extra details that make your CV ready for job applications across the GCC. All optional — leave anything blank.",
+      "intro": "A few extra details that make your CV ready for job applications. All optional — leave anything blank.",
       "summaryLabel": "Professional Summary",
       "summaryHint": "2–3 lines a hiring manager reads first. Lead with years of experience and your strongest result.",
       "summaryPlaceholder": "Senior analyst with 8+ years across banking and consulting, known for turning data into decisions that moved KWD 12M in budget.",
@@ -110,7 +110,7 @@
       "levelIntermediate": "Intermediate",
       "levelBasic": "Basic",
       "nationalityLabel": "Nationality (optional)",
-      "nationalityHint": "Common on GCC applications. Leave blank if you prefer not to share.",
+      "nationalityHint": "Optional. Leave blank if you prefer not to share.",
       "nationalityPlaceholder": "Kuwaiti",
       "referencesHeading": "References",
       "referencesHint": "Add references, or leave empty — your CV will simply show \"Available on request\".",
