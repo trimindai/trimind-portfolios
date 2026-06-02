@@ -283,7 +283,7 @@ export default async function LandingPage({
                   }}
                 >
                   <Image
-                    src="/landing/mockup-engineer-v2.jpg"
+                    src="/landing/mockup-engineer-2026a.jpg"
                     alt=""
                     width={1200}
                     height={800}
@@ -303,7 +303,7 @@ export default async function LandingPage({
                   }}
                 >
                   <Image
-                    src="/landing/mockup-corporate-v2.jpg"
+                    src="/landing/mockup-corporate-2026a.jpg"
                     alt="Corporate portfolio template preview"
                     width={1200}
                     height={800}
@@ -321,7 +321,7 @@ export default async function LandingPage({
               {/* Mobile: single image */}
               <div className="lg:hidden rounded-xl overflow-hidden border border-[var(--land-border)]">
                 <Image
-                  src="/landing/mockup-corporate-v2.jpg"
+                  src="/landing/mockup-corporate-2026a.jpg"
                   alt="Corporate portfolio template preview"
                   width={1200}
                   height={800}
@@ -364,7 +364,7 @@ export default async function LandingPage({
               <div className="group">
                 <div className="relative rounded-xl overflow-hidden border border-[var(--land-border)] transition-all duration-500 group-hover:translate-y-[-2px] group-hover:border-[var(--land-accent)]/30">
                   <Image
-                    src="/landing/mockup-corporate-v2.jpg"
+                    src="/landing/mockup-corporate-2026a.jpg"
                     alt="Corporate portfolio template"
                     width={1200}
                     height={800}
@@ -415,7 +415,7 @@ export default async function LandingPage({
               <div className="group h-full">
                 <div className="relative rounded-xl overflow-hidden border border-[var(--land-border)] transition-all duration-500 group-hover:translate-y-[-2px] group-hover:border-[var(--land-accent)]/30">
                   <Image
-                    src="/landing/mockup-engineer-v2.jpg"
+                    src="/landing/mockup-engineer-2026a.jpg"
                     alt="Engineer portfolio template"
                     width={1200}
                     height={800}
@@ -467,7 +467,7 @@ export default async function LandingPage({
               <div className="group h-full">
                 <div className="relative rounded-xl overflow-hidden border border-[var(--land-border)] transition-all duration-500 group-hover:translate-y-[-2px] group-hover:border-[var(--land-accent)]/30">
                   <Image
-                    src="/landing/mockup-creative-v2.jpg"
+                    src="/landing/mockup-creative-2026a.jpg"
                     alt="Creative portfolio template"
                     width={1200}
                     height={800}
