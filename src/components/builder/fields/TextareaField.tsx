@@ -35,9 +35,9 @@ export function TextareaField({
             <button
               type="button"
               onClick={() => setShowTips(!showTips)}
-              className="text-xs text-amber-400 hover:text-amber-300 transition-colors"
+              className="text-xs font-medium text-amber-600 hover:text-amber-700 transition-colors underline underline-offset-2 decoration-amber-300"
             >
-              {showTips ? "Hide tips" : "Writing tips"}
+              {showTips ? "Hide tips" : "Writing tips +"}
             </button>
           )}
           <span className="text-xs text-[var(--land-muted)]">{charCount}</span>

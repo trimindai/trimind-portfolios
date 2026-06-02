@@ -36,9 +36,9 @@ export function TextField({
           <button
             type="button"
             onClick={() => setShowExamples(!showExamples)}
-            className="text-xs text-[var(--land-accent-hover)] hover:text-[var(--land-accent-hover)] transition-colors"
+            className="text-xs font-medium text-[var(--land-accent)] hover:text-[var(--land-accent-hover)] transition-colors underline underline-offset-2 decoration-[var(--land-accent)]/30"
           >
-            {showExamples ? "Hide examples" : "See examples"}
+            {showExamples ? "Hide examples" : "See examples +"}
           </button>
         )}
       </div>
