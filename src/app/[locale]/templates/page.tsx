@@ -1,6 +1,13 @@
 import { Link } from "@/i18n/navigation";
 import { TEMPLATES } from "@/lib/templates";
 import { PRICE_KWD } from "@/lib/pricing";
+import Image from "next/image";
+
+const MOCKUP_IMAGES: Record<string, string> = {
+  corporate: "/landing/mockup-corporate-2026a.jpg",
+  engineer: "/landing/mockup-engineer-2026a.jpg",
+  creative: "/landing/mockup-creative-2026a.jpg",
+};
 
 type PageProps = { params: Promise<{ locale: string }> };
 
@@ -59,7 +66,7 @@ export default async function TemplatesPage({ params }: PageProps) {
           </Link>
           <Link
             href="/dashboard/new"
-            className="rounded-lg bg-[var(--land-accent)] px-4 py-2 text-sm font-medium hover:bg-[var(--land-accent-hover)] transition-colors"
+            className="rounded-lg bg-[var(--land-accent)] px-4 py-2 text-sm font-medium text-white hover:bg-[var(--land-accent-hover)] transition-colors"
           >
             {t.useNav}
           </Link>
@@ -114,70 +121,77 @@ export default async function TemplatesPage({ params }: PageProps) {
 
       <main className="px-6 pb-24">
         {/* Featured: available templates */}
-        <div className="mx-auto grid max-w-7xl gap-8 lg:grid-cols-[1.2fr_1fr]">
-          {TEMPLATES.filter((tpl) => tpl.available).map((tpl) => (
+        <div className="mx-auto grid max-w-7xl gap-6 sm:grid-cols-2 lg:grid-cols-2">
+          {TEMPLATES.filter((tpl) => tpl.available).map((tpl) => {
+            const mockup = MOCKUP_IMAGES[tpl.id];
+            return (
             <article
               key={tpl.id}
-              className="rounded-xl border border-[var(--land-border)] bg-[var(--land-surface)] overflow-hidden flex flex-col"
+              className="group rounded-xl border border-[var(--land-border)] bg-[var(--land-surface)] overflow-hidden flex flex-col"
             >
-              {/* Color-swatch preview */}
-              <div
-                className="aspect-[16/10] relative"
-                style={{
-                  background: `linear-gradient(135deg, ${
-                    tpl.colors.bg ?? "#0f172a"
-                  }, ${tpl.colors.bgDeep ?? tpl.colors.bg ?? "#020617"})`,
-                }}
-              >
-                <div className="absolute inset-0 flex items-center justify-center">
+              {/* Template preview */}
+              <div className="relative">
+                {mockup ? (
+                  <Image
+                    src={mockup}
+                    alt={`${tpl.name} template preview`}
+                    width={1280}
+                    height={900}
+                    sizes="(min-width: 1024px) 50vw, (min-width: 640px) 50vw, 100vw"
+                    className="w-full h-auto"
+                    quality={85}
+                  />
+                ) : (
                   <div
-                    className="text-3xl font-bold tracking-tight"
+                    className="aspect-[16/10]"
                     style={{
-                      color: tpl.colors.primary ?? "#fff",
-                      textShadow: "0 2px 20px rgba(0,0,0,0.5)",
+                      background: `linear-gradient(135deg, ${
+                        tpl.colors.bg ?? "#0f172a"
+                      }, ${tpl.colors.bgDeep ?? tpl.colors.bg ?? "#020617"})`,
                     }}
-                  >
-                    {tpl.name}
-                  </div>
-                </div>
-                <div className="absolute top-3 left-3 flex gap-1.5">
-                  {[
-                    tpl.colors.primary,
-                    tpl.colors.secondary,
-                    tpl.colors.accent,
-                  ]
+                  />
+                )}
+                <div className="absolute top-3 start-3 flex gap-1.5">
+                  {[tpl.colors.primary, tpl.colors.secondary, tpl.colors.accent]
                     .filter(Boolean)
                     .slice(0, 3)
                     .map((c, i) => (
                       <span
                         key={i}
-                        className="h-3 w-3 rounded-full ring-1 ring-black/20"
+                        className="h-3 w-3 rounded-full ring-1 ring-white/30"
                         style={{ background: c }}
                       />
                     ))}
                 </div>
-                <div className="absolute top-3 right-3">
-                  <span className="text-[10px] uppercase tracking-wider font-semibold rounded-full px-2 py-1 bg-[var(--land-accent-subtle)] text-[var(--land-accent)]">
+                <div className="absolute top-3 end-3">
+                  <span className="text-[10px] uppercase tracking-wider font-semibold rounded-full px-2 py-1 bg-[var(--land-bg)]/80 text-[var(--land-accent)] backdrop-blur-sm">
                     {t.available}
                   </span>
                 </div>
+                {tpl.demoUrl && (
+                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-all duration-300 flex items-center justify-center">
+                    <span className="text-sm font-medium text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                      {t.preview}
+                    </span>
+                  </div>
+                )}
               </div>
 
-              <div className="p-6 flex flex-col grow">
-                <h2 className="text-xl font-semibold">{tpl.name}</h2>
-                <p className="mt-2 text-sm text-[var(--land-body)] line-clamp-3">
+              <div className="p-5 flex flex-col grow">
+                <h2 className="text-lg font-semibold">{tpl.name}</h2>
+                <p className="mt-1.5 text-sm text-[var(--land-body)] line-clamp-2">
                   {tpl.description}
                 </p>
-                <div className="mt-4">
+                <div className="mt-3">
                   <p className="text-[11px] uppercase tracking-wider text-[var(--land-muted)]">
                     {t.targets}
                   </p>
-                  <p className="mt-1 text-xs text-[var(--land-bright)]">
+                  <p className="mt-0.5 text-xs text-[var(--land-bright)]">
                     {tpl.targetProfessions.slice(0, 3).join(" · ")}
                     {tpl.targetProfessions.length > 3 ? " …" : ""}
                   </p>
                 </div>
-                <div className="mt-6 flex gap-2 mt-auto pt-4">
+                <div className="mt-auto pt-4 flex gap-2">
                   {tpl.demoUrl ? (
                     <a
                       href={tpl.demoUrl}
@@ -194,14 +208,15 @@ export default async function TemplatesPage({ params }: PageProps) {
                   )}
                   <Link
                     href={`/dashboard/new?template=${tpl.id}`}
-                    className="flex-1 text-center rounded-lg bg-[var(--land-accent)] px-3 py-2 text-sm font-medium hover:bg-[var(--land-accent-hover)] transition-colors"
+                    className="flex-1 text-center rounded-lg bg-[var(--land-accent)] px-3 py-2 text-sm font-medium text-white hover:bg-[var(--land-accent-hover)] transition-colors"
                   >
                     {t.use}
                   </Link>
                 </div>
               </div>
             </article>
-          ))}
+            );
+          })}
         </div>
 
         {/* Coming soon templates — visually dimmed */}
@@ -214,13 +229,12 @@ export default async function TemplatesPage({ params }: PageProps) {
               {t.notifyHint}
             </p>
           </div>
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {TEMPLATES.filter((tpl) => !tpl.available).map((tpl) => (
               <article
                 key={tpl.id}
                 className="rounded-xl border border-[var(--land-border)]/50 bg-[var(--land-surface)] overflow-hidden flex flex-col opacity-60"
               >
-                {/* Color-swatch preview */}
                 <div
                   className="aspect-[16/10] relative"
                   style={{
@@ -229,34 +243,19 @@ export default async function TemplatesPage({ params }: PageProps) {
                     }, ${tpl.colors.bgDeep ?? tpl.colors.bg ?? "#020617"})`,
                   }}
                 >
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <div
-                      className="text-2xl font-bold tracking-tight"
-                      style={{
-                        color: tpl.colors.primary ?? "#fff",
-                        textShadow: "0 2px 20px rgba(0,0,0,0.5)",
-                      }}
-                    >
-                      {tpl.name}
-                    </div>
-                  </div>
-                  <div className="absolute top-3 left-3 flex gap-1.5">
-                    {[
-                      tpl.colors.primary,
-                      tpl.colors.secondary,
-                      tpl.colors.accent,
-                    ]
+                  <div className="absolute top-3 start-3 flex gap-1.5">
+                    {[tpl.colors.primary, tpl.colors.secondary, tpl.colors.accent]
                       .filter(Boolean)
                       .slice(0, 3)
                       .map((c, i) => (
                         <span
                           key={i}
-                          className="h-3 w-3 rounded-full ring-1 ring-black/20"
+                          className="h-3 w-3 rounded-full ring-1 ring-white/20"
                           style={{ background: c }}
                         />
                       ))}
                   </div>
-                  <div className="absolute top-3 right-3">
+                  <div className="absolute top-3 end-3">
                     <span className="text-[10px] uppercase tracking-wider font-semibold rounded-full px-2 py-1 bg-[var(--land-surface-raised)] text-[var(--land-muted)]">
                       {t.soon}
                     </span>
