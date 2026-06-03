@@ -6,7 +6,7 @@
     "signUp": "Sign Up",
     "dashboard": "Dashboard",
     "preview": "Preview",
-    "publish": "Publish",
+    "publish": "Get PDF",
     "save": "Save",
     "cancel": "Cancel",
     "next": "Next",
@@ -295,8 +295,8 @@
     "viewToggleLabel": "Choose what to preview"
   },
   "publish": {
-    "title": "Publish Your Portfolio",
-    "chooseSlug": "Choose your URL",
+    "title": "Get Your PDF",
+    "chooseSlug": "Download your portfolio",
     "slugPrefix": "portfolio-trimind.com/p/",
     "available": "Available!",
     "taken": "Already taken",

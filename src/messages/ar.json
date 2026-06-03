@@ -6,7 +6,7 @@
     "signUp": "إنشاء حساب",
     "dashboard": "لوحة التحكم",
     "preview": "معاينة",
-    "publish": "نشر",
+    "publish": "احصل على PDF",
     "save": "حفظ",
     "cancel": "إلغاء",
     "next": "التالي",
@@ -295,8 +295,8 @@
     "viewToggleLabel": "اختر ما تريد معاينته"
   },
   "publish": {
-    "title": "انشر بورتفوليو",
-    "chooseSlug": "اختر رابطك",
+    "title": "احصل على PDF",
+    "chooseSlug": "حمّل بورتفوليوك",
     "slugPrefix": "portfolio-trimind.com/p/",
     "available": "متاح!",
     "taken": "مستخدم مسبقًا",
