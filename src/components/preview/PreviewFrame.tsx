@@ -34,8 +34,22 @@ const PreviewFrame = forwardRef<PreviewFrameHandle, PreviewFrameProps>(
 
     useImperativeHandle(ref, () => ({
       print: () => {
-        if (iframeRef.current?.contentWindow) {
-          iframeRef.current.contentWindow.print();
+        if (!html) return;
+        // Open a new window with a blob URL and print from there.
+        // This bypasses iframe sandbox restrictions on mobile browsers
+        // where contentWindow.print() silently fails.
+        const blob = new Blob([html], { type: "text/html" });
+        const url = URL.createObjectURL(blob);
+        const printWindow = window.open(url, "_blank");
+        if (printWindow) {
+          printWindow.onload = () => {
+            printWindow.focus();
+            printWindow.print();
+            URL.revokeObjectURL(url);
+          };
+        } else {
+          URL.revokeObjectURL(url);
+          iframeRef.current?.contentWindow?.print();
         }
       },
     }));
