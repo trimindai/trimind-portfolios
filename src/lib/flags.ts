@@ -21,4 +21,4 @@
  * goes dark and `/p/<slug>` shows a "coming soon" notice instead) — no
  * other code needs to change.
  */
-export const HOSTING_ENABLED = true;
+export const HOSTING_ENABLED = false;
