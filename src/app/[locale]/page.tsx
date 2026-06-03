@@ -7,6 +7,7 @@ import { Palette, Languages, FileDown, Globe, Plus, Eye, Check } from "lucide-re
 import Image from "next/image";
 import { HOSTING_ENABLED } from "@/lib/flags";
 import { AdminLink } from "@/components/AdminLink";
+import { TryItForm } from "@/components/landing/TryItForm";
 
 export default async function LandingPage({
   params,
@@ -215,20 +216,14 @@ export default async function LandingPage({
                   ? "اختر قالبًا، أدخل بياناتك، واحصل على سيرة ذاتية PDF احترافية في دقائق. بالعربي والإنجليزي."
                   : "Pick a template, fill your info, and get a professional PDF portfolio in minutes. Arabic & English supported."}
               </p>
-              <div className="mt-10 flex flex-col items-start gap-4">
-                <Link
-                  href="/templates"
-                  className="inline-block rounded-lg shadow-sm bg-[var(--land-accent)] px-10 py-4 text-lg font-semibold text-white hover:bg-[var(--land-accent-hover)] transition-colors active:scale-[0.98]"
-                >
-                  {isRTL ? "ابدأ مجانًا" : "Start Free — Pay When Ready"}
-                </Link>
-                <a
-                  href="#templates"
-                  className="text-sm text-[var(--land-body)] hover:text-[var(--land-accent)] transition-colors"
-                >
-                  {isRTL ? "شاهد العروض المباشرة ←" : "View live demos →"}
-                </a>
-              </div>
+              {/* Try-it form — no signup needed */}
+              <TryItForm locale={locale} />
+              <a
+                href="#templates"
+                className="mt-4 inline-block text-sm text-[var(--land-body)] hover:text-[var(--land-accent)] transition-colors"
+              >
+                {isRTL ? "شاهد العروض المباشرة ←" : "View live demos →"}
+              </a>
               <p className="mt-5 text-sm text-[var(--land-muted)]">
                 {isRTL ? (
                   <>
