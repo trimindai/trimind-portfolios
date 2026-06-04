@@ -527,7 +527,12 @@ function PdfCheckout() {
         body: JSON.stringify({ portfolioId: id, locale }),
       });
       const payData = await payRes.json();
-      if (!payRes.ok) throw new Error(payData.error || "Failed to start payment");
+      // Use the backend's friendly `message`; never surface the raw `error`
+      // code or any provider error string to the user.
+      if (!payRes.ok)
+        throw new Error(
+          payData.message || "Payment could not be started. Please try again."
+        );
 
       if (payData.alreadyPaid) {
         window.location.href = previewHref;

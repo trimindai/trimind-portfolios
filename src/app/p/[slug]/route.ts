@@ -118,15 +118,19 @@ export async function GET(
 ) {
   const { slug } = await params;
 
-  if (!HOSTING_ENABLED) {
-    return hostingPausedResponse();
-  }
-
   try {
     const portfolio = await convexClient.query(api.portfolios.getBySlug, { slug });
 
+    // Nonexistent / unpublished slug → real 404, regardless of the hosting flag.
+    // Previously the !HOSTING_ENABLED gate short-circuited to the 503 "coming
+    // soon" page for ANY slug, so missing portfolios wrongly returned 503.
     if (!portfolio || portfolio.status !== "published" || !portfolio.generatedHtml) {
       return notFoundResponse();
+    }
+
+    // A real published portfolio exists, but live hosting is temporarily paused.
+    if (!HOSTING_ENABLED) {
+      return hostingPausedResponse();
     }
 
     // Increment view count (fire-and-forget)
