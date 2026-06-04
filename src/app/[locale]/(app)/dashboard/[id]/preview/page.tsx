@@ -7,7 +7,7 @@ import { Id } from "@convex/_generated/dataModel";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { useState, useMemo, useRef } from "react";
-import { Monitor, Tablet, Smartphone, ArrowLeft, Download, CheckCircle2, FileText, Globe } from "lucide-react";
+import { Monitor, Tablet, Smartphone, ArrowLeft, Download, CheckCircle2, FileText, Globe, ZoomIn, ZoomOut, Maximize2 } from "lucide-react";
 import { useUser } from "@clerk/nextjs";
 import PreviewFrame from "@/components/preview/PreviewFrame";
 import type { PreviewFrameHandle } from "@/components/preview/PreviewFrame";
@@ -32,7 +32,11 @@ export default function PreviewPage() {
     id: id as Id<"portfolios">,
   });
 
-  const [deviceMode, setDeviceMode] = useState<DeviceMode>("desktop");
+  // Live view defaults to phone — the QR on the printed CV sends people to the
+  // mobile portfolio, so that's the view that matters most.
+  const [deviceMode, setDeviceMode] = useState<DeviceMode>("mobile");
+  // CV view zoom: "fit" scales the A4 page to the panel; numbers are 0.5–2.0.
+  const [cvZoom, setCvZoom] = useState<"fit" | number>("fit");
   // Which artifact to preview. The printed PDF is always the ATS CV, so any
   // print action switches to the CV view first (see printCv below).
   const [view, setView] = useState<PreviewView>("cv");
@@ -82,6 +86,29 @@ export default function PreviewPage() {
     { mode: "cv", icon: FileText, label: t("cvView") },
     { mode: "live", icon: Globe, label: t("liveView") },
   ];
+
+  // URL shown in the live device frames (QR target). Falls back to a slug of
+  // the name while the portfolio is unpublished.
+  const nameSlug =
+    (portfolio.basics?.fullName || "your-name")
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-+|-+$/g, "") || "your-name";
+  const liveUrlLabel = `portfolio-trimind.com/p/${portfolio.slug || nameSlug}`;
+
+  // Shared button styling for the toolbar pill groups.
+  const segBtn = (active: boolean) =>
+    `flex min-h-[44px] items-center gap-2 rounded-md px-3 py-1.5 text-sm transition-colors sm:min-h-0 ${
+      active
+        ? "bg-[var(--land-accent)] text-white"
+        : "text-[var(--land-body)] hover:bg-[var(--land-border)] hover:text-[var(--land-bright)]"
+    }`;
+
+  const adjustZoom = (delta: number) =>
+    setCvZoom((z) => {
+      const base = typeof z === "number" ? z : 1;
+      return Math.min(2, Math.max(0.5, +(base + delta).toFixed(2)));
+    });
 
   // PDF gating (only relevant while hosting is disabled). Admins and anyone
   // who has paid (or, in the hosting era, published) can download the PDF.
@@ -136,24 +163,67 @@ export default function PreviewPage() {
             ))}
           </div>
 
-          {/* Device size toggle (live portfolio only) */}
+          {/* Device frames — Live portfolio only */}
           {view === "live" && (
             <div className="flex items-center gap-1 rounded-lg bg-[var(--land-surface-raised)]/50 p-1">
               {devices.map(({ mode, icon: Icon, label }) => (
                 <button
                   key={mode}
                   onClick={() => setDeviceMode(mode)}
-                  className={`flex min-h-[44px] items-center gap-2 rounded-md px-3 py-1.5 text-sm transition-colors sm:min-h-0 ${
-                    deviceMode === mode
-                      ? "bg-[var(--land-accent)] text-white"
-                      : "text-[var(--land-body)] hover:bg-[var(--land-border)] hover:text-[var(--land-bright)]"
-                  }`}
+                  aria-pressed={deviceMode === mode}
+                  className={segBtn(deviceMode === mode)}
                   title={label}
                 >
                   <Icon className="h-4 w-4" />
                   <span className="hidden sm:inline">{label}</span>
                 </button>
               ))}
+            </div>
+          )}
+
+          {/* Zoom / fit — CV (document) only */}
+          {view === "cv" && (
+            <div className="flex items-center gap-1 rounded-lg bg-[var(--land-surface-raised)]/50 p-1">
+              <button
+                onClick={() => setCvZoom("fit")}
+                aria-pressed={cvZoom === "fit"}
+                className={segBtn(cvZoom === "fit")}
+                title={locale === "ar" ? "ملاءمة العرض" : "Fit width"}
+              >
+                <Maximize2 className="h-4 w-4" />
+                <span className="hidden sm:inline">{locale === "ar" ? "ملاءمة" : "Fit"}</span>
+              </button>
+              <button
+                onClick={() => adjustZoom(-0.25)}
+                className={segBtn(false)}
+                title={locale === "ar" ? "تصغير" : "Zoom out"}
+                aria-label={locale === "ar" ? "تصغير" : "Zoom out"}
+              >
+                <ZoomOut className="h-4 w-4" />
+              </button>
+              <span className="min-w-[3rem] px-1 text-center text-xs tabular-nums text-[var(--land-body)]">
+                {cvZoom === "fit"
+                  ? locale === "ar"
+                    ? "ملاءمة"
+                    : "Fit"
+                  : `${Math.round(cvZoom * 100)}%`}
+              </span>
+              <button
+                onClick={() => adjustZoom(0.25)}
+                className={segBtn(false)}
+                title={locale === "ar" ? "تكبير" : "Zoom in"}
+                aria-label={locale === "ar" ? "تكبير" : "Zoom in"}
+              >
+                <ZoomIn className="h-4 w-4" />
+              </button>
+              <button
+                onClick={() => setCvZoom(1)}
+                aria-pressed={cvZoom === 1}
+                className={segBtn(cvZoom === 1)}
+                title="100%"
+              >
+                <span className="text-xs">100%</span>
+              </button>
             </div>
           )}
         </div>
@@ -201,6 +271,8 @@ export default function PreviewPage() {
             portfolioData={portfolioData}
             deviceMode={view === "cv" ? "desktop" : deviceMode}
             view={view}
+            cvZoom={cvZoom}
+            liveUrlLabel={liveUrlLabel}
           />
         )}
 
