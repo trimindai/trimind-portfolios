@@ -303,8 +303,8 @@ svg{display:block}
 @media(min-width:600px){.gal{grid-template-columns:repeat(2,1fr)}}
 @media(min-width:900px){.gal.three{grid-template-columns:repeat(3,1fr)}}
 .gal-card{position:relative;border-radius:var(--r);overflow:hidden;border:1px solid var(--line-soft);min-height:200px;
-  display:flex;transition:transform .3s var(--ease)}
-.gal-card .cover{position:relative}
+  transition:transform .3s var(--ease)}
+.gal-card .cover{position:absolute;inset:0}
 .gal-card.tall{min-height:260px}
 @media(hover:hover){.gal-card:hover{transform:translateY(-4px)}}
 .marquee{overflow:hidden;border-block:1px solid var(--line-soft);padding:20px 0;
