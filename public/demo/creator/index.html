@@ -159,10 +159,11 @@ svg{display:block}
 /* covers (shared by cards, reveal, static) */
 .cover{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:flex-end;
   padding:clamp(8px,1.5vw,12px);text-align:left}
-.cover-photo{background-size:cover;background-position:center;
-  background-color:var(--surface)} /* fallback colour if photo fails */
-.cover-photo::after{content:"";position:absolute;inset:0;
-  background:linear-gradient(to top,oklch(12% 0.02 50 / .92) 4%,oklch(12% 0.02 50 / .15) 52%,transparent)}
+.cover-art{overflow:hidden}
+.cover-art::after{content:"";position:absolute;inset:0;
+  background:linear-gradient(to top,oklch(12% 0.02 50 / .85) 6%,oklch(12% 0.02 50 / .1) 50%,transparent)}
+.art-motif{position:absolute;inset:0;display:grid;place-items:center;color:var(--text);opacity:.16}
+.art-motif .ic{width:48%;height:48%;stroke-width:1.1}
 .cover-badge{align-items:flex-start;justify-content:space-between}
 .cover-badge.tone-gold{background:linear-gradient(150deg,oklch(34% 0.05 80),oklch(22% 0.03 70))}
 .cover-badge.tone-amber{background:linear-gradient(150deg,oklch(32% 0.05 60),oklch(21% 0.03 55))}
@@ -187,9 +188,11 @@ svg{display:block}
 .discovered .sub{font-size:12px;color:var(--text-3);margin:3px 0 15px}
 .disc-list{display:flex;flex-direction:column;gap:10px;max-height:48vh;overflow-y:auto}
 .disc-item{display:flex;gap:11px;align-items:center;animation:slidein .45s var(--ease)}
-.disc-thumb{width:38px;height:48px;border-radius:8px;flex:none;background-size:cover;background-position:center;
+.disc-thumb{width:38px;height:48px;border-radius:8px;flex:none;
   display:grid;place-items:center;overflow:hidden;border:1px solid var(--line-soft)}
-.disc-thumb .ic{font-size:17px;color:oklch(22% 0.04 50)}
+.disc-thumb.badge .ic{font-size:17px;color:oklch(22% 0.04 50)}
+.disc-thumb.art{color:var(--text)}
+.disc-thumb.art .ic{font-size:18px;opacity:.85;stroke-width:1.4}
 .disc-meta{min-width:0}
 .disc-meta b{display:block;font-family:var(--font-head);font-size:13px;font-weight:600;color:var(--text);line-height:1.2}
 .disc-meta span{font-size:11.5px;color:var(--text-3)}
@@ -462,7 +465,10 @@ const I = {
   soundOff:'<path d="M4 9v6h4l5 4V5L8 9z"/><path d="m16 9 5 6m0-6-5 6"/>',
   link:'<path d="M9 15 15 9m-3-4 1-1a4 4 0 0 1 6 6l-2 2m-9 3-1 1a4 4 0 0 1-6-6l2-2"/>',
   refresh:'<path d="M20 11a8 8 0 1 0-.6 4M20 5v6h-6"/>',
-  arrow:'<path d="M5 12h14m-6-6 6 6-6 6"/>'
+  arrow:'<path d="M5 12h14m-6-6 6 6-6 6"/>',
+  clapper:'<rect x="3" y="9" width="18" height="11" rx="2"/><path d="m3.4 9 2-4.6 3.4 1.3-2 4.6M9.2 5.9l3.4 1.3-2 4.6M15 7.4l3.4 1.3-2 4.6"/>',
+  camera:'<rect x="3" y="6.5" width="12.5" height="11" rx="2.5"/><path d="m15.5 10 5.5-3.2v10.4L15.5 14z"/>',
+  wave:'<path d="M2 12h2.5l1.8-6.5 2.8 13 2.4-9 1.7 4 1.6-3H22"/>'
 };
 function svg(name,cls){ return '<svg class="ic '+(cls||'')+'" viewBox="0 0 24 24" aria-hidden="true">'+I[name]+'</svg>'; }
 
@@ -471,20 +477,22 @@ const CREATOR = {
   name:"Remi Vance", first:"Remi", monogram:"RV",
   role:"Content Creator & Brand Storyteller",
   tagline:"I turn brands into stories people want to watch: cinematic short-form, vlogs and campaigns across YouTube, Instagram and TikTok.",
-  img:(seed)=>"https://picsum.photos/seed/"+seed+"/600/800",
   stats:[
     {key:"followers",label:"Followers",value:2_400_000,fmt:"compact"},
     {key:"views",label:"Total views",value:180_000_000,fmt:"compact"},
     {key:"engage",label:"Engagement",value:7.2,fmt:"pct"},
     {key:"collabs",label:"Brand collabs",value:42,fmt:"plus"}
   ],
-  // projects = photo covers
+  // projects = designed cover art (motif + duotone), self-contained
   projects:[
-    {title:"Midnight Market",cat:"Brand Film",metric:"12M views · Vélo",seed:"remi-midnight-market",
+    {title:"Midnight Market",cat:"Brand Film",metric:"12M views · Vélo",motif:"clapper",
+      grad:"linear-gradient(150deg,oklch(42% 0.13 35),oklch(20% 0.04 30))",
       desc:"A cinematic night-market campaign that became Vélo's most-watched film."},
-    {title:"Studio Diaries",cat:"Vlog Series",metric:"480K subscribers",seed:"remi-studio-diaries",
+    {title:"Studio Diaries",cat:"Vlog Series",metric:"480K subscribers",motif:"camera",
+      grad:"linear-gradient(150deg,oklch(44% 0.11 65),oklch(20% 0.03 55))",
       desc:"A weekly behind-the-scenes series with rare audience retention."},
-    {title:"Neon Nights",cat:"Short-form",metric:"38M plays",seed:"remi-neon-nights",
+    {title:"Neon Nights",cat:"Short-form",metric:"38M plays",motif:"wave",
+      grad:"linear-gradient(150deg,oklch(42% 0.13 305),oklch(22% 0.06 35))",
       desc:"A stylised short-form series proving format-native storytelling at scale."}
   ],
   // achievements = badge covers
@@ -537,7 +545,8 @@ function showScreen(id){ $$(".screen").forEach(s=>s.classList.toggle("active",s.
 /* cover markup: photo (projects) or badge (achievements/awards) */
 function coverHTML(item){
   if(item.kind==="project")
-    return '<div class="cover cover-photo" style="background-image:url('+CREATOR.img(item.seed)+')">'+
+    return '<div class="cover cover-art" style="background:'+item.grad+'">'+
+      '<span class="art-motif">'+svg(item.motif)+'</span>'+
       '<span class="cover-cat">'+item.cat+'</span>'+
       '<span class="cover-title">'+item.title+'</span>'+
       '<span class="cover-metric">'+item.metric+'</span></div>';
@@ -547,8 +556,8 @@ function coverHTML(item){
     '<span class="cover-metric">'+item.metric+'</span></span></div>';
 }
 function thumbHTML(item){
-  if(item.kind==="project") return '<span class="disc-thumb" style="background-image:url('+CREATOR.img(item.seed)+')"></span>';
-  return '<span class="disc-thumb tone-'+item.tone+'" style="background:var(--'+(item.tone==="gold"?"gold":item.tone)+')">'+svg(item.icon)+'</span>';
+  if(item.kind==="project") return '<span class="disc-thumb art" style="background:'+item.grad+'">'+svg(item.motif)+'</span>';
+  return '<span class="disc-thumb badge" style="background:var(--'+(item.tone==="gold"?"gold":item.tone)+')">'+svg(item.icon)+'</span>';
 }
 
 /* ════════ levels ════════ */
