@@ -3,6 +3,7 @@
     { "source": "/demo/corporate", "destination": "/demo/corporate/index.html" },
     { "source": "/demo/engineer", "destination": "/demo/engineer/index.html" },
     { "source": "/demo/creative", "destination": "/demo/creative/index.html" },
-    { "source": "/demo/developer", "destination": "/demo/developer/index.html" }
+    { "source": "/demo/developer", "destination": "/demo/developer/index.html" },
+    { "source": "/demo/creator", "destination": "/demo/creator/index.html" }
   ]
 }
