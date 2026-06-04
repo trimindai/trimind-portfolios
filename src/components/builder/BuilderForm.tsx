@@ -7,6 +7,7 @@ import { useMutation } from "convex/react";
 import { api } from "@convex/_generated/api";
 import { Id } from "@convex/_generated/dataModel";
 import { resolveTemplateId } from "@/lib/templates";
+import { useKeyboardScroll } from "@/hooks/useKeyboardScroll";
 import { BasicsStep } from "./steps/BasicsStep";
 import { ExperienceStep } from "./steps/ExperienceStep";
 import { AchievementsStep } from "./steps/AchievementsStep";
@@ -147,6 +148,9 @@ export function BuilderForm({ portfolioId, initialData }: BuilderFormProps) {
   const [saving, setSaving] = useState(false);
   const updatePortfolio = useMutation(api.portfolios.update);
 
+  // Keep focused inputs visible above the mobile keyboard (no-op on desktop).
+  useKeyboardScroll();
+
   const steps = useMemo(
     () => getStepsForTemplate(initialData.templateId || "general"),
     [initialData.templateId]
@@ -238,29 +242,28 @@ export function BuilderForm({ portfolioId, initialData }: BuilderFormProps) {
         </div>
       )}
 
-      {/* Step indicator — compact on mobile, full circles on md+ */}
-      <div className="mb-6">
-        {/* Mobile: "Step N of M" + slim bar */}
-        <div className="md:hidden">
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-sm font-medium text-[var(--land-bright)]">
-              {isRTL
-                ? `${stepLabel(currentStepDef)} — ${currentStep + 1} من ${steps.length}`
-                : `${stepLabel(currentStepDef)} — ${currentStep + 1} of ${steps.length}`}
-            </span>
-            {currentStepDef.optional && (
-              <span className="text-[10px] text-[var(--land-muted)]">{isRTL ? "اختياري" : "optional"}</span>
-            )}
-          </div>
-          <div className="h-1.5 rounded-full bg-[var(--land-border)]/50 overflow-hidden">
-            <div
-              className="h-full bg-[var(--land-accent)] rounded-full transition-all duration-500"
-              style={{ width: `${steps.length > 1 ? ((currentStep + 1) / steps.length) * 100 : 100}%` }}
-            />
-          </div>
+      {/* Mobile: STICKY "Step N of M" + slim bar — stays at the top while scrolling */}
+      <div className="md:hidden sticky top-0 z-40 -mx-4 mb-4 border-b border-[var(--land-border)] bg-[var(--land-bg)] px-4 py-3">
+        <div className="flex items-center justify-between mb-2">
+          <span className="text-sm font-medium text-[var(--land-bright)]">
+            {isRTL
+              ? `${stepLabel(currentStepDef)} — ${currentStep + 1} من ${steps.length}`
+              : `${stepLabel(currentStepDef)} — ${currentStep + 1} of ${steps.length}`}
+          </span>
+          {currentStepDef.optional && (
+            <span className="text-[10px] text-[var(--land-muted)]">{isRTL ? "اختياري" : "optional"}</span>
+          )}
         </div>
+        <div className="h-1.5 rounded-full bg-[var(--land-border)]/50 overflow-hidden">
+          <div
+            className="h-full bg-[var(--land-accent)] rounded-full transition-all duration-500"
+            style={{ width: `${steps.length > 1 ? ((currentStep + 1) / steps.length) * 100 : 100}%` }}
+          />
+        </div>
+      </div>
 
-        {/* Desktop: full circle row */}
+      {/* Desktop: full circle row (unchanged) */}
+      <div className="mb-6">
         <div className="hidden md:block relative">
           <div className="absolute top-1/2 left-0 right-0 h-0.5 -translate-y-1/2 bg-[var(--land-border)]/50 rounded-full" />
           <div
@@ -332,7 +335,7 @@ export function BuilderForm({ portfolioId, initialData }: BuilderFormProps) {
       </div>
 
       {/* Navigation — clean layout, nothing truncated */}
-      <div className="sticky bottom-0 z-10 -mx-4 sm:mx-0 flex items-center justify-between gap-2 border-t border-[var(--land-border)] bg-white px-4 py-3 sm:static sm:border-0 sm:bg-transparent sm:p-0">
+      <div className="sticky bottom-0 z-10 -mx-4 sm:mx-0 flex items-center justify-between gap-2 border-t border-[var(--land-border)] bg-white px-4 pt-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))] sm:static sm:border-0 sm:bg-transparent sm:p-0">
         <div className="flex items-center gap-2">
           <button
             onClick={goPrev}

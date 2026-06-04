@@ -35,7 +35,8 @@ export function TextareaField({
             <button
               type="button"
               onClick={() => setShowTips(!showTips)}
-              className="text-xs font-medium text-amber-600 hover:text-amber-700 transition-colors underline underline-offset-2 decoration-amber-300"
+              // Mobile: 44px tappable chip. Desktop (md+): original underline link.
+              className="inline-flex items-center min-h-[44px] px-3 rounded-lg bg-amber-50 text-xs font-medium text-amber-600 hover:text-amber-700 transition-colors md:min-h-0 md:px-0 md:rounded-none md:bg-transparent md:underline md:underline-offset-2 md:decoration-amber-300"
             >
               {showTips ? "Hide tips" : "Writing tips +"}
             </button>

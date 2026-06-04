@@ -36,7 +36,9 @@ export function TextField({
           <button
             type="button"
             onClick={() => setShowExamples(!showExamples)}
-            className="text-xs font-medium text-[var(--land-accent)] hover:text-[var(--land-accent-hover)] transition-colors underline underline-offset-2 decoration-[var(--land-accent)]/30"
+            // Mobile: a real 44px-tall tappable chip. Desktop (md+): the original
+            // compact underline link — desktop stays visually unchanged.
+            className="inline-flex items-center min-h-[44px] px-3 rounded-lg bg-[var(--land-accent)]/10 text-xs font-medium text-[var(--land-accent)] hover:text-[var(--land-accent-hover)] transition-colors md:min-h-0 md:px-0 md:rounded-none md:bg-transparent md:underline md:underline-offset-2 md:decoration-[var(--land-accent)]/30"
           >
             {showExamples ? "Hide examples" : "See examples +"}
           </button>

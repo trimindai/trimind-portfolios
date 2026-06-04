@@ -60,7 +60,7 @@ export default function DashboardLayout({
                 {user?.fullName || user?.primaryEmailAddress?.emailAddress}
               </span>
               <SignOutButton>
-                <button className="text-sm text-[var(--land-muted)] hover:text-[var(--land-bright)] transition-colors">
+                <button className="inline-flex items-center min-h-[44px] px-2 -mr-2 text-sm text-[var(--land-muted)] hover:text-[var(--land-bright)] transition-colors">
                   {isRTL ? "خروج" : "Sign out"}
                 </button>
               </SignOutButton>
