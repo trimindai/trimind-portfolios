@@ -1,5 +1,5 @@
 import Handlebars from "handlebars";
-import generalTemplateSource from "@/templates/corporate/template.hbs";
+import generalTemplateSource from "@/templates/general/template.hbs";
 import engineerTemplateSource from "@/templates/engineer/template.hbs";
 import engineerProjectDetailSource from "@/templates/engineer/project-detail.hbs";
 import creativeTemplateSource from "@/templates/creative/template.hbs";

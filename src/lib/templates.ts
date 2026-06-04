@@ -1,10 +1,9 @@
 // Static registry of all templates available in src/templates/.
 // Read at build time — no filesystem access needed at runtime.
 
-// NOTE: the "general" template still lives in src/templates/corporate/ (its
-// historical folder). Its id was renamed corporate -> general; old portfolios
-// keep working via TEMPLATE_ALIASES / resolveTemplateId below.
-import general from "@/templates/corporate/manifest.json";
+// The "general" template (formerly "corporate"). Old portfolios stored with
+// templateId "corporate" keep working via TEMPLATE_ALIASES / resolveTemplateId.
+import general from "@/templates/general/manifest.json";
 import creative from "@/templates/creative/manifest.json";
 import creator from "@/templates/creator/manifest.json";
 import developer from "@/templates/developer/manifest.json";
