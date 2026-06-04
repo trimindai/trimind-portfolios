@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { TextField } from "../fields/TextField";
 import { TextareaField } from "../fields/TextareaField";
 
@@ -10,6 +11,8 @@ interface CreatorProfileStepProps {
 
 export function CreatorProfileStep({ data, onChange }: CreatorProfileStepProps) {
   const basics = data.basics || {};
+  // Mobile: collapse optional fields; desktop (md+) always shows everything.
+  const [showOptional, setShowOptional] = useState(false);
   const set = (field: string, value: string) =>
     onChange({ basics: { ...basics, [field]: value } });
 
@@ -22,33 +25,57 @@ export function CreatorProfileStep({ data, onChange }: CreatorProfileStepProps) 
         </p>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      {/* REQUIRED — always visible */}
+      <div className="space-y-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <TextField
+            label="Full Name"
+            value={basics.fullName}
+            onChange={(v) => set("fullName", v)}
+            required
+            placeholder="Remi Vance"
+            hint="Shown large in the hero and as your monogram"
+          />
+          <TextField
+            label="Title"
+            value={basics.title}
+            onChange={(v) => set("title", v)}
+            required
+            placeholder="Content Creator"
+            hint="The small label above your name"
+            examples={[
+              "Content Creator",
+              "YouTuber",
+              "Filmmaker",
+              "Podcast Host",
+              "Brand Storyteller",
+              "Digital Creator",
+            ]}
+          />
+        </div>
         <TextField
-          label="Full Name"
-          value={basics.fullName}
-          onChange={(v) => set("fullName", v)}
+          label="Email"
+          value={basics.email}
+          onChange={(v) => set("email", v)}
           required
-          placeholder="Remi Vance"
-          hint="Shown large in the hero and as your monogram"
-        />
-        <TextField
-          label="Title"
-          value={basics.title}
-          onChange={(v) => set("title", v)}
-          required
-          placeholder="Content Creator"
-          hint="The small label above your name"
-          examples={[
-            "Content Creator",
-            "YouTuber",
-            "Filmmaker",
-            "Podcast Host",
-            "Brand Storyteller",
-            "Digital Creator",
-          ]}
+          type="email"
+          placeholder="hello@yourname.com"
         />
       </div>
 
+      {/* OPTIONAL toggle — MOBILE ONLY. Desktop always shows the fields below. */}
+      <button
+        type="button"
+        onClick={() => setShowOptional(!showOptional)}
+        className="md:hidden w-full flex items-center justify-between min-h-[48px] px-4 rounded-lg border border-[var(--land-border)] bg-[var(--land-surface)]/40 text-sm font-medium text-[var(--land-bright)]"
+        aria-expanded={showOptional}
+      >
+        <span>{showOptional ? "▼ " : "▶ "}Optional details</span>
+        <span className="text-xs text-[var(--land-muted)]">{showOptional ? "Hide" : "Tagline, channels…"}</span>
+      </button>
+
+      {/* OPTIONAL — collapsed on mobile (unless expanded), always shown on md+ */}
+      <div className={`${showOptional ? "block" : "hidden"} md:block space-y-6`}>
       <TextField
         label="Tagline"
         value={basics.subtitle}
@@ -71,22 +98,12 @@ export function CreatorProfileStep({ data, onChange }: CreatorProfileStepProps) 
         ]}
       />
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <TextField
-          label="Email"
-          value={basics.email}
-          onChange={(v) => set("email", v)}
-          required
-          type="email"
-          placeholder="hello@yourname.com"
-        />
-        <TextField
-          label="Phone"
-          value={basics.phone}
-          onChange={(v) => set("phone", v)}
-          placeholder="+965 1234 5678"
-        />
-      </div>
+      <TextField
+        label="Phone"
+        value={basics.phone}
+        onChange={(v) => set("phone", v)}
+        placeholder="+965 1234 5678"
+      />
 
       <TextField
         label="Location"
@@ -132,6 +149,7 @@ export function CreatorProfileStep({ data, onChange }: CreatorProfileStepProps) 
             placeholder="https://linkedin.com/in/yourname"
           />
         </div>
+      </div>
       </div>
     </div>
   );

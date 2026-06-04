@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { TextField } from "../fields/TextField";
 import { TextareaField } from "../fields/TextareaField";
@@ -15,6 +16,8 @@ export function DeveloperAboutStep({ data, onChange }: DeveloperAboutStepProps) 
   const t = useTranslations("builder.developer");
   const basics = data.basics || {};
   const metrics: Array<{ value: string; label: string }> = data.metrics || [];
+  // Mobile: collapse optional fields; desktop (md+) always shows everything.
+  const [showOptional, setShowOptional] = useState(false);
 
   const updateBasics = (field: string, value: string) => {
     onChange({ basics: { ...basics, [field]: value } });
@@ -27,35 +30,59 @@ export function DeveloperAboutStep({ data, onChange }: DeveloperAboutStepProps) 
         <p className="text-sm text-[var(--land-body)] mt-1">{t("aboutIntro")}</p>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      {/* REQUIRED — always visible */}
+      <div className="space-y-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <TextField
+            label={t("fullName")}
+            value={basics.fullName}
+            onChange={(v) => updateBasics("fullName", v)}
+            required
+            placeholder={t("fullNamePlaceholder")}
+            hint={t("fullNameHint")}
+          />
+          <TextField
+            label={t("title")}
+            value={basics.title}
+            onChange={(v) => updateBasics("title", v)}
+            required
+            placeholder={t("titlePlaceholder")}
+            hint={t("titleHint")}
+            examples={[
+              "Full-Stack Engineer",
+              "Frontend Engineer",
+              "Backend Engineer",
+              "Software Engineer",
+              "Mobile Developer",
+              "DevOps Engineer",
+              "Machine Learning Engineer",
+              "Creative Technologist",
+            ]}
+          />
+        </div>
         <TextField
-          label={t("fullName")}
-          value={basics.fullName}
-          onChange={(v) => updateBasics("fullName", v)}
+          label={t("email")}
+          value={basics.email}
+          onChange={(v) => updateBasics("email", v)}
           required
-          placeholder={t("fullNamePlaceholder")}
-          hint={t("fullNameHint")}
-        />
-        <TextField
-          label={t("title")}
-          value={basics.title}
-          onChange={(v) => updateBasics("title", v)}
-          required
-          placeholder={t("titlePlaceholder")}
-          hint={t("titleHint")}
-          examples={[
-            "Full-Stack Engineer",
-            "Frontend Engineer",
-            "Backend Engineer",
-            "Software Engineer",
-            "Mobile Developer",
-            "DevOps Engineer",
-            "Machine Learning Engineer",
-            "Creative Technologist",
-          ]}
+          type="email"
+          placeholder="maya@okafor.dev"
         />
       </div>
 
+      {/* OPTIONAL toggle — MOBILE ONLY. Desktop always shows the fields below. */}
+      <button
+        type="button"
+        onClick={() => setShowOptional(!showOptional)}
+        className="md:hidden w-full flex items-center justify-between min-h-[48px] px-4 rounded-lg border border-[var(--land-border)] bg-[var(--land-surface)]/40 text-sm font-medium text-[var(--land-bright)]"
+        aria-expanded={showOptional}
+      >
+        <span>{showOptional ? "▼ " : "▶ "}Optional details</span>
+        <span className="text-xs text-[var(--land-muted)]">{showOptional ? "Hide" : "Phone, links, metrics…"}</span>
+      </button>
+
+      {/* OPTIONAL — collapsed on mobile (unless expanded), always shown on md+ */}
+      <div className={`${showOptional ? "block" : "hidden"} md:block space-y-6`}>
       <TextField
         label={t("subtitle")}
         value={basics.subtitle}
@@ -79,22 +106,12 @@ export function DeveloperAboutStep({ data, onChange }: DeveloperAboutStepProps) 
         rows={3}
       />
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <TextField
-          label={t("email")}
-          value={basics.email}
-          onChange={(v) => updateBasics("email", v)}
-          required
-          type="email"
-          placeholder="maya@okafor.dev"
-        />
-        <TextField
-          label={t("phone")}
-          value={basics.phone}
-          onChange={(v) => updateBasics("phone", v)}
-          placeholder="+965 1234 5678"
-        />
-      </div>
+      <TextField
+        label={t("phone")}
+        value={basics.phone}
+        onChange={(v) => updateBasics("phone", v)}
+        placeholder="+965 1234 5678"
+      />
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <TextField
@@ -173,6 +190,7 @@ export function DeveloperAboutStep({ data, onChange }: DeveloperAboutStepProps) 
             </div>
           )}
         />
+      </div>
       </div>
     </div>
   );

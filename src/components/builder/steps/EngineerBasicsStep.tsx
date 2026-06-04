@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { TextField } from "../fields/TextField";
 import { TextareaField } from "../fields/TextareaField";
 
@@ -10,6 +11,9 @@ interface EngineerBasicsStepProps {
 
 export function EngineerBasicsStep({ data, onChange }: EngineerBasicsStepProps) {
   const basics = data.basics || {};
+  // Mobile: collapse optional fields so the step opens with just the 3 required
+  // fields. Desktop (md+) always shows everything.
+  const [showOptional, setShowOptional] = useState(false);
 
   const updateBasics = (field: string, value: string) => {
     onChange({ basics: { ...basics, [field]: value } });
@@ -24,35 +28,59 @@ export function EngineerBasicsStep({ data, onChange }: EngineerBasicsStepProps) 
         </p>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      {/* REQUIRED — always visible */}
+      <div className="space-y-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <TextField
+            label="Full Name"
+            value={basics.fullName}
+            onChange={(v) => updateBasics("fullName", v)}
+            required
+            placeholder="Ahmad Al-Mutairi"
+            hint="As it appears on your professional documents"
+          />
+          <TextField
+            label="Engineering Discipline"
+            value={basics.title}
+            onChange={(v) => updateBasics("title", v)}
+            required
+            placeholder="Electrical Engineer"
+            hint="Your engineering specialization"
+            examples={[
+              "Electrical Engineer",
+              "Mechanical Engineer",
+              "Civil Engineer",
+              "Petroleum Engineer",
+              "Chemical Engineer",
+              "Industrial Engineer",
+              "Structural Engineer",
+              "Process Engineer",
+            ]}
+          />
+        </div>
         <TextField
-          label="Full Name"
-          value={basics.fullName}
-          onChange={(v) => updateBasics("fullName", v)}
+          label="Email"
+          value={basics.email}
+          onChange={(v) => updateBasics("email", v)}
           required
-          placeholder="Ahmad Al-Mutairi"
-          hint="As it appears on your professional documents"
-        />
-        <TextField
-          label="Engineering Discipline"
-          value={basics.title}
-          onChange={(v) => updateBasics("title", v)}
-          required
-          placeholder="Electrical Engineer"
-          hint="Your engineering specialization"
-          examples={[
-            "Electrical Engineer",
-            "Mechanical Engineer",
-            "Civil Engineer",
-            "Petroleum Engineer",
-            "Chemical Engineer",
-            "Industrial Engineer",
-            "Structural Engineer",
-            "Process Engineer",
-          ]}
+          type="email"
+          placeholder="email@example.com"
         />
       </div>
 
+      {/* OPTIONAL toggle — MOBILE ONLY. Desktop always shows the fields below. */}
+      <button
+        type="button"
+        onClick={() => setShowOptional(!showOptional)}
+        className="md:hidden w-full flex items-center justify-between min-h-[48px] px-4 rounded-lg border border-[var(--land-border)] bg-[var(--land-surface)]/40 text-sm font-medium text-[var(--land-bright)]"
+        aria-expanded={showOptional}
+      >
+        <span>{showOptional ? "▼ " : "▶ "}Optional details</span>
+        <span className="text-xs text-[var(--land-muted)]">{showOptional ? "Hide" : "Phone, links, bio…"}</span>
+      </button>
+
+      {/* OPTIONAL — collapsed on mobile (unless expanded), always shown on md+ */}
+      <div className={`${showOptional ? "block" : "hidden"} md:block space-y-6`}>
       <TextField
         label="Subtitle / Tagline"
         value={basics.subtitle}
@@ -67,22 +95,12 @@ export function EngineerBasicsStep({ data, onChange }: EngineerBasicsStepProps) 
         ]}
       />
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <TextField
-          label="Email"
-          value={basics.email}
-          onChange={(v) => updateBasics("email", v)}
-          required
-          type="email"
-          placeholder="email@example.com"
-        />
-        <TextField
-          label="Phone"
-          value={basics.phone}
-          onChange={(v) => updateBasics("phone", v)}
-          placeholder="+965 1234 5678"
-        />
-      </div>
+      <TextField
+        label="Phone"
+        value={basics.phone}
+        onChange={(v) => updateBasics("phone", v)}
+        placeholder="+965 1234 5678"
+      />
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <TextField
@@ -171,6 +189,7 @@ export function EngineerBasicsStep({ data, onChange }: EngineerBasicsStepProps) 
           "Keep it concise — 1-2 sentences",
         ]}
       />
+      </div>
     </div>
   );
 }
