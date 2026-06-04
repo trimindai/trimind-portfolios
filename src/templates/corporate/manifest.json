@@ -1,7 +1,7 @@
 {
   "id": "corporate",
-  "name": "Corporate",
-  "description": "HR-first portfolio for corporate professionals — finance, accounting, banking, law, HR, and business management. Designed around how recruiters actually evaluate candidates: credentials as proof, quantified achievements as the portfolio, endorsements as social proof.",
+  "name": "General",
+  "description": "A clean, professional portfolio for any field — the versatile default. Credentials as proof, quantified achievements as the portfolio, and endorsements as social proof. Works across business, finance, operations, law, HR and beyond.",
   "category": "business",
   "targetProfessions": ["Financial Analyst", "Accountant", "Auditor", "HR Manager", "Business Manager", "Investment Analyst", "Budget Analyst", "Treasury Manager", "Risk Analyst", "Compliance Officer", "Lawyer", "Administrative Manager"],
   "colors": {

@@ -368,7 +368,7 @@ export default async function LandingPage({
                     quality={90}
                   />
                   <span className="absolute top-3 start-3 z-10 rounded-full border border-[var(--land-accent)]/30 bg-[var(--land-bg)]/80 px-2.5 py-1 text-[10px] font-medium uppercase tracking-wider text-[var(--land-accent)] backdrop-blur">
-                    {isRTL ? "مؤسسي" : "Corporate"}
+                    {isRTL ? "عام" : "General"}
                   </span>
                   <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-all duration-300 flex items-center justify-center">
                     <span className="text-sm font-medium text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center gap-2">

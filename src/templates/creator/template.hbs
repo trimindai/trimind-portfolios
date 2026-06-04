@@ -113,6 +113,11 @@ img{max-width:100%;display:block}
 .gal-card{position:relative;border-radius:var(--r);overflow:hidden;border:1px solid var(--line-soft);
   min-height:260px;transition:transform .3s var(--ease);display:block}
 @media(hover:hover){.gal-card:hover{transform:translateY(-4px)}}
+.gal-open{position:absolute;top:10px;inset-inline-end:10px;z-index:4;width:30px;height:30px;border-radius:9px;
+  display:grid;place-items:center;background:oklch(100% 0 0 / .16);color:var(--eggshell);
+  border:1px solid oklch(100% 0 0 / .22);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);transition:background .2s,color .2s}
+.gal-open .ic{font-size:15px;stroke-width:2}
+@media(hover:hover){.gal-card.is-link:hover .gal-open{background:var(--accent)}}
 .cover{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:flex-end;padding:clamp(10px,1.6vw,14px)}
 .cover-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:2}
 .cover .ph{position:absolute;inset:0;z-index:1;display:grid;place-items:center;
@@ -287,9 +292,10 @@ img{max-width:100%;display:block}
     <div class="sect-head"><h2>Selected work</h2><p>Films, series, campaigns and content.</p></div>
     <div class="gal{{#if projects.[2]}} three{{/if}}">
       {{#each projects}}
-      <a class="gal-card{{#unless this.coverUrl}} {{cycle @index "t0" "t1" "t2" "t3"}}{{/unless}}"{{#if this.link}} href="{{safeUrl this.link}}" target="_blank" rel="noopener"{{/if}}>
+      <a class="gal-card{{#unless this.coverUrl}} {{cycle @index "t0" "t1" "t2" "t3"}}{{/unless}}{{#if this.link}} is-link{{/if}}"{{#if this.link}} href="{{safeUrl this.link}}" target="_blank" rel="noopener"{{/if}}>
         <div class="cover">
           {{#if this.coverUrl}}<img class="cover-img" src="{{safeUrl this.coverUrl}}" alt="{{this.title}}" loading="lazy" decoding="async">{{else}}<span class="ph">{{initials this.title}}</span>{{/if}}
+          {{#if this.link}}<span class="gal-open" aria-hidden="true"><svg class="ic" viewBox="0 0 24 24"><path d="M7 17 17 7M9 7h8v8"/></svg></span>{{/if}}
           {{#if this.meta.type}}<span class="cover-cat">{{this.meta.type}}</span>{{else if this.technologies}}<span class="cover-cat">{{this.technologies.[0]}}</span>{{/if}}
           <span class="cover-title">{{this.title}}</span>
           {{#if this.metrics}}<span class="cover-metric">{{#with this.metrics.[0]}}{{this.value}} {{this.label}}{{/with}}</span>{{else if this.meta.year}}<span class="cover-metric">{{this.meta.year}}</span>{{/if}}

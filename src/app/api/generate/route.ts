@@ -6,8 +6,6 @@ import {
   renderCreativeTemplate,
   renderCreatorTemplate,
   renderDeveloperTemplate,
-  renderMedicalTemplate,
-  renderEducatorTemplate,
 } from "@/lib/template-engine";
 
 // In-memory rate limit. Single-instance only (Vercel cold starts reset it).
@@ -45,8 +43,6 @@ export async function POST(req: NextRequest) {
       creative: renderCreativeTemplate,
       creator: renderCreatorTemplate,
       developer: renderDeveloperTemplate,
-      medical: renderMedicalTemplate,
-      educator: renderEducatorTemplate,
     };
     const render = renderers[templateId] || renderCorporateTemplate;
     const html = render(data);

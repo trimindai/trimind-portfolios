@@ -60,6 +60,7 @@ export function CreativeGalleryStep({ data, onChange }: CreativeGalleryStepProps
           title: "",
           description: "",
           coverUrl: "",
+          link: "",
           slug: "",
           tagline: "",
           technologies: [] as string[],
@@ -105,7 +106,15 @@ export function CreativeGalleryStep({ data, onChange }: CreativeGalleryStepProps
                 value={item.coverUrl || ""}
                 onChange={(v) => update({ coverUrl: v })}
                 placeholder="https://example.com/cover.jpg"
-                hint="Direct link to the image. Portrait (3:4) looks best in the cone."
+                hint="Direct link to the image. Portrait (3:4) looks best."
+              />
+
+              <TextField
+                label="Link to this work"
+                value={item.link || ""}
+                onChange={(v) => update({ link: v })}
+                placeholder="https://youtube.com/watch?v=…"
+                hint="Tapping the card opens this — the video, live ad, campaign or post. Leave blank for no link."
               />
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">

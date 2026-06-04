@@ -6,8 +6,6 @@ import creativeTemplateSource from "@/templates/creative/template.hbs";
 import creativeProjectDetailSource from "@/templates/creative/project-detail.hbs";
 import creatorTemplateSource from "@/templates/creator/template.hbs";
 import developerTemplateSource from "@/templates/developer/template.hbs";
-import medicalTemplateSource from "@/templates/medical/template.hbs";
-import educatorTemplateSource from "@/templates/educator/template.hbs";
 import cvTemplateSource from "@/templates/_cv/cv.hbs";
 
 export interface PortfolioData {
@@ -440,8 +438,6 @@ let compiledCreativeTemplate: Handlebars.TemplateDelegate | null = null;
 let compiledCreativeProjectDetail: Handlebars.TemplateDelegate | null = null;
 let compiledCreatorTemplate: Handlebars.TemplateDelegate | null = null;
 let compiledDeveloperTemplate: Handlebars.TemplateDelegate | null = null;
-let compiledMedicalTemplate: Handlebars.TemplateDelegate | null = null;
-let compiledEducatorTemplate: Handlebars.TemplateDelegate | null = null;
 let compiledCvTemplate: Handlebars.TemplateDelegate | null = null;
 
 function prepareTemplateData(data: PortfolioData & { contentAr?: any }) {
@@ -488,20 +484,6 @@ export function renderDeveloperTemplate(data: PortfolioData & { contentAr?: any 
     compiledDeveloperTemplate = Handlebars.compile(developerTemplateSource as string);
   }
   return compiledDeveloperTemplate(prepareTemplateData(data));
-}
-
-export function renderMedicalTemplate(data: PortfolioData & { contentAr?: any }): string {
-  if (!compiledMedicalTemplate) {
-    compiledMedicalTemplate = Handlebars.compile(medicalTemplateSource as string);
-  }
-  return compiledMedicalTemplate(prepareTemplateData(data));
-}
-
-export function renderEducatorTemplate(data: PortfolioData & { contentAr?: any }): string {
-  if (!compiledEducatorTemplate) {
-    compiledEducatorTemplate = Handlebars.compile(educatorTemplateSource as string);
-  }
-  return compiledEducatorTemplate(prepareTemplateData(data));
 }
 
 /**

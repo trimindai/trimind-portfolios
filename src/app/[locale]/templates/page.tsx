@@ -14,7 +14,7 @@ type PageProps = { params: Promise<{ locale: string }> };
 export const metadata = {
   title: "Portfolio Templates — Portfolio Pro",
   description:
-    "Profession-specific portfolio templates: Corporate, Engineer, Creative, Creator, Developer, Medical, Educator.",
+    "Professional portfolio templates: General, Engineer, Creative, Creator, Developer.",
 };
 
 export default async function TemplatesPage({ params }: PageProps) {

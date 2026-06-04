@@ -5,9 +5,7 @@ import corporate from "@/templates/corporate/manifest.json";
 import creative from "@/templates/creative/manifest.json";
 import creator from "@/templates/creator/manifest.json";
 import developer from "@/templates/developer/manifest.json";
-import educator from "@/templates/educator/manifest.json";
 import engineer from "@/templates/engineer/manifest.json";
-import medical from "@/templates/medical/manifest.json";
 
 export type TemplateManifest = {
   id: string;
@@ -40,8 +38,6 @@ export const TEMPLATES: Template[] = (
     creative,
     creator,
     developer,
-    medical,
-    educator,
   ] as TemplateManifest[]
 ).map((m) => ({
   ...m,
