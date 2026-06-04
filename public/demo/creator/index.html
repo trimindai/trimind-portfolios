@@ -98,14 +98,14 @@ svg{display:block}
   padding:calc(13px + env(safe-area-inset-top)) calc(20px + env(safe-area-inset-right)) 13px calc(20px + env(safe-area-inset-left));
   background:linear-gradient(180deg,var(--bg) 14%,oklch(94% 0.022 92 / .86) 72%,transparent)}
 #topbar.show{display:flex}
-.brand-pill{display:flex;align-items:center;gap:10px;font-family:var(--font-head);font-weight:700;white-space:nowrap;flex:none}
-.brand-pill .nm{overflow:hidden;text-overflow:ellipsis;max-width:42vw}
+.brand-pill{display:flex;align-items:center;gap:10px;font-family:var(--font-head);font-weight:700;white-space:nowrap;min-width:0;flex:0 1 auto}
+.brand-pill .nm{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
 .mono{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;background:var(--valentine-deep);
   color:var(--eggshell);font-weight:800;font-size:13px;letter-spacing:-.04em;flex:none}
 .progress{flex:1;min-width:54px;max-width:330px;height:8px;border-radius:99px;background:oklch(30% 0.02 70 / .12);overflow:hidden}
 .progress > i{display:block;height:100%;width:0;background:var(--brand-grad);border-radius:99px;transition:width .6s var(--ease)}
 .progress-label{font-size:11px;color:var(--text-3);white-space:nowrap;letter-spacing:.06em;text-transform:uppercase;font-weight:600}
-.bar-actions{display:flex;gap:9px;margin-left:auto;align-items:center}
+.bar-actions{display:flex;gap:9px;margin-left:auto;align-items:center;flex:none}
 .snd{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;flex:none;color:var(--text-2);
   background:oklch(30% 0.02 70 / .05);border:1px solid var(--line);transition:transform .18s var(--ease),background .2s}
 .snd .ic{font-size:19px}
@@ -335,13 +335,17 @@ svg{display:block}
   *{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important;scroll-behavior:auto!important}
 }
 @media(max-width:600px){
-  #topbar{gap:10px}
+  #topbar{gap:10px;
+    padding-left:calc(14px + env(safe-area-inset-left));padding-right:calc(14px + env(safe-area-inset-right))}
   .progress,.progress-label{display:none}
-  .bar-actions{gap:10px}
-  .brand-pill .nm{max-width:32vw}
+  .bar-actions{gap:8px}
   .skip-full{display:none}
   #screen-title,#screen-contact,#screen-win{justify-content:flex-start;padding-top:92px}
   #screen-win{min-height:auto}
+}
+@media(max-width:340px){
+  /* tiniest phones: monogram only, name would crowd the CTAs */
+  .brand-pill .nm{display:none}
 }
 @media(max-width:899px){ .discovered{order:2;position:static} }
 </style>
