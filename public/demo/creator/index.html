@@ -173,10 +173,15 @@ svg{display:block}
 .cover{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:flex-end;
   padding:clamp(8px,1.5vw,12px);text-align:left}
 .cover-art{overflow:hidden}
-.cover-art::after{content:"";position:absolute;inset:0;
-  background:linear-gradient(to top,oklch(20% 0.05 40 / .82) 6%,oklch(20% 0.05 40 / .1) 50%,transparent)}
-.cover-art .art-motif{position:absolute;inset:0;display:grid;place-items:center;color:var(--eggshell);opacity:.22}
+/* layered project cover: gradient(fallback) < motif < photo < scrim < text */
+.cover-art .art-motif{position:absolute;inset:0;display:grid;place-items:center;color:var(--eggshell);opacity:.22;z-index:1}
+.cover-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:2;
+  opacity:0;transition:opacity .55s var(--ease)}
+.cover-img.on{opacity:1}
+.cover-art::after{content:"";position:absolute;inset:0;z-index:3;
+  background:linear-gradient(to top,oklch(17% 0.04 40 / .88) 4%,oklch(17% 0.04 40 / .38) 44%,oklch(17% 0.04 40 / .06) 74%,transparent)}
 .art-motif .ic{width:48%;height:48%;stroke-width:1.1}
+.cover-art .cover-cat,.cover-art .cover-title,.cover-art .cover-metric{z-index:4}
 .cover-art .cover-title{color:var(--eggshell)}
 .cover-art .cover-metric{color:oklch(94% 0.02 92)}
 .cover-badge{align-items:flex-start;justify-content:space-between}
@@ -513,12 +518,15 @@ const CREATOR = {
   // Each project takes a different Social Pulse hue, like a colourful IG grid.
   projects:[
     {title:"Midnight Market",cat:"Brand Film",metric:"12M views · Vélo",motif:"clapper",
+      img:"/demo/creator/img/midnight-market.jpg",
       grad:"linear-gradient(150deg,oklch(60% 0.2 26),oklch(40% 0.12 22))",
       desc:"A cinematic night-market campaign that became Vélo's most-watched film."},
     {title:"Studio Diaries",cat:"Vlog Series",metric:"480K subscribers",motif:"camera",
+      img:"/demo/creator/img/studio-diaries.jpg",
       grad:"linear-gradient(150deg,oklch(66% 0.16 60),oklch(46% 0.11 50))",
       desc:"A weekly behind-the-scenes series with rare audience retention."},
     {title:"Neon Nights",cat:"Short-form",metric:"38M plays",motif:"wave",
+      img:"/demo/creator/img/neon-nights.jpg",
       grad:"linear-gradient(150deg,oklch(64% 0.17 320),oklch(44% 0.13 312))",
       desc:"A stylised short-form series proving format-native storytelling at scale."}
   ],
@@ -574,6 +582,8 @@ function coverHTML(item){
   if(item.kind==="project")
     return '<div class="cover cover-art" style="background:'+item.grad+'">'+
       '<span class="art-motif">'+svg(item.motif)+'</span>'+
+      (item.img?'<img class="cover-img" src="'+item.img+'" alt="" loading="lazy" decoding="async" '+
+        'onload="this.classList.add(\'on\')" onerror="this.remove()">':'')+
       '<span class="cover-cat">'+item.cat+'</span>'+
       '<span class="cover-title">'+item.title+'</span>'+
       '<span class="cover-metric">'+item.metric+'</span></div>';

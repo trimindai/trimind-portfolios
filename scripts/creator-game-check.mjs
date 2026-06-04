@@ -12,14 +12,37 @@
 
 import { chromium } from "playwright-core";
 import { mkdirSync } from "node:fs";
-import { dirname, resolve } from "node:path";
-import { fileURLToPath, pathToFileURL } from "node:url";
+import { readFile } from "node:fs/promises";
+import { createServer } from "node:http";
+import { dirname, resolve, extname } from "node:path";
+import { fileURLToPath } from "node:url";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = resolve(__dirname, "..");
 const OUT = resolve(__dirname, "creator-shots");
 mkdirSync(OUT, { recursive: true });
-const URL = pathToFileURL(resolve(ROOT, "public/demo/creator/index.html")).href;
+
+// Serve public/ over HTTP so root-relative asset paths (e.g. /demo/creator/img/*.jpg)
+// resolve exactly as they do on production behind the /demo/creator rewrite.
+// (file:// can't resolve root-relative paths.)
+const PUBLIC = resolve(ROOT, "public");
+const MIME = { ".html": "text/html", ".js": "text/javascript", ".css": "text/css",
+  ".jpg": "image/jpeg", ".jpeg": "image/jpeg", ".png": "image/png", ".svg": "image/svg+xml",
+  ".webp": "image/webp", ".json": "application/json", ".ico": "image/x-icon" };
+const server = createServer(async (req, res) => {
+  let p = decodeURIComponent(req.url.split("?")[0]);
+  if (p === "/favicon.ico") { res.writeHead(204); return res.end(); }
+  if (p.endsWith("/")) p += "index.html";
+  const file = resolve(PUBLIC, "." + p);
+  if (!file.startsWith(PUBLIC)) { res.writeHead(403); return res.end(); }
+  try {
+    const body = await readFile(file);
+    res.writeHead(200, { "content-type": MIME[extname(file)] || "application/octet-stream" });
+    res.end(body);
+  } catch { res.writeHead(404); res.end("not found"); }
+});
+await new Promise((r) => server.listen(0, "127.0.0.1", r));
+const URL = `http://127.0.0.1:${server.address().port}/demo/creator/index.html`;
 
 // Solve one memory level: repeatedly pick two unflipped cards sharing a pid.
 async function solveLevel(page) {
@@ -116,6 +139,7 @@ const overflow = await mp.evaluate(() => {
 await mp.screenshot({ path: resolve(OUT, "07-board-390.png") });
 await mctx.close();
 await browser.close();
+server.close();
 
 console.log("\n=== Creator game check ===");
 console.log("reached contact round:", reachedContact);
