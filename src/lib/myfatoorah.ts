@@ -1,3 +1,8 @@
+import { convexClient, serverSecret } from "@/lib/convex";
+import { api } from "@convex/_generated/api";
+import { Id } from "@convex/_generated/dataModel";
+import { PRICE_KWD, PRICE_TOLERANCE } from "@/lib/pricing";
+
 const MYFATOORAH_BASE_URL = process.env.MYFATOORAH_BASE_URL!;
 const MYFATOORAH_API_KEY = process.env.MYFATOORAH_API_KEY!;
 
@@ -48,7 +53,7 @@ export async function sendPayment(
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      NotificationOption: "LNK",
+      NotificationOption: "ALL",
       InvoiceValue: params.invoiceValue,
       DisplayCurrencyIso: "KWD",
       CustomerName: params.customerName,
@@ -89,4 +94,63 @@ export async function getPaymentStatus(
   }
 
   return response.json();
+}
+
+export type VerifyResult =
+  | { ok: true; invoiceId: string; portfolioId: string; locale: string; alreadyProcessed: boolean }
+  | { ok: false; reason: string };
+
+/**
+ * Shared server-side payment verification + idempotent DB update.
+ * Used by: callback route, webhook route, and reconciliation.
+ */
+export async function verifyAndProcessPayment(
+  paymentId: string
+): Promise<VerifyResult> {
+  const secret = serverSecret();
+  const status = await getPaymentStatus(paymentId);
+
+  const [portfolioId, localeRaw] = (
+    status.Data?.UserDefinedField || ""
+  ).split(":");
+  const locale = localeRaw === "ar" ? "ar" : "en";
+
+  if (!status.IsSuccess || status.Data.InvoiceStatus !== "Paid") {
+    return { ok: false, reason: `status=${status.Data?.InvoiceStatus || "unknown"}` };
+  }
+
+  if (!portfolioId) {
+    return { ok: false, reason: "missing_portfolio_id" };
+  }
+
+  const invoiceId = String(status.Data.InvoiceId);
+
+  const existing = await convexClient.query(api.payments.getByInvoice, {
+    myfatoorahInvoiceId: invoiceId,
+    serverSecret: secret,
+  });
+
+  if (existing?.status === "completed") {
+    return { ok: true, invoiceId, portfolioId, locale, alreadyProcessed: true };
+  }
+
+  if (status.Data.InvoiceValue < PRICE_KWD * PRICE_TOLERANCE) {
+    return { ok: false, reason: "amount_mismatch" };
+  }
+
+  if (existing) {
+    await convexClient.mutation(api.payments.markCompleted, {
+      id: existing._id,
+      myfatoorahInvoiceId: invoiceId,
+      serverSecret: secret,
+    });
+  }
+
+  await convexClient.mutation(api.portfolios.markPaid, {
+    id: portfolioId as Id<"portfolios">,
+    paymentId: invoiceId,
+    serverSecret: secret,
+  });
+
+  return { ok: true, invoiceId, portfolioId, locale, alreadyProcessed: false };
 }
