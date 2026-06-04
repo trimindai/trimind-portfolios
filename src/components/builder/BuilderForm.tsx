@@ -73,11 +73,22 @@ const DEVELOPER_STEPS: Step[] = [
   { name: "Customize", labelKey: "customize", component: DeveloperCustomizeStep },
 ];
 
+// Creator: same data shape as Creative (basics / projects w/ cover image + category /
+// metrics / skills / experience / certifications / endorsements), reusing those editors.
+const CREATOR_STEPS: Step[] = [
+  { name: "Profile", labelKey: "basics", requiredFields: ["basics.fullName", "basics.title", "basics.email"], component: CreativeProfileStep },
+  { name: "Work", labelKey: "projects", requiredFields: ["projects"], component: CreativeGalleryStep },
+  { name: "Audience & Awards", optional: true, component: CreativeAboutStep },
+  { name: "CV Details", labelKey: "cv", optional: true, component: CvFieldsStep },
+  { name: "Customize", labelKey: "customize", component: CustomizeStep },
+];
+
 const TEMPLATE_STEPS: Record<string, Step[]> = {
   corporate: CORPORATE_STEPS,
   engineer: ENGINEER_STEPS,
   creative: CREATIVE_STEPS,
   developer: DEVELOPER_STEPS,
+  creator: CREATOR_STEPS,
 };
 
 function getStepsForTemplate(templateId: string): Step[] {
