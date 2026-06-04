@@ -43,8 +43,13 @@ function SignInForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
-  const [accountNotFound, setAccountNotFound] = useState(false);
   const [loading, setLoading] = useState(false);
+  // Client-side brute-force throttle (defense-in-depth; Clerk also rate-limits
+  // server-side). After 5 failed attempts, lock the form for 15 minutes.
+  const [failedAttempts, setFailedAttempts] = useState(0);
+  const [isLocked, setIsLocked] = useState(false);
+  const MAX_ATTEMPTS = 5;
+  const LOCK_MS = 15 * 60 * 1000;
 
   const t = isAr
     ? {
@@ -62,6 +67,8 @@ function SignInForm() {
         notFoundHint: "أنشئ حسابك في ثوانٍ وتابع من حيث توقفت.",
         forgot: "نسيت كلمة المرور؟",
         working: "جارٍ المعالجة…",
+        invalidCreds: "البريد الإلكتروني أو كلمة المرور غير صحيحة.",
+        locked: "محاولات كثيرة جدًا. يرجى المحاولة مرة أخرى بعد ١٥ دقيقة.",
       }
     : {
         title: "Sign in",
@@ -78,32 +85,47 @@ function SignInForm() {
         notFoundHint: "Create your account in seconds and pick up right where you left off.",
         forgot: "Forgot password?",
         working: "Working…",
+        invalidCreds: "Invalid email or password.",
+        locked: "Too many attempts. Please try again in 15 minutes.",
       };
 
   const signUpHref = `/sign-up?redirect_url=${encodeURIComponent(redirectUrl)}`;
 
+  function registerFailure() {
+    const next = failedAttempts + 1;
+    setFailedAttempts(next);
+    if (next >= MAX_ATTEMPTS) {
+      setIsLocked(true);
+      setError(t.locked);
+      setTimeout(() => {
+        setIsLocked(false);
+        setFailedAttempts(0);
+        setError(null);
+      }, LOCK_MS);
+    } else {
+      // Identical generic message for every failure — never reveal whether an
+      // account with this email exists (prevents user enumeration).
+      setError(t.invalidCreds);
+    }
+  }
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (!isLoaded || loading) return;
+    if (!isLoaded || loading || isLocked) return;
     setError(null);
-    setAccountNotFound(false);
     setLoading(true);
     try {
       const res = await signIn.create({ identifier: email, password });
       if (res.status === "complete") {
         await setActive({ session: res.createdSessionId });
+        setFailedAttempts(0);
         window.location.assign(redirectUrl);
       } else {
-        setError("Additional verification is required. Please continue in your email.");
+        // Any non-complete status (additional factor, etc.) → generic, no detail.
+        setError(t.invalidCreds);
       }
-    } catch (err) {
-      const e = firstError(err);
-      if (e?.code === "form_identifier_not_found") {
-        setAccountNotFound(true);
-        setError(t.notFoundLead);
-      } else {
-        setError(clerkError(err));
-      }
+    } catch {
+      registerFailure();
     } finally {
       setLoading(false);
     }
@@ -173,7 +195,7 @@ function SignInForm() {
                 value={email}
                 onChange={(e) => {
                   setEmail(e.target.value);
-                  setAccountNotFound(false);
+                  if (error) setError(null);
                 }}
                 className={inputClass}
                 placeholder="you@example.com"
@@ -204,26 +226,11 @@ function SignInForm() {
               </p>
             )}
 
-            {/* Prominent recovery CTA shown only when the email has no account. */}
-            {accountNotFound && (
-              <Link
-                href={signUpHref}
-                className="block rounded-xl border border-[var(--land-accent)] bg-[var(--land-accent-subtle)] p-4 transition-colors hover:bg-[var(--land-accent)]/15"
-              >
-                <span className="flex items-center justify-between gap-3">
-                  <span>
-                    <span className="block font-semibold text-[var(--land-accent)]">
-                      {t.createFree} →
-                    </span>
-                    <span className="mt-0.5 block text-xs text-[var(--land-body)]">
-                      {t.notFoundHint}
-                    </span>
-                  </span>
-                </span>
-              </Link>
-            )}
-
-            <button type="submit" disabled={!isLoaded || loading} className={primaryBtn}>
+            <button
+              type="submit"
+              disabled={!isLoaded || loading || isLocked}
+              className={primaryBtn}
+            >
               {loading ? t.working : t.continue}
             </button>
           </form>

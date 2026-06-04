@@ -8,11 +8,24 @@ export function TryItForm({ locale }: { locale: string }) {
   const router = useRouter();
   const [name, setName] = useState("");
   const [title, setTitle] = useState("");
+  const [error, setError] = useState("");
 
   const handleStart = () => {
-    if (name.trim() || title.trim()) {
-      localStorage.setItem("portfolio-draft", JSON.stringify({ fullName: name.trim(), title: title.trim() }));
+    // Validate: both fields are required (was: silently proceeded on empty input).
+    if (!name.trim() || !title.trim()) {
+      setError(
+        isRTL
+          ? "الرجاء إدخال اسمك الكامل ومسماك الوظيفي."
+          : "Please enter both your name and job title."
+      );
+      return;
     }
+    setError("");
+    // Preserve the entered data — read back in dashboard/new to seed the portfolio.
+    localStorage.setItem(
+      "portfolio-draft",
+      JSON.stringify({ fullName: name.trim(), title: title.trim() })
+    );
     router.push(`/${locale}/dashboard/new?template=corporate`);
   };
 
@@ -26,17 +39,30 @@ export function TryItForm({ locale }: { locale: string }) {
           <input
             type="text"
             value={name}
-            onChange={(e) => setName(e.target.value)}
+            onChange={(e) => {
+              setName(e.target.value);
+              if (error) setError("");
+            }}
+            aria-invalid={!!error && !name.trim()}
             placeholder={isRTL ? "اسمك الكامل" : "Your full name"}
             className="w-full rounded-lg border border-[var(--land-border)] bg-[var(--land-surface)] px-4 py-2.5 text-sm text-[var(--land-bright)] placeholder:text-[var(--land-muted)] focus:border-[var(--land-accent)] focus:ring-1 focus:ring-[var(--land-accent)] outline-none"
           />
           <input
             type="text"
             value={title}
-            onChange={(e) => setTitle(e.target.value)}
+            onChange={(e) => {
+              setTitle(e.target.value);
+              if (error) setError("");
+            }}
+            aria-invalid={!!error && !title.trim()}
             placeholder={isRTL ? "مسماك الوظيفي" : "Your job title"}
             className="w-full rounded-lg border border-[var(--land-border)] bg-[var(--land-surface)] px-4 py-2.5 text-sm text-[var(--land-bright)] placeholder:text-[var(--land-muted)] focus:border-[var(--land-accent)] focus:ring-1 focus:ring-[var(--land-accent)] outline-none"
           />
+          {error && (
+            <p role="alert" className="text-xs text-red-600">
+              {error}
+            </p>
+          )}
           <button
             onClick={handleStart}
             className="w-full rounded-lg bg-[var(--land-accent)] py-3 text-sm font-semibold text-white hover:bg-[var(--land-accent-hover)] transition-colors active:scale-[0.98]"
