@@ -42,6 +42,8 @@ export default defineSchema({
       linkedin: v.optional(v.string()),
       github: v.optional(v.string()),
       instagram: v.optional(v.string()),
+      youtube: v.optional(v.string()),
+      tiktok: v.optional(v.string()),
       photoUrl: v.optional(v.string()),
       resumeUrl: v.optional(v.string()),
       languages: v.optional(
@@ -53,6 +55,10 @@ export default defineSchema({
         )
       ),
     }),
+
+    brands: v.optional(
+      v.array(v.object({ name: v.string(), logoUrl: v.optional(v.string()) }))
+    ),
 
     metrics: v.optional(
       v.array(

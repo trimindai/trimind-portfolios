@@ -18,6 +18,8 @@ import { EngineerProjectsStep } from "./steps/EngineerProjectsStep";
 import { EngineerBackgroundStep } from "./steps/EngineerBackgroundStep";
 import { EngineerCustomizeStep } from "./steps/EngineerCustomizeStep";
 import { CreativeProfileStep } from "./steps/CreativeProfileStep";
+import { CreatorProfileStep } from "./steps/CreatorProfileStep";
+import { CreatorBrandsStep } from "./steps/CreatorBrandsStep";
 import { CreativeGalleryStep } from "./steps/CreativeGalleryStep";
 import { CreativeAboutStep } from "./steps/CreativeAboutStep";
 import { CreativeCustomizeStep } from "./steps/CreativeCustomizeStep";
@@ -76,9 +78,10 @@ const DEVELOPER_STEPS: Step[] = [
 // Creator: same data shape as Creative (basics / projects w/ cover image + category /
 // metrics / skills / experience / certifications / endorsements), reusing those editors.
 const CREATOR_STEPS: Step[] = [
-  { name: "Profile", labelKey: "basics", requiredFields: ["basics.fullName", "basics.title", "basics.email"], component: CreativeProfileStep },
+  { name: "Profile", labelKey: "basics", requiredFields: ["basics.fullName", "basics.title", "basics.email"], component: CreatorProfileStep },
   { name: "Work", labelKey: "projects", requiredFields: ["projects"], component: CreativeGalleryStep },
   { name: "Audience & Awards", optional: true, component: CreativeAboutStep },
+  { name: "Brands", optional: true, component: CreatorBrandsStep },
   { name: "CV Details", labelKey: "cv", optional: true, component: CvFieldsStep },
   { name: "Customize", labelKey: "customize", component: CustomizeStep },
 ];

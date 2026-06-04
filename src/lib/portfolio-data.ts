@@ -13,6 +13,7 @@ export function toPortfolioData(
 
   return {
     basics: portfolio.basics,
+    brands: portfolio.brands,
     metrics: portfolio.metrics,
     experience: portfolio.experience,
     skills: portfolio.skills,

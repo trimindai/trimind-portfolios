@@ -27,10 +27,13 @@ export interface PortfolioData {
     linkedin?: string;
     github?: string;
     instagram?: string;
+    youtube?: string;
+    tiktok?: string;
     photoUrl?: string;
     resumeUrl?: string;
     languages?: Array<{ name: string; level?: string }>;
   };
+  brands?: Array<{ name: string; logoUrl?: string }>;
   metrics?: Array<{ value: string; label: string }>;
   experience?: Array<{
     title: string;

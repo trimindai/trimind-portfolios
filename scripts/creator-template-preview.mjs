@@ -32,9 +32,14 @@ const data = {
     subtitle: "I turn brands into stories people want to watch.",
     valueProposition: "Cinematic short-form, vlogs and campaigns across YouTube, Instagram and TikTok — built to turn attention into a loyal audience.",
     location: "Kuwait City", email: "hello@remivance.example",
-    instagram: "https://instagram.com/", website: "https://remivance.example",
+    instagram: "https://instagram.com/", youtube: "https://youtube.com/@remivance",
+    tiktok: "https://tiktok.com/@remivance", website: "https://remivance.example",
     linkedin: "https://linkedin.com/in/", phone: "+965 5000 0000",
   },
+  brands: [
+    { name: "Vélo" }, { name: "Lumen" }, { name: "Aura Studios" }, { name: "Northwind" },
+    { name: "Kasa" }, { name: "Pulse" }, { name: "Halcyon" }, { name: "Driftwood" },
+  ],
   metrics: [
     { value: "2.4M", label: "Followers" }, { value: "180M", label: "Total views" },
     { value: "7.2%", label: "Engagement" }, { value: "42+", label: "Brand collabs" },

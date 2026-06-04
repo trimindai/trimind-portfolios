@@ -88,6 +88,8 @@ const basicsValidator = v.object({
   linkedin: v.optional(v.string()),
   github: v.optional(v.string()),
   instagram: v.optional(v.string()),
+  youtube: v.optional(v.string()),
+  tiktok: v.optional(v.string()),
   photoUrl: v.optional(v.string()),
   resumeUrl: v.optional(v.string()),
   languages: v.optional(
@@ -157,6 +159,9 @@ export const update = mutation({
   args: {
     id: v.id("portfolios"),
     basics: v.optional(basicsValidator),
+    brands: v.optional(
+      v.array(v.object({ name: v.string(), logoUrl: v.optional(v.string()) }))
+    ),
     metrics: v.optional(
       v.array(v.object({ value: v.string(), label: v.string() }))
     ),
