@@ -388,7 +388,7 @@ export default async function LandingPage({
                   </p>
                   <div className="mt-4 flex flex-wrap gap-4">
                     <a
-                      href="/demo/corporate"
+                      href="/demo/general"
                       target="_blank"
                       rel="noopener noreferrer"
                       className="text-sm text-[var(--land-accent)] hover:text-[var(--land-accent-hover)] transition-colors"
@@ -895,7 +895,7 @@ export default async function LandingPage({
               </li>
               <li>
                 <a
-                  href="/demo/corporate"
+                  href="/demo/general"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="hover:text-[var(--land-bright)] transition-colors"

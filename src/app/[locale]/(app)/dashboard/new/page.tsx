@@ -27,7 +27,7 @@ export default function NewPortfolioPage() {
         const userEmail = user?.primaryEmailAddress?.emailAddress || "";
 
         // Create draft portfolio (Convex enforces auth; no userId arg).
-        const templateId = searchParams.get("template") || "corporate";
+        const templateId = searchParams.get("template") || "general";
 
         // Restore draft from landing page try-it form
         let draftName = user?.fullName || "";

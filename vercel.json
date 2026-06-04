@@ -1,5 +1,6 @@
 {
   "rewrites": [
+    { "source": "/demo/general", "destination": "/demo/corporate/index.html" },
     { "source": "/demo/corporate", "destination": "/demo/corporate/index.html" },
     { "source": "/demo/engineer", "destination": "/demo/engineer/index.html" },
     { "source": "/demo/creative", "destination": "/demo/creative/index.html" },

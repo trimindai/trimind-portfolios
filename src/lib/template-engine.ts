@@ -1,5 +1,5 @@
 import Handlebars from "handlebars";
-import corporateTemplateSource from "@/templates/corporate/template.hbs";
+import generalTemplateSource from "@/templates/corporate/template.hbs";
 import engineerTemplateSource from "@/templates/engineer/template.hbs";
 import engineerProjectDetailSource from "@/templates/engineer/project-detail.hbs";
 import creativeTemplateSource from "@/templates/creative/template.hbs";
@@ -431,7 +431,7 @@ Handlebars.registerHelper(
   }
 );
 
-let compiledCorporateTemplate: Handlebars.TemplateDelegate | null = null;
+let compiledGeneralTemplate: Handlebars.TemplateDelegate | null = null;
 let compiledEngineerTemplate: Handlebars.TemplateDelegate | null = null;
 let compiledEngineerProjectDetail: Handlebars.TemplateDelegate | null = null;
 let compiledCreativeTemplate: Handlebars.TemplateDelegate | null = null;
@@ -451,11 +451,11 @@ function prepareTemplateData(data: PortfolioData & { contentAr?: any }) {
   return templateData;
 }
 
-export function renderCorporateTemplate(data: PortfolioData & { contentAr?: any }): string {
-  if (!compiledCorporateTemplate) {
-    compiledCorporateTemplate = Handlebars.compile(corporateTemplateSource as string);
+export function renderGeneralTemplate(data: PortfolioData & { contentAr?: any }): string {
+  if (!compiledGeneralTemplate) {
+    compiledGeneralTemplate = Handlebars.compile(generalTemplateSource as string);
   }
-  return compiledCorporateTemplate(prepareTemplateData(data));
+  return compiledGeneralTemplate(prepareTemplateData(data));
 }
 
 export function renderEngineerTemplate(data: PortfolioData & { contentAr?: any }): string {
@@ -584,7 +584,7 @@ export function renderCreativeProjectDetail(
 export function renderAllProjectDetailPages(
   data: PortfolioData & { contentAr?: any; slug?: string }
 ): Array<{ slug: string; html: string }> {
-  const templateId = data.templateId || "corporate";
+  const templateId = data.templateId || "general";
   const slugged = (data.projects || []).filter((p) => p.slug);
   const detailRenderer =
     templateId === "engineer"

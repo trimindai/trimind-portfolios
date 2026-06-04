@@ -1,12 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
 import {
-  renderCorporateTemplate,
+  renderGeneralTemplate,
   renderEngineerTemplate,
   renderCreativeTemplate,
   renderCreatorTemplate,
   renderDeveloperTemplate,
 } from "@/lib/template-engine";
+import { resolveTemplateId } from "@/lib/templates";
 
 // In-memory rate limit. Single-instance only (Vercel cold starts reset it).
 // For multi-instance / production-grade, replace with Convex- or Redis-backed.
@@ -36,15 +37,15 @@ export async function POST(req: NextRequest) {
     }
 
     const data = await req.json();
-    const templateId = data.templateId || "corporate";
+    const templateId = resolveTemplateId(data.templateId);
     const renderers: Record<string, (d: any) => string> = {
-      corporate: renderCorporateTemplate,
+      general: renderGeneralTemplate,
       engineer: renderEngineerTemplate,
       creative: renderCreativeTemplate,
       creator: renderCreatorTemplate,
       developer: renderDeveloperTemplate,
     };
-    const render = renderers[templateId] || renderCorporateTemplate;
+    const render = renderers[templateId] || renderGeneralTemplate;
     const html = render(data);
     return NextResponse.json({ html });
   } catch (error) {

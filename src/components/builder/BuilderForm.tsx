@@ -6,6 +6,7 @@ import { useTranslations } from "next-intl";
 import { useMutation } from "convex/react";
 import { api } from "@convex/_generated/api";
 import { Id } from "@convex/_generated/dataModel";
+import { resolveTemplateId } from "@/lib/templates";
 import { BasicsStep } from "./steps/BasicsStep";
 import { ExperienceStep } from "./steps/ExperienceStep";
 import { AchievementsStep } from "./steps/AchievementsStep";
@@ -38,7 +39,7 @@ type Step = {
   component: React.ComponentType<{ data: any; onChange: (updates: any) => void }>;
 };
 
-const CORPORATE_STEPS: Step[] = [
+const GENERAL_STEPS: Step[] = [
   { name: "Basics", labelKey: "basics", requiredFields: ["basics.fullName", "basics.title", "basics.email"], component: BasicsStep },
   { name: "Experience", labelKey: "experience", requiredFields: ["experience"], component: ExperienceStep },
   { name: "Achievements", optional: true, component: AchievementsStep },
@@ -87,7 +88,7 @@ const CREATOR_STEPS: Step[] = [
 ];
 
 const TEMPLATE_STEPS: Record<string, Step[]> = {
-  corporate: CORPORATE_STEPS,
+  general: GENERAL_STEPS,
   engineer: ENGINEER_STEPS,
   creative: CREATIVE_STEPS,
   developer: DEVELOPER_STEPS,
@@ -95,7 +96,7 @@ const TEMPLATE_STEPS: Record<string, Step[]> = {
 };
 
 function getStepsForTemplate(templateId: string): Step[] {
-  return TEMPLATE_STEPS[templateId] || CORPORATE_STEPS;
+  return TEMPLATE_STEPS[resolveTemplateId(templateId)] || GENERAL_STEPS;
 }
 
 function getFieldValue(data: any, path: string): any {
@@ -147,7 +148,7 @@ export function BuilderForm({ portfolioId, initialData }: BuilderFormProps) {
   const updatePortfolio = useMutation(api.portfolios.update);
 
   const steps = useMemo(
-    () => getStepsForTemplate(initialData.templateId || "corporate"),
+    () => getStepsForTemplate(initialData.templateId || "general"),
     [initialData.templateId]
   );
 

@@ -4,7 +4,7 @@ import { PRICE_KWD } from "@/lib/pricing";
 import Image from "next/image";
 
 const MOCKUP_IMAGES: Record<string, string> = {
-  corporate: "/landing/mockup-corporate-2026a.jpg",
+  general: "/landing/mockup-corporate-2026a.jpg",
   engineer: "/landing/mockup-engineer-2026a.jpg",
   creative: "/landing/mockup-creative-2026a.jpg",
 };

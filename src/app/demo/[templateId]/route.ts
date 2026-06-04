@@ -1,14 +1,15 @@
 import { NextRequest } from "next/server";
 import {
-  renderCorporateTemplate,
+  renderGeneralTemplate,
   renderEngineerTemplate,
   renderCreativeTemplate,
   renderDeveloperTemplate,
 } from "@/lib/template-engine";
+import { resolveTemplateId } from "@/lib/templates";
 
 const DEMO_DATA: Record<string, any> = {
-  corporate: {
-    templateId: "corporate",
+  general: {
+    templateId: "general",
     locale: "en",
     basics: {
       fullName: "Sarah Al-Rashidi",
@@ -178,14 +179,14 @@ const DEMO_DATA: Record<string, any> = {
 };
 
 const RENDERERS: Record<string, (data: any) => string> = {
-  corporate: renderCorporateTemplate,
+  general: renderGeneralTemplate,
   engineer: renderEngineerTemplate,
   creative: renderCreativeTemplate,
   developer: renderDeveloperTemplate,
 };
 
 const THEME_COLORS: Record<string, string> = {
-  corporate: "#1e3a5f",
+  general: "#1e3a5f",
   engineer: "#0f172a",
   creative: "#0a0a0a",
   developer: "#0f172a",
@@ -195,7 +196,8 @@ export async function GET(
   _req: NextRequest,
   { params }: { params: Promise<{ templateId: string }> }
 ) {
-  const { templateId } = await params;
+  const { templateId: rawId } = await params;
+  const templateId = resolveTemplateId(rawId); // /demo/corporate still resolves to general
   const data = DEMO_DATA[templateId];
   const render = RENDERERS[templateId];
 
