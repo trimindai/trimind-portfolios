@@ -53,7 +53,11 @@ export async function sendPayment(
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      NotificationOption: "ALL",
+      // "LNK" = return an invoice link only. We redirect the browser to
+      // Data.InvoiceURL, so MyFatoorah does NOT need to SMS/email the invoice.
+      // "ALL" (SMS+email) makes CustomerMobile mandatory — and we never send a
+      // mobile, so every SendPayment failed with "CustomerMobile is mandatory".
+      NotificationOption: "LNK",
       InvoiceValue: params.invoiceValue,
       DisplayCurrencyIso: "KWD",
       CustomerName: params.customerName,
