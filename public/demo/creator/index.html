@@ -148,9 +148,11 @@ svg{display:block}
 .face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;
   border-radius:var(--r-sm);overflow:hidden}
 .face-back{display:grid;place-items:center;background:
-  radial-gradient(120% 90% at 50% 8%,oklch(30% 0.03 60),oklch(19% 0.016 55));border:1px solid var(--line-soft)}
-.face-back .deck{width:36%;color:var(--amber);opacity:.92}
-.face-back::after{content:"";position:absolute;inset:0;background:var(--brand-grad);opacity:.08;mix-blend-mode:screen}
+  radial-gradient(130% 100% at 50% 0%,oklch(31% 0.035 60),oklch(18% 0.016 52));border:1px solid var(--line)}
+.face-back .deck{width:46%;color:var(--amber);opacity:.95}
+.face-back .deck .ic{stroke-width:1.4}
+.face-back::before{content:"";position:absolute;inset:7px;border:1px solid var(--line-soft);border-radius:9px;pointer-events:none}
+.face-back::after{content:"";position:absolute;inset:0;background:var(--brand-grad);opacity:.1;mix-blend-mode:screen}
 .face-front{transform:rotateY(180deg);border:1px solid var(--line)}
 .card.matched .face-front{border-color:oklch(78% 0.155 70 / .65);box-shadow:0 0 0 1px oklch(78% 0.155 70 / .4),0 10px 30px -12px oklch(70% 0.17 55 / .55)}
 @keyframes pop{0%{transform:rotateY(180deg) scale(1)}45%{transform:rotateY(180deg) scale(1.07)}100%{transform:rotateY(180deg) scale(1)}}
