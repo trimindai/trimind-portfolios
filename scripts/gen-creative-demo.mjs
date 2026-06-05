@@ -1,6 +1,7 @@
-// Regenerate public/demo/creative/index.html from src/templates/creative/template.hbs
-// Self-contained: registers the same Handlebars helpers the live engine uses
-// (mirrors src/lib/template-engine.ts) so the demo matches production output.
+// Regenerate the creative demo from the templates:
+//   public/demo/creative/index.html            (from template.hbs)
+//   public/demo/creative/projects/<slug>/index.html  (from project-detail.hbs)
+// Self-contained: mirrors the Handlebars helpers used by the live engine.
 //   node scripts/gen-creative-demo.mjs
 import Handlebars from "handlebars";
 import { readFileSync, writeFileSync, mkdirSync } from "node:fs";
@@ -10,19 +11,18 @@ import { fileURLToPath } from "node:url";
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = resolve(__dirname, "..");
 
-/* ── helpers (subset used by the creative template) ─────────── */
+/* ── helpers (subset used by the creative templates) ─────────── */
 Handlebars.registerHelper("isHidden", function (sectionId) {
   const hidden = (this.customization && this.customization.hiddenSections) || [];
   return hidden.includes(sectionId);
 });
 Handlebars.registerHelper("or", function (...args) { args.pop(); return args.some(Boolean); });
+Handlebars.registerHelper("ifEq", function (a, b, options) { return a === b ? options.fn(this) : options.inverse(this); });
 Handlebars.registerHelper("initials", function (name) {
   if (!name) return "";
   const parts = String(name).trim().split(/\s+/).filter(Boolean);
   if (!parts.length) return "";
-  const first = parts[0][0] || "";
-  const last = parts.length > 1 ? parts[parts.length - 1][0] : "";
-  return (first + last).toUpperCase();
+  return ((parts[0][0] || "") + (parts.length > 1 ? parts[parts.length - 1][0] : "")).toUpperCase();
 });
 Handlebars.registerHelper("safeUrl", function (value) {
   if (value == null) return "";
@@ -50,6 +50,8 @@ Handlebars.registerHelper("safeColor", function (value, fallback) {
     /^[a-zA-Z]{3,20}$/.test(v);
   return ok ? v : fb;
 });
+Handlebars.registerHelper("videoEmbed", function () { return new Handlebars.SafeString(""); });
+Handlebars.registerHelper("creativeWorkJsonLd", function () { return new Handlebars.SafeString(""); });
 function httpUrlOrEmpty(value) { if (value == null) return ""; const v = String(value).trim(); return /^https?:\/\//i.test(v) ? v : ""; }
 function pruneEmpty(node) {
   if (Array.isArray(node)) { const arr = node.map(pruneEmpty).filter((x) => x !== undefined); return arr.length ? arr : undefined; }
@@ -102,7 +104,6 @@ Handlebars.registerHelper("faviconLink", function (fullName, accentColor, bgColo
 });
 
 /* ── demo persona: Dalal Al-Kandari — "My Eye Brain" ─────────── */
-// 46 intuitive ornamental works (title + category), in file order ornaments_1..46.
 const WORKS = [
   ["Purple Bouquet", "Floral Ornamental"], ["Geometric Hearts", "Geometric Abstract"],
   ["Cloud Garden", "Floral Fantasy"], ["Golden Vessel", "Art Nouveau"],
@@ -129,50 +130,90 @@ const WORKS = [
   ["The House", "Narrative Abstract"], ["My Eye Brain Blooms", "Radial Mandala"],
 ];
 
+const TAGLINES = [
+  "Intuition made visible.", "Drawn without a plan.", "The hand leads, the eye follows.",
+  "Feeling, finding its shape.", "No sketch. No reference. Only the pen.",
+  "A page that drew itself.", "Certainty without a single decision.", "My eye brain, on paper.",
+];
+const MEDIUMS = ["Marker on paper", "Ink and marker on paper", "Felt-tip pen on paper", "Mixed marker on card stock"];
+const DIMS = ["29.7 × 42 cm (A3)", "21 × 29.7 cm (A4)", "30 × 40 cm", "42 × 59.4 cm (A2)"];
+const YEARS = ["2024", "2025", "2026", "2023"];
+const SERIES = ["My Eye Brain", "First Hand", "Ornament Studies", "Raw Intuition"];
+const OPEN = [
+  (t) => `${t} began with no sketch and no plan.`,
+  (t) => `There was no reference for ${t} — only the pull of the pen.`,
+  (t) => `${t} arrived the way all my work does: unbidden.`,
+  (t) => `I did not decide ${t}; my hand did.`,
+];
+const MID = [
+  (c) => `Bold lines gather into ${c} the moment I stop thinking,`,
+  (c) => `What reads as ${c} is really feeling looking for a shape,`,
+  (c) => `The ${c} forms itself while my eye watches and my brain feels,`,
+  (c) => `Color crowds in until the ${c} can hold no more,`,
+];
+const CLOSE = [
+  "and the hearts appear on their own.",
+  "until the page tells me it is finished.",
+  "this is not technique, it is my eye brain.",
+  "each mark a small, certain decision I never made on purpose.",
+];
+
+const slugify = (t) => t.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+
 const projects = WORKS.map(([title, type], i) => ({
   title,
+  slug: slugify(title),
   coverUrl: `/demo/creative/artworks/ornaments_${i + 1}_digital.webp`,
-  meta: { type },
+  tagline: TAGLINES[i % TAGLINES.length],
+  description: `${OPEN[i % OPEN.length](title)} ${MID[i % MID.length](type.toLowerCase())} ${CLOSE[i % CLOSE.length]}`,
+  meta: { type, year: YEARS[i % YEARS.length], medium: MEDIUMS[i % MEDIUMS.length], dimensions: DIMS[i % DIMS.length], series: SERIES[i % SERIES.length] },
+  technologies: [type, "Hand-drawn", "Intuitive"],
+  links: [{ label: "View on Instagram", url: "https://www.instagram.com/" }],
 }));
 
-const data = {
-  locale: "en",
-  isRTL: false,
-  portfolioUrl: "https://portfolio-trimind.com/demo/creative",
-  templateId: "creative",
-  basics: {
-    fullName: "Dalal Al-Kandari",
-    title: "Self-Taught Ornamental Artist",
-    subtitle: "Let's explore my eye brain",
-    // No photo on purpose: demonstrates the now-optional hero portrait.
-    location: "Kuwait City, Kuwait",
-    bio: "I never studied ornamental art. My hand moves without planning, my eye sees, my brain feels, and what emerges is pure intuition. 46 works of bold lines, vivid color, and hearts that appear unbidden. This is not technique. This is my eye brain.",
-    email: "dalal@myeyebrain.art",
-    phone: "+965 1234 5678",
-    instagram: "https://www.instagram.com/",
-    linkedin: "https://www.linkedin.com/",
-  },
-  projects,
-  skills: [
-    { category: "The Practice", items: ["Intuitive Creation", "Color Sense", "Pattern Design", "Composition", "Emotional Range"] },
-    { category: "Tools & Mediums", items: ["Markers", "Paper", "Intuition", "Heart", "Eye", "Brain", "Love"] },
-  ],
-  metrics: [
-    { value: "46", label: "Original Works" },
-    { value: "Art Brut", label: "Self-Taught" },
-    { value: "Kuwait City", label: "Studio" },
-    { value: "My Eye", label: "Brain" },
-  ],
-  customization: {},
+const basics = {
+  fullName: "Dalal Al-Kandari",
+  title: "Self-Taught Ornamental Artist",
+  subtitle: "Let's explore my eye brain",
+  location: "Kuwait City, Kuwait",
+  bio: "I never studied ornamental art. My hand moves without planning, my eye sees, my brain feels, and what emerges is pure intuition. 46 works of bold lines, vivid color, and hearts that appear unbidden. This is not technique. This is my eye brain.",
+  email: "dalal@myeyebrain.art",
+  phone: "+965 1234 5678",
+  instagram: "https://www.instagram.com/",
+  linkedin: "https://www.linkedin.com/",
 };
+const portfolioUrl = "https://portfolio-trimind.com/demo/creative";
+const customization = {};
+const base = { locale: "en", isRTL: false, portfolioUrl, templateId: "creative", basics, customization };
 
-const tplPath = resolve(ROOT, "src/templates/creative/template.hbs");
-const outPath = resolve(ROOT, "public/demo/creative/index.html");
-const src = readFileSync(tplPath, "utf8");
-const tpl = Handlebars.compile(src);
-const html = tpl(data);
-mkdirSync(dirname(outPath), { recursive: true });
-writeFileSync(outPath, html, "utf8");
-console.log(`OK: rendered ${html.length} bytes → public/demo/creative/index.html`);
-console.log(`sections: ${["projects", "gallery", "skills", "contact"].filter((s) => html.includes(`id="${s}"`)).join(", ")}`);
-console.log(`cubes: ${html.includes("cube-stack") ? "yes" : "no"} | cone: ${html.includes("cone-wrap") ? "yes" : "no"} | portrait optional: ${html.includes("hero-portrait") ? "yes" : "no(no-photo)"}`);
+/* ── render homepage ─────────────────────────────────────────── */
+const indexTpl = Handlebars.compile(readFileSync(resolve(ROOT, "src/templates/creative/template.hbs"), "utf8"));
+const indexHtml = indexTpl({ ...base, projects, skills: [
+  { category: "The Practice", items: ["Intuitive Creation", "Color Sense", "Pattern Design", "Composition", "Emotional Range"] },
+  { category: "Tools & Mediums", items: ["Markers", "Paper", "Intuition", "Heart", "Eye", "Brain", "Love"] },
+], metrics: [
+  { value: "46", label: "Original Works" }, { value: "Art Brut", label: "Self-Taught" },
+  { value: "Kuwait City", label: "Studio" }, { value: "My Eye", label: "Brain" },
+] });
+const indexOut = resolve(ROOT, "public/demo/creative/index.html");
+mkdirSync(dirname(indexOut), { recursive: true });
+writeFileSync(indexOut, indexHtml, "utf8");
+
+/* ── render a detail page per artwork ────────────────────────── */
+const detailTpl = Handlebars.compile(readFileSync(resolve(ROOT, "src/templates/creative/project-detail.hbs"), "utf8"));
+let pages = 0;
+projects.forEach((project, i) => {
+  const html = detailTpl({
+    ...base, project,
+    prevProject: i > 0 ? projects[i - 1] : null,
+    nextProject: i < projects.length - 1 ? projects[i + 1] : null,
+  });
+  const out = resolve(ROOT, `public/demo/creative/projects/${project.slug}/index.html`);
+  mkdirSync(dirname(out), { recursive: true });
+  writeFileSync(out, html, "utf8");
+  pages++;
+});
+
+console.log(`OK: homepage ${indexHtml.length} bytes + ${pages} detail pages`);
+console.log(`sample detail: /demo/creative/projects/${projects[0].slug}`);
+console.log(`cone links to pages: ${indexHtml.includes("/projects/" + projects[0].slug) ? "yes" : "no"} | data-full(lightbox) on home: ${(indexHtml.match(/data-full/g) || []).length}`);

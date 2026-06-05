@@ -175,38 +175,37 @@ a { color: inherit; text-decoration: none; }
 }
 .cube-stack .cube-hint a { color: var(--link); font-weight: 600; }
 .cube {
-  --s: 124px;
+  --s: 112px;
   position: absolute; width: var(--s); height: var(--s);
   left: var(--cx, 0); top: var(--cy, 0);
   cursor: pointer; -webkit-tap-highlight-color: transparent;
-  animation: cubeFloat var(--dur, 5s) ease-in-out var(--delay, 0s) infinite;
+  transition: transform .3s cubic-bezier(.16,1,.3,1);
 }
+.cube:active { transform: scale(.93); }
 .cube-inner {
   position: relative; display: block; width: 100%; height: 100%;
   transform-style: preserve-3d;
-  transform: rotateX(-26deg) rotateY(-30deg);
-  transition: transform .4s cubic-bezier(.16,1,.3,1);
-  animation: cubeIn .6s cubic-bezier(.16,1,.3,1) var(--delay, 0s) backwards;
+  animation: cubeSpin var(--dur, 17s) linear var(--delay, 0s) infinite;
 }
-.cube:active .cube-inner { transform: rotateX(-26deg) rotateY(-30deg) scale(.93); }
 .cube .face {
   position: absolute; width: var(--s); height: var(--s); overflow: hidden;
   background: var(--bg-card); backface-visibility: hidden;
-  box-shadow: inset 0 0 0 1px rgba(245,240,231,0.9);
+  box-shadow: inset 0 0 0 1px rgba(245,240,231,0.85);
 }
 .cube .face img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .cube .f-front { transform: translateZ(calc(var(--s) / 2)); }
-.cube .f-left  { transform: rotateY(-90deg) translateZ(calc(var(--s) / 2)); filter: brightness(.8) saturate(.95); }
+.cube .f-back  { transform: rotateY(180deg) translateZ(calc(var(--s) / 2)); }
+.cube .f-right { transform: rotateY(90deg) translateZ(calc(var(--s) / 2)); }
+.cube .f-left  { transform: rotateY(-90deg) translateZ(calc(var(--s) / 2)); }
 .cube .f-top   { transform: rotateX(90deg) translateZ(calc(var(--s) / 2)); background: linear-gradient(135deg, #FBF8F2 0%, var(--sand) 120%); }
 .cube .shadow {
-  position: absolute; left: 50%; top: 94%; width: 124%; height: 34px;
-  transform: translate(-50%, 4px) rotateX(80deg); transform-origin: center top;
-  background: radial-gradient(ellipse at center, rgba(72,58,40,0.32), transparent 72%);
+  position: absolute; left: 50%; top: 98%; width: 116%; height: 28px;
+  transform: translate(-50%, 0) rotateX(80deg); transform-origin: center top;
+  background: radial-gradient(ellipse at center, rgba(72,58,40,0.28), transparent 72%);
   filter: blur(3px); pointer-events: none;
 }
-@keyframes cubeFloat { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-9px); } }
-@keyframes cubeIn { from { opacity: 0; transform: rotateX(-26deg) rotateY(-30deg) scale(.84); } to { opacity: 1; transform: rotateX(-26deg) rotateY(-30deg) scale(1); } }
-@media (prefers-reduced-motion: reduce) { .cube { animation: none; } .cube-inner { animation: none; } }
+@keyframes cubeSpin { from { transform: rotateX(-14deg) rotateY(0deg); } to { transform: rotateX(-14deg) rotateY(360deg); } }
+@media (prefers-reduced-motion: reduce) { .cube-inner { animation: none; transform: rotateX(-16deg) rotateY(-28deg); } }
 
 /* ── Marquee ── */
 .marquee-row { width: 100%; padding: 20px 0; overflow: hidden; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); background: var(--bg); }
@@ -384,7 +383,7 @@ a { color: inherit; text-decoration: none; }
     <div class="cone-wrap" id="cone">
       <div class="cone-tilt" id="cone-tilt">
         <div class="cone-spin" id="cone-spin">
-          <a class="cone-card" href="#" data-full="/demo/creative/artworks/ornaments_1_digital.webp" data-cap="Purple Bouquet">
+          <a class="cone-card" href="https://portfolio-trimind.com/demo/creative/projects/purple-bouquet">
             <img src="/demo/creative/artworks/ornaments_1_digital.webp" alt="Purple Bouquet" loading="lazy" decoding="async" width="148" height="197">
             <div class="overlay"></div>
             <div class="info">
@@ -392,7 +391,7 @@ a { color: inherit; text-decoration: none; }
               <div class="info-title">Purple Bouquet</div>
             </div>
           </a>
-          <a class="cone-card" href="#" data-full="/demo/creative/artworks/ornaments_2_digital.webp" data-cap="Geometric Hearts">
+          <a class="cone-card" href="https://portfolio-trimind.com/demo/creative/projects/geometric-hearts">
             <img src="/demo/creative/artworks/ornaments_2_digital.webp" alt="Geometric Hearts" loading="lazy" decoding="async" width="148" height="197">
             <div class="overlay"></div>
             <div class="info">
@@ -400,7 +399,7 @@ a { color: inherit; text-decoration: none; }
               <div class="info-title">Geometric Hearts</div>
             </div>
           </a>
-          <a class="cone-card" href="#" data-full="/demo/creative/artworks/ornaments_3_digital.webp" data-cap="Cloud Garden">
+          <a class="cone-card" href="https://portfolio-trimind.com/demo/creative/projects/cloud-garden">
             <img src="/demo/creative/artworks/ornaments_3_digital.webp" alt="Cloud Garden" loading="lazy" decoding="async" width="148" height="197">
             <div class="overlay"></div>
             <div class="info">
@@ -408,7 +407,7 @@ a { color: inherit; text-decoration: none; }
               <div class="info-title">Cloud Garden</div>
             </div>
           </a>
-          <a class="cone-card" href="#" data-full="/demo/creative/artworks/ornaments_4_digital.webp" data-cap="Golden Vessel">
+          <a class="cone-card" href="https://portfolio-trimind.com/demo/creative/projects/golden-vessel">
             <img src="/demo/creative/artworks/ornaments_4_digital.webp" alt="Golden Vessel" loading="lazy" decoding="async" width="148" height="197">
             <div class="overlay"></div>
             <div class="info">
@@ -416,7 +415,7 @@ a { color: inherit; text-decoration: none; }
               <div class="info-title">Golden Vessel</div>
             </div>
           </a>
-          <a class="cone-card" href="#" data-full="/demo/creative/artworks/ornaments_5_digital.webp" data-cap="Autumn Bouquet">
+          <a class="cone-card" href="https://portfolio-trimind.com/demo/creative/projects/autumn-bouquet">
             <img src="/demo/creative/artworks/ornaments_5_digital.webp" alt="Autumn Bouquet" loading="lazy" decoding="async" width="148" height="197">
             <div class="overlay"></div>
             <div class="info">
@@ -424,7 +423,7 @@ a { color: inherit; text-decoration: none; }
               <div class="info-title">Autumn Bouquet</div>
             </div>
           </a>
-          <a class="cone-card" href="#" data-full="/demo/creative/artworks/ornaments_6_digital.webp" data-cap="City Maze">
+          <a class="cone-card" href="https://portfolio-trimind.com/demo/creative/projects/city-maze">
             <img src="/demo/creative/artworks/ornaments_6_digital.webp" alt="City Maze" loading="lazy" decoding="async" width="148" height="197">
             <div class="overlay"></div>
             <div class="info">
@@ -432,7 +431,7 @@ a { color: inherit; text-decoration: none; }
               <div class="info-title">City Maze</div>
             </div>
           </a>
-          <a class="cone-card" href="#" data-full="/demo/creative/artworks/ornaments_7_digital.webp" data-cap="Purple Mandala">
+          <a class="cone-card" href="https://portfolio-trimind.com/demo/creative/projects/purple-mandala">
             <img src="/demo/creative/artworks/ornaments_7_digital.webp" alt="Purple Mandala" loading="lazy" decoding="async" width="148" height="197">
             <div class="overlay"></div>
             <div class="info">
@@ -440,7 +439,7 @@ a { color: inherit; text-decoration: none; }
               <div class="info-title">Purple Mandala</div>
             </div>
           </a>
-          <a class="cone-card" href="#" data-full="/demo/creative/artworks/ornaments_8_digital.webp" data-cap="Cosmic Spiral">
+          <a class="cone-card" href="https://portfolio-trimind.com/demo/creative/projects/cosmic-spiral">
             <img src="/demo/creative/artworks/ornaments_8_digital.webp" alt="Cosmic Spiral" loading="lazy" decoding="async" width="148" height="197">
             <div class="overlay"></div>
             <div class="info">
@@ -448,7 +447,7 @@ a { color: inherit; text-decoration: none; }
               <div class="info-title">Cosmic Spiral</div>
             </div>
           </a>
-          <a class="cone-card" href="#" data-full="/demo/creative/artworks/ornaments_9_digital.webp" data-cap="Red Construct">
+          <a class="cone-card" href="https://portfolio-trimind.com/demo/creative/projects/red-construct">
             <img src="/demo/creative/artworks/ornaments_9_digital.webp" alt="Red Construct" loading="lazy" decoding="async" width="148" height="197">
             <div class="overlay"></div>
             <div class="info">
@@ -456,7 +455,7 @@ a { color: inherit; text-decoration: none; }
               <div class="info-title">Red Construct</div>
             </div>
           </a>
-          <a class="cone-card" href="#" data-full="/demo/creative/artworks/ornaments_10_digital.webp" data-cap="Fruit Bowl">
+          <a class="cone-card" href="https://portfolio-trimind.com/demo/creative/projects/fruit-bowl">
             <img src="/demo/creative/artworks/ornaments_10_digital.webp" alt="Fruit Bowl" loading="lazy" decoding="async" width="148" height="197">
             <div class="overlay"></div>
             <div class="info">
@@ -464,7 +463,7 @@ a { color: inherit; text-decoration: none; }
               <div class="info-title">Fruit Bowl</div>
             </div>
           </a>
-          <a class="cone-card" href="#" data-full="/demo/creative/artworks/ornaments_11_digital.webp" data-cap="Blue Dreamer">
+          <a class="cone-card" href="https://portfolio-trimind.com/demo/creative/projects/blue-dreamer">
             <img src="/demo/creative/artworks/ornaments_11_digital.webp" alt="Blue Dreamer" loading="lazy" decoding="async" width="148" height="197">
             <div class="overlay"></div>
             <div class="info">
@@ -472,7 +471,7 @@ a { color: inherit; text-decoration: none; }
               <div class="info-title">Blue Dreamer</div>
             </div>
           </a>
-          <a class="cone-card" href="#" data-full="/demo/creative/artworks/ornaments_12_digital.webp" data-cap="Star Flower">
+          <a class="cone-card" href="https://portfolio-trimind.com/demo/creative/projects/star-flower">
             <img src="/demo/creative/artworks/ornaments_12_digital.webp" alt="Star Flower" loading="lazy" decoding="async" width="148" height="197">
             <div class="overlay"></div>
             <div class="info">
@@ -480,7 +479,7 @@ a { color: inherit; text-decoration: none; }
               <div class="info-title">Star Flower</div>
             </div>
           </a>
-          <a class="cone-card" href="#" data-full="/demo/creative/artworks/ornaments_13_digital.webp" data-cap="Love Tree">
+          <a class="cone-card" href="https://portfolio-trimind.com/demo/creative/projects/love-tree">
             <img src="/demo/creative/artworks/ornaments_13_digital.webp" alt="Love Tree" loading="lazy" decoding="async" width="148" height="197">
             <div class="overlay"></div>
             <div class="info">
@@ -488,7 +487,7 @@ a { color: inherit; text-decoration: none; }
               <div class="info-title">Love Tree</div>
             </div>
           </a>
-          <a class="cone-card" href="#" data-full="/demo/creative/artworks/ornaments_14_digital.webp" data-cap="Framed Bloom">
+          <a class="cone-card" href="https://portfolio-trimind.com/demo/creative/projects/framed-bloom">
             <img src="/demo/creative/artworks/ornaments_14_digital.webp" alt="Framed Bloom" loading="lazy" decoding="async" width="148" height="197">
             <div class="overlay"></div>
             <div class="info">
@@ -496,7 +495,7 @@ a { color: inherit; text-decoration: none; }
               <div class="info-title">Framed Bloom</div>
             </div>
           </a>
-          <a class="cone-card" href="#" data-full="/demo/creative/artworks/ornaments_15_digital.webp" data-cap="Lotus Reflection">
+          <a class="cone-card" href="https://portfolio-trimind.com/demo/creative/projects/lotus-reflection">
             <img src="/demo/creative/artworks/ornaments_15_digital.webp" alt="Lotus Reflection" loading="lazy" decoding="async" width="148" height="197">
             <div class="overlay"></div>
             <div class="info">
@@ -504,7 +503,7 @@ a { color: inherit; text-decoration: none; }
               <div class="info-title">Lotus Reflection</div>
             </div>
           </a>
-          <a class="cone-card" href="#" data-full="/demo/creative/artworks/ornaments_16_digital.webp" data-cap="Silver Garden">
+          <a class="cone-card" href="https://portfolio-trimind.com/demo/creative/projects/silver-garden">
             <img src="/demo/creative/artworks/ornaments_16_digital.webp" alt="Silver Garden" loading="lazy" decoding="async" width="148" height="197">
             <div class="overlay"></div>
             <div class="info">
@@ -512,7 +511,7 @@ a { color: inherit; text-decoration: none; }
               <div class="info-title">Silver Garden</div>
             </div>
           </a>
-          <a class="cone-card" href="#" data-full="/demo/creative/artworks/ornaments_17_digital.webp" data-cap="Crystal Beacon">
+          <a class="cone-card" href="https://portfolio-trimind.com/demo/creative/projects/crystal-beacon">
             <img src="/demo/creative/artworks/ornaments_17_digital.webp" alt="Crystal Beacon" loading="lazy" decoding="async" width="148" height="197">
             <div class="overlay"></div>
             <div class="info">
@@ -520,7 +519,7 @@ a { color: inherit; text-decoration: none; }
               <div class="info-title">Crystal Beacon</div>
             </div>
           </a>
-          <a class="cone-card" href="#" data-full="/demo/creative/artworks/ornaments_18_digital.webp" data-cap="Desert Sun">
+          <a class="cone-card" href="https://portfolio-trimind.com/demo/creative/projects/desert-sun">
             <img src="/demo/creative/artworks/ornaments_18_digital.webp" alt="Desert Sun" loading="lazy" decoding="async" width="148" height="197">
             <div class="overlay"></div>
             <div class="info">
@@ -528,7 +527,7 @@ a { color: inherit; text-decoration: none; }
               <div class="info-title">Desert Sun</div>
             </div>
           </a>
-          <a class="cone-card" href="#" data-full="/demo/creative/artworks/ornaments_19_digital.webp" data-cap="Sun Totem">
+          <a class="cone-card" href="https://portfolio-trimind.com/demo/creative/projects/sun-totem">
             <img src="/demo/creative/artworks/ornaments_19_digital.webp" alt="Sun Totem" loading="lazy" decoding="async" width="148" height="197">
             <div class="overlay"></div>
             <div class="info">
@@ -536,7 +535,7 @@ a { color: inherit; text-decoration: none; }
               <div class="info-title">Sun Totem</div>
             </div>
           </a>
-          <a class="cone-card" href="#" data-full="/demo/creative/artworks/ornaments_20_digital.webp" data-cap="Pastel Cloud">
+          <a class="cone-card" href="https://portfolio-trimind.com/demo/creative/projects/pastel-cloud">
             <img src="/demo/creative/artworks/ornaments_20_digital.webp" alt="Pastel Cloud" loading="lazy" decoding="async" width="148" height="197">
             <div class="overlay"></div>
             <div class="info">
@@ -544,7 +543,7 @@ a { color: inherit; text-decoration: none; }
               <div class="info-title">Pastel Cloud</div>
             </div>
           </a>
-          <a class="cone-card" href="#" data-full="/demo/creative/artworks/ornaments_21_digital.webp" data-cap="Heart Clown">
+          <a class="cone-card" href="https://portfolio-trimind.com/demo/creative/projects/heart-clown">
             <img src="/demo/creative/artworks/ornaments_21_digital.webp" alt="Heart Clown" loading="lazy" decoding="async" width="148" height="197">
             <div class="overlay"></div>
             <div class="info">
@@ -552,7 +551,7 @@ a { color: inherit; text-decoration: none; }
               <div class="info-title">Heart Clown</div>
             </div>
           </a>
-          <a class="cone-card" href="#" data-full="/demo/creative/artworks/ornaments_22_digital.webp" data-cap="Rainbow Arch">
+          <a class="cone-card" href="https://portfolio-trimind.com/demo/creative/projects/rainbow-arch">
             <img src="/demo/creative/artworks/ornaments_22_digital.webp" alt="Rainbow Arch" loading="lazy" decoding="async" width="148" height="197">
             <div class="overlay"></div>
             <div class="info">
@@ -560,7 +559,7 @@ a { color: inherit; text-decoration: none; }
               <div class="info-title">Rainbow Arch</div>
             </div>
           </a>
-          <a class="cone-card" href="#" data-full="/demo/creative/artworks/ornaments_23_digital.webp" data-cap="Ocean Stars">
+          <a class="cone-card" href="https://portfolio-trimind.com/demo/creative/projects/ocean-stars">
             <img src="/demo/creative/artworks/ornaments_23_digital.webp" alt="Ocean Stars" loading="lazy" decoding="async" width="148" height="197">
             <div class="overlay"></div>
             <div class="info">
@@ -568,7 +567,7 @@ a { color: inherit; text-decoration: none; }
               <div class="info-title">Ocean Stars</div>
             </div>
           </a>
-          <a class="cone-card" href="#" data-full="/demo/creative/artworks/ornaments_24_digital.webp" data-cap="Geometric Butterflies">
+          <a class="cone-card" href="https://portfolio-trimind.com/demo/creative/projects/geometric-butterflies">
             <img src="/demo/creative/artworks/ornaments_24_digital.webp" alt="Geometric Butterflies" loading="lazy" decoding="async" width="148" height="197">
             <div class="overlay"></div>
             <div class="info">
@@ -576,7 +575,7 @@ a { color: inherit; text-decoration: none; }
               <div class="info-title">Geometric Butterflies</div>
             </div>
           </a>
-          <a class="cone-card" href="#" data-full="/demo/creative/artworks/ornaments_25_digital.webp" data-cap="Caterpillar Dream">
+          <a class="cone-card" href="https://portfolio-trimind.com/demo/creative/projects/caterpillar-dream">
             <img src="/demo/creative/artworks/ornaments_25_digital.webp" alt="Caterpillar Dream" loading="lazy" decoding="async" width="148" height="197">
             <div class="overlay"></div>
             <div class="info">
@@ -584,7 +583,7 @@ a { color: inherit; text-decoration: none; }
               <div class="info-title">Caterpillar Dream</div>
             </div>
           </a>
-          <a class="cone-card" href="#" data-full="/demo/creative/artworks/ornaments_26_digital.webp" data-cap="Horned Heart">
+          <a class="cone-card" href="https://portfolio-trimind.com/demo/creative/projects/horned-heart">
             <img src="/demo/creative/artworks/ornaments_26_digital.webp" alt="Horned Heart" loading="lazy" decoding="async" width="148" height="197">
             <div class="overlay"></div>
             <div class="info">
@@ -592,7 +591,7 @@ a { color: inherit; text-decoration: none; }
               <div class="info-title">Horned Heart</div>
             </div>
           </a>
-          <a class="cone-card" href="#" data-full="/demo/creative/artworks/ornaments_27_digital.webp" data-cap="Golden Mandala">
+          <a class="cone-card" href="https://portfolio-trimind.com/demo/creative/projects/golden-mandala">
             <img src="/demo/creative/artworks/ornaments_27_digital.webp" alt="Golden Mandala" loading="lazy" decoding="async" width="148" height="197">
             <div class="overlay"></div>
             <div class="info">
@@ -600,7 +599,7 @@ a { color: inherit; text-decoration: none; }
               <div class="info-title">Golden Mandala</div>
             </div>
           </a>
-          <a class="cone-card" href="#" data-full="/demo/creative/artworks/ornaments_28_digital.webp" data-cap="Electric Flower">
+          <a class="cone-card" href="https://portfolio-trimind.com/demo/creative/projects/electric-flower">
             <img src="/demo/creative/artworks/ornaments_28_digital.webp" alt="Electric Flower" loading="lazy" decoding="async" width="148" height="197">
             <div class="overlay"></div>
             <div class="info">
@@ -608,7 +607,7 @@ a { color: inherit; text-decoration: none; }
               <div class="info-title">Electric Flower</div>
             </div>
           </a>
-          <a class="cone-card" href="#" data-full="/demo/creative/artworks/ornaments_29_digital.webp" data-cap="Heart Burst">
+          <a class="cone-card" href="https://portfolio-trimind.com/demo/creative/projects/heart-burst">
             <img src="/demo/creative/artworks/ornaments_29_digital.webp" alt="Heart Burst" loading="lazy" decoding="async" width="148" height="197">
             <div class="overlay"></div>
             <div class="info">
@@ -616,7 +615,7 @@ a { color: inherit; text-decoration: none; }
               <div class="info-title">Heart Burst</div>
             </div>
           </a>
-          <a class="cone-card" href="#" data-full="/demo/creative/artworks/ornaments_30_digital.webp" data-cap="Geometric Still Life">
+          <a class="cone-card" href="https://portfolio-trimind.com/demo/creative/projects/geometric-still-life">
             <img src="/demo/creative/artworks/ornaments_30_digital.webp" alt="Geometric Still Life" loading="lazy" decoding="async" width="148" height="197">
             <div class="overlay"></div>
             <div class="info">
@@ -624,7 +623,7 @@ a { color: inherit; text-decoration: none; }
               <div class="info-title">Geometric Still Life</div>
             </div>
           </a>
-          <a class="cone-card" href="#" data-full="/demo/creative/artworks/ornaments_31_digital.webp" data-cap="Tropical Bouquet">
+          <a class="cone-card" href="https://portfolio-trimind.com/demo/creative/projects/tropical-bouquet">
             <img src="/demo/creative/artworks/ornaments_31_digital.webp" alt="Tropical Bouquet" loading="lazy" decoding="async" width="148" height="197">
             <div class="overlay"></div>
             <div class="info">
@@ -632,7 +631,7 @@ a { color: inherit; text-decoration: none; }
               <div class="info-title">Tropical Bouquet</div>
             </div>
           </a>
-          <a class="cone-card" href="#" data-full="/demo/creative/artworks/ornaments_32_digital.webp" data-cap="Patterned Butterfly">
+          <a class="cone-card" href="https://portfolio-trimind.com/demo/creative/projects/patterned-butterfly">
             <img src="/demo/creative/artworks/ornaments_32_digital.webp" alt="Patterned Butterfly" loading="lazy" decoding="async" width="148" height="197">
             <div class="overlay"></div>
             <div class="info">
@@ -640,7 +639,7 @@ a { color: inherit; text-decoration: none; }
               <div class="info-title">Patterned Butterfly</div>
             </div>
           </a>
-          <a class="cone-card" href="#" data-full="/demo/creative/artworks/ornaments_33_digital.webp" data-cap="Heart Flower Tree">
+          <a class="cone-card" href="https://portfolio-trimind.com/demo/creative/projects/heart-flower-tree">
             <img src="/demo/creative/artworks/ornaments_33_digital.webp" alt="Heart Flower Tree" loading="lazy" decoding="async" width="148" height="197">
             <div class="overlay"></div>
             <div class="info">
@@ -648,7 +647,7 @@ a { color: inherit; text-decoration: none; }
               <div class="info-title">Heart Flower Tree</div>
             </div>
           </a>
-          <a class="cone-card" href="#" data-full="/demo/creative/artworks/ornaments_34_digital.webp" data-cap="Tropical Abstract">
+          <a class="cone-card" href="https://portfolio-trimind.com/demo/creative/projects/tropical-abstract">
             <img src="/demo/creative/artworks/ornaments_34_digital.webp" alt="Tropical Abstract" loading="lazy" decoding="async" width="148" height="197">
             <div class="overlay"></div>
             <div class="info">
@@ -656,7 +655,7 @@ a { color: inherit; text-decoration: none; }
               <div class="info-title">Tropical Abstract</div>
             </div>
           </a>
-          <a class="cone-card" href="#" data-full="/demo/creative/artworks/ornaments_35_digital.webp" data-cap="Celestial Flower">
+          <a class="cone-card" href="https://portfolio-trimind.com/demo/creative/projects/celestial-flower">
             <img src="/demo/creative/artworks/ornaments_35_digital.webp" alt="Celestial Flower" loading="lazy" decoding="async" width="148" height="197">
             <div class="overlay"></div>
             <div class="info">
@@ -664,7 +663,7 @@ a { color: inherit; text-decoration: none; }
               <div class="info-title">Celestial Flower</div>
             </div>
           </a>
-          <a class="cone-card" href="#" data-full="/demo/creative/artworks/ornaments_36_digital.webp" data-cap="Diamond Burst">
+          <a class="cone-card" href="https://portfolio-trimind.com/demo/creative/projects/diamond-burst">
             <img src="/demo/creative/artworks/ornaments_36_digital.webp" alt="Diamond Burst" loading="lazy" decoding="async" width="148" height="197">
             <div class="overlay"></div>
             <div class="info">
@@ -672,7 +671,7 @@ a { color: inherit; text-decoration: none; }
               <div class="info-title">Diamond Burst</div>
             </div>
           </a>
-          <a class="cone-card" href="#" data-full="/demo/creative/artworks/ornaments_37_digital.webp" data-cap="Pink Abstract Garden">
+          <a class="cone-card" href="https://portfolio-trimind.com/demo/creative/projects/pink-abstract-garden">
             <img src="/demo/creative/artworks/ornaments_37_digital.webp" alt="Pink Abstract Garden" loading="lazy" decoding="async" width="148" height="197">
             <div class="overlay"></div>
             <div class="info">
@@ -680,7 +679,7 @@ a { color: inherit; text-decoration: none; }
               <div class="info-title">Pink Abstract Garden</div>
             </div>
           </a>
-          <a class="cone-card" href="#" data-full="/demo/creative/artworks/ornaments_38_digital.webp" data-cap="Geometric Explosion">
+          <a class="cone-card" href="https://portfolio-trimind.com/demo/creative/projects/geometric-explosion">
             <img src="/demo/creative/artworks/ornaments_38_digital.webp" alt="Geometric Explosion" loading="lazy" decoding="async" width="148" height="197">
             <div class="overlay"></div>
             <div class="info">
@@ -688,7 +687,7 @@ a { color: inherit; text-decoration: none; }
               <div class="info-title">Geometric Explosion</div>
             </div>
           </a>
-          <a class="cone-card" href="#" data-full="/demo/creative/artworks/ornaments_39_digital.webp" data-cap="Blue Cross Mandala">
+          <a class="cone-card" href="https://portfolio-trimind.com/demo/creative/projects/blue-cross-mandala">
             <img src="/demo/creative/artworks/ornaments_39_digital.webp" alt="Blue Cross Mandala" loading="lazy" decoding="async" width="148" height="197">
             <div class="overlay"></div>
             <div class="info">
@@ -696,7 +695,7 @@ a { color: inherit; text-decoration: none; }
               <div class="info-title">Blue Cross Mandala</div>
             </div>
           </a>
-          <a class="cone-card" href="#" data-full="/demo/creative/artworks/ornaments_40_digital.webp" data-cap="Purple Sunburst">
+          <a class="cone-card" href="https://portfolio-trimind.com/demo/creative/projects/purple-sunburst">
             <img src="/demo/creative/artworks/ornaments_40_digital.webp" alt="Purple Sunburst" loading="lazy" decoding="async" width="148" height="197">
             <div class="overlay"></div>
             <div class="info">
@@ -704,7 +703,7 @@ a { color: inherit; text-decoration: none; }
               <div class="info-title">Purple Sunburst</div>
             </div>
           </a>
-          <a class="cone-card" href="#" data-full="/demo/creative/artworks/ornaments_41_digital.webp" data-cap="Red Creature">
+          <a class="cone-card" href="https://portfolio-trimind.com/demo/creative/projects/red-creature">
             <img src="/demo/creative/artworks/ornaments_41_digital.webp" alt="Red Creature" loading="lazy" decoding="async" width="148" height="197">
             <div class="overlay"></div>
             <div class="info">
@@ -712,7 +711,7 @@ a { color: inherit; text-decoration: none; }
               <div class="info-title">Red Creature</div>
             </div>
           </a>
-          <a class="cone-card" href="#" data-full="/demo/creative/artworks/ornaments_42_digital.webp" data-cap="Geometric Totem">
+          <a class="cone-card" href="https://portfolio-trimind.com/demo/creative/projects/geometric-totem">
             <img src="/demo/creative/artworks/ornaments_42_digital.webp" alt="Geometric Totem" loading="lazy" decoding="async" width="148" height="197">
             <div class="overlay"></div>
             <div class="info">
@@ -720,7 +719,7 @@ a { color: inherit; text-decoration: none; }
               <div class="info-title">Geometric Totem</div>
             </div>
           </a>
-          <a class="cone-card" href="#" data-full="/demo/creative/artworks/ornaments_43_digital.webp" data-cap="Pattern Explosion">
+          <a class="cone-card" href="https://portfolio-trimind.com/demo/creative/projects/pattern-explosion">
             <img src="/demo/creative/artworks/ornaments_43_digital.webp" alt="Pattern Explosion" loading="lazy" decoding="async" width="148" height="197">
             <div class="overlay"></div>
             <div class="info">
@@ -728,7 +727,7 @@ a { color: inherit; text-decoration: none; }
               <div class="info-title">Pattern Explosion</div>
             </div>
           </a>
-          <a class="cone-card" href="#" data-full="/demo/creative/artworks/ornaments_44_digital.webp" data-cap="Geometric Windmill">
+          <a class="cone-card" href="https://portfolio-trimind.com/demo/creative/projects/geometric-windmill">
             <img src="/demo/creative/artworks/ornaments_44_digital.webp" alt="Geometric Windmill" loading="lazy" decoding="async" width="148" height="197">
             <div class="overlay"></div>
             <div class="info">
@@ -736,7 +735,7 @@ a { color: inherit; text-decoration: none; }
               <div class="info-title">Geometric Windmill</div>
             </div>
           </a>
-          <a class="cone-card" href="#" data-full="/demo/creative/artworks/ornaments_45_digital.webp" data-cap="The House">
+          <a class="cone-card" href="https://portfolio-trimind.com/demo/creative/projects/the-house">
             <img src="/demo/creative/artworks/ornaments_45_digital.webp" alt="The House" loading="lazy" decoding="async" width="148" height="197">
             <div class="overlay"></div>
             <div class="info">
@@ -744,7 +743,7 @@ a { color: inherit; text-decoration: none; }
               <div class="info-title">The House</div>
             </div>
           </a>
-          <a class="cone-card" href="#" data-full="/demo/creative/artworks/ornaments_46_digital.webp" data-cap="My Eye Brain Blooms">
+          <a class="cone-card" href="https://portfolio-trimind.com/demo/creative/projects/my-eye-brain-blooms">
             <img src="/demo/creative/artworks/ornaments_46_digital.webp" alt="My Eye Brain Blooms" loading="lazy" decoding="async" width="148" height="197">
             <div class="overlay"></div>
             <div class="info">
@@ -841,14 +840,14 @@ a { color: inherit; text-decoration: none; }
     var picks = srcCards.slice(0, 6);
     if (!picks.length) { host.style.display = 'none'; return; }
     // nested pyramid: [left px, top px, z-index] — bottom row sits in front.
-    var slots = [[108, 2, 1], [54, 78, 3], [162, 76, 2], [0, 158, 5], [108, 162, 6], [216, 156, 4]];
+    var slots = [[114, 2, 1], [48, 84, 3], [180, 82, 2], [4, 166, 5], [114, 170, 6], [224, 162, 4]];
     picks.forEach(function (card, i) {
       var s = slots[i % slots.length];
       var img = card.querySelector('img');
       var src = img ? (img.getAttribute('src') || img.src) : '';
       var titleEl = card.querySelector('.info-title');
       var title = (titleEl ? titleEl.textContent : (img ? img.alt : '')) || '';
-      var nImg = picks[(i + 1) % picks.length].querySelector('img');
+      var nImg = picks[(i + 3) % picks.length].querySelector('img');
       var side = nImg ? (nImg.getAttribute('src') || nImg.src) : src;
       var df = card.getAttribute('data-full');
       var esc = title.replace(/"/g, '&quot;');
@@ -865,16 +864,21 @@ a { color: inherit; text-decoration: none; }
       }
       cube.style.setProperty('--cx', s[0] + 'px');
       cube.style.setProperty('--cy', s[1] + 'px');
-      cube.style.setProperty('--delay', (i * 0.1).toFixed(2) + 's');
-      cube.style.setProperty('--dur', (4.4 + (i % 3) * 0.7).toFixed(2) + 's');
+      cube.style.setProperty('--delay', (-i * 2.3).toFixed(2) + 's');
+      cube.style.setProperty('--dur', (15 + (i % 4) * 2.5).toFixed(2) + 's');
       cube.style.zIndex = s[2];
       cube.setAttribute('aria-label', title || 'Artwork');
+      // Two artworks per cube: art1 on front/left, art2 on right/back.
+      var a1 = src ? '<img src="' + src + '" alt="' + esc + '">' : '';
+      var a2 = side ? '<img src="' + side + '" alt="">' : a1;
       cube.innerHTML =
         '<span class="shadow"></span>' +
         '<span class="cube-inner">' +
           '<span class="face f-top"></span>' +
-          '<span class="face f-left">' + (side ? '<img src="' + side + '" alt="">' : '') + '</span>' +
-          '<span class="face f-front"><img src="' + src + '" alt="' + esc + '"></span>' +
+          '<span class="face f-front">' + a1 + '</span>' +
+          '<span class="face f-left">' + a1 + '</span>' +
+          '<span class="face f-right">' + a2 + '</span>' +
+          '<span class="face f-back">' + a2 + '</span>' +
         '</span>';
       host.insertBefore(cube, host.firstChild);
     });
@@ -959,187 +963,187 @@ a { color: inherit; text-decoration: none; }
   </div>
   <div class="gm-scroll">
     <div class="gm-grid">
-      <a class="gm-card" href="#" data-full="/demo/creative/artworks/ornaments_1_digital.webp" data-cap="Purple Bouquet">
+      <a class="gm-card" href="https://portfolio-trimind.com/demo/creative/projects/purple-bouquet">
         <div class="gm-ph"><img src="/demo/creative/artworks/ornaments_1_digital.webp" alt="Purple Bouquet" loading="lazy" decoding="async"></div>
         <div class="gm-meta"><span class="gm-cat">Floral Ornamental</span><span class="gm-ttl">Purple Bouquet</span></div>
       </a>
-      <a class="gm-card" href="#" data-full="/demo/creative/artworks/ornaments_2_digital.webp" data-cap="Geometric Hearts">
+      <a class="gm-card" href="https://portfolio-trimind.com/demo/creative/projects/geometric-hearts">
         <div class="gm-ph"><img src="/demo/creative/artworks/ornaments_2_digital.webp" alt="Geometric Hearts" loading="lazy" decoding="async"></div>
         <div class="gm-meta"><span class="gm-cat">Geometric Abstract</span><span class="gm-ttl">Geometric Hearts</span></div>
       </a>
-      <a class="gm-card" href="#" data-full="/demo/creative/artworks/ornaments_3_digital.webp" data-cap="Cloud Garden">
+      <a class="gm-card" href="https://portfolio-trimind.com/demo/creative/projects/cloud-garden">
         <div class="gm-ph"><img src="/demo/creative/artworks/ornaments_3_digital.webp" alt="Cloud Garden" loading="lazy" decoding="async"></div>
         <div class="gm-meta"><span class="gm-cat">Floral Fantasy</span><span class="gm-ttl">Cloud Garden</span></div>
       </a>
-      <a class="gm-card" href="#" data-full="/demo/creative/artworks/ornaments_4_digital.webp" data-cap="Golden Vessel">
+      <a class="gm-card" href="https://portfolio-trimind.com/demo/creative/projects/golden-vessel">
         <div class="gm-ph"><img src="/demo/creative/artworks/ornaments_4_digital.webp" alt="Golden Vessel" loading="lazy" decoding="async"></div>
         <div class="gm-meta"><span class="gm-cat">Art Nouveau</span><span class="gm-ttl">Golden Vessel</span></div>
       </a>
-      <a class="gm-card" href="#" data-full="/demo/creative/artworks/ornaments_5_digital.webp" data-cap="Autumn Bouquet">
+      <a class="gm-card" href="https://portfolio-trimind.com/demo/creative/projects/autumn-bouquet">
         <div class="gm-ph"><img src="/demo/creative/artworks/ornaments_5_digital.webp" alt="Autumn Bouquet" loading="lazy" decoding="async"></div>
         <div class="gm-meta"><span class="gm-cat">Floral Ornamental</span><span class="gm-ttl">Autumn Bouquet</span></div>
       </a>
-      <a class="gm-card" href="#" data-full="/demo/creative/artworks/ornaments_6_digital.webp" data-cap="City Maze">
+      <a class="gm-card" href="https://portfolio-trimind.com/demo/creative/projects/city-maze">
         <div class="gm-ph"><img src="/demo/creative/artworks/ornaments_6_digital.webp" alt="City Maze" loading="lazy" decoding="async"></div>
         <div class="gm-meta"><span class="gm-cat">Geometric Abstract</span><span class="gm-ttl">City Maze</span></div>
       </a>
-      <a class="gm-card" href="#" data-full="/demo/creative/artworks/ornaments_7_digital.webp" data-cap="Purple Mandala">
+      <a class="gm-card" href="https://portfolio-trimind.com/demo/creative/projects/purple-mandala">
         <div class="gm-ph"><img src="/demo/creative/artworks/ornaments_7_digital.webp" alt="Purple Mandala" loading="lazy" decoding="async"></div>
         <div class="gm-meta"><span class="gm-cat">Mandala</span><span class="gm-ttl">Purple Mandala</span></div>
       </a>
-      <a class="gm-card" href="#" data-full="/demo/creative/artworks/ornaments_8_digital.webp" data-cap="Cosmic Spiral">
+      <a class="gm-card" href="https://portfolio-trimind.com/demo/creative/projects/cosmic-spiral">
         <div class="gm-ph"><img src="/demo/creative/artworks/ornaments_8_digital.webp" alt="Cosmic Spiral" loading="lazy" decoding="async"></div>
         <div class="gm-meta"><span class="gm-cat">Character Fantasy</span><span class="gm-ttl">Cosmic Spiral</span></div>
       </a>
-      <a class="gm-card" href="#" data-full="/demo/creative/artworks/ornaments_9_digital.webp" data-cap="Red Construct">
+      <a class="gm-card" href="https://portfolio-trimind.com/demo/creative/projects/red-construct">
         <div class="gm-ph"><img src="/demo/creative/artworks/ornaments_9_digital.webp" alt="Red Construct" loading="lazy" decoding="async"></div>
         <div class="gm-meta"><span class="gm-cat">Geometric Abstract</span><span class="gm-ttl">Red Construct</span></div>
       </a>
-      <a class="gm-card" href="#" data-full="/demo/creative/artworks/ornaments_10_digital.webp" data-cap="Fruit Bowl">
+      <a class="gm-card" href="https://portfolio-trimind.com/demo/creative/projects/fruit-bowl">
         <div class="gm-ph"><img src="/demo/creative/artworks/ornaments_10_digital.webp" alt="Fruit Bowl" loading="lazy" decoding="async"></div>
         <div class="gm-meta"><span class="gm-cat">Pop Floral</span><span class="gm-ttl">Fruit Bowl</span></div>
       </a>
-      <a class="gm-card" href="#" data-full="/demo/creative/artworks/ornaments_11_digital.webp" data-cap="Blue Dreamer">
+      <a class="gm-card" href="https://portfolio-trimind.com/demo/creative/projects/blue-dreamer">
         <div class="gm-ph"><img src="/demo/creative/artworks/ornaments_11_digital.webp" alt="Blue Dreamer" loading="lazy" decoding="async"></div>
         <div class="gm-meta"><span class="gm-cat">Character Fantasy</span><span class="gm-ttl">Blue Dreamer</span></div>
       </a>
-      <a class="gm-card" href="#" data-full="/demo/creative/artworks/ornaments_12_digital.webp" data-cap="Star Flower">
+      <a class="gm-card" href="https://portfolio-trimind.com/demo/creative/projects/star-flower">
         <div class="gm-ph"><img src="/demo/creative/artworks/ornaments_12_digital.webp" alt="Star Flower" loading="lazy" decoding="async"></div>
         <div class="gm-meta"><span class="gm-cat">Bold Floral</span><span class="gm-ttl">Star Flower</span></div>
       </a>
-      <a class="gm-card" href="#" data-full="/demo/creative/artworks/ornaments_13_digital.webp" data-cap="Love Tree">
+      <a class="gm-card" href="https://portfolio-trimind.com/demo/creative/projects/love-tree">
         <div class="gm-ph"><img src="/demo/creative/artworks/ornaments_13_digital.webp" alt="Love Tree" loading="lazy" decoding="async"></div>
         <div class="gm-meta"><span class="gm-cat">Tree of Life</span><span class="gm-ttl">Love Tree</span></div>
       </a>
-      <a class="gm-card" href="#" data-full="/demo/creative/artworks/ornaments_14_digital.webp" data-cap="Framed Bloom">
+      <a class="gm-card" href="https://portfolio-trimind.com/demo/creative/projects/framed-bloom">
         <div class="gm-ph"><img src="/demo/creative/artworks/ornaments_14_digital.webp" alt="Framed Bloom" loading="lazy" decoding="async"></div>
         <div class="gm-meta"><span class="gm-cat">Folk Art</span><span class="gm-ttl">Framed Bloom</span></div>
       </a>
-      <a class="gm-card" href="#" data-full="/demo/creative/artworks/ornaments_15_digital.webp" data-cap="Lotus Reflection">
+      <a class="gm-card" href="https://portfolio-trimind.com/demo/creative/projects/lotus-reflection">
         <div class="gm-ph"><img src="/demo/creative/artworks/ornaments_15_digital.webp" alt="Lotus Reflection" loading="lazy" decoding="async"></div>
         <div class="gm-meta"><span class="gm-cat">Serene Floral</span><span class="gm-ttl">Lotus Reflection</span></div>
       </a>
-      <a class="gm-card" href="#" data-full="/demo/creative/artworks/ornaments_16_digital.webp" data-cap="Silver Garden">
+      <a class="gm-card" href="https://portfolio-trimind.com/demo/creative/projects/silver-garden">
         <div class="gm-ph"><img src="/demo/creative/artworks/ornaments_16_digital.webp" alt="Silver Garden" loading="lazy" decoding="async"></div>
         <div class="gm-meta"><span class="gm-cat">Architectural</span><span class="gm-ttl">Silver Garden</span></div>
       </a>
-      <a class="gm-card" href="#" data-full="/demo/creative/artworks/ornaments_17_digital.webp" data-cap="Crystal Beacon">
+      <a class="gm-card" href="https://portfolio-trimind.com/demo/creative/projects/crystal-beacon">
         <div class="gm-ph"><img src="/demo/creative/artworks/ornaments_17_digital.webp" alt="Crystal Beacon" loading="lazy" decoding="async"></div>
         <div class="gm-meta"><span class="gm-cat">Geometric Ornamental</span><span class="gm-ttl">Crystal Beacon</span></div>
       </a>
-      <a class="gm-card" href="#" data-full="/demo/creative/artworks/ornaments_18_digital.webp" data-cap="Desert Sun">
+      <a class="gm-card" href="https://portfolio-trimind.com/demo/creative/projects/desert-sun">
         <div class="gm-ph"><img src="/demo/creative/artworks/ornaments_18_digital.webp" alt="Desert Sun" loading="lazy" decoding="async"></div>
         <div class="gm-meta"><span class="gm-cat">Symbolic Landscape</span><span class="gm-ttl">Desert Sun</span></div>
       </a>
-      <a class="gm-card" href="#" data-full="/demo/creative/artworks/ornaments_19_digital.webp" data-cap="Sun Totem">
+      <a class="gm-card" href="https://portfolio-trimind.com/demo/creative/projects/sun-totem">
         <div class="gm-ph"><img src="/demo/creative/artworks/ornaments_19_digital.webp" alt="Sun Totem" loading="lazy" decoding="async"></div>
         <div class="gm-meta"><span class="gm-cat">Totemic</span><span class="gm-ttl">Sun Totem</span></div>
       </a>
-      <a class="gm-card" href="#" data-full="/demo/creative/artworks/ornaments_20_digital.webp" data-cap="Pastel Cloud">
+      <a class="gm-card" href="https://portfolio-trimind.com/demo/creative/projects/pastel-cloud">
         <div class="gm-ph"><img src="/demo/creative/artworks/ornaments_20_digital.webp" alt="Pastel Cloud" loading="lazy" decoding="async"></div>
         <div class="gm-meta"><span class="gm-cat">Soft Floral</span><span class="gm-ttl">Pastel Cloud</span></div>
       </a>
-      <a class="gm-card" href="#" data-full="/demo/creative/artworks/ornaments_21_digital.webp" data-cap="Heart Clown">
+      <a class="gm-card" href="https://portfolio-trimind.com/demo/creative/projects/heart-clown">
         <div class="gm-ph"><img src="/demo/creative/artworks/ornaments_21_digital.webp" alt="Heart Clown" loading="lazy" decoding="async"></div>
         <div class="gm-meta"><span class="gm-cat">Character Fantasy</span><span class="gm-ttl">Heart Clown</span></div>
       </a>
-      <a class="gm-card" href="#" data-full="/demo/creative/artworks/ornaments_22_digital.webp" data-cap="Rainbow Arch">
+      <a class="gm-card" href="https://portfolio-trimind.com/demo/creative/projects/rainbow-arch">
         <div class="gm-ph"><img src="/demo/creative/artworks/ornaments_22_digital.webp" alt="Rainbow Arch" loading="lazy" decoding="async"></div>
         <div class="gm-meta"><span class="gm-cat">Geometric Nature</span><span class="gm-ttl">Rainbow Arch</span></div>
       </a>
-      <a class="gm-card" href="#" data-full="/demo/creative/artworks/ornaments_23_digital.webp" data-cap="Ocean Stars">
+      <a class="gm-card" href="https://portfolio-trimind.com/demo/creative/projects/ocean-stars">
         <div class="gm-ph"><img src="/demo/creative/artworks/ornaments_23_digital.webp" alt="Ocean Stars" loading="lazy" decoding="async"></div>
         <div class="gm-meta"><span class="gm-cat">Marine Ornamental</span><span class="gm-ttl">Ocean Stars</span></div>
       </a>
-      <a class="gm-card" href="#" data-full="/demo/creative/artworks/ornaments_24_digital.webp" data-cap="Geometric Butterflies">
+      <a class="gm-card" href="https://portfolio-trimind.com/demo/creative/projects/geometric-butterflies">
         <div class="gm-ph"><img src="/demo/creative/artworks/ornaments_24_digital.webp" alt="Geometric Butterflies" loading="lazy" decoding="async"></div>
         <div class="gm-meta"><span class="gm-cat">Nature Geometry</span><span class="gm-ttl">Geometric Butterflies</span></div>
       </a>
-      <a class="gm-card" href="#" data-full="/demo/creative/artworks/ornaments_25_digital.webp" data-cap="Caterpillar Dream">
+      <a class="gm-card" href="https://portfolio-trimind.com/demo/creative/projects/caterpillar-dream">
         <div class="gm-ph"><img src="/demo/creative/artworks/ornaments_25_digital.webp" alt="Caterpillar Dream" loading="lazy" decoding="async"></div>
         <div class="gm-meta"><span class="gm-cat">Fantasy Ornamental</span><span class="gm-ttl">Caterpillar Dream</span></div>
       </a>
-      <a class="gm-card" href="#" data-full="/demo/creative/artworks/ornaments_26_digital.webp" data-cap="Horned Heart">
+      <a class="gm-card" href="https://portfolio-trimind.com/demo/creative/projects/horned-heart">
         <div class="gm-ph"><img src="/demo/creative/artworks/ornaments_26_digital.webp" alt="Horned Heart" loading="lazy" decoding="async"></div>
         <div class="gm-meta"><span class="gm-cat">Creature Fantasy</span><span class="gm-ttl">Horned Heart</span></div>
       </a>
-      <a class="gm-card" href="#" data-full="/demo/creative/artworks/ornaments_27_digital.webp" data-cap="Golden Mandala">
+      <a class="gm-card" href="https://portfolio-trimind.com/demo/creative/projects/golden-mandala">
         <div class="gm-ph"><img src="/demo/creative/artworks/ornaments_27_digital.webp" alt="Golden Mandala" loading="lazy" decoding="async"></div>
         <div class="gm-meta"><span class="gm-cat">Mandala</span><span class="gm-ttl">Golden Mandala</span></div>
       </a>
-      <a class="gm-card" href="#" data-full="/demo/creative/artworks/ornaments_28_digital.webp" data-cap="Electric Flower">
+      <a class="gm-card" href="https://portfolio-trimind.com/demo/creative/projects/electric-flower">
         <div class="gm-ph"><img src="/demo/creative/artworks/ornaments_28_digital.webp" alt="Electric Flower" loading="lazy" decoding="async"></div>
         <div class="gm-meta"><span class="gm-cat">Pop Floral</span><span class="gm-ttl">Electric Flower</span></div>
       </a>
-      <a class="gm-card" href="#" data-full="/demo/creative/artworks/ornaments_29_digital.webp" data-cap="Heart Burst">
+      <a class="gm-card" href="https://portfolio-trimind.com/demo/creative/projects/heart-burst">
         <div class="gm-ph"><img src="/demo/creative/artworks/ornaments_29_digital.webp" alt="Heart Burst" loading="lazy" decoding="async"></div>
         <div class="gm-meta"><span class="gm-cat">Heart Motif</span><span class="gm-ttl">Heart Burst</span></div>
       </a>
-      <a class="gm-card" href="#" data-full="/demo/creative/artworks/ornaments_30_digital.webp" data-cap="Geometric Still Life">
+      <a class="gm-card" href="https://portfolio-trimind.com/demo/creative/projects/geometric-still-life">
         <div class="gm-ph"><img src="/demo/creative/artworks/ornaments_30_digital.webp" alt="Geometric Still Life" loading="lazy" decoding="async"></div>
         <div class="gm-meta"><span class="gm-cat">Abstract Still Life</span><span class="gm-ttl">Geometric Still Life</span></div>
       </a>
-      <a class="gm-card" href="#" data-full="/demo/creative/artworks/ornaments_31_digital.webp" data-cap="Tropical Bouquet">
+      <a class="gm-card" href="https://portfolio-trimind.com/demo/creative/projects/tropical-bouquet">
         <div class="gm-ph"><img src="/demo/creative/artworks/ornaments_31_digital.webp" alt="Tropical Bouquet" loading="lazy" decoding="async"></div>
         <div class="gm-meta"><span class="gm-cat">Tropical Floral</span><span class="gm-ttl">Tropical Bouquet</span></div>
       </a>
-      <a class="gm-card" href="#" data-full="/demo/creative/artworks/ornaments_32_digital.webp" data-cap="Patterned Butterfly">
+      <a class="gm-card" href="https://portfolio-trimind.com/demo/creative/projects/patterned-butterfly">
         <div class="gm-ph"><img src="/demo/creative/artworks/ornaments_32_digital.webp" alt="Patterned Butterfly" loading="lazy" decoding="async"></div>
         <div class="gm-meta"><span class="gm-cat">Butterfly Art</span><span class="gm-ttl">Patterned Butterfly</span></div>
       </a>
-      <a class="gm-card" href="#" data-full="/demo/creative/artworks/ornaments_33_digital.webp" data-cap="Heart Flower Tree">
+      <a class="gm-card" href="https://portfolio-trimind.com/demo/creative/projects/heart-flower-tree">
         <div class="gm-ph"><img src="/demo/creative/artworks/ornaments_33_digital.webp" alt="Heart Flower Tree" loading="lazy" decoding="async"></div>
         <div class="gm-meta"><span class="gm-cat">Heart Motif</span><span class="gm-ttl">Heart Flower Tree</span></div>
       </a>
-      <a class="gm-card" href="#" data-full="/demo/creative/artworks/ornaments_34_digital.webp" data-cap="Tropical Abstract">
+      <a class="gm-card" href="https://portfolio-trimind.com/demo/creative/projects/tropical-abstract">
         <div class="gm-ph"><img src="/demo/creative/artworks/ornaments_34_digital.webp" alt="Tropical Abstract" loading="lazy" decoding="async"></div>
         <div class="gm-meta"><span class="gm-cat">Tropical Abstract</span><span class="gm-ttl">Tropical Abstract</span></div>
       </a>
-      <a class="gm-card" href="#" data-full="/demo/creative/artworks/ornaments_35_digital.webp" data-cap="Celestial Flower">
+      <a class="gm-card" href="https://portfolio-trimind.com/demo/creative/projects/celestial-flower">
         <div class="gm-ph"><img src="/demo/creative/artworks/ornaments_35_digital.webp" alt="Celestial Flower" loading="lazy" decoding="async"></div>
         <div class="gm-meta"><span class="gm-cat">Celestial Ornamental</span><span class="gm-ttl">Celestial Flower</span></div>
       </a>
-      <a class="gm-card" href="#" data-full="/demo/creative/artworks/ornaments_36_digital.webp" data-cap="Diamond Burst">
+      <a class="gm-card" href="https://portfolio-trimind.com/demo/creative/projects/diamond-burst">
         <div class="gm-ph"><img src="/demo/creative/artworks/ornaments_36_digital.webp" alt="Diamond Burst" loading="lazy" decoding="async"></div>
         <div class="gm-meta"><span class="gm-cat">Psychedelic Geometric</span><span class="gm-ttl">Diamond Burst</span></div>
       </a>
-      <a class="gm-card" href="#" data-full="/demo/creative/artworks/ornaments_37_digital.webp" data-cap="Pink Abstract Garden">
+      <a class="gm-card" href="https://portfolio-trimind.com/demo/creative/projects/pink-abstract-garden">
         <div class="gm-ph"><img src="/demo/creative/artworks/ornaments_37_digital.webp" alt="Pink Abstract Garden" loading="lazy" decoding="async"></div>
         <div class="gm-meta"><span class="gm-cat">Abstract Floral</span><span class="gm-ttl">Pink Abstract Garden</span></div>
       </a>
-      <a class="gm-card" href="#" data-full="/demo/creative/artworks/ornaments_38_digital.webp" data-cap="Geometric Explosion">
+      <a class="gm-card" href="https://portfolio-trimind.com/demo/creative/projects/geometric-explosion">
         <div class="gm-ph"><img src="/demo/creative/artworks/ornaments_38_digital.webp" alt="Geometric Explosion" loading="lazy" decoding="async"></div>
         <div class="gm-meta"><span class="gm-cat">Abstract Geometric</span><span class="gm-ttl">Geometric Explosion</span></div>
       </a>
-      <a class="gm-card" href="#" data-full="/demo/creative/artworks/ornaments_39_digital.webp" data-cap="Blue Cross Mandala">
+      <a class="gm-card" href="https://portfolio-trimind.com/demo/creative/projects/blue-cross-mandala">
         <div class="gm-ph"><img src="/demo/creative/artworks/ornaments_39_digital.webp" alt="Blue Cross Mandala" loading="lazy" decoding="async"></div>
         <div class="gm-meta"><span class="gm-cat">Mandala</span><span class="gm-ttl">Blue Cross Mandala</span></div>
       </a>
-      <a class="gm-card" href="#" data-full="/demo/creative/artworks/ornaments_40_digital.webp" data-cap="Purple Sunburst">
+      <a class="gm-card" href="https://portfolio-trimind.com/demo/creative/projects/purple-sunburst">
         <div class="gm-ph"><img src="/demo/creative/artworks/ornaments_40_digital.webp" alt="Purple Sunburst" loading="lazy" decoding="async"></div>
         <div class="gm-meta"><span class="gm-cat">Radial Abstract</span><span class="gm-ttl">Purple Sunburst</span></div>
       </a>
-      <a class="gm-card" href="#" data-full="/demo/creative/artworks/ornaments_41_digital.webp" data-cap="Red Creature">
+      <a class="gm-card" href="https://portfolio-trimind.com/demo/creative/projects/red-creature">
         <div class="gm-ph"><img src="/demo/creative/artworks/ornaments_41_digital.webp" alt="Red Creature" loading="lazy" decoding="async"></div>
         <div class="gm-meta"><span class="gm-cat">Creature Fantasy</span><span class="gm-ttl">Red Creature</span></div>
       </a>
-      <a class="gm-card" href="#" data-full="/demo/creative/artworks/ornaments_42_digital.webp" data-cap="Geometric Totem">
+      <a class="gm-card" href="https://portfolio-trimind.com/demo/creative/projects/geometric-totem">
         <div class="gm-ph"><img src="/demo/creative/artworks/ornaments_42_digital.webp" alt="Geometric Totem" loading="lazy" decoding="async"></div>
         <div class="gm-meta"><span class="gm-cat">Totemic Geometric</span><span class="gm-ttl">Geometric Totem</span></div>
       </a>
-      <a class="gm-card" href="#" data-full="/demo/creative/artworks/ornaments_43_digital.webp" data-cap="Pattern Explosion">
+      <a class="gm-card" href="https://portfolio-trimind.com/demo/creative/projects/pattern-explosion">
         <div class="gm-ph"><img src="/demo/creative/artworks/ornaments_43_digital.webp" alt="Pattern Explosion" loading="lazy" decoding="async"></div>
         <div class="gm-meta"><span class="gm-cat">Maximalist Pattern</span><span class="gm-ttl">Pattern Explosion</span></div>
       </a>
-      <a class="gm-card" href="#" data-full="/demo/creative/artworks/ornaments_44_digital.webp" data-cap="Geometric Windmill">
+      <a class="gm-card" href="https://portfolio-trimind.com/demo/creative/projects/geometric-windmill">
         <div class="gm-ph"><img src="/demo/creative/artworks/ornaments_44_digital.webp" alt="Geometric Windmill" loading="lazy" decoding="async"></div>
         <div class="gm-meta"><span class="gm-cat">Architectural Abstract</span><span class="gm-ttl">Geometric Windmill</span></div>
       </a>
-      <a class="gm-card" href="#" data-full="/demo/creative/artworks/ornaments_45_digital.webp" data-cap="The House">
+      <a class="gm-card" href="https://portfolio-trimind.com/demo/creative/projects/the-house">
         <div class="gm-ph"><img src="/demo/creative/artworks/ornaments_45_digital.webp" alt="The House" loading="lazy" decoding="async"></div>
         <div class="gm-meta"><span class="gm-cat">Narrative Abstract</span><span class="gm-ttl">The House</span></div>
       </a>
-      <a class="gm-card" href="#" data-full="/demo/creative/artworks/ornaments_46_digital.webp" data-cap="My Eye Brain Blooms">
+      <a class="gm-card" href="https://portfolio-trimind.com/demo/creative/projects/my-eye-brain-blooms">
         <div class="gm-ph"><img src="/demo/creative/artworks/ornaments_46_digital.webp" alt="My Eye Brain Blooms" loading="lazy" decoding="async"></div>
         <div class="gm-meta"><span class="gm-cat">Radial Mandala</span><span class="gm-ttl">My Eye Brain Blooms</span></div>
       </a>
