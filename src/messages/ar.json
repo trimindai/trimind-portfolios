@@ -221,10 +221,11 @@
       "accentHint": "التمييزات الثانوية، النجوم",
       "bgLabel": "الخلفية",
       "bgHint": "خلفية الفضاء العميق",
-      "splineHeading": "متقدّم: مشهد لوحة المفاتيح ثلاثية الأبعاد",
-      "splineLabel": "رابط مشهد Spline مخصّص (اختياري)",
-      "splineHint": "متقدّم. اتركه فارغًا لاستخدام لوحة المفاتيح ثلاثية الأبعاد العائمة الافتراضية. الصق رابط مشهد Spline مخصّص (‎.spline) لاستبدالها.",
-      "splinePlaceholder": "https://prod.spline.design/your-scene/scene.spline"
+      "kbdBodyHeading": "لون جسم لوحة المفاتيح",
+      "kbdBodyHint": "لون هيكل لوحة مفاتيح المهارات ثلاثية الأبعاد. تبقى المفاتيح ملوّنة بلون كل أداة.",
+      "kbdBodyBlack": "أسود",
+      "kbdBodyWhite": "أبيض",
+      "kbdBodyGray": "رمادي"
     },
     "basics": {
       "fullName": "الاسم الكامل",

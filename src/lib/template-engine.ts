@@ -103,11 +103,14 @@ export interface PortfolioData {
   customization?: {
     primaryColor?: string;
     accentColor?: string;
+    bgColor?: string;
     fontFamily?: string;
     hiddenSections?: string[];
-    // Developer template: opt-in upgrade for the skills "keyboard" section.
-    // When set, the template embeds this Spline scene instead of rendering
-    // the built-in CSS/JS isometric keyboard. Must be a Spline .splinecode URL.
+    // Developer template: chassis colour of the 3D skills keyboard.
+    // "black" (default) | "white" | "gray". Drives the kbdBody helper.
+    keyboardBody?: string;
+    // Deprecated: the Spline keyboard was replaced by the self-contained
+    // CSS-3D keyboard. Retained only for backward compatibility; unused.
     skillsSplineUrl?: string;
   };
   templateId?: string;
