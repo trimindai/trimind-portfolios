@@ -23,3 +23,17 @@
  */
 export const HOSTING_ENABLED = false;
 // force-rebuild 1780528173
+
+/**
+ * Slugs allowed to serve their live portfolio while global hosting is paused.
+ * These are real candidates whose printed CV carries a QR pointing at
+ * `/p/<slug>` — the QR target must resolve even though the rest of the product
+ * is still in PDF-only "coming soon" mode. Accounts/dashboards stay private
+ * (Clerk-gated); only the published page at an allow-listed slug is public.
+ */
+export const HOSTING_ALLOW_SLUGS: string[] = ["abdulrahman-alkandari"];
+
+/** True when `slug` may serve live: global hosting on, or slug allow-listed. */
+export function isHostingEnabledForSlug(slug: string): boolean {
+  return HOSTING_ENABLED || HOSTING_ALLOW_SLUGS.includes(slug);
+}

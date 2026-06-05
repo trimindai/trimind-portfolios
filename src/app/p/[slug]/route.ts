@@ -1,7 +1,7 @@
 import { NextRequest } from "next/server";
 import { convexClient } from "@/lib/convex";
 import { api } from "@convex/_generated/api";
-import { HOSTING_ENABLED } from "@/lib/flags";
+import { isHostingEnabledForSlug } from "@/lib/flags";
 
 const SITE_URL = "https://portfolio-trimind.com";
 
@@ -129,7 +129,8 @@ export async function GET(
     }
 
     // A real published portfolio exists, but live hosting is temporarily paused.
-    if (!HOSTING_ENABLED) {
+    // Allow-listed slugs (real candidates' QR targets) serve live regardless.
+    if (!isHostingEnabledForSlug(slug)) {
       return hostingPausedResponse();
     }
 

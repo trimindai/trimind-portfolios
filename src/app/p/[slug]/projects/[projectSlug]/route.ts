@@ -1,7 +1,7 @@
 import { NextRequest } from "next/server";
 import { convexClient } from "@/lib/convex";
 import { api } from "@convex/_generated/api";
-import { HOSTING_ENABLED } from "@/lib/flags";
+import { isHostingEnabledForSlug } from "@/lib/flags";
 import {
   renderEngineerProjectDetail,
   renderCreativeProjectDetail,
@@ -63,7 +63,8 @@ export async function GET(
   const { slug, projectSlug } = await params;
 
   // Hosting kill-switch: project detail pages are part of hosting.
-  if (!HOSTING_ENABLED) {
+  // Allow-listed slugs (real candidates' QR targets) serve live regardless.
+  if (!isHostingEnabledForSlug(slug)) {
     return notFound();
   }
 
