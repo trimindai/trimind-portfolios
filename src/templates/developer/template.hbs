@@ -171,11 +171,12 @@ section{position:relative;z-index:1}
 #skills{padding:80px 0 110px;--ks:62px;--glow:#2f6bff;--body:#243049}
 .kbd-toolbar{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-top:10px}
 .kbd-hint{font-family:var(--font-mono);color:var(--muted-2);font-size:.85rem}
-.kbd-mute{margin-inline-start:auto;display:inline-flex;align-items:center;gap:8px;font-family:var(--font-mono);font-size:.72rem;letter-spacing:.08em;color:var(--muted);
-  padding:9px 13px;border-radius:10px;border:1px solid var(--border-strong);background:var(--card);cursor:pointer;transition:border-color .2s,color .2s,transform .12s}
-.kbd-mute:hover{border-color:var(--brand);color:var(--fg)}
-.kbd-mute:active{transform:translateY(1px)}
-.kbd-mute[aria-pressed="true"]{color:var(--muted-2);border-color:var(--border)}
+.kbd-sound-wrap{margin-inline-start:auto;display:inline-flex;align-items:center;gap:9px;padding:7px 11px;border-radius:10px;border:1px solid var(--border-strong);background:var(--card);color:var(--muted);transition:border-color .2s,color .2s}
+.kbd-sound-wrap:hover{border-color:var(--brand);color:var(--fg)}
+.kbd-sound-wrap i{font-size:.8rem}
+.kbd-sound{appearance:none;-webkit-appearance:none;background:transparent;border:none;color:var(--fg);font-family:var(--font-mono);font-size:.74rem;letter-spacing:.04em;cursor:pointer;padding-right:4px}
+.kbd-sound:focus{outline:none}
+.kbd-sound option{background:var(--bg-2);color:var(--fg)}
 
 .kbd-wrap{display:grid;grid-template-columns:1fr;gap:26px;margin-top:36px}
 @media(min-width:1040px){.kbd-wrap{grid-template-columns:minmax(0,1fr) 322px;align-items:center}}
@@ -287,7 +288,7 @@ section{position:relative;z-index:1}
   #skills{--ks:44px}
   .kbd-deck{gap:14px;padding:18px 14px 24px;animation:none;transform:rotateX(10deg)}
   .kbd-hand.left,.kbd-hand.right{transform:none}
-  .kbd-mute{margin-inline-start:0}
+  .kbd-sound-wrap{margin-inline-start:0}
   .kbd-panel{min-height:0}
 }
 
@@ -456,9 +457,17 @@ html[dir="rtl"] .tl-item::before{left:auto;right:0}
       <h2>{{#if isRTL}}المهارات التقنية{{else}}Tech Stack{{/if}}</h2>
       <div class="kbd-toolbar">
         <p class="kbd-hint">{{#if isRTL}}(اضغط أي مفتاح — كل مفتاح مهارة){{else}}(press a key — every key is a skill){{/if}}</p>
-        <button type="button" class="kbd-mute" id="kbd-mute" aria-pressed="false" aria-label="{{#if isRTL}}كتم صوت المفاتيح{{else}}Toggle key sound{{/if}}">
-          <i class="fa-solid fa-volume-high"></i><span>{{#if isRTL}}الصوت{{else}}SOUND{{/if}}</span>
-        </button>
+        <label class="kbd-sound-wrap" for="kbd-sound"><i class="fa-solid fa-volume-high"></i>
+          <select class="kbd-sound" id="kbd-sound" aria-label="{{#if isRTL}}صوت المفاتيح{{else}}Key sound{{/if}}">
+            <option value="thocky">{{#if isRTL}}ثوكي{{else}}Thocky{{/if}}</option>
+            <option value="creamy">{{#if isRTL}}كريمي{{else}}Creamy{{/if}}</option>
+            <option value="clacky">{{#if isRTL}}كلاكي{{else}}Clacky{{/if}}</option>
+            <option value="poppy">{{#if isRTL}}بوبي{{else}}Poppy{{/if}}</option>
+            <option value="clicky">{{#if isRTL}}كليكي{{else}}Clicky{{/if}}</option>
+            <option value="lego">{{#if isRTL}}ليغو{{else}}Lego{{/if}}</option>
+            <option value="none">{{#if isRTL}}بدون صوت{{else}}No sound{{/if}}</option>
+          </select>
+        </label>
       </div>
     </div>
     <div class="kbd-wrap">
@@ -824,7 +833,7 @@ html[dir="rtl"] .tl-item::before{left:auto;right:0}
     var pCat = panel && panel.querySelector(".pk-cat");
     var pName = panel && panel.querySelector(".pk-name");
     var pDesc = panel && panel.querySelector(".pk-desc");
-    var muteBtn = document.getElementById("kbd-mute");
+    var soundSel = document.getElementById("kbd-sound");
     var chips = Array.prototype.slice.call(document.querySelectorAll("#kbd-list .kbd-chip"));
     var hoverable = !!(window.matchMedia && window.matchMedia("(hover:hover)").matches);
 
@@ -884,76 +893,67 @@ html[dir="rtl"] .tl-item::before{left:auto;right:0}
     deck.appendChild(buildHand("left", board.slice(0, HALF), staL));
     deck.appendChild(buildHand("right", board.slice(HALF), staR));
 
-    /* ── Web Audio: a richer synthesized mechanical key press (no asset) ── */
+    /* ── Web Audio: selectable synthesized key-sound profiles (no audio assets) ── */
     var AC = window.AudioContext || window.webkitAudioContext;
-    var actx = null, muted = false;
-    try{ muted = localStorage.getItem("kbdMuted") === "1"; }catch(e){}
-    function applyMuteUI(){
-      if(!muteBtn){ return; }
-      muteBtn.setAttribute("aria-pressed", muted ? "true" : "false");
-      var ic = muteBtn.querySelector("i");
-      if(ic){ ic.className = muted ? "fa-solid fa-volume-xmark" : "fa-solid fa-volume-high"; }
-    }
-    applyMuteUI();
+    var actx = null;
+    var soundProfile = "thocky";
+    try{ var sv = localStorage.getItem("kbdSound"); if(sv){ soundProfile = sv; } }catch(e){}
     function ensureCtx(){
       if(!actx && AC){ try{ actx = new AC(); }catch(e){ actx = null; } }
       if(actx && actx.state === "suspended"){ try{ actx.resume(); }catch(e){} }
     }
-    if(muteBtn){
-      muteBtn.addEventListener("click", function(){
-        muted = !muted;
-        try{ localStorage.setItem("kbdMuted", muted ? "1" : "0"); }catch(e){}
-        applyMuteUI(); ensureCtx();
+    if(soundSel){
+      soundSel.value = soundProfile;
+      soundSel.addEventListener("change", function(){
+        soundProfile = soundSel.value;
+        try{ localStorage.setItem("kbdSound", soundProfile); }catch(e){}
+        ensureCtx();
+        if(soundProfile !== "none"){ playClick(0); } /* preview the chosen sound */
       });
     }
-    /* unlock audio on the very first user gesture anywhere — so the first
-       key press is reliably audible (browsers gate audio until a gesture) */
+    /* unlock audio on the first user gesture so the first key press is audible */
     function primeAudio(){
       ensureCtx();
-      if(actx){ try{ var b = actx.createBuffer(1, 1, actx.sampleRate); var s = actx.createBufferSource(); s.buffer = b; s.connect(actx.destination); s.start(0); }catch(e){} }
+      if(actx){ try{ var b = actx.createBuffer(1,1,actx.sampleRate); var s = actx.createBufferSource(); s.buffer=b; s.connect(actx.destination); s.start(0); }catch(e){} }
       document.removeEventListener("pointerdown", primeAudio);
       document.removeEventListener("keydown", primeAudio);
     }
     document.addEventListener("pointerdown", primeAudio);
     document.addEventListener("keydown", primeAudio);
-    function noiseBurst(dur, type, freq, gainVal){
+
+    /* synth helpers */
+    function noise(dur, ftype, freq, q, peak, t){
       var len = Math.max(1, Math.floor(actx.sampleRate * dur));
-      var buf = actx.createBuffer(1, len, actx.sampleRate);
-      var d = buf.getChannelData(0);
-      for(var i = 0; i < len; i++){ d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 2.2); }
-      var src = actx.createBufferSource(); src.buffer = buf;
-      var f = actx.createBiquadFilter(); f.type = type; f.frequency.value = freq;
-      var g = actx.createGain(); g.gain.value = gainVal;
-      src.connect(f); f.connect(g); g.connect(actx.destination); src.start();
+      var buf = actx.createBuffer(1, len, actx.sampleRate); var d = buf.getChannelData(0);
+      for(var i = 0; i < len; i++){ d[i] = (Math.random()*2 - 1) * Math.pow(1 - i/len, 3); }
+      var n = actx.createBufferSource(); n.buffer = buf;
+      var f = actx.createBiquadFilter(); f.type = ftype; f.frequency.value = freq; if(q){ f.Q.value = q; }
+      var g = actx.createGain();
+      g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(peak, t+0.002); g.gain.exponentialRampToValueAtTime(0.0001, t+dur);
+      n.connect(f); f.connect(g); g.connect(actx.destination); n.start(t);
     }
+    function tone(wave, f0, f1, peak, dur, lp, t){
+      var o = actx.createOscillator(), g = actx.createGain(), filt = actx.createBiquadFilter();
+      filt.type = "lowpass"; filt.frequency.value = lp;
+      o.type = wave; o.frequency.setValueAtTime(f0, t); o.frequency.exponentialRampToValueAtTime(f1, t + dur*0.7);
+      g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(peak, t+0.005); g.gain.exponentialRampToValueAtTime(0.0001, t+dur);
+      o.connect(g); g.connect(filt); filt.connect(actx.destination); o.start(t); o.stop(t + dur + 0.02);
+    }
+    /* each profile emulates the *character* of a popular switch-sound style */
+    var PROFILES = {
+      thocky: function(p,t){ tone("sine",152+p*14,80,0.26,0.13,720,t); noise(0.018,"lowpass",520,0,0.10,t); },
+      creamy: function(p,t){ tone("sine",128+p*12,74,0.24,0.17,440,t); noise(0.022,"lowpass",360,0,0.07,t); },
+      clacky: function(p,t){ noise(0.022,"highpass",2700,0,0.22,t); tone("triangle",320+p*22,150,0.13,0.05,2200,t); },
+      poppy:  function(p,t){ tone("triangle",215+p*18,120,0.22,0.09,1500,t); noise(0.012,"bandpass",760,1.3,0.13,t); },
+      clicky: function(p,t){ noise(0.009,"highpass",3300,0,0.20,t); tone("square",1350,920,0.09,0.018,3200,t); tone("sine",175,92,0.16,0.08,820,t); },
+      lego:   function(p,t){ noise(0.016,"highpass",2200,0,0.26,t); tone("square",920,540,0.13,0.04,2600,t); }
+    };
     function playClick(pitch){
-      if(muted){ return; }
+      if(soundProfile === "none"){ return; }
       ensureCtx();
       if(!actx){ return; }
-      var t = actx.currentTime;
-      var jit = (Math.random() - 0.5) * 14;
-      /* soft tactile tick — gentle band-passed noise with a smooth attack */
-      try{
-        var len = Math.max(1, Math.floor(actx.sampleRate * 0.02));
-        var buf = actx.createBuffer(1, len, actx.sampleRate);
-        var d = buf.getChannelData(0);
-        for(var i = 0; i < len; i++){ d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 3); }
-        var n = actx.createBufferSource(); n.buffer = buf;
-        var bp = actx.createBiquadFilter(); bp.type = "bandpass"; bp.frequency.value = 1850 + jit * 10; bp.Q.value = 0.9;
-        var ng = actx.createGain();
-        ng.gain.setValueAtTime(0.0001, t); ng.gain.exponentialRampToValueAtTime(0.11, t + 0.002); ng.gain.exponentialRampToValueAtTime(0.0001, t + 0.03);
-        n.connect(bp); bp.connect(ng); ng.connect(actx.destination); n.start(t);
-      }catch(e){}
-      /* smooth low "thock" body — low-passed sine with soft attack + decay */
-      var o = actx.createOscillator(), g = actx.createGain(), lp = actx.createBiquadFilter();
-      lp.type = "lowpass"; lp.frequency.value = 900;
-      o.type = "sine";
-      o.frequency.setValueAtTime(150 + pitch * 16 + jit, t);
-      o.frequency.exponentialRampToValueAtTime(82, t + 0.08);
-      g.gain.setValueAtTime(0.0001, t);
-      g.gain.exponentialRampToValueAtTime(0.22, t + 0.006);
-      g.gain.exponentialRampToValueAtTime(0.0001, t + 0.13);
-      o.connect(g); g.connect(lp); lp.connect(actx.destination); o.start(t); o.stop(t + 0.14);
+      var fn = PROFILES[soundProfile] || PROFILES.thocky;
+      try{ fn(pitch || 0, actx.currentTime); }catch(e){}
     }
 
     /* ── info panel: show the tool name + its custom description ── */
