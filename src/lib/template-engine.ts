@@ -236,20 +236,31 @@ Handlebars.registerHelper("cycle", function (...args: any[]) {
 // items still yields one keycap so it is never dropped from the keyboard.
 Handlebars.registerHelper("flattenSkills", function (skills: any) {
   if (!Array.isArray(skills)) return [];
-  const out: Array<{ name: string; category: string; catIndex: number }> = [];
+  const out: Array<{ name: string; category: string; catIndex: number; description: string }> = [];
   skills.forEach((cat: any, catIndex: number) => {
     const category = typeof cat?.category === "string" ? cat.category : "";
     const items = Array.isArray(cat?.items) ? cat.items : [];
     if (!items.length) {
-      if (category) out.push({ name: category, category, catIndex });
+      if (category) out.push({ name: category, category, catIndex, description: "" });
       return;
     }
     items.forEach((it: any) => {
       const name = typeof it === "string" ? it : String(it?.name ?? it ?? "");
-      if (name.trim()) out.push({ name: name.trim(), category, catIndex });
+      const description = typeof it === "object" && it ? String(it.description ?? it.desc ?? "") : "";
+      if (name.trim()) out.push({ name: name.trim(), category, catIndex, description: description.trim() });
     });
   });
   return out;
+});
+
+// kbdBody(value) → CSS modifier class for the Developer keyboard chassis colour.
+// Whitelisted: "white"/"light" → kbd-light, "gray"/"grey" → kbd-gray, anything
+// else (incl. "black"/unset) → "" (the default dark chassis).
+Handlebars.registerHelper("kbdBody", function (value: any) {
+  const s = typeof value === "string" ? value.toLowerCase().trim() : "";
+  if (s === "white" || s === "light") return "kbd-light";
+  if (s === "gray" || s === "grey") return "kbd-gray";
+  return "";
 });
 
 // techIcon(name) → a Font Awesome class for the technology, or "" when no

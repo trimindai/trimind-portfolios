@@ -63,13 +63,20 @@ Handlebars.registerHelper("flattenSkills", function (skills) {
   skills.forEach((cat, catIndex) => {
     const category = typeof cat?.category === "string" ? cat.category : "";
     const items = Array.isArray(cat?.items) ? cat.items : [];
-    if (!items.length) { if (category) out.push({ name: category, category, catIndex }); return; }
+    if (!items.length) { if (category) out.push({ name: category, category, catIndex, description: "" }); return; }
     items.forEach((it) => {
       const name = typeof it === "string" ? it : String(it?.name ?? it ?? "");
-      if (name.trim()) out.push({ name: name.trim(), category, catIndex });
+      const description = typeof it === "object" && it ? String(it.description ?? it.desc ?? "") : "";
+      if (name.trim()) out.push({ name: name.trim(), category, catIndex, description: description.trim() });
     });
   });
   return out;
+});
+Handlebars.registerHelper("kbdBody", function (value) {
+  const s = typeof value === "string" ? value.toLowerCase().trim() : "";
+  if (s === "white" || s === "light") return "kbd-light";
+  if (s === "gray" || s === "grey") return "kbd-gray";
+  return "";
 });
 const TECH_ICONS = {
   react: "fab fa-react", reactjs: "fab fa-react", reactnative: "fab fa-react",
@@ -207,27 +214,47 @@ const data = {
     { value: "1.2M", label: "Users reached" },
   ],
   // Tech Stack keyboard — Wadhah Almutairi's skills (per request).
+  // Each item carries a custom description shown in the keyboard's info panel.
   skills: [
     {
       category: "Cybersecurity",
       items: [
-        "Penetration Testing",
-        "Vulnerability Assessment",
-        "Active Directory",
-        "GPO Hardening",
-        "Incident Response",
-        "IIS",
-        "DNS",
+        { name: "Penetration Testing", description: "Simulating real attacks to find and prove exploitable weaknesses before adversaries do." },
+        { name: "Vulnerability Assessment", description: "Systematically scanning systems and ranking findings by severity and business risk." },
+        { name: "Active Directory", description: "Securing and administering Windows domain identity, users, and group policy." },
+        { name: "GPO Hardening", description: "Locking down endpoints and servers through Group Policy security baselines." },
+        { name: "Incident Response", description: "Detecting, containing, and recovering from security incidents with clear post-mortems." },
+        { name: "IIS", description: "Configuring and hardening Microsoft's web server for safe production hosting." },
+        { name: "DNS", description: "Managing name resolution and defending against DNS-based attacks and misconfig." },
       ],
     },
     {
       category: "Security Platforms",
-      items: ["Trend Micro Vision One", "Elastic Stack", "SIEM", "Winlogbeat"],
+      items: [
+        { name: "Trend Micro Vision One", description: "XDR platform unifying endpoint, network, and server telemetry for detection & response." },
+        { name: "Elastic Stack", description: "Elasticsearch + Kibana for centralized log search, dashboards, and threat hunting." },
+        { name: "SIEM", description: "Aggregating and correlating security events to surface threats in real time." },
+        { name: "Winlogbeat", description: "Shipping Windows event logs into the Elastic Stack for monitoring and alerting." },
+      ],
     },
-    { category: "DevOps", items: ["Docker"] },
-    { category: "Programming", items: ["Python", "PowerShell", "Java", "C"] },
-    { category: "AI & Data", items: ["Machine Learning", "NLP", "Pandas"] },
-    { category: "Web", items: ["HTML", "CSS"] },
+    { category: "DevOps", items: [
+      { name: "Docker", description: "Containerizing tools and labs for isolated, repeatable security testing." },
+    ] },
+    { category: "Programming", items: [
+      { name: "Python", description: "Automating assessments, parsing data, and building security tooling." },
+      { name: "PowerShell", description: "Scripting Windows administration, hardening, and incident-response tasks." },
+      { name: "Java", description: "Building cross-platform application logic and tooling." },
+      { name: "C", description: "Low-level programming for understanding memory, exploits, and systems." },
+    ] },
+    { category: "AI & Data", items: [
+      { name: "Machine Learning", description: "Training models on custom datasets for classification and detection." },
+      { name: "NLP", description: "Processing natural language for chatbots and text understanding." },
+      { name: "Pandas", description: "Wrangling and analyzing structured data in Python pipelines." },
+    ] },
+    { category: "Web", items: [
+      { name: "HTML", description: "Structuring accessible, semantic web content." },
+      { name: "CSS", description: "Styling responsive, polished interfaces." },
+    ] },
   ],
   experience: [
     {
