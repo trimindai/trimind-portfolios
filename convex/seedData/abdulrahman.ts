@@ -35,7 +35,7 @@ export const ABDULRAHMAN_PORTFOLIO = {
     {
       degree: "B.Sc. in Electrical Engineering",
       institution: "American University of the Middle East (AUM), Kuwait",
-      year: "Expected 2026",
+      year: "2026",
       description: "Senior Project: Smart Irrigation System.",
     },
   ],
