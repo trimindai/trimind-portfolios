@@ -1,34 +1,1488 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Dalal Al-Kandari — My Eye Brain | Ornamental Art Collection</title>
-    <meta name="description" content="46 works of intuitive ornamental art created without planning. My hand moves, my eye sees, my brain feels. This is my eye brain." />
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700;800;900&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-    <script type="module" crossorigin src="/demo/creative/assets/index-CGoTwJ9l.js"></script>
-    <link rel="stylesheet" crossorigin href="/demo/creative/assets/index-B-AYu_JD.css">
-    <style>
-      html, body { overflow-x: hidden; }
-      /* Cone stays visible on mobile but scaled down + contained. cone-wrap's
-         own transform is NOT touched by the cone JS (which only writes to
-         cone-tilt / cone-spin), so scaling it here is safe. */
-      @media (max-width: 1023px) {
-        .cone-wrap { transform: scale(0.46); transform-origin: center center; height: 360px !important; overflow: hidden !important; }
-      }
-      /* The demo nav is `hidden md:flex` — show it on phones so the links appear. */
-      @media (max-width: 767px) {
-        header > nav { display: flex !important; gap: 9px !important; flex-shrink: 0; }
-        header > nav .bracket-link { font-size: 9px !important; letter-spacing: 0.5px !important; }
-        header > a:first-child { font-size: 10px !important; letter-spacing: 0.5px !important; white-space: nowrap !important; }
-        /* Hero name clamp-floor (42px) too wide for phones — shrink + allow wrap. */
-        #projects h1 { font-size: clamp(28px, 8vw, 44px) !important; overflow-wrap: anywhere; word-break: break-word; max-width: 100%; }
-      }
-    </style>
-  </head>
-  <body>
-    <div id="root"></div>
-  </body>
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dalal Al-Kandari — Self-Taught Ornamental Artist</title>
+<meta name="description" content="Self-Taught Ornamental Artist based in Kuwait City, Kuwait. Let&#x27;s explore my eye brain">
+<meta name="theme-color" content="#1b1b1b">
+<link rel="canonical" href="https://portfolio-trimind.com/demo/creative">
+<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2064%2064%22%3E%3Crect%20width%3D%2264%22%20height%3D%2264%22%20rx%3D%2210%22%20fill%3D%22%23EFEEEA%22%2F%3E%3Ctext%20x%3D%2232%22%20y%3D%2234%22%20font-family%3D%22Archivo%20Black%2CArial%2Csans-serif%22%20font-size%3D%2228%22%20font-weight%3D%22800%22%20letter-spacing%3D%22-1%22%20fill%3D%22%23B86F52%22%20text-anchor%3D%22middle%22%20dominant-baseline%3D%22central%22%3EDA%3C%2Ftext%3E%3C%2Fsvg%3E">
+<meta property="og:type" content="profile">
+<meta property="og:site_name" content="Dalal Al-Kandari">
+<meta property="og:url" content="https://portfolio-trimind.com/demo/creative">
+<meta property="og:title" content="Dalal Al-Kandari | Self-Taught Ornamental Artist">
+<meta property="og:description" content="Let&#x27;s explore my eye brain">
+<meta property="og:image" content="/demo/creative/artworks/ornaments_1_digital.webp">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Dalal Al-Kandari | Self-Taught Ornamental Artist">
+<meta name="twitter:description" content="Let&#x27;s explore my eye brain">
+<meta name="twitter:image" content="/demo/creative/artworks/ornaments_1_digital.webp">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"Person","name":"Dalal Al-Kandari","jobTitle":"Self-Taught Ornamental Artist","description":"Let's explore my eye brain","url":"https://portfolio-trimind.com/demo/creative","email":"dalal@myeyebrain.art","address":{"@type":"PostalAddress","addressLocality":"Kuwait City, Kuwait"},"sameAs":["https://www.instagram.com/","https://www.linkedin.com/"]}</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700;800;900&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ══════════════════════════════════════════════════════
+   CREATIVE PORTFOLIO — "Atelier" Warm Editorial Theme
+   Four-role palette: Cloud Dancer paper, deep-slate ink,
+   Blue Slate (structure/links), Cinnamon Wood (actions),
+   Desert Sand (bands, cards, frames). Cone gallery on
+   desktop/tablet; stacked photo-cubes on phone.
+   ══════════════════════════════════════════════════════ */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --bg: #EFEEEA;   /* Cloud Dancer — paper */
+  --bg-alt: #E6DAC6;        /* Desert Sand band */
+  --bg-card: #F5F0E7;       /* warm off-white card, lets art pop */
+  --sand: #EBBEAA;          /* Desert Sand — frames, dividers, cube tops */
+  --text: #1E2A44;          /* deep slate ink (Blue Slate hue, darkened) */
+  --text-dim: #4C587A;      /* mid slate */
+  --text-muted: #8B8473;    /* warm taupe — mono labels */
+  --border: #D8C7AE;        /* sand-tinted hairline */
+  --accent: #B86F52;  /* Cinnamon Wood — actions/labels */
+  --accent-dim: rgba(184,111,82,.14);
+  --link: #496AB1;          /* Blue Slate — structure, nav, links */
+  --font-head: 'Geist', system-ui, sans-serif;
+  --font-mono: 'Geist Mono', ui-monospace, monospace;
+}
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--font-head);
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100dvh;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+a { color: inherit; text-decoration: none; }
+.mono { font-family: var(--font-mono); }
+.section-label { font-family: var(--font-mono); font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px; color: var(--link); }
+
+/* ── Navbar ── */
+.nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 50;
+  display: flex; align-items: center; justify-content: space-between;
+  height: 60px; padding: 0 24px;
+  background: rgba(239,238,234,0.82); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+}
+.nav-brand { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; transition: color .25s; }
+.nav-brand:hover { color: var(--link); }
+.nav-links { display: flex; align-items: center; gap: 24px; }
+.nav-link { font-family: var(--font-mono); font-size: 12px; text-transform: uppercase; letter-spacing: 1px; color: var(--text-dim); transition: color .25s; }
+.nav-link:hover { color: var(--link); }
+.nav-link .bk { color: var(--text-muted); }
+.nav-toggle { display: none; }
+@media (max-width: 768px) {
+  .nav-toggle { display: flex; flex-direction: column; justify-content: center; gap: 5px; width: 40px; height: 40px; padding: 0; background: none; border: none; cursor: pointer; z-index: 60; }
+  .nav-toggle span { display: block; width: 22px; height: 2px; background: var(--text); transition: transform .3s, opacity .3s; }
+  .nav-toggle.is-open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+  .nav-toggle.is-open span:nth-child(2) { opacity: 0; }
+  .nav-toggle.is-open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+  .nav-links {
+    position: fixed; top: 60px; left: 0; right: 0;
+    flex-direction: column; align-items: stretch; gap: 0;
+    background: rgba(239,238,234,0.98); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    transform: translateY(-130%); transition: transform .35s cubic-bezier(.16,1,.3,1);
+    max-height: calc(100dvh - 60px); overflow-y: auto;
+  }
+  .nav-links.open { transform: translateY(0); }
+  .nav-link { padding: 18px 24px; border-top: 1px solid var(--border); font-size: 14px; }
+}
+
+/* ── Hero ── */
+.hero {
+  position: relative; width: 100%; min-height: 100dvh;
+  display: flex; flex-direction: column; align-items: center;
+  background: var(--bg);
+}
+@media (min-width: 1024px) { .hero { flex-direction: row; } }
+.hero-left {
+  width: 100%; display: flex; flex-direction: column; justify-content: center;
+  padding: 96px 24px 48px; order: 1;
+}
+@media (min-width: 1024px) { .hero-left { width: 36%; padding: 0 40px; order: 1; } }
+/* Hero portrait — optional. Renders only when basics.photoUrl is set;
+   otherwise the hero is text-led (no empty placeholder). */
+.hero-portrait {
+  position: relative; width: 200px; height: 240px; margin-bottom: 30px;
+  background: var(--sand); padding: 10px; border-radius: 2px;
+  box-shadow: 0 18px 40px -20px rgba(72,58,40,0.45);
+}
+.hero-portrait img { width: 100%; height: 100%; object-fit: cover; display: block; border-radius: 1px; }
+.hero-portrait .corner { position: absolute; width: 16px; height: 16px; }
+.hero-portrait .c-tl { top: 18px; left: 18px; border-top: 1px solid var(--link); border-left: 1px solid var(--link); }
+.hero-portrait .c-tr { top: 18px; right: 18px; border-top: 1px solid var(--link); border-right: 1px solid var(--link); }
+.hero-portrait .c-bl { bottom: 18px; left: 18px; border-bottom: 1px solid var(--link); border-left: 1px solid var(--link); }
+.hero-portrait .c-br { bottom: 18px; right: 18px; border-bottom: 1px solid var(--link); border-right: 1px solid var(--link); }
+.hero-name { font-size: clamp(40px, 6vw, 68px); font-weight: 800; text-transform: uppercase; letter-spacing: -0.04em; line-height: 1.05; margin-bottom: 12px; }
+.hero-tag { font-family: var(--font-mono); font-size: 10px; text-transform: uppercase; letter-spacing: 1.5px; color: var(--accent); margin-bottom: 8px; }
+.hero-loc { font-family: var(--font-mono); font-size: 10px; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); margin-bottom: 20px; }
+.hero-bio { font-size: 13px; color: var(--text-dim); line-height: 1.7; max-width: 340px; margin-bottom: 28px; overflow-wrap: anywhere; }
+.hero-actions { display: flex; flex-wrap: wrap; gap: 18px; align-items: center; }
+.cta { display: inline-flex; align-items: center; gap: 8px; font-family: var(--font-mono); font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: var(--accent); transition: gap .3s; }
+.cta:hover { gap: 16px; }
+.cta-ghost { color: var(--text-dim); }
+.cta-ghost:hover { color: var(--accent); }
+/* The cone shows at every size; on mobile it sits below the hero text (order 2)
+   and is scaled down (smaller radius via JS + smaller cards below) so it stays
+   contained. On desktop it's the 64% side column. */
+.hero-right { width: 100%; order: 2; }
+@media (min-width: 1024px) { .hero-right { width: 64%; margin-left: -5%; } }
+
+/* ── 3D Cone ── */
+.cone-wrap { position: relative; width: 100%; height: 620px; perspective: 1600px; overflow: hidden; cursor: grab; touch-action: pan-y; }
+.cone-wrap.dragging { cursor: grabbing; }
+@media (max-width: 1023px) {
+  .cone-wrap { height: 380px; }
+  .cone-card { width: 104px; height: 138px; margin: -69px 0 0 -52px; }
+  .cone-hint { font-size: 8px; bottom: 8px; }
+}
+.cone-tilt { position: absolute; top: 50%; left: 50%; transform-style: preserve-3d; }
+.cone-spin { position: relative; transform-style: preserve-3d; }
+.cone-card {
+  position: absolute; top: 0; left: 0; width: 148px; height: 197px; margin: -98px 0 0 -74px;
+  border-radius: 3px; overflow: hidden; transform-style: preserve-3d; backface-visibility: hidden;
+  border: 1px solid rgba(30,42,68,0.10); background: var(--bg-card);
+  box-shadow: 0 14px 34px -8px rgba(72,58,40,0.40);
+}
+.cone-card img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.cone-card .overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,0.85), transparent 60%); opacity: 0; transition: opacity .3s; }
+.cone-card:hover .overlay { opacity: 1; }
+.cone-card .info { position: absolute; left: 10px; right: 10px; bottom: 10px; opacity: 0; transform: translateY(6px); transition: all .3s; }
+.cone-card:hover .info { opacity: 1; transform: translateY(0); }
+.cone-card .info-cat { font-family: var(--font-mono); font-size: 8px; text-transform: uppercase; letter-spacing: 1px; color: var(--accent); }
+.cone-card .info-title { font-size: 12px; font-weight: 600; line-height: 1.2; }
+.cone-hint { position: absolute; bottom: 16px; left: 50%; transform: translateX(-50%); font-family: var(--font-mono); font-size: 9px; text-transform: uppercase; letter-spacing: 1.5px; color: var(--text-muted); pointer-events: none; }
+
+/* ── Phone photo-cube cluster (replaces the cone < 768px) ── */
+.cube-stack { display: none; }
+@media (max-width: 767px) {
+  .cone-wrap { display: none !important; }
+  .cube-stack {
+    display: block; position: relative;
+    width: 300px; height: 366px; margin: 6px auto 0;
+    perspective: 1100px; perspective-origin: 50% 38%;
+  }
+}
+.cube-stack .cube-hint {
+  position: absolute; left: 0; right: 0; bottom: -6px; text-align: center;
+  font-family: var(--font-mono); font-size: 10px; text-transform: uppercase;
+  letter-spacing: 1.6px; color: var(--text-muted); pointer-events: none;
+}
+.cube-stack .cube-hint a { color: var(--accent); font-weight: 600; pointer-events: auto; }
+.cube {
+  --s: 104px;
+  position: absolute; width: var(--s); height: var(--s);
+  left: var(--cx, 0); top: var(--cy, 0);
+  transform-style: preserve-3d;
+  transform: rotateX(-26deg) rotateY(-32deg);
+  transition: transform .45s cubic-bezier(.16,1,.3,1);
+  cursor: pointer; -webkit-tap-highlight-color: transparent;
+}
+.cube:active { transform: rotateX(-26deg) rotateY(-32deg) scale(.94); }
+.cube .face {
+  position: absolute; width: var(--s); height: var(--s); overflow: hidden;
+  background: var(--bg-card); backface-visibility: hidden;
+  box-shadow: inset 0 0 0 1px rgba(245,240,231,0.9);
+}
+.cube .face img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.cube .f-front { transform: translateZ(calc(var(--s) / 2)); }
+.cube .f-left  { transform: rotateY(-90deg) translateZ(calc(var(--s) / 2)); filter: brightness(.8) saturate(.95); }
+.cube .f-top   { transform: rotateX(90deg) translateZ(calc(var(--s) / 2)); background: linear-gradient(135deg, #FBF8F2 0%, var(--sand) 120%); }
+.cube .shadow {
+  position: absolute; left: 50%; top: 92%; width: 122%; height: 32px;
+  transform: translate(-50%, 4px) rotateX(80deg); transform-origin: center top;
+  background: radial-gradient(ellipse at center, rgba(72,58,40,0.34), transparent 72%);
+  filter: blur(3px); pointer-events: none; z-index: -1;
+}
+
+/* ── Marquee ── */
+.marquee-row { width: 100%; padding: 20px 0; overflow: hidden; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); background: var(--bg); }
+.marquee { display: flex; white-space: nowrap; will-change: transform; }
+.marquee.rev { animation: marquee-rev 40s linear infinite; }
+.marquee:not(.rev) { animation: marquee-fwd 40s linear infinite; }
+@keyframes marquee-fwd { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+@keyframes marquee-rev { from { transform: translateX(-50%); } to { transform: translateX(0); } }
+.marquee span { margin: 0 32px; font-family: var(--font-mono); font-size: 11px; text-transform: uppercase; letter-spacing: 2px; color: var(--text-muted); }
+.marquee span .sep { margin-left: 32px; color: var(--border); }
+
+/* ── Section ── */
+.section { width: 100%; padding: 80px 24px; }
+@media (min-width: 1024px) { .section { padding: 112px 40px; } }
+.container { max-width: 1200px; margin: 0 auto; }
+.sec-head { display: flex; align-items: center; gap: 16px; margin-bottom: 48px; }
+.sec-head .line { flex: 1; height: 1px; background: var(--border); }
+.sec-title { font-size: clamp(28px, 4vw, 44px); font-weight: 800; letter-spacing: -0.03em; }
+
+/* ── Gallery grid ── */
+.gal-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+@media (min-width: 640px) { .gal-grid { grid-template-columns: repeat(3, 1fr); } }
+@media (min-width: 1024px) { .gal-grid { grid-template-columns: repeat(4, 1fr); } }
+.gal-card { position: relative; display: block; overflow: hidden; border: 1px solid var(--border); border-radius: 2px; background: var(--bg-card); }
+.gal-card .ph { aspect-ratio: 3/4; overflow: hidden; }
+.gal-card img { width: 100%; height: 100%; object-fit: cover; transition: transform .5s; }
+.gal-card:hover img { transform: scale(1.05); }
+.gal-ov { position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: flex-end; padding: 16px; opacity: 0; transition: opacity .3s; background: linear-gradient(to top, rgba(17,17,17,0.94), rgba(17,17,17,0.35) 55%, transparent); }
+.gal-card:hover .gal-ov { opacity: 1; }
+.gal-ov .cat { font-family: var(--font-mono); font-size: 9px; text-transform: uppercase; letter-spacing: 1.5px; color: var(--accent); margin-bottom: 4px; }
+.gal-ov .ttl { font-size: 14px; font-weight: 600; line-height: 1.2; }
+.gal-corner { position: absolute; width: 12px; height: 12px; opacity: 0; transition: opacity .3s; }
+.gal-card:hover .gal-corner { opacity: 1; }
+.gc-tl { top: 8px; left: 8px; border-top: 1px solid var(--accent); border-left: 1px solid var(--accent); }
+.gc-tr { top: 8px; right: 8px; border-top: 1px solid var(--accent); border-right: 1px solid var(--accent); }
+.gc-bl { bottom: 8px; left: 8px; border-bottom: 1px solid var(--accent); border-left: 1px solid var(--accent); }
+.gc-br { bottom: 8px; right: 8px; border-bottom: 1px solid var(--accent); border-right: 1px solid var(--accent); }
+
+/* ── Skills ── */
+.skills-wrap { display: flex; flex-direction: column; gap: 32px; }
+@media (min-width: 1024px) { .skills-wrap { flex-direction: row; flex-wrap: wrap; gap: 48px; } }
+.skill-group { flex: 1; min-width: 240px; }
+.skill-group h4 { font-family: var(--font-mono); font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px; color: var(--text-muted); margin-bottom: 16px; }
+.pill-row { display: flex; flex-wrap: wrap; gap: 10px; }
+.pill { padding: 8px 16px; font-family: var(--font-mono); font-size: 12px; text-transform: uppercase; letter-spacing: 1px; color: var(--text-dim); border: 1px solid var(--border); border-radius: 2px; transition: all .25s; }
+.pill:hover { border-color: var(--accent); color: var(--accent); }
+
+/* ── Experience ── */
+.xp-item { padding: 24px 0; border-top: 1px solid var(--border); }
+.xp-item h4 { font-size: 18px; font-weight: 700; }
+.xp-meta { font-family: var(--font-mono); font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: var(--accent); margin: 4px 0 8px; }
+.xp-item p { font-size: 14px; color: var(--text-dim); line-height: 1.6; }
+
+/* ── Awards ── */
+.awards-grid { display: flex; flex-direction: column; }
+.award-item { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 12px; padding: 20px 0; border-top: 1px solid var(--border); }
+.award-item:last-child { border-bottom: 1px solid var(--border); }
+.award-name { font-size: 18px; font-weight: 600; }
+.award-issuer { font-size: 13px; color: var(--text-muted); margin-left: 12px; font-weight: 400; }
+.award-year { font-family: var(--font-mono); font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: var(--accent); white-space: nowrap; }
+
+/* ── Contact ── */
+.contact-grid { display: grid; grid-template-columns: 1fr; gap: 32px; }
+@media (min-width: 768px) { .contact-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (min-width: 1024px) { .contact-grid { grid-template-columns: repeat(4, 1fr); } }
+.contact-grid a, .contact-grid p { font-size: 14px; color: var(--text-dim); transition: color .25s; }
+.contact-grid a:hover { color: var(--link); }
+.contact-grid .lbl { font-family: var(--font-mono); font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px; color: var(--text-muted); margin-bottom: 12px; }
+.contact-flex { display: flex; flex-direction: column; gap: 8px; }
+
+/* ── Footer ── */
+.footer { padding: 40px 24px; border-top: 1px solid var(--border); text-align: center; font-family: var(--font-mono); font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); }
+.footer a:hover { color: var(--link); }
+
+/* ── Testimonials ── */
+.quotes-grid { display: grid; grid-template-columns: 1fr; gap: 20px; }
+@media (min-width: 768px) { .quotes-grid { grid-template-columns: repeat(2, 1fr); gap: 24px; } }
+.quote-card { position: relative; padding: 32px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 2px; transition: border-color .35s, transform .35s; }
+.quote-card:hover { border-color: var(--accent); transform: translateY(-3px); }
+.quote-card .mark { font-family: Georgia, 'Times New Roman', serif; font-size: 60px; line-height: .5; color: var(--accent); opacity: .35; }
+.quote-card blockquote { font-size: 16px; line-height: 1.65; color: var(--text); margin: 14px 0 22px; }
+.quote-card .by { display: flex; flex-direction: column; gap: 3px; }
+.quote-card .by .nm { font-size: 14px; font-weight: 600; }
+.quote-card .by .rl { font-family: var(--font-mono); font-size: 10px; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); }
+
+/* ── Scroll reveal (JS adds .reveal then .in; safe-degrades) ── */
+.reveal { opacity: 0; transform: translateY(26px); transition: opacity .7s cubic-bezier(.16,1,.3,1), transform .7s cubic-bezier(.16,1,.3,1); }
+.reveal.in { opacity: 1; transform: none; }
+@media (prefers-reduced-motion: reduce) { .reveal { opacity: 1 !important; transform: none !important; transition: none !important; } }
+
+/* ── Motion polish ── */
+.marquee:hover { animation-play-state: paused; }
+.gal-card img { transition: transform .6s cubic-bezier(.16,1,.3,1); }
+.gal-zoom { cursor: zoom-in; border: 1px solid var(--border); background: var(--bg-card); padding: 0; text-align: left; font: inherit; color: inherit; width: 100%; }
+
+/* ── Lightbox (main gallery quick-view) ── */
+.lb { position: fixed; inset: 0; z-index: 100; display: none; align-items: center; justify-content: center; background: rgba(17,17,17,0.97); }
+.lb.open { display: flex; }
+.lb .lcross { position: absolute; width: 18px; height: 18px; color: rgba(235,190,170,0.45); }
+.lb .lcross::before, .lb .lcross::after { content: ''; position: absolute; background: currentColor; }
+.lb .lcross::before { left: 0; top: 50%; width: 100%; height: 1px; transform: translateY(-50%); }
+.lb .lcross::after { top: 0; left: 50%; height: 100%; width: 1px; transform: translateX(-50%); }
+.lb .lc-tl { top: 20px; left: 20px; } .lb .lc-tr { top: 20px; right: 20px; }
+.lb .lc-bl { bottom: 20px; left: 20px; } .lb .lc-br { bottom: 20px; right: 20px; }
+.lb-cap { position: absolute; top: 22px; left: 50%; transform: translateX(-50%); font-family: var(--font-mono); font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px; color: var(--text-dim); max-width: 70vw; text-align: center; }
+.lb-close { position: absolute; top: 18px; right: 22px; font-family: var(--font-mono); font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px; color: var(--text-dim); background: none; border: none; cursor: pointer; }
+.lb-close:hover { color: var(--accent); }
+.lb-stage { width: 90vw; height: 80vh; display: flex; align-items: center; justify-content: center; overflow: hidden; touch-action: none; }
+.lb-stage img { max-width: 100%; max-height: 100%; user-select: none; transition: transform .15s ease-out; }
+.lb-ctrl { position: absolute; bottom: 24px; left: 50%; transform: translateX(-50%); display: flex; align-items: center; gap: 20px; }
+.lb-ctrl button { font-family: var(--font-mono); font-size: 16px; color: var(--text-dim); background: none; border: none; cursor: pointer; }
+.lb-ctrl button:hover { color: var(--accent); }
+.lb-ctrl .pct { font-family: var(--font-mono); font-size: 11px; color: var(--text-muted); }
+</style>
+</head>
+<body>
+
+<!-- Navbar -->
+<header class="nav">
+  <a href="#top" class="nav-brand">Dalal Al-Kandari</a>
+  <button class="nav-toggle" id="navToggle" aria-label="Open menu" aria-expanded="false" aria-controls="navLinks"><span></span><span></span><span></span></button>
+  <nav class="nav-links" id="navLinks">
+    <a href="#gallery" class="nav-link"><span class="bk">[</span> Gallery <span class="bk">]</span></a>
+    <a href="#skills" class="nav-link"><span class="bk">[</span> Skills <span class="bk">]</span></a>
+    
+    
+    <a href="#contact" class="nav-link"><span class="bk">[</span> Contact <span class="bk">]</span></a>
+  </nav>
+</header>
+
+<!-- Hero -->
+<section class="hero" id="top">
+  <div class="hero-left">
+    <h1 class="hero-name">Dalal Al-Kandari</h1>
+    <p class="hero-tag">Let&#x27;s explore my eye brain</p>
+    <p class="hero-loc">Kuwait City, Kuwait</p>
+    <p class="hero-bio">I never studied ornamental art. My hand moves without planning, my eye sees, my brain feels, and what emerges is pure intuition. 46 works of bold lines, vivid color, and hearts that appear unbidden. This is not technique. This is my eye brain.</p>
+    <div class="hero-actions">
+      <a href="mailto:dalal@myeyebrain.art" class="cta">Get in Touch <span>&rarr;</span></a>
+      <a href="#gallery" class="cta cta-ghost">View Work <span>&rarr;</span></a>
+      
+    </div>
+  </div>
+  <div class="hero-right">
+    <div class="cone-wrap" id="cone">
+      <div class="cone-tilt" id="cone-tilt">
+        <div class="cone-spin" id="cone-spin">
+          <a class="cone-card">
+            <img src="/demo/creative/artworks/ornaments_1_digital.webp" alt="Purple Bouquet" loading="lazy" decoding="async" width="148" height="197">
+            <div class="overlay"></div>
+            <div class="info">
+              <div class="info-cat">Floral Ornamental</div>
+              <div class="info-title">Purple Bouquet</div>
+            </div>
+          </a>
+          <a class="cone-card">
+            <img src="/demo/creative/artworks/ornaments_2_digital.webp" alt="Geometric Hearts" loading="lazy" decoding="async" width="148" height="197">
+            <div class="overlay"></div>
+            <div class="info">
+              <div class="info-cat">Geometric Abstract</div>
+              <div class="info-title">Geometric Hearts</div>
+            </div>
+          </a>
+          <a class="cone-card">
+            <img src="/demo/creative/artworks/ornaments_3_digital.webp" alt="Cloud Garden" loading="lazy" decoding="async" width="148" height="197">
+            <div class="overlay"></div>
+            <div class="info">
+              <div class="info-cat">Floral Fantasy</div>
+              <div class="info-title">Cloud Garden</div>
+            </div>
+          </a>
+          <a class="cone-card">
+            <img src="/demo/creative/artworks/ornaments_4_digital.webp" alt="Golden Vessel" loading="lazy" decoding="async" width="148" height="197">
+            <div class="overlay"></div>
+            <div class="info">
+              <div class="info-cat">Art Nouveau</div>
+              <div class="info-title">Golden Vessel</div>
+            </div>
+          </a>
+          <a class="cone-card">
+            <img src="/demo/creative/artworks/ornaments_5_digital.webp" alt="Autumn Bouquet" loading="lazy" decoding="async" width="148" height="197">
+            <div class="overlay"></div>
+            <div class="info">
+              <div class="info-cat">Floral Ornamental</div>
+              <div class="info-title">Autumn Bouquet</div>
+            </div>
+          </a>
+          <a class="cone-card">
+            <img src="/demo/creative/artworks/ornaments_6_digital.webp" alt="City Maze" loading="lazy" decoding="async" width="148" height="197">
+            <div class="overlay"></div>
+            <div class="info">
+              <div class="info-cat">Geometric Abstract</div>
+              <div class="info-title">City Maze</div>
+            </div>
+          </a>
+          <a class="cone-card">
+            <img src="/demo/creative/artworks/ornaments_7_digital.webp" alt="Purple Mandala" loading="lazy" decoding="async" width="148" height="197">
+            <div class="overlay"></div>
+            <div class="info">
+              <div class="info-cat">Mandala</div>
+              <div class="info-title">Purple Mandala</div>
+            </div>
+          </a>
+          <a class="cone-card">
+            <img src="/demo/creative/artworks/ornaments_8_digital.webp" alt="Cosmic Spiral" loading="lazy" decoding="async" width="148" height="197">
+            <div class="overlay"></div>
+            <div class="info">
+              <div class="info-cat">Character Fantasy</div>
+              <div class="info-title">Cosmic Spiral</div>
+            </div>
+          </a>
+          <a class="cone-card">
+            <img src="/demo/creative/artworks/ornaments_9_digital.webp" alt="Red Construct" loading="lazy" decoding="async" width="148" height="197">
+            <div class="overlay"></div>
+            <div class="info">
+              <div class="info-cat">Geometric Abstract</div>
+              <div class="info-title">Red Construct</div>
+            </div>
+          </a>
+          <a class="cone-card">
+            <img src="/demo/creative/artworks/ornaments_10_digital.webp" alt="Fruit Bowl" loading="lazy" decoding="async" width="148" height="197">
+            <div class="overlay"></div>
+            <div class="info">
+              <div class="info-cat">Pop Floral</div>
+              <div class="info-title">Fruit Bowl</div>
+            </div>
+          </a>
+          <a class="cone-card">
+            <img src="/demo/creative/artworks/ornaments_11_digital.webp" alt="Blue Dreamer" loading="lazy" decoding="async" width="148" height="197">
+            <div class="overlay"></div>
+            <div class="info">
+              <div class="info-cat">Character Fantasy</div>
+              <div class="info-title">Blue Dreamer</div>
+            </div>
+          </a>
+          <a class="cone-card">
+            <img src="/demo/creative/artworks/ornaments_12_digital.webp" alt="Star Flower" loading="lazy" decoding="async" width="148" height="197">
+            <div class="overlay"></div>
+            <div class="info">
+              <div class="info-cat">Bold Floral</div>
+              <div class="info-title">Star Flower</div>
+            </div>
+          </a>
+          <a class="cone-card">
+            <img src="/demo/creative/artworks/ornaments_13_digital.webp" alt="Love Tree" loading="lazy" decoding="async" width="148" height="197">
+            <div class="overlay"></div>
+            <div class="info">
+              <div class="info-cat">Tree of Life</div>
+              <div class="info-title">Love Tree</div>
+            </div>
+          </a>
+          <a class="cone-card">
+            <img src="/demo/creative/artworks/ornaments_14_digital.webp" alt="Framed Bloom" loading="lazy" decoding="async" width="148" height="197">
+            <div class="overlay"></div>
+            <div class="info">
+              <div class="info-cat">Folk Art</div>
+              <div class="info-title">Framed Bloom</div>
+            </div>
+          </a>
+          <a class="cone-card">
+            <img src="/demo/creative/artworks/ornaments_15_digital.webp" alt="Lotus Reflection" loading="lazy" decoding="async" width="148" height="197">
+            <div class="overlay"></div>
+            <div class="info">
+              <div class="info-cat">Serene Floral</div>
+              <div class="info-title">Lotus Reflection</div>
+            </div>
+          </a>
+          <a class="cone-card">
+            <img src="/demo/creative/artworks/ornaments_16_digital.webp" alt="Silver Garden" loading="lazy" decoding="async" width="148" height="197">
+            <div class="overlay"></div>
+            <div class="info">
+              <div class="info-cat">Architectural</div>
+              <div class="info-title">Silver Garden</div>
+            </div>
+          </a>
+          <a class="cone-card">
+            <img src="/demo/creative/artworks/ornaments_17_digital.webp" alt="Crystal Beacon" loading="lazy" decoding="async" width="148" height="197">
+            <div class="overlay"></div>
+            <div class="info">
+              <div class="info-cat">Geometric Ornamental</div>
+              <div class="info-title">Crystal Beacon</div>
+            </div>
+          </a>
+          <a class="cone-card">
+            <img src="/demo/creative/artworks/ornaments_18_digital.webp" alt="Desert Sun" loading="lazy" decoding="async" width="148" height="197">
+            <div class="overlay"></div>
+            <div class="info">
+              <div class="info-cat">Symbolic Landscape</div>
+              <div class="info-title">Desert Sun</div>
+            </div>
+          </a>
+          <a class="cone-card">
+            <img src="/demo/creative/artworks/ornaments_19_digital.webp" alt="Sun Totem" loading="lazy" decoding="async" width="148" height="197">
+            <div class="overlay"></div>
+            <div class="info">
+              <div class="info-cat">Totemic</div>
+              <div class="info-title">Sun Totem</div>
+            </div>
+          </a>
+          <a class="cone-card">
+            <img src="/demo/creative/artworks/ornaments_20_digital.webp" alt="Pastel Cloud" loading="lazy" decoding="async" width="148" height="197">
+            <div class="overlay"></div>
+            <div class="info">
+              <div class="info-cat">Soft Floral</div>
+              <div class="info-title">Pastel Cloud</div>
+            </div>
+          </a>
+          <a class="cone-card">
+            <img src="/demo/creative/artworks/ornaments_21_digital.webp" alt="Heart Clown" loading="lazy" decoding="async" width="148" height="197">
+            <div class="overlay"></div>
+            <div class="info">
+              <div class="info-cat">Character Fantasy</div>
+              <div class="info-title">Heart Clown</div>
+            </div>
+          </a>
+          <a class="cone-card">
+            <img src="/demo/creative/artworks/ornaments_22_digital.webp" alt="Rainbow Arch" loading="lazy" decoding="async" width="148" height="197">
+            <div class="overlay"></div>
+            <div class="info">
+              <div class="info-cat">Geometric Nature</div>
+              <div class="info-title">Rainbow Arch</div>
+            </div>
+          </a>
+          <a class="cone-card">
+            <img src="/demo/creative/artworks/ornaments_23_digital.webp" alt="Ocean Stars" loading="lazy" decoding="async" width="148" height="197">
+            <div class="overlay"></div>
+            <div class="info">
+              <div class="info-cat">Marine Ornamental</div>
+              <div class="info-title">Ocean Stars</div>
+            </div>
+          </a>
+          <a class="cone-card">
+            <img src="/demo/creative/artworks/ornaments_24_digital.webp" alt="Geometric Butterflies" loading="lazy" decoding="async" width="148" height="197">
+            <div class="overlay"></div>
+            <div class="info">
+              <div class="info-cat">Nature Geometry</div>
+              <div class="info-title">Geometric Butterflies</div>
+            </div>
+          </a>
+          <a class="cone-card">
+            <img src="/demo/creative/artworks/ornaments_25_digital.webp" alt="Caterpillar Dream" loading="lazy" decoding="async" width="148" height="197">
+            <div class="overlay"></div>
+            <div class="info">
+              <div class="info-cat">Fantasy Ornamental</div>
+              <div class="info-title">Caterpillar Dream</div>
+            </div>
+          </a>
+          <a class="cone-card">
+            <img src="/demo/creative/artworks/ornaments_26_digital.webp" alt="Horned Heart" loading="lazy" decoding="async" width="148" height="197">
+            <div class="overlay"></div>
+            <div class="info">
+              <div class="info-cat">Creature Fantasy</div>
+              <div class="info-title">Horned Heart</div>
+            </div>
+          </a>
+          <a class="cone-card">
+            <img src="/demo/creative/artworks/ornaments_27_digital.webp" alt="Golden Mandala" loading="lazy" decoding="async" width="148" height="197">
+            <div class="overlay"></div>
+            <div class="info">
+              <div class="info-cat">Mandala</div>
+              <div class="info-title">Golden Mandala</div>
+            </div>
+          </a>
+          <a class="cone-card">
+            <img src="/demo/creative/artworks/ornaments_28_digital.webp" alt="Electric Flower" loading="lazy" decoding="async" width="148" height="197">
+            <div class="overlay"></div>
+            <div class="info">
+              <div class="info-cat">Pop Floral</div>
+              <div class="info-title">Electric Flower</div>
+            </div>
+          </a>
+          <a class="cone-card">
+            <img src="/demo/creative/artworks/ornaments_29_digital.webp" alt="Heart Burst" loading="lazy" decoding="async" width="148" height="197">
+            <div class="overlay"></div>
+            <div class="info">
+              <div class="info-cat">Heart Motif</div>
+              <div class="info-title">Heart Burst</div>
+            </div>
+          </a>
+          <a class="cone-card">
+            <img src="/demo/creative/artworks/ornaments_30_digital.webp" alt="Geometric Still Life" loading="lazy" decoding="async" width="148" height="197">
+            <div class="overlay"></div>
+            <div class="info">
+              <div class="info-cat">Abstract Still Life</div>
+              <div class="info-title">Geometric Still Life</div>
+            </div>
+          </a>
+          <a class="cone-card">
+            <img src="/demo/creative/artworks/ornaments_31_digital.webp" alt="Tropical Bouquet" loading="lazy" decoding="async" width="148" height="197">
+            <div class="overlay"></div>
+            <div class="info">
+              <div class="info-cat">Tropical Floral</div>
+              <div class="info-title">Tropical Bouquet</div>
+            </div>
+          </a>
+          <a class="cone-card">
+            <img src="/demo/creative/artworks/ornaments_32_digital.webp" alt="Patterned Butterfly" loading="lazy" decoding="async" width="148" height="197">
+            <div class="overlay"></div>
+            <div class="info">
+              <div class="info-cat">Butterfly Art</div>
+              <div class="info-title">Patterned Butterfly</div>
+            </div>
+          </a>
+          <a class="cone-card">
+            <img src="/demo/creative/artworks/ornaments_33_digital.webp" alt="Heart Flower Tree" loading="lazy" decoding="async" width="148" height="197">
+            <div class="overlay"></div>
+            <div class="info">
+              <div class="info-cat">Heart Motif</div>
+              <div class="info-title">Heart Flower Tree</div>
+            </div>
+          </a>
+          <a class="cone-card">
+            <img src="/demo/creative/artworks/ornaments_34_digital.webp" alt="Tropical Abstract" loading="lazy" decoding="async" width="148" height="197">
+            <div class="overlay"></div>
+            <div class="info">
+              <div class="info-cat">Tropical Abstract</div>
+              <div class="info-title">Tropical Abstract</div>
+            </div>
+          </a>
+          <a class="cone-card">
+            <img src="/demo/creative/artworks/ornaments_35_digital.webp" alt="Celestial Flower" loading="lazy" decoding="async" width="148" height="197">
+            <div class="overlay"></div>
+            <div class="info">
+              <div class="info-cat">Celestial Ornamental</div>
+              <div class="info-title">Celestial Flower</div>
+            </div>
+          </a>
+          <a class="cone-card">
+            <img src="/demo/creative/artworks/ornaments_36_digital.webp" alt="Diamond Burst" loading="lazy" decoding="async" width="148" height="197">
+            <div class="overlay"></div>
+            <div class="info">
+              <div class="info-cat">Psychedelic Geometric</div>
+              <div class="info-title">Diamond Burst</div>
+            </div>
+          </a>
+          <a class="cone-card">
+            <img src="/demo/creative/artworks/ornaments_37_digital.webp" alt="Pink Abstract Garden" loading="lazy" decoding="async" width="148" height="197">
+            <div class="overlay"></div>
+            <div class="info">
+              <div class="info-cat">Abstract Floral</div>
+              <div class="info-title">Pink Abstract Garden</div>
+            </div>
+          </a>
+          <a class="cone-card">
+            <img src="/demo/creative/artworks/ornaments_38_digital.webp" alt="Geometric Explosion" loading="lazy" decoding="async" width="148" height="197">
+            <div class="overlay"></div>
+            <div class="info">
+              <div class="info-cat">Abstract Geometric</div>
+              <div class="info-title">Geometric Explosion</div>
+            </div>
+          </a>
+          <a class="cone-card">
+            <img src="/demo/creative/artworks/ornaments_39_digital.webp" alt="Blue Cross Mandala" loading="lazy" decoding="async" width="148" height="197">
+            <div class="overlay"></div>
+            <div class="info">
+              <div class="info-cat">Mandala</div>
+              <div class="info-title">Blue Cross Mandala</div>
+            </div>
+          </a>
+          <a class="cone-card">
+            <img src="/demo/creative/artworks/ornaments_40_digital.webp" alt="Purple Sunburst" loading="lazy" decoding="async" width="148" height="197">
+            <div class="overlay"></div>
+            <div class="info">
+              <div class="info-cat">Radial Abstract</div>
+              <div class="info-title">Purple Sunburst</div>
+            </div>
+          </a>
+          <a class="cone-card">
+            <img src="/demo/creative/artworks/ornaments_41_digital.webp" alt="Red Creature" loading="lazy" decoding="async" width="148" height="197">
+            <div class="overlay"></div>
+            <div class="info">
+              <div class="info-cat">Creature Fantasy</div>
+              <div class="info-title">Red Creature</div>
+            </div>
+          </a>
+          <a class="cone-card">
+            <img src="/demo/creative/artworks/ornaments_42_digital.webp" alt="Geometric Totem" loading="lazy" decoding="async" width="148" height="197">
+            <div class="overlay"></div>
+            <div class="info">
+              <div class="info-cat">Totemic Geometric</div>
+              <div class="info-title">Geometric Totem</div>
+            </div>
+          </a>
+          <a class="cone-card">
+            <img src="/demo/creative/artworks/ornaments_43_digital.webp" alt="Pattern Explosion" loading="lazy" decoding="async" width="148" height="197">
+            <div class="overlay"></div>
+            <div class="info">
+              <div class="info-cat">Maximalist Pattern</div>
+              <div class="info-title">Pattern Explosion</div>
+            </div>
+          </a>
+          <a class="cone-card">
+            <img src="/demo/creative/artworks/ornaments_44_digital.webp" alt="Geometric Windmill" loading="lazy" decoding="async" width="148" height="197">
+            <div class="overlay"></div>
+            <div class="info">
+              <div class="info-cat">Architectural Abstract</div>
+              <div class="info-title">Geometric Windmill</div>
+            </div>
+          </a>
+          <a class="cone-card">
+            <img src="/demo/creative/artworks/ornaments_45_digital.webp" alt="The House" loading="lazy" decoding="async" width="148" height="197">
+            <div class="overlay"></div>
+            <div class="info">
+              <div class="info-cat">Narrative Abstract</div>
+              <div class="info-title">The House</div>
+            </div>
+          </a>
+          <a class="cone-card">
+            <img src="/demo/creative/artworks/ornaments_46_digital.webp" alt="My Eye Brain Blooms" loading="lazy" decoding="async" width="148" height="197">
+            <div class="overlay"></div>
+            <div class="info">
+              <div class="info-cat">Radial Mandala</div>
+              <div class="info-title">My Eye Brain Blooms</div>
+            </div>
+          </a>
+        </div>
+      </div>
+      <div class="cone-hint">Drag to explore</div>
+    </div>
+    <div class="cube-stack" id="cubeStack" aria-label="Selected works">
+      <div class="cube-hint">Tap a cube &middot; <a href="#gallery">see all 46 &rarr;</a></div>
+    </div>
+  </div>
+</section>
+
+<!-- Skills marquee -->
+<div class="marquee-row">
+  <div class="marquee">
+    <span>Intuitive Creation<span class="sep">//</span></span><span>Color Sense<span class="sep">//</span></span><span>Pattern Design<span class="sep">//</span></span><span>Composition<span class="sep">//</span></span><span>Emotional Range<span class="sep">//</span></span><span>Markers<span class="sep">//</span></span><span>Paper<span class="sep">//</span></span><span>Intuition<span class="sep">//</span></span><span>Heart<span class="sep">//</span></span><span>Eye<span class="sep">//</span></span><span>Brain<span class="sep">//</span></span><span>Love<span class="sep">//</span></span>
+    <span>Intuitive Creation<span class="sep">//</span></span><span>Color Sense<span class="sep">//</span></span><span>Pattern Design<span class="sep">//</span></span><span>Composition<span class="sep">//</span></span><span>Emotional Range<span class="sep">//</span></span><span>Markers<span class="sep">//</span></span><span>Paper<span class="sep">//</span></span><span>Intuition<span class="sep">//</span></span><span>Heart<span class="sep">//</span></span><span>Eye<span class="sep">//</span></span><span>Brain<span class="sep">//</span></span><span>Love<span class="sep">//</span></span>
+  </div>
+</div>
+
+<!-- Gallery grid -->
+<section class="section" id="gallery" style="background: var(--bg-alt);">
+  <div class="container">
+    <div class="sec-head"><span class="section-label">The Collection</span><span class="line"></span></div>
+    <h2 class="sec-title" style="margin-bottom: 8px;">Selected Work</h2>
+    <p class="mono" style="font-size:11px;text-transform:uppercase;letter-spacing:1.5px;color:var(--text-muted);margin-bottom:40px;">46 Projects</p>
+    <div class="gal-grid">
+      <a class="gal-card gal-zoom" href="#" data-full="/demo/creative/artworks/ornaments_1_digital.webp" data-cap="Purple Bouquet">
+        <div class="ph">
+          <img src="/demo/creative/artworks/ornaments_1_digital.webp" alt="Purple Bouquet" loading="lazy" decoding="async">
+        </div>
+        <div class="gal-ov">
+          <div class="cat">Floral Ornamental</div>
+          <div class="ttl">Purple Bouquet</div>
+        </div>
+        <span class="gal-corner gc-tl"></span><span class="gal-corner gc-tr"></span>
+        <span class="gal-corner gc-bl"></span><span class="gal-corner gc-br"></span>
+      </a>
+      <a class="gal-card gal-zoom" href="#" data-full="/demo/creative/artworks/ornaments_2_digital.webp" data-cap="Geometric Hearts">
+        <div class="ph">
+          <img src="/demo/creative/artworks/ornaments_2_digital.webp" alt="Geometric Hearts" loading="lazy" decoding="async">
+        </div>
+        <div class="gal-ov">
+          <div class="cat">Geometric Abstract</div>
+          <div class="ttl">Geometric Hearts</div>
+        </div>
+        <span class="gal-corner gc-tl"></span><span class="gal-corner gc-tr"></span>
+        <span class="gal-corner gc-bl"></span><span class="gal-corner gc-br"></span>
+      </a>
+      <a class="gal-card gal-zoom" href="#" data-full="/demo/creative/artworks/ornaments_3_digital.webp" data-cap="Cloud Garden">
+        <div class="ph">
+          <img src="/demo/creative/artworks/ornaments_3_digital.webp" alt="Cloud Garden" loading="lazy" decoding="async">
+        </div>
+        <div class="gal-ov">
+          <div class="cat">Floral Fantasy</div>
+          <div class="ttl">Cloud Garden</div>
+        </div>
+        <span class="gal-corner gc-tl"></span><span class="gal-corner gc-tr"></span>
+        <span class="gal-corner gc-bl"></span><span class="gal-corner gc-br"></span>
+      </a>
+      <a class="gal-card gal-zoom" href="#" data-full="/demo/creative/artworks/ornaments_4_digital.webp" data-cap="Golden Vessel">
+        <div class="ph">
+          <img src="/demo/creative/artworks/ornaments_4_digital.webp" alt="Golden Vessel" loading="lazy" decoding="async">
+        </div>
+        <div class="gal-ov">
+          <div class="cat">Art Nouveau</div>
+          <div class="ttl">Golden Vessel</div>
+        </div>
+        <span class="gal-corner gc-tl"></span><span class="gal-corner gc-tr"></span>
+        <span class="gal-corner gc-bl"></span><span class="gal-corner gc-br"></span>
+      </a>
+      <a class="gal-card gal-zoom" href="#" data-full="/demo/creative/artworks/ornaments_5_digital.webp" data-cap="Autumn Bouquet">
+        <div class="ph">
+          <img src="/demo/creative/artworks/ornaments_5_digital.webp" alt="Autumn Bouquet" loading="lazy" decoding="async">
+        </div>
+        <div class="gal-ov">
+          <div class="cat">Floral Ornamental</div>
+          <div class="ttl">Autumn Bouquet</div>
+        </div>
+        <span class="gal-corner gc-tl"></span><span class="gal-corner gc-tr"></span>
+        <span class="gal-corner gc-bl"></span><span class="gal-corner gc-br"></span>
+      </a>
+      <a class="gal-card gal-zoom" href="#" data-full="/demo/creative/artworks/ornaments_6_digital.webp" data-cap="City Maze">
+        <div class="ph">
+          <img src="/demo/creative/artworks/ornaments_6_digital.webp" alt="City Maze" loading="lazy" decoding="async">
+        </div>
+        <div class="gal-ov">
+          <div class="cat">Geometric Abstract</div>
+          <div class="ttl">City Maze</div>
+        </div>
+        <span class="gal-corner gc-tl"></span><span class="gal-corner gc-tr"></span>
+        <span class="gal-corner gc-bl"></span><span class="gal-corner gc-br"></span>
+      </a>
+      <a class="gal-card gal-zoom" href="#" data-full="/demo/creative/artworks/ornaments_7_digital.webp" data-cap="Purple Mandala">
+        <div class="ph">
+          <img src="/demo/creative/artworks/ornaments_7_digital.webp" alt="Purple Mandala" loading="lazy" decoding="async">
+        </div>
+        <div class="gal-ov">
+          <div class="cat">Mandala</div>
+          <div class="ttl">Purple Mandala</div>
+        </div>
+        <span class="gal-corner gc-tl"></span><span class="gal-corner gc-tr"></span>
+        <span class="gal-corner gc-bl"></span><span class="gal-corner gc-br"></span>
+      </a>
+      <a class="gal-card gal-zoom" href="#" data-full="/demo/creative/artworks/ornaments_8_digital.webp" data-cap="Cosmic Spiral">
+        <div class="ph">
+          <img src="/demo/creative/artworks/ornaments_8_digital.webp" alt="Cosmic Spiral" loading="lazy" decoding="async">
+        </div>
+        <div class="gal-ov">
+          <div class="cat">Character Fantasy</div>
+          <div class="ttl">Cosmic Spiral</div>
+        </div>
+        <span class="gal-corner gc-tl"></span><span class="gal-corner gc-tr"></span>
+        <span class="gal-corner gc-bl"></span><span class="gal-corner gc-br"></span>
+      </a>
+      <a class="gal-card gal-zoom" href="#" data-full="/demo/creative/artworks/ornaments_9_digital.webp" data-cap="Red Construct">
+        <div class="ph">
+          <img src="/demo/creative/artworks/ornaments_9_digital.webp" alt="Red Construct" loading="lazy" decoding="async">
+        </div>
+        <div class="gal-ov">
+          <div class="cat">Geometric Abstract</div>
+          <div class="ttl">Red Construct</div>
+        </div>
+        <span class="gal-corner gc-tl"></span><span class="gal-corner gc-tr"></span>
+        <span class="gal-corner gc-bl"></span><span class="gal-corner gc-br"></span>
+      </a>
+      <a class="gal-card gal-zoom" href="#" data-full="/demo/creative/artworks/ornaments_10_digital.webp" data-cap="Fruit Bowl">
+        <div class="ph">
+          <img src="/demo/creative/artworks/ornaments_10_digital.webp" alt="Fruit Bowl" loading="lazy" decoding="async">
+        </div>
+        <div class="gal-ov">
+          <div class="cat">Pop Floral</div>
+          <div class="ttl">Fruit Bowl</div>
+        </div>
+        <span class="gal-corner gc-tl"></span><span class="gal-corner gc-tr"></span>
+        <span class="gal-corner gc-bl"></span><span class="gal-corner gc-br"></span>
+      </a>
+      <a class="gal-card gal-zoom" href="#" data-full="/demo/creative/artworks/ornaments_11_digital.webp" data-cap="Blue Dreamer">
+        <div class="ph">
+          <img src="/demo/creative/artworks/ornaments_11_digital.webp" alt="Blue Dreamer" loading="lazy" decoding="async">
+        </div>
+        <div class="gal-ov">
+          <div class="cat">Character Fantasy</div>
+          <div class="ttl">Blue Dreamer</div>
+        </div>
+        <span class="gal-corner gc-tl"></span><span class="gal-corner gc-tr"></span>
+        <span class="gal-corner gc-bl"></span><span class="gal-corner gc-br"></span>
+      </a>
+      <a class="gal-card gal-zoom" href="#" data-full="/demo/creative/artworks/ornaments_12_digital.webp" data-cap="Star Flower">
+        <div class="ph">
+          <img src="/demo/creative/artworks/ornaments_12_digital.webp" alt="Star Flower" loading="lazy" decoding="async">
+        </div>
+        <div class="gal-ov">
+          <div class="cat">Bold Floral</div>
+          <div class="ttl">Star Flower</div>
+        </div>
+        <span class="gal-corner gc-tl"></span><span class="gal-corner gc-tr"></span>
+        <span class="gal-corner gc-bl"></span><span class="gal-corner gc-br"></span>
+      </a>
+      <a class="gal-card gal-zoom" href="#" data-full="/demo/creative/artworks/ornaments_13_digital.webp" data-cap="Love Tree">
+        <div class="ph">
+          <img src="/demo/creative/artworks/ornaments_13_digital.webp" alt="Love Tree" loading="lazy" decoding="async">
+        </div>
+        <div class="gal-ov">
+          <div class="cat">Tree of Life</div>
+          <div class="ttl">Love Tree</div>
+        </div>
+        <span class="gal-corner gc-tl"></span><span class="gal-corner gc-tr"></span>
+        <span class="gal-corner gc-bl"></span><span class="gal-corner gc-br"></span>
+      </a>
+      <a class="gal-card gal-zoom" href="#" data-full="/demo/creative/artworks/ornaments_14_digital.webp" data-cap="Framed Bloom">
+        <div class="ph">
+          <img src="/demo/creative/artworks/ornaments_14_digital.webp" alt="Framed Bloom" loading="lazy" decoding="async">
+        </div>
+        <div class="gal-ov">
+          <div class="cat">Folk Art</div>
+          <div class="ttl">Framed Bloom</div>
+        </div>
+        <span class="gal-corner gc-tl"></span><span class="gal-corner gc-tr"></span>
+        <span class="gal-corner gc-bl"></span><span class="gal-corner gc-br"></span>
+      </a>
+      <a class="gal-card gal-zoom" href="#" data-full="/demo/creative/artworks/ornaments_15_digital.webp" data-cap="Lotus Reflection">
+        <div class="ph">
+          <img src="/demo/creative/artworks/ornaments_15_digital.webp" alt="Lotus Reflection" loading="lazy" decoding="async">
+        </div>
+        <div class="gal-ov">
+          <div class="cat">Serene Floral</div>
+          <div class="ttl">Lotus Reflection</div>
+        </div>
+        <span class="gal-corner gc-tl"></span><span class="gal-corner gc-tr"></span>
+        <span class="gal-corner gc-bl"></span><span class="gal-corner gc-br"></span>
+      </a>
+      <a class="gal-card gal-zoom" href="#" data-full="/demo/creative/artworks/ornaments_16_digital.webp" data-cap="Silver Garden">
+        <div class="ph">
+          <img src="/demo/creative/artworks/ornaments_16_digital.webp" alt="Silver Garden" loading="lazy" decoding="async">
+        </div>
+        <div class="gal-ov">
+          <div class="cat">Architectural</div>
+          <div class="ttl">Silver Garden</div>
+        </div>
+        <span class="gal-corner gc-tl"></span><span class="gal-corner gc-tr"></span>
+        <span class="gal-corner gc-bl"></span><span class="gal-corner gc-br"></span>
+      </a>
+      <a class="gal-card gal-zoom" href="#" data-full="/demo/creative/artworks/ornaments_17_digital.webp" data-cap="Crystal Beacon">
+        <div class="ph">
+          <img src="/demo/creative/artworks/ornaments_17_digital.webp" alt="Crystal Beacon" loading="lazy" decoding="async">
+        </div>
+        <div class="gal-ov">
+          <div class="cat">Geometric Ornamental</div>
+          <div class="ttl">Crystal Beacon</div>
+        </div>
+        <span class="gal-corner gc-tl"></span><span class="gal-corner gc-tr"></span>
+        <span class="gal-corner gc-bl"></span><span class="gal-corner gc-br"></span>
+      </a>
+      <a class="gal-card gal-zoom" href="#" data-full="/demo/creative/artworks/ornaments_18_digital.webp" data-cap="Desert Sun">
+        <div class="ph">
+          <img src="/demo/creative/artworks/ornaments_18_digital.webp" alt="Desert Sun" loading="lazy" decoding="async">
+        </div>
+        <div class="gal-ov">
+          <div class="cat">Symbolic Landscape</div>
+          <div class="ttl">Desert Sun</div>
+        </div>
+        <span class="gal-corner gc-tl"></span><span class="gal-corner gc-tr"></span>
+        <span class="gal-corner gc-bl"></span><span class="gal-corner gc-br"></span>
+      </a>
+      <a class="gal-card gal-zoom" href="#" data-full="/demo/creative/artworks/ornaments_19_digital.webp" data-cap="Sun Totem">
+        <div class="ph">
+          <img src="/demo/creative/artworks/ornaments_19_digital.webp" alt="Sun Totem" loading="lazy" decoding="async">
+        </div>
+        <div class="gal-ov">
+          <div class="cat">Totemic</div>
+          <div class="ttl">Sun Totem</div>
+        </div>
+        <span class="gal-corner gc-tl"></span><span class="gal-corner gc-tr"></span>
+        <span class="gal-corner gc-bl"></span><span class="gal-corner gc-br"></span>
+      </a>
+      <a class="gal-card gal-zoom" href="#" data-full="/demo/creative/artworks/ornaments_20_digital.webp" data-cap="Pastel Cloud">
+        <div class="ph">
+          <img src="/demo/creative/artworks/ornaments_20_digital.webp" alt="Pastel Cloud" loading="lazy" decoding="async">
+        </div>
+        <div class="gal-ov">
+          <div class="cat">Soft Floral</div>
+          <div class="ttl">Pastel Cloud</div>
+        </div>
+        <span class="gal-corner gc-tl"></span><span class="gal-corner gc-tr"></span>
+        <span class="gal-corner gc-bl"></span><span class="gal-corner gc-br"></span>
+      </a>
+      <a class="gal-card gal-zoom" href="#" data-full="/demo/creative/artworks/ornaments_21_digital.webp" data-cap="Heart Clown">
+        <div class="ph">
+          <img src="/demo/creative/artworks/ornaments_21_digital.webp" alt="Heart Clown" loading="lazy" decoding="async">
+        </div>
+        <div class="gal-ov">
+          <div class="cat">Character Fantasy</div>
+          <div class="ttl">Heart Clown</div>
+        </div>
+        <span class="gal-corner gc-tl"></span><span class="gal-corner gc-tr"></span>
+        <span class="gal-corner gc-bl"></span><span class="gal-corner gc-br"></span>
+      </a>
+      <a class="gal-card gal-zoom" href="#" data-full="/demo/creative/artworks/ornaments_22_digital.webp" data-cap="Rainbow Arch">
+        <div class="ph">
+          <img src="/demo/creative/artworks/ornaments_22_digital.webp" alt="Rainbow Arch" loading="lazy" decoding="async">
+        </div>
+        <div class="gal-ov">
+          <div class="cat">Geometric Nature</div>
+          <div class="ttl">Rainbow Arch</div>
+        </div>
+        <span class="gal-corner gc-tl"></span><span class="gal-corner gc-tr"></span>
+        <span class="gal-corner gc-bl"></span><span class="gal-corner gc-br"></span>
+      </a>
+      <a class="gal-card gal-zoom" href="#" data-full="/demo/creative/artworks/ornaments_23_digital.webp" data-cap="Ocean Stars">
+        <div class="ph">
+          <img src="/demo/creative/artworks/ornaments_23_digital.webp" alt="Ocean Stars" loading="lazy" decoding="async">
+        </div>
+        <div class="gal-ov">
+          <div class="cat">Marine Ornamental</div>
+          <div class="ttl">Ocean Stars</div>
+        </div>
+        <span class="gal-corner gc-tl"></span><span class="gal-corner gc-tr"></span>
+        <span class="gal-corner gc-bl"></span><span class="gal-corner gc-br"></span>
+      </a>
+      <a class="gal-card gal-zoom" href="#" data-full="/demo/creative/artworks/ornaments_24_digital.webp" data-cap="Geometric Butterflies">
+        <div class="ph">
+          <img src="/demo/creative/artworks/ornaments_24_digital.webp" alt="Geometric Butterflies" loading="lazy" decoding="async">
+        </div>
+        <div class="gal-ov">
+          <div class="cat">Nature Geometry</div>
+          <div class="ttl">Geometric Butterflies</div>
+        </div>
+        <span class="gal-corner gc-tl"></span><span class="gal-corner gc-tr"></span>
+        <span class="gal-corner gc-bl"></span><span class="gal-corner gc-br"></span>
+      </a>
+      <a class="gal-card gal-zoom" href="#" data-full="/demo/creative/artworks/ornaments_25_digital.webp" data-cap="Caterpillar Dream">
+        <div class="ph">
+          <img src="/demo/creative/artworks/ornaments_25_digital.webp" alt="Caterpillar Dream" loading="lazy" decoding="async">
+        </div>
+        <div class="gal-ov">
+          <div class="cat">Fantasy Ornamental</div>
+          <div class="ttl">Caterpillar Dream</div>
+        </div>
+        <span class="gal-corner gc-tl"></span><span class="gal-corner gc-tr"></span>
+        <span class="gal-corner gc-bl"></span><span class="gal-corner gc-br"></span>
+      </a>
+      <a class="gal-card gal-zoom" href="#" data-full="/demo/creative/artworks/ornaments_26_digital.webp" data-cap="Horned Heart">
+        <div class="ph">
+          <img src="/demo/creative/artworks/ornaments_26_digital.webp" alt="Horned Heart" loading="lazy" decoding="async">
+        </div>
+        <div class="gal-ov">
+          <div class="cat">Creature Fantasy</div>
+          <div class="ttl">Horned Heart</div>
+        </div>
+        <span class="gal-corner gc-tl"></span><span class="gal-corner gc-tr"></span>
+        <span class="gal-corner gc-bl"></span><span class="gal-corner gc-br"></span>
+      </a>
+      <a class="gal-card gal-zoom" href="#" data-full="/demo/creative/artworks/ornaments_27_digital.webp" data-cap="Golden Mandala">
+        <div class="ph">
+          <img src="/demo/creative/artworks/ornaments_27_digital.webp" alt="Golden Mandala" loading="lazy" decoding="async">
+        </div>
+        <div class="gal-ov">
+          <div class="cat">Mandala</div>
+          <div class="ttl">Golden Mandala</div>
+        </div>
+        <span class="gal-corner gc-tl"></span><span class="gal-corner gc-tr"></span>
+        <span class="gal-corner gc-bl"></span><span class="gal-corner gc-br"></span>
+      </a>
+      <a class="gal-card gal-zoom" href="#" data-full="/demo/creative/artworks/ornaments_28_digital.webp" data-cap="Electric Flower">
+        <div class="ph">
+          <img src="/demo/creative/artworks/ornaments_28_digital.webp" alt="Electric Flower" loading="lazy" decoding="async">
+        </div>
+        <div class="gal-ov">
+          <div class="cat">Pop Floral</div>
+          <div class="ttl">Electric Flower</div>
+        </div>
+        <span class="gal-corner gc-tl"></span><span class="gal-corner gc-tr"></span>
+        <span class="gal-corner gc-bl"></span><span class="gal-corner gc-br"></span>
+      </a>
+      <a class="gal-card gal-zoom" href="#" data-full="/demo/creative/artworks/ornaments_29_digital.webp" data-cap="Heart Burst">
+        <div class="ph">
+          <img src="/demo/creative/artworks/ornaments_29_digital.webp" alt="Heart Burst" loading="lazy" decoding="async">
+        </div>
+        <div class="gal-ov">
+          <div class="cat">Heart Motif</div>
+          <div class="ttl">Heart Burst</div>
+        </div>
+        <span class="gal-corner gc-tl"></span><span class="gal-corner gc-tr"></span>
+        <span class="gal-corner gc-bl"></span><span class="gal-corner gc-br"></span>
+      </a>
+      <a class="gal-card gal-zoom" href="#" data-full="/demo/creative/artworks/ornaments_30_digital.webp" data-cap="Geometric Still Life">
+        <div class="ph">
+          <img src="/demo/creative/artworks/ornaments_30_digital.webp" alt="Geometric Still Life" loading="lazy" decoding="async">
+        </div>
+        <div class="gal-ov">
+          <div class="cat">Abstract Still Life</div>
+          <div class="ttl">Geometric Still Life</div>
+        </div>
+        <span class="gal-corner gc-tl"></span><span class="gal-corner gc-tr"></span>
+        <span class="gal-corner gc-bl"></span><span class="gal-corner gc-br"></span>
+      </a>
+      <a class="gal-card gal-zoom" href="#" data-full="/demo/creative/artworks/ornaments_31_digital.webp" data-cap="Tropical Bouquet">
+        <div class="ph">
+          <img src="/demo/creative/artworks/ornaments_31_digital.webp" alt="Tropical Bouquet" loading="lazy" decoding="async">
+        </div>
+        <div class="gal-ov">
+          <div class="cat">Tropical Floral</div>
+          <div class="ttl">Tropical Bouquet</div>
+        </div>
+        <span class="gal-corner gc-tl"></span><span class="gal-corner gc-tr"></span>
+        <span class="gal-corner gc-bl"></span><span class="gal-corner gc-br"></span>
+      </a>
+      <a class="gal-card gal-zoom" href="#" data-full="/demo/creative/artworks/ornaments_32_digital.webp" data-cap="Patterned Butterfly">
+        <div class="ph">
+          <img src="/demo/creative/artworks/ornaments_32_digital.webp" alt="Patterned Butterfly" loading="lazy" decoding="async">
+        </div>
+        <div class="gal-ov">
+          <div class="cat">Butterfly Art</div>
+          <div class="ttl">Patterned Butterfly</div>
+        </div>
+        <span class="gal-corner gc-tl"></span><span class="gal-corner gc-tr"></span>
+        <span class="gal-corner gc-bl"></span><span class="gal-corner gc-br"></span>
+      </a>
+      <a class="gal-card gal-zoom" href="#" data-full="/demo/creative/artworks/ornaments_33_digital.webp" data-cap="Heart Flower Tree">
+        <div class="ph">
+          <img src="/demo/creative/artworks/ornaments_33_digital.webp" alt="Heart Flower Tree" loading="lazy" decoding="async">
+        </div>
+        <div class="gal-ov">
+          <div class="cat">Heart Motif</div>
+          <div class="ttl">Heart Flower Tree</div>
+        </div>
+        <span class="gal-corner gc-tl"></span><span class="gal-corner gc-tr"></span>
+        <span class="gal-corner gc-bl"></span><span class="gal-corner gc-br"></span>
+      </a>
+      <a class="gal-card gal-zoom" href="#" data-full="/demo/creative/artworks/ornaments_34_digital.webp" data-cap="Tropical Abstract">
+        <div class="ph">
+          <img src="/demo/creative/artworks/ornaments_34_digital.webp" alt="Tropical Abstract" loading="lazy" decoding="async">
+        </div>
+        <div class="gal-ov">
+          <div class="cat">Tropical Abstract</div>
+          <div class="ttl">Tropical Abstract</div>
+        </div>
+        <span class="gal-corner gc-tl"></span><span class="gal-corner gc-tr"></span>
+        <span class="gal-corner gc-bl"></span><span class="gal-corner gc-br"></span>
+      </a>
+      <a class="gal-card gal-zoom" href="#" data-full="/demo/creative/artworks/ornaments_35_digital.webp" data-cap="Celestial Flower">
+        <div class="ph">
+          <img src="/demo/creative/artworks/ornaments_35_digital.webp" alt="Celestial Flower" loading="lazy" decoding="async">
+        </div>
+        <div class="gal-ov">
+          <div class="cat">Celestial Ornamental</div>
+          <div class="ttl">Celestial Flower</div>
+        </div>
+        <span class="gal-corner gc-tl"></span><span class="gal-corner gc-tr"></span>
+        <span class="gal-corner gc-bl"></span><span class="gal-corner gc-br"></span>
+      </a>
+      <a class="gal-card gal-zoom" href="#" data-full="/demo/creative/artworks/ornaments_36_digital.webp" data-cap="Diamond Burst">
+        <div class="ph">
+          <img src="/demo/creative/artworks/ornaments_36_digital.webp" alt="Diamond Burst" loading="lazy" decoding="async">
+        </div>
+        <div class="gal-ov">
+          <div class="cat">Psychedelic Geometric</div>
+          <div class="ttl">Diamond Burst</div>
+        </div>
+        <span class="gal-corner gc-tl"></span><span class="gal-corner gc-tr"></span>
+        <span class="gal-corner gc-bl"></span><span class="gal-corner gc-br"></span>
+      </a>
+      <a class="gal-card gal-zoom" href="#" data-full="/demo/creative/artworks/ornaments_37_digital.webp" data-cap="Pink Abstract Garden">
+        <div class="ph">
+          <img src="/demo/creative/artworks/ornaments_37_digital.webp" alt="Pink Abstract Garden" loading="lazy" decoding="async">
+        </div>
+        <div class="gal-ov">
+          <div class="cat">Abstract Floral</div>
+          <div class="ttl">Pink Abstract Garden</div>
+        </div>
+        <span class="gal-corner gc-tl"></span><span class="gal-corner gc-tr"></span>
+        <span class="gal-corner gc-bl"></span><span class="gal-corner gc-br"></span>
+      </a>
+      <a class="gal-card gal-zoom" href="#" data-full="/demo/creative/artworks/ornaments_38_digital.webp" data-cap="Geometric Explosion">
+        <div class="ph">
+          <img src="/demo/creative/artworks/ornaments_38_digital.webp" alt="Geometric Explosion" loading="lazy" decoding="async">
+        </div>
+        <div class="gal-ov">
+          <div class="cat">Abstract Geometric</div>
+          <div class="ttl">Geometric Explosion</div>
+        </div>
+        <span class="gal-corner gc-tl"></span><span class="gal-corner gc-tr"></span>
+        <span class="gal-corner gc-bl"></span><span class="gal-corner gc-br"></span>
+      </a>
+      <a class="gal-card gal-zoom" href="#" data-full="/demo/creative/artworks/ornaments_39_digital.webp" data-cap="Blue Cross Mandala">
+        <div class="ph">
+          <img src="/demo/creative/artworks/ornaments_39_digital.webp" alt="Blue Cross Mandala" loading="lazy" decoding="async">
+        </div>
+        <div class="gal-ov">
+          <div class="cat">Mandala</div>
+          <div class="ttl">Blue Cross Mandala</div>
+        </div>
+        <span class="gal-corner gc-tl"></span><span class="gal-corner gc-tr"></span>
+        <span class="gal-corner gc-bl"></span><span class="gal-corner gc-br"></span>
+      </a>
+      <a class="gal-card gal-zoom" href="#" data-full="/demo/creative/artworks/ornaments_40_digital.webp" data-cap="Purple Sunburst">
+        <div class="ph">
+          <img src="/demo/creative/artworks/ornaments_40_digital.webp" alt="Purple Sunburst" loading="lazy" decoding="async">
+        </div>
+        <div class="gal-ov">
+          <div class="cat">Radial Abstract</div>
+          <div class="ttl">Purple Sunburst</div>
+        </div>
+        <span class="gal-corner gc-tl"></span><span class="gal-corner gc-tr"></span>
+        <span class="gal-corner gc-bl"></span><span class="gal-corner gc-br"></span>
+      </a>
+      <a class="gal-card gal-zoom" href="#" data-full="/demo/creative/artworks/ornaments_41_digital.webp" data-cap="Red Creature">
+        <div class="ph">
+          <img src="/demo/creative/artworks/ornaments_41_digital.webp" alt="Red Creature" loading="lazy" decoding="async">
+        </div>
+        <div class="gal-ov">
+          <div class="cat">Creature Fantasy</div>
+          <div class="ttl">Red Creature</div>
+        </div>
+        <span class="gal-corner gc-tl"></span><span class="gal-corner gc-tr"></span>
+        <span class="gal-corner gc-bl"></span><span class="gal-corner gc-br"></span>
+      </a>
+      <a class="gal-card gal-zoom" href="#" data-full="/demo/creative/artworks/ornaments_42_digital.webp" data-cap="Geometric Totem">
+        <div class="ph">
+          <img src="/demo/creative/artworks/ornaments_42_digital.webp" alt="Geometric Totem" loading="lazy" decoding="async">
+        </div>
+        <div class="gal-ov">
+          <div class="cat">Totemic Geometric</div>
+          <div class="ttl">Geometric Totem</div>
+        </div>
+        <span class="gal-corner gc-tl"></span><span class="gal-corner gc-tr"></span>
+        <span class="gal-corner gc-bl"></span><span class="gal-corner gc-br"></span>
+      </a>
+      <a class="gal-card gal-zoom" href="#" data-full="/demo/creative/artworks/ornaments_43_digital.webp" data-cap="Pattern Explosion">
+        <div class="ph">
+          <img src="/demo/creative/artworks/ornaments_43_digital.webp" alt="Pattern Explosion" loading="lazy" decoding="async">
+        </div>
+        <div class="gal-ov">
+          <div class="cat">Maximalist Pattern</div>
+          <div class="ttl">Pattern Explosion</div>
+        </div>
+        <span class="gal-corner gc-tl"></span><span class="gal-corner gc-tr"></span>
+        <span class="gal-corner gc-bl"></span><span class="gal-corner gc-br"></span>
+      </a>
+      <a class="gal-card gal-zoom" href="#" data-full="/demo/creative/artworks/ornaments_44_digital.webp" data-cap="Geometric Windmill">
+        <div class="ph">
+          <img src="/demo/creative/artworks/ornaments_44_digital.webp" alt="Geometric Windmill" loading="lazy" decoding="async">
+        </div>
+        <div class="gal-ov">
+          <div class="cat">Architectural Abstract</div>
+          <div class="ttl">Geometric Windmill</div>
+        </div>
+        <span class="gal-corner gc-tl"></span><span class="gal-corner gc-tr"></span>
+        <span class="gal-corner gc-bl"></span><span class="gal-corner gc-br"></span>
+      </a>
+      <a class="gal-card gal-zoom" href="#" data-full="/demo/creative/artworks/ornaments_45_digital.webp" data-cap="The House">
+        <div class="ph">
+          <img src="/demo/creative/artworks/ornaments_45_digital.webp" alt="The House" loading="lazy" decoding="async">
+        </div>
+        <div class="gal-ov">
+          <div class="cat">Narrative Abstract</div>
+          <div class="ttl">The House</div>
+        </div>
+        <span class="gal-corner gc-tl"></span><span class="gal-corner gc-tr"></span>
+        <span class="gal-corner gc-bl"></span><span class="gal-corner gc-br"></span>
+      </a>
+      <a class="gal-card gal-zoom" href="#" data-full="/demo/creative/artworks/ornaments_46_digital.webp" data-cap="My Eye Brain Blooms">
+        <div class="ph">
+          <img src="/demo/creative/artworks/ornaments_46_digital.webp" alt="My Eye Brain Blooms" loading="lazy" decoding="async">
+        </div>
+        <div class="gal-ov">
+          <div class="cat">Radial Mandala</div>
+          <div class="ttl">My Eye Brain Blooms</div>
+        </div>
+        <span class="gal-corner gc-tl"></span><span class="gal-corner gc-tr"></span>
+        <span class="gal-corner gc-bl"></span><span class="gal-corner gc-br"></span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- Skills -->
+<section class="section" id="skills">
+  <div class="container">
+    <div class="sec-head"><span class="section-label">Skills &amp; Tools</span><span class="line"></span></div>
+    <div class="skills-wrap">
+      <div class="skill-group">
+        <h4>The Practice</h4>
+        <div class="pill-row"><span class="pill">Intuitive Creation</span><span class="pill">Color Sense</span><span class="pill">Pattern Design</span><span class="pill">Composition</span><span class="pill">Emotional Range</span></div>
+      </div>
+      <div class="skill-group">
+        <h4>Tools &amp; Mediums</h4>
+        <div class="pill-row"><span class="pill">Markers</span><span class="pill">Paper</span><span class="pill">Intuition</span><span class="pill">Heart</span><span class="pill">Eye</span><span class="pill">Brain</span><span class="pill">Love</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+
+
+<!-- Metrics marquee -->
+<div class="marquee-row">
+  <div class="marquee rev">
+    <span>46 Original Works<span class="sep">//</span></span><span>Art Brut Self-Taught<span class="sep">//</span></span><span>Kuwait City Studio<span class="sep">//</span></span><span>My Eye Brain<span class="sep">//</span></span>
+    <span>46 Original Works<span class="sep">//</span></span><span>Art Brut Self-Taught<span class="sep">//</span></span><span>Kuwait City Studio<span class="sep">//</span></span><span>My Eye Brain<span class="sep">//</span></span>
+  </div>
+</div>
+
+<!-- Contact -->
+<section class="section" id="contact">
+  <div class="container">
+    <h2 class="sec-title" style="margin-bottom: 12px;">Let's create something together</h2>
+    <p class="mono" style="font-size:11px;text-transform:uppercase;letter-spacing:1.5px;color:var(--accent);margin-bottom:48px;">Open for work</p>
+    <div class="contact-grid">
+      <div><p class="lbl">Email</p><a href="mailto:dalal@myeyebrain.art">dalal@myeyebrain.art</a></div>
+      <div><p class="lbl">Phone</p><a href="tel:+965 1234 5678">+965 1234 5678</a></div>
+      <div><p class="lbl">Social</p><div class="contact-flex">
+        <a href="https://www.instagram.com/" target="_blank" rel="noopener">Instagram</a>
+        <a href="https://www.linkedin.com/" target="_blank" rel="noopener">LinkedIn</a>
+        
+        
+      </div></div>
+      <div><p class="lbl">Location</p><p>Kuwait City, Kuwait</p></div>
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  &copy; Dalal Al-Kandari &middot; <a href="https://portfolio-trimind.com/demo/creative">https://portfolio-trimind.com/demo/creative</a>
+</footer>
+
+<script>
+(function () {
+  var wrap = document.getElementById('cone');
+  if (!wrap) return;
+  var tilt = document.getElementById('cone-tilt');
+  var spin = document.getElementById('cone-spin');
+  var cards = Array.prototype.slice.call(wrap.querySelectorAll('.cone-card'));
+  var N = cards.length;
+  if (!N) { wrap.style.display = 'none'; return; }
+
+  // Phone: replace the spinning cone with a static stacked photo-cube
+  // cluster (calmer + easier to tap). Skip the cone rAF loop entirely.
+  if (window.matchMedia('(max-width: 767px)').matches) { buildCubes(cards); return; }
+
+  function buildCubes(srcCards) {
+    var host = document.getElementById('cubeStack');
+    if (!host) return;
+    var picks = srcCards.slice(0, 6);
+    if (!picks.length) { host.style.display = 'none'; return; }
+    // nested pyramid: [left px, top px, z-index] — bottom row sits in front.
+    var slots = [[98, 4, 1], [50, 82, 3], [150, 80, 2], [8, 158, 5], [100, 160, 6], [192, 156, 4]];
+    picks.forEach(function (card, i) {
+      var s = slots[i % slots.length];
+      var img = card.querySelector('img');
+      var src = img ? (img.getAttribute('src') || img.src) : '';
+      var titleEl = card.querySelector('.info-title');
+      var title = (titleEl ? titleEl.textContent : (img ? img.alt : '')) || '';
+      var nImg = picks[(i + 1) % picks.length].querySelector('img');
+      var side = nImg ? (nImg.getAttribute('src') || nImg.src) : src;
+      var href = card.getAttribute('href') || '#gallery';
+      var esc = title.replace(/"/g, '&quot;');
+      var cube = document.createElement('a');
+      cube.className = 'cube';
+      cube.href = href;
+      if (card.target) cube.target = card.target;
+      cube.style.setProperty('--cx', s[0] + 'px');
+      cube.style.setProperty('--cy', s[1] + 'px');
+      cube.style.zIndex = s[2];
+      cube.setAttribute('aria-label', title || 'Artwork');
+      cube.innerHTML =
+        '<span class="shadow"></span>' +
+        '<span class="face f-top"></span>' +
+        '<span class="face f-left">' + (side ? '<img src="' + side + '" alt="">' : '') + '</span>' +
+        '<span class="face f-front"><img src="' + src + '" alt="' + esc + '"></span>';
+      host.insertBefore(cube, host.firstChild);
+    });
+  }
+
+  // Shrink the cone on small screens so it stays inside the viewport.
+  var SMALL = window.matchMedia('(max-width: 1023px)').matches;
+  var RS = SMALL ? 0.46 : 1;
+  var PER_TURN = Math.max(6, Math.min(15, N));
+  var TOP_R = 320 * RS, BOT_R = 220 * RS;
+  var HEIGHT = Math.min(750, Math.max(160, N * 26)) * (SMALL ? 0.6 : 1);
+  var BASE_TILT = -12, AUTO = 0.12, LERP = 0.07;
+
+  cards.forEach(function (card, i) {
+    var t = N > 1 ? i / N : 0.5;
+    var angle = (i / PER_TURN) * Math.PI * 2;
+    var y = t * HEIGHT - HEIGHT / 2;
+    var r = TOP_R + (BOT_R - TOP_R) * t;
+    var x = Math.sin(angle) * r;
+    var z = Math.cos(angle) * r;
+    var ry = -(angle * 180) / Math.PI;
+    card.style.transform = 'translate3d(' + x + 'px,' + y + 'px,' + z + 'px) rotateY(' + ry + 'deg)';
+  });
+
+  var rotY = 0, scrollRot = 0, dragDelta = 0;
+  var momentum = 0, prevDelta = 0, vel = 0;
+  var curTiltX = BASE_TILT, curTiltZ = 0, tgtTiltX = BASE_TILT, tgtTiltZ = 0;
+  var dragging = false, hasDragged = false, startX = 0, startRot = 0;
+
+  function loop() {
+    var hovering = wrap.querySelector('.cone-card:hover') !== null;
+    rotY += hovering ? AUTO * 0.3 : AUTO;
+    if (!dragging && momentum) { rotY += momentum; momentum *= 0.92; if (Math.abs(momentum) < 0.01) momentum = 0; }
+    var sMax = document.documentElement.scrollHeight - window.innerHeight;
+    scrollRot = (sMax > 0 ? window.scrollY / sMax : 0) * 720;
+    curTiltX += (tgtTiltX - curTiltX) * LERP;
+    curTiltZ += (tgtTiltZ - curTiltZ) * LERP;
+    tilt.style.transform = 'translate(-50%,-50%) rotateX(' + curTiltX + 'deg) rotateZ(' + curTiltZ + 'deg)';
+    spin.style.transform = 'rotateY(' + (rotY + scrollRot + dragDelta) + 'deg)';
+    requestAnimationFrame(loop);
+  }
+  requestAnimationFrame(loop);
+
+  window.addEventListener('mousemove', function (e) {
+    var dx = (e.clientX - window.innerWidth / 2) / (window.innerWidth / 2);
+    var dy = (e.clientY - window.innerHeight / 2) / (window.innerHeight / 2);
+    tgtTiltZ = dx * 8; tgtTiltX = BASE_TILT + dy * -8;
+  });
+
+  wrap.addEventListener('pointerdown', function (e) {
+    dragging = true; hasDragged = false; startX = e.clientX; startRot = rotY; dragDelta = 0;
+    momentum = 0; prevDelta = 0; vel = 0;
+    wrap.classList.add('dragging');
+    try { e.target.setPointerCapture(e.pointerId); } catch (_) {}
+  });
+  wrap.addEventListener('pointermove', function (e) {
+    if (!dragging) return;
+    var dx = e.clientX - startX;
+    if (Math.abs(dx) > 5) hasDragged = true;
+    dragDelta = dx * 0.5;
+    vel = dragDelta - prevDelta; prevDelta = dragDelta;
+  });
+  function endDrag() {
+    if (!dragging) return;
+    dragging = false; wrap.classList.remove('dragging');
+    rotY = startRot + dragDelta; dragDelta = 0;
+    momentum = vel; vel = 0; prevDelta = 0;
+  }
+  wrap.addEventListener('pointerup', endDrag);
+  wrap.addEventListener('pointerleave', endDrag);
+  cards.forEach(function (card) {
+    card.addEventListener('click', function (e) { if (hasDragged) { e.preventDefault(); } });
+  });
+})();
+</script>
+
+<!-- Gallery quick-view lightbox (for image-only items, no detail page) -->
+<div class="lb" id="galLb" aria-hidden="true">
+  <span class="lcross lc-tl"></span><span class="lcross lc-tr"></span>
+  <span class="lcross lc-bl"></span><span class="lcross lc-br"></span>
+  <span class="lb-cap" id="galCap"></span>
+  <button class="lb-close" id="galClose" aria-label="Close">[ Close &times; ]</button>
+  <div class="lb-stage" id="galStage"><img src="" alt="" id="galImg" draggable="false"></div>
+  <div class="lb-ctrl">
+    <button id="galOut" aria-label="Zoom out">[ &minus; ]</button>
+    <span class="pct" id="galPct">100%</span>
+    <button id="galIn" aria-label="Zoom in">[ + ]</button>
+  </div>
+</div>
+<script>
+(function () {
+  var lb = document.getElementById('galLb');
+  var triggers = Array.prototype.slice.call(document.querySelectorAll('.gal-zoom'));
+  if (!lb || !triggers.length) return;
+  var img = document.getElementById('galImg'), stage = document.getElementById('galStage');
+  var pct = document.getElementById('galPct'), cap = document.getElementById('galCap');
+  var scale = 1, ox = 0, oy = 0, dragging = false, sx = 0, sy = 0, sox = 0, soy = 0;
+  function apply() { img.style.transform = 'translate(' + ox + 'px,' + oy + 'px) scale(' + scale + ')'; pct.textContent = Math.round(scale * 100) + '%'; img.style.cursor = scale > 1 ? 'grab' : 'default'; }
+  function zoom(d) { scale = Math.min(4, Math.max(1, +(scale + d).toFixed(2))); if (scale === 1) { ox = 0; oy = 0; } apply(); }
+  function open(src, label) { if (!src) return; img.src = src; img.alt = label || ''; cap.textContent = label || ''; lb.classList.add('open'); lb.setAttribute('aria-hidden', 'false'); document.body.style.overflow = 'hidden'; scale = 1; ox = 0; oy = 0; apply(); }
+  function close() { lb.classList.remove('open'); lb.setAttribute('aria-hidden', 'true'); document.body.style.overflow = ''; }
+  triggers.forEach(function (el) {
+    el.addEventListener('click', function (e) { e.preventDefault(); open(el.getAttribute('data-full'), el.getAttribute('data-cap')); });
+  });
+  document.getElementById('galClose').addEventListener('click', close);
+  document.getElementById('galIn').addEventListener('click', function () { zoom(0.3); });
+  document.getElementById('galOut').addEventListener('click', function () { zoom(-0.3); });
+  lb.addEventListener('click', function (e) { if (e.target === lb) close(); });
+  stage.addEventListener('wheel', function (e) { e.preventDefault(); zoom(e.deltaY < 0 ? 0.3 : -0.3); }, { passive: false });
+  stage.addEventListener('pointerdown', function (e) { if (scale <= 1) return; dragging = true; sx = e.clientX; sy = e.clientY; sox = ox; soy = oy; });
+  stage.addEventListener('pointermove', function (e) { if (!dragging) return; ox = sox + (e.clientX - sx); oy = soy + (e.clientY - sy); apply(); });
+  function up() { dragging = false; }
+  stage.addEventListener('pointerup', up); stage.addEventListener('pointerleave', up);
+  document.addEventListener('keydown', function (e) { if (!lb.classList.contains('open')) return; if (e.key === 'Escape') close(); else if (e.key === '+' || e.key === '=') zoom(0.3); else if (e.key === '-' || e.key === '_') zoom(-0.3); });
+})();
+</script>
+
+<!-- Mobile nav toggle + scroll reveal -->
+<script>
+(function () {
+  var t = document.getElementById('navToggle'), l = document.getElementById('navLinks');
+  if (!t || !l) return;
+  t.addEventListener('click', function () {
+    var open = l.classList.toggle('open');
+    t.classList.toggle('is-open', open);
+    t.setAttribute('aria-expanded', open ? 'true' : 'false');
+  });
+  l.addEventListener('click', function (e) {
+    if (e.target.closest('a')) { l.classList.remove('open'); t.classList.remove('is-open'); t.setAttribute('aria-expanded', 'false'); }
+  });
+})();
+(function () {
+  if (!('IntersectionObserver' in window)) return;
+  var sel = '.sec-head, .sec-title, .gal-card, .quote-card, .xp-item, .award-item, .skill-group, .contact-grid > div';
+  var els = Array.prototype.slice.call(document.querySelectorAll(sel));
+  if (!els.length) return;
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (en) { if (en.isIntersecting) { en.target.classList.add('in'); io.unobserve(en.target); } });
+  }, { threshold: 0.12, rootMargin: '0px 0px -6% 0px' });
+  els.forEach(function (el, i) { el.classList.add('reveal'); el.style.transitionDelay = ((i % 6) * 50) + 'ms'; io.observe(el); });
+})();
+</script>
+</body>
 </html>
