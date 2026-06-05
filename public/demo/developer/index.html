@@ -161,7 +161,7 @@ section{position:relative;z-index:1}
 @keyframes wheel{0%{opacity:0;transform:translate(-50%,0)}40%{opacity:1}100%{opacity:0;transform:translate(-50%,10px)}}
 
 /* ── skills / Dygma-style split 3D keyboard ──────────────────── */
-#skills{padding:80px 0 110px;--ks:62px;--glow:#2f6bff}
+#skills{padding:80px 0 110px;--ks:62px;--glow:#2f6bff;--body:#243049}
 .kbd-toolbar{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-top:10px}
 .kbd-hint{font-family:var(--font-mono);color:var(--muted-2);font-size:.85rem}
 .kbd-mute{margin-inline-start:auto;display:inline-flex;align-items:center;gap:8px;font-family:var(--font-mono);font-size:.72rem;letter-spacing:.08em;color:var(--muted);
@@ -192,43 +192,67 @@ section{position:relative;z-index:1}
 }
 
 /* chassis body colour — per user: black (default) / white / gray */
-.kbd-deck.kbd-light{background:linear-gradient(180deg,#f2f4f8 0%,#dce1ea 50%,#c5cbd8 100%);border-color:rgba(2,6,23,.14);
+.kbd-deck.kbd-light{--body:#e9edf4;background:linear-gradient(180deg,#f2f4f8 0%,#dce1ea 50%,#c5cbd8 100%);border-color:rgba(2,6,23,.14);
   box-shadow:0 2px 0 rgba(255,255,255,.7) inset,0 -16px 40px rgba(120,130,150,.32) inset,0 40px 80px -28px rgba(0,0,0,.55),0 12px 0 #9aa2b4,0 0 46px 3px var(--glow),0 0 100px 12px color-mix(in srgb,var(--glow) 45%,transparent)}
 .kbd-deck.kbd-light::before{background:radial-gradient(120% 80% at 50% -12%,rgba(124,92,255,.08),transparent 60%)}
 .kbd-deck.kbd-light .kbd-palm{background:linear-gradient(180deg,#ffffff,#e3e7ef);box-shadow:0 6px 0 #b7bdcc,0 10px 16px rgba(0,0,0,.25)}
 .kbd-deck.kbd-light .key.blank{--kc:#c9cfdb;background:linear-gradient(180deg,#e9ecf2,#cfd5e1)}
-.kbd-deck.kbd-gray{background:linear-gradient(180deg,#3b4150 0%,#2b303b 50%,#1e222b 100%)}
+.kbd-deck.kbd-gray{--body:#39414f;background:linear-gradient(180deg,#3b4150 0%,#2b303b 50%,#1e222b 100%)}
 .kbd-deck.kbd-gray .kbd-palm{background:linear-gradient(180deg,#cdd2dc,#9aa1b0)}
 .kbd-deck.kbd-gray .key.blank{--kc:#4a5160;background:linear-gradient(180deg,#4a5160,#333944)}
 
-/* two ergonomic hand clusters (built by JS) */
-.kbd-hand{display:flex;flex-direction:column;align-items:center;gap:clamp(8px,1.2vw,14px);transform-style:preserve-3d}
-.kbd-hand.left{transform:rotateZ(-6deg)}
-.kbd-hand.right{transform:rotateZ(6deg)}
+/* two ergonomic hand clusters (built by JS) — Charybdis-style split body */
+.kbd-hand{position:relative;display:flex;flex-direction:column;gap:clamp(8px,1.2vw,14px);padding:18px 18px 14px;transform-style:preserve-3d}
+.kbd-hand.left{align-items:flex-start;transform:rotateZ(-8deg)}
+.kbd-hand.right{align-items:flex-end;transform:rotateZ(8deg)}
+/* moulded shell behind each half (follows the body colour) */
+.kbd-hand::before{content:"";position:absolute;inset:-6px;z-index:-1;border-radius:24px;
+  background:linear-gradient(165deg,color-mix(in srgb,var(--body) 86%,#fff 14%),var(--body) 58%,color-mix(in srgb,var(--body) 70%,#000 30%));
+  box-shadow:0 12px 0 color-mix(in srgb,var(--body) 50%,#000 50%),0 24px 36px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.10)}
+.kbd-hand.left::before{clip-path:polygon(0 9%,80% 0,100% 44%,100% 72%,60% 100%,28% 100%,0 78%)}
+.kbd-hand.right::before{clip-path:polygon(20% 0,100% 9%,100% 78%,72% 100%,40% 100%,0 72%,0 44%)}
 .kbd-cols{display:flex;gap:clamp(7px,.9vw,11px);align-items:flex-start}
 .kbd-col{display:flex;flex-direction:column;gap:clamp(7px,.9vw,11px)} /* translateY stagger set inline by JS */
-.kbd-palm{width:80%;height:calc(var(--ks)*.6);border-radius:14px;margin-top:4px;
-  background:linear-gradient(180deg,#d8dde6,#aeb6c4);box-shadow:0 6px 0 #6b7488,0 10px 16px rgba(0,0,0,.4)}
+
+/* thumb cluster + trackball — the split-ergo signature */
+.kbd-thumbwrap{display:flex;align-items:center;gap:10px}
+.kbd-hand.left .kbd-thumbwrap{align-self:flex-end;transform:translate(-4px,2px) rotate(15deg);transform-origin:right top}
+.kbd-hand.right .kbd-thumbwrap{align-self:flex-start;transform:translate(4px,2px) rotate(-15deg);transform-origin:left top}
+.kbd-thumb{display:flex;gap:clamp(6px,.8vw,10px)}
+.kbd-thumb .key{width:calc(var(--ks)*.92);height:calc(var(--ks)*.92)}
+.kbd-trackball{flex:none;width:calc(var(--ks)*1.3);height:calc(var(--ks)*1.3);border-radius:50%;
+  background:radial-gradient(36% 30% at 38% 30%,#ffb3b3,#e11d2b 42%,#6f0d14 100%);
+  box-shadow:0 0 0 5px color-mix(in srgb,var(--body) 70%,#000 30%),0 10px 16px rgba(0,0,0,.6),inset 0 -8px 14px rgba(0,0,0,.55),inset 0 6px 12px rgba(255,255,255,.3)}
+
+.kbd-palm{width:72%;height:calc(var(--ks)*.7);margin-top:8px;
+  background:linear-gradient(180deg,color-mix(in srgb,var(--body) 70%,#fff 30%),color-mix(in srgb,var(--body) 92%,#000 8%));
+  box-shadow:0 9px 0 color-mix(in srgb,var(--body) 45%,#000 55%),0 16px 20px rgba(0,0,0,.45)}
+.kbd-hand.left .kbd-palm{align-self:flex-start;clip-path:polygon(0 0,100% 16%,84% 100%,0 100%)}
+.kbd-hand.right .kbd-palm{align-self:flex-end;clip-path:polygon(0 16%,100% 0,100% 100%,16% 100%)}
 
 /* tinted mechanical keycap — the cap colour IS the tool colour */
 .key{
   --kc:#5b6478;
   position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;
   width:var(--ks);height:var(--ks);
-  border:none;border-radius:12px;cursor:pointer;color:#fff;font-family:inherit;
-  background:radial-gradient(120% 80% at 50% 16%,rgba(255,255,255,.35),transparent 58%),linear-gradient(180deg,color-mix(in srgb,var(--kc) 80%,#fff 10%),color-mix(in srgb,var(--kc) 90%,#000 26%));
-  box-shadow:0 1px 0 rgba(255,255,255,.22) inset,0 -3px 6px rgba(0,0,0,.4) inset,0 5px 0 color-mix(in srgb,var(--kc) 55%,#000 55%),0 7px 0 rgba(0,0,0,.55),0 11px 14px rgba(0,0,0,.5);
-  transition:transform .07s ease,box-shadow .07s ease,filter .2s ease;
+  border:none;border-radius:9px;cursor:pointer;color:#fff;font-family:inherit;
+  /* cube TOP face */
+  background:linear-gradient(158deg,color-mix(in srgb,var(--kc) 70%,#fff 24%),color-mix(in srgb,var(--kc) 95%,#000 5%) 58%,color-mix(in srgb,var(--kc) 86%,#000 14%));
+  /* extruded SIDES (cube body) — stacked darker tool-colour layers = real height */
+  box-shadow:0 1px 0 rgba(255,255,255,.4) inset,0 -2px 4px rgba(0,0,0,.32) inset,0 4px 0 color-mix(in srgb,var(--kc) 72%,#000 28%),0 8px 0 color-mix(in srgb,var(--kc) 58%,#000 42%),0 12px 0 color-mix(in srgb,var(--kc) 44%,#000 56%),0 15px 18px rgba(0,0,0,.55);
+  transition:transform .06s ease,box-shadow .06s ease,filter .2s ease;
   -webkit-tap-highlight-color:transparent;
 }
-.key i{font-size:clamp(1.1rem,1.9vw,1.5rem);color:#fff;filter:drop-shadow(0 1px 2px rgba(0,0,0,.55));z-index:1}
-.key .abbr{font-family:var(--font-mono);font-size:clamp(.7rem,1.3vw,.92rem);font-weight:700;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.55);z-index:1}
-.key .label{font-size:clamp(.4rem,.8vw,.5rem);color:rgba(255,255,255,.94);max-width:92%;text-align:center;line-height:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-shadow:0 1px 2px rgba(0,0,0,.5);z-index:1}
-.key:hover{transform:translateY(-3px);filter:brightness(1.08)}
+.key::after{content:"";position:absolute;left:7%;right:7%;top:6%;height:40%;border-radius:7px;
+  background:linear-gradient(180deg,rgba(255,255,255,.32),transparent);pointer-events:none}
+.key i{font-size:clamp(1.1rem,1.9vw,1.5rem);color:#fff;filter:drop-shadow(0 1px 2px rgba(0,0,0,.6));z-index:1}
+.key .abbr{font-family:var(--font-mono);font-size:clamp(.7rem,1.3vw,.92rem);font-weight:700;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.6);z-index:1}
+.key .label{font-size:clamp(.4rem,.8vw,.5rem);color:rgba(255,255,255,.95);max-width:92%;text-align:center;line-height:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-shadow:0 1px 2px rgba(0,0,0,.55);z-index:1}
+.key:hover{transform:translateY(-3px);filter:brightness(1.09)}
 .key:focus-visible{outline:2px solid #fff;outline-offset:3px}
-.key.pressed,.key:active{transform:translateY(5px);box-shadow:0 1px 0 rgba(255,255,255,.15) inset,0 -2px 5px rgba(0,0,0,.4) inset,0 1px 0 color-mix(in srgb,var(--kc) 55%,#000 55%),0 2px 0 rgba(0,0,0,.55),0 3px 6px rgba(0,0,0,.5)}
-.key.active{box-shadow:0 1px 0 rgba(255,255,255,.25) inset,0 -3px 6px rgba(0,0,0,.4) inset,0 5px 0 color-mix(in srgb,var(--kc) 55%,#000 55%),0 7px 0 rgba(0,0,0,.55),0 12px 28px color-mix(in srgb,var(--kc) 70%,transparent)}
-.key.blank{--kc:#39435c;cursor:default;background:linear-gradient(180deg,#39435c,#222b40)}
+.key.pressed,.key:active{transform:translateY(11px);box-shadow:0 1px 0 rgba(255,255,255,.3) inset,0 -2px 4px rgba(0,0,0,.32) inset,0 2px 0 color-mix(in srgb,var(--kc) 58%,#000 42%),0 4px 9px rgba(0,0,0,.55)}
+.key.active{box-shadow:0 1px 0 rgba(255,255,255,.4) inset,0 -2px 4px rgba(0,0,0,.32) inset,0 4px 0 color-mix(in srgb,var(--kc) 72%,#000 28%),0 8px 0 color-mix(in srgb,var(--kc) 58%,#000 42%),0 12px 0 color-mix(in srgb,var(--kc) 44%,#000 56%),0 16px 30px color-mix(in srgb,var(--kc) 75%,transparent)}
+.key.blank{--kc:#39435c;cursor:default}
 .key.blank>*{display:none}
 /* category colour fallback when a tool has no brand colour */
 .kc-0{--kc:#a78bfa}.kc-1{--kc:#38bdf8}.kc-2{--kc:#34d399}.kc-3{--kc:#f472b6}.kc-4{--kc:#fbbf24}.kc-5{--kc:#fb7185}
@@ -1050,6 +1074,18 @@ html[dir="rtl"] .tl-item::before{left:auto;right:0}
         cols.appendChild(col);
       }
       hand.appendChild(cols);
+      /* thumb cluster — the defining split-ergo silhouette (decorative caps) */
+      var thumbWrap = document.createElement("div"); thumbWrap.className = "kbd-thumbwrap";
+      var thumb = document.createElement("div"); thumb.className = "kbd-thumb";
+      for(var ti = 0; ti < 3; ti++){ var tk = makeBlank(); tk.classList.add("thumbkey"); thumb.appendChild(tk); }
+      /* right hand carries the trackball, nested by the thumb */
+      if(cls === "right"){
+        var tb = document.createElement("div"); tb.className = "kbd-trackball"; tb.setAttribute("aria-hidden","true");
+        thumbWrap.appendChild(tb); thumbWrap.appendChild(thumb);
+      } else {
+        thumbWrap.appendChild(thumb);
+      }
+      hand.appendChild(thumbWrap);
       var palm = document.createElement("div"); palm.className = "kbd-palm"; hand.appendChild(palm);
       return hand;
     }
@@ -1094,17 +1130,29 @@ html[dir="rtl"] .tl-item::before{left:auto;right:0}
       ensureCtx();
       if(!actx){ return; }
       var t = actx.currentTime;
-      var jit = (Math.random() - 0.5) * 18;
-      try{ noiseBurst(0.012, "highpass", 2400, 0.16); }catch(e){}  /* sharp top click */
-      try{ noiseBurst(0.05, "lowpass", 420 + jit, 0.5); }catch(e){} /* "thock" body */
-      var o = actx.createOscillator(), g = actx.createGain();        /* weighted thump */
+      var jit = (Math.random() - 0.5) * 14;
+      /* soft tactile tick — gentle band-passed noise with a smooth attack */
+      try{
+        var len = Math.max(1, Math.floor(actx.sampleRate * 0.02));
+        var buf = actx.createBuffer(1, len, actx.sampleRate);
+        var d = buf.getChannelData(0);
+        for(var i = 0; i < len; i++){ d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 3); }
+        var n = actx.createBufferSource(); n.buffer = buf;
+        var bp = actx.createBiquadFilter(); bp.type = "bandpass"; bp.frequency.value = 1850 + jit * 10; bp.Q.value = 0.9;
+        var ng = actx.createGain();
+        ng.gain.setValueAtTime(0.0001, t); ng.gain.exponentialRampToValueAtTime(0.11, t + 0.002); ng.gain.exponentialRampToValueAtTime(0.0001, t + 0.03);
+        n.connect(bp); bp.connect(ng); ng.connect(actx.destination); n.start(t);
+      }catch(e){}
+      /* smooth low "thock" body — low-passed sine with soft attack + decay */
+      var o = actx.createOscillator(), g = actx.createGain(), lp = actx.createBiquadFilter();
+      lp.type = "lowpass"; lp.frequency.value = 900;
       o.type = "sine";
-      o.frequency.setValueAtTime(168 + pitch * 20 + jit, t);
-      o.frequency.exponentialRampToValueAtTime(78, t + 0.07);
+      o.frequency.setValueAtTime(150 + pitch * 16 + jit, t);
+      o.frequency.exponentialRampToValueAtTime(82, t + 0.08);
       g.gain.setValueAtTime(0.0001, t);
-      g.gain.exponentialRampToValueAtTime(0.28, t + 0.004);
-      g.gain.exponentialRampToValueAtTime(0.0001, t + 0.11);
-      o.connect(g); g.connect(actx.destination); o.start(t); o.stop(t + 0.12);
+      g.gain.exponentialRampToValueAtTime(0.22, t + 0.006);
+      g.gain.exponentialRampToValueAtTime(0.0001, t + 0.13);
+      o.connect(g); g.connect(lp); lp.connect(actx.destination); o.start(t); o.stop(t + 0.14);
     }
 
     /* ── info panel: show the tool name + its custom description ── */
