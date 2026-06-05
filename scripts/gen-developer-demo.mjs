@@ -177,7 +177,10 @@ Handlebars.registerHelper("faviconLink", function (fullName, accentColor, bgColo
   return new Handlebars.SafeString(`<link rel="icon" href="data:image/svg+xml,${encodeURIComponent(svg)}">`);
 });
 
-/* ── demo persona (original, generic — not real anyone) ─────── */
+/* ── demo persona: Wadhah Almutairi (from his CV) ───────────── */
+// Demo persona: Maya Okafor's full profile, with the keyboard's Tech Stack
+// populated from Wadhah Almutairi's skills array (per request — no other
+// Wadhah personal info is used).
 const data = {
   locale: "en",
   isRTL: false,
@@ -203,11 +206,28 @@ const data = {
     { value: "40+", label: "Projects delivered" },
     { value: "1.2M", label: "Users reached" },
   ],
+  // Tech Stack keyboard — Wadhah Almutairi's skills (per request).
   skills: [
-    { category: "Frontend", items: ["React", "Next.js", "TypeScript", "Tailwind", "Three.js"] },
-    { category: "Backend", items: ["Node.js", "Python", "GraphQL", "PostgreSQL", "Redis"] },
-    { category: "Cloud / Ops", items: ["AWS", "Docker", "Kubernetes", "Terraform", "GitHub Actions"] },
-    { category: "Craft", items: ["Figma", "WebGL", "Accessibility"] },
+    {
+      category: "Cybersecurity",
+      items: [
+        "Penetration Testing",
+        "Vulnerability Assessment",
+        "Active Directory",
+        "GPO Hardening",
+        "Incident Response",
+        "IIS",
+        "DNS",
+      ],
+    },
+    {
+      category: "Security Platforms",
+      items: ["Trend Micro Vision One", "Elastic Stack", "SIEM", "Winlogbeat"],
+    },
+    { category: "DevOps", items: ["Docker"] },
+    { category: "Programming", items: ["Python", "PowerShell", "Java", "C"] },
+    { category: "AI & Data", items: ["Machine Learning", "NLP", "Pandas"] },
+    { category: "Web", items: ["HTML", "CSS"] },
   ],
   experience: [
     {

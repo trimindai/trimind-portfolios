@@ -66,18 +66,8 @@ a{color:inherit;text-decoration:none}
 img{display:block;max-width:100%}
 ::selection{background:var(--brand);color:#fff}
 
-/* ── star-field + 3D scene layers ───────────────────────────── */
+/* ── star-field background layer ─────────────────────────────── */
 #stars{position:fixed;inset:0;z-index:-2;pointer-events:none}
-#scene{
-  position:fixed;inset:0;z-index:-1;pointer-events:none;
-  opacity:0;transition:opacity 1s ease;
-  animation:sceneIn 1.2s ease 4.5s forwards; /* CSS fallback: reveal even if JS never flags ready */
-}
-#scene.ready{opacity:1;animation:none}
-@keyframes sceneIn{from{opacity:0}to{opacity:1}}
-#scene spline-viewer{width:100%;height:100%}
-/* let the keyboard be interactive only while the skills section is active */
-body[data-active="skills"] #scene{pointer-events:auto}
 
 /* ── scroll progress ────────────────────────────────────────── */
 #progress{
@@ -139,7 +129,7 @@ section{position:relative;z-index:1}
 .box-reveal.in{opacity:1;transform:none}
 @media (prefers-reduced-motion:reduce){
   .blur-in,.box-reveal{opacity:1;filter:none;transform:none;transition:none}
-  #scene{display:none}
+  .kbd-deck{animation:none}
 }
 
 /* ── hero ───────────────────────────────────────────────────── */
@@ -170,45 +160,70 @@ section{position:relative;z-index:1}
 .scroll-cue .mouse::after{content:"";position:absolute;left:50%;top:7px;width:3px;height:6px;background:var(--muted);border-radius:2px;transform:translateX(-50%);animation:wheel 1.5s infinite}
 @keyframes wheel{0%{opacity:0;transform:translate(-50%,0)}40%{opacity:1}100%{opacity:0;transform:translate(-50%,10px)}}
 
-/* ── skills / tech stack ────────────────────────────────────── */
-#skills{padding:80px 0 100px;min-height:90svh}
+/* ── skills / interactive 3D tech-stack keyboard ─────────────── */
+#skills{padding:80px 0 110px;min-height:90svh}
+.kbd-toolbar{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-top:10px}
 .kbd-hint{font-family:var(--font-mono);color:var(--muted-2);font-size:.85rem}
-.skill-grid{display:flex;flex-wrap:wrap;gap:12px;margin-top:8px}
-.keycap{
-  position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;
-  width:96px;height:96px;border-radius:14px;cursor:pointer;
-  background:linear-gradient(180deg,var(--card-hover),var(--card));
-  border:1px solid var(--border-strong);
-  box-shadow:0 6px 0 rgba(0,0,0,.35),0 10px 24px rgba(0,0,0,.35),inset 0 1px 0 rgba(255,255,255,.06);
-  transition:transform .12s ease,box-shadow .12s ease,border-color .2s;
-}
-.keycap:hover{transform:translateY(2px);box-shadow:0 4px 0 rgba(0,0,0,.35),0 6px 16px rgba(0,0,0,.4),inset 0 1px 0 rgba(255,255,255,.06)}
-.keycap.pressed{transform:translateY(4px);box-shadow:0 2px 0 rgba(0,0,0,.35),0 3px 8px rgba(0,0,0,.4)}
-.keycap i{font-size:1.7rem}
-.keycap .abbr{font-family:var(--font-mono);font-size:1.1rem;font-weight:600}
-.keycap .label{font-size:.66rem;color:var(--muted);max-width:84px;text-align:center;line-height:1.15;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.keycap .cat{position:absolute;top:-9px;right:-6px;font-family:var(--font-mono);font-size:.55rem;padding:1px 6px;border-radius:999px;background:var(--bg-2);border:1px solid var(--border-strong);color:var(--muted)}
-.kc-0{color:#a78bfa}.kc-1{color:#38bdf8}.kc-2{color:#34d399}.kc-3{color:#f472b6}.kc-4{color:#fbbf24}.kc-5{color:#fb7185}
-@media(max-width:560px){.keycap{width:76px;height:76px}.keycap i{font-size:1.35rem}}
-.keycap.lit{border-color:var(--skill,var(--accent));box-shadow:0 4px 0 rgba(0,0,0,.35),0 0 0 1px var(--skill,var(--accent)),0 8px 24px rgba(0,0,0,.4)}
+.kbd-readout{font-family:var(--font-mono);font-size:.82rem;color:var(--accent);min-height:1.2em;min-width:6ch;opacity:0;transition:opacity .25s ease}
+.kbd-readout.show{opacity:1}
+.kbd-mute{margin-inline-start:auto;display:inline-flex;align-items:center;gap:8px;font-family:var(--font-mono);font-size:.72rem;letter-spacing:.08em;color:var(--muted);
+  padding:9px 13px;border-radius:10px;border:1px solid var(--border-strong);background:var(--card);cursor:pointer;transition:border-color .2s,color .2s,transform .12s}
+.kbd-mute:hover{border-color:var(--brand);color:var(--fg)}
+.kbd-mute:active{transform:translateY(1px)}
+.kbd-mute[aria-pressed="true"]{color:var(--muted-2);border-color:var(--border)}
 
-/* ── skill detail panel (driven by the live 3D keyboard) ─────── */
-/* skill NAME beside the live 3D keyboard — press a key → just the name (e.g. "Docker") */
-.skill-name{display:flex;align-items:center;flex-wrap:wrap;gap:14px;min-height:52px;margin:4px 0 22px}
-.skill-name .sn-dot{width:12px;height:12px;border-radius:50%;flex:0 0 auto;background:var(--skill,var(--accent));box-shadow:0 0 18px var(--skill,var(--accent));transition:background .2s ease,box-shadow .2s ease}
-.skill-name .sn-text{font-family:var(--font-display);font-size:clamp(1.6rem,4.5vw,2.6rem);font-weight:800;letter-spacing:-1px;line-height:1;color:#f1f5f9;transition:color .2s ease}
-.skill-name.show .sn-text{color:var(--skill,var(--accent))}
-.skill-name .sn-hint{font-family:var(--font-mono);font-size:.7rem;color:var(--muted-2)}
-.skill-name.show .sn-hint{display:none}
-.skill-more{margin-top:20px;display:inline-flex;align-items:center;gap:8px;cursor:pointer;
-  font-family:var(--font-mono);font-size:.8rem;color:#cbd5e1;
-  background:linear-gradient(180deg,var(--card-hover),var(--card));border:1px solid var(--border-strong);
-  border-radius:999px;padding:10px 18px;min-height:44px;transition:border-color .2s ease,transform .1s ease}
-.skill-more:hover{border-color:var(--skill,var(--accent));color:#f1f5f9}
-.skill-more:active{transform:translateY(1px)}
-.skill-more[hidden]{display:none}
-.keycap.is-rest{display:none}
-.skill-grid.show-all .keycap.is-rest{display:flex}
+/* tilted 3D deck holding the keycaps (no WebGL, no external runtime) */
+.kbd-stage{margin-top:34px;perspective:1500px;perspective-origin:50% 0%}
+.kbd-deck{
+  transform-style:preserve-3d;transform:rotateX(26deg);
+  transition:transform .35s cubic-bezier(.22,1,.36,1);
+  display:flex;flex-wrap:wrap;gap:13px;justify-content:center;align-items:flex-start;
+  max-width:980px;margin:0 auto;padding:32px clamp(14px,3vw,40px);
+  border-radius:26px;
+  background:linear-gradient(180deg,rgba(30,41,70,.55),rgba(9,15,32,.78));
+  border:1px solid var(--border-strong);
+  box-shadow:0 46px 90px -34px rgba(0,0,0,.85),inset 0 1px 0 rgba(255,255,255,.05);
+  animation:deckFloat 7s ease-in-out infinite;
+}
+@keyframes deckFloat{0%,100%{transform:rotateX(26deg) translateY(0)}50%{transform:rotateX(26deg) translateY(-10px)}}
+
+.key{
+  --kc:#a78bfa;
+  position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;
+  width:84px;height:84px;min-width:62px;
+  border:none;border-radius:13px;cursor:pointer;color:var(--fg);font-family:inherit;
+  background:linear-gradient(180deg,#28324f,#1a2238);
+  box-shadow:0 7px 0 #0d1426,0 8px 0 #0a0f1e,0 13px 20px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.08);
+  transition:transform .08s ease,box-shadow .08s ease;
+  -webkit-tap-highlight-color:transparent;
+}
+.key::before{content:"";position:absolute;inset:5px 5px auto 5px;height:32%;border-radius:9px 9px 16px 16px;
+  background:linear-gradient(180deg,color-mix(in srgb,var(--kc) 26%,transparent),transparent);pointer-events:none}
+.key i{font-size:1.55rem;color:var(--kc);filter:drop-shadow(0 0 8px color-mix(in srgb,var(--kc) 38%,transparent))}
+.key .abbr{font-family:var(--font-mono);font-size:1.05rem;font-weight:600;color:var(--kc)}
+.key .label{font-size:.6rem;color:var(--muted);max-width:74px;text-align:center;line-height:1.1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.key .cat{position:absolute;top:-8px;right:-5px;font-family:var(--font-mono);font-size:.5rem;padding:1px 5px;border-radius:999px;background:var(--bg-2);border:1px solid var(--border-strong);color:var(--muted)}
+.key:hover{transform:translateY(-3px)}
+.key:focus-visible{outline:2px solid var(--brand);outline-offset:3px}
+.key.pressed,.key:active{transform:translateY(6px);box-shadow:0 1px 0 #0d1426,0 2px 0 #0a0f1e,0 3px 6px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.06)}
+.key.lit{box-shadow:0 7px 0 #0d1426,0 8px 0 #0a0f1e,0 14px 26px color-mix(in srgb,var(--kc) 48%,transparent),inset 0 1px 0 rgba(255,255,255,.1)}
+/* category colour families (sets the key's accent var) */
+.kc-0{--kc:#a78bfa}.kc-1{--kc:#38bdf8}.kc-2{--kc:#34d399}.kc-3{--kc:#f472b6}.kc-4{--kc:#fbbf24}.kc-5{--kc:#fb7185}
+/* spacebar — wide key carrying the owner's name */
+.key-space{width:auto;flex:1 1 280px;max-width:440px;height:56px}
+.key-space .label{font-size:.68rem;max-width:none;color:var(--muted)}
+
+@media(max-width:768px){
+  .kbd-deck{transform:rotateX(14deg);animation:none;padding:20px 12px;gap:9px}
+  @keyframes deckFloat{0%,100%{transform:rotateX(14deg)}50%{transform:rotateX(14deg)}}
+  .key{width:72px;height:72px;min-width:58px}
+  .key i{font-size:1.3rem}
+}
+@media(max-width:430px){
+  .key{width:64px;height:64px}
+  .key .label{font-size:.54rem;max-width:54px}
+  .kbd-mute{margin-inline-start:0}
+}
 
 /* ── experience timeline ────────────────────────────────────── */
 #experience{padding:90px 0}
@@ -327,7 +342,6 @@ html[dir="rtl"] .tl-item::before{left:auto;right:0}
 
 {{!-- ░░ BACKGROUND LAYERS ░░ --}}
 <canvas id="stars"></canvas>
-<div id="scene" aria-hidden="true"></div>
 <div id="progress"></div>
 
 {{!-- ░░ NAV ░░ --}}
@@ -373,25 +387,28 @@ html[dir="rtl"] .tl-item::before{left:auto;right:0}
     <div class="sec-head">
       <div class="eyebrow">{{#if isRTL}}الأدوات{{else}}Tech Stack{{/if}}</div>
       <h2>{{#if isRTL}}المهارات التقنية{{else}}Tech Stack{{/if}}</h2>
-      <p class="kbd-hint">{{#if isRTL}}(تلميح: اضغط أي مفتاح — لوحة المفاتيح ثلاثية الأبعاد العائمة حيّة){{else}}(hint: press any key — the floating 3D keyboard is live){{/if}}</p>
-    </div>
-    <div id="skillName" class="skill-name" aria-live="polite">
-      <span class="sn-dot"></span>
-      <span id="snText" class="sn-text">{{#if isRTL}}اضغط مفتاحًا{{else}}Press a key{{/if}}</span>
-      <span class="sn-hint">{{#if isRTL}}لوحة المفاتيح العائمة حيّة — اضغط أي مفتاح{{else}}the floating keyboard is live — press any key{{/if}}</span>
-    </div>
-    <div class="skill-grid" id="skillGrid">
-      {{#each (flattenSkills skills)}}
-      <div class="keycap" data-key tabindex="0">
-        <span class="cat">{{this.category}}</span>
-        {{#if (techIcon this.name)}}<i class="{{techIcon this.name}} {{cycle this.catIndex "kc-0" "kc-1" "kc-2" "kc-3" "kc-4" "kc-5"}}"></i>{{else}}<span class="abbr {{cycle this.catIndex "kc-0" "kc-1" "kc-2" "kc-3" "kc-4" "kc-5"}}">{{kbAbbr this.name}}</span>{{/if}}
-        <span class="label">{{this.name}}</span>
+      <div class="kbd-toolbar">
+        <p class="kbd-hint">{{#if isRTL}}(اضغط أي مفتاح — كل مفتاح مهارة){{else}}(press a key — every key is a skill){{/if}}</p>
+        <span class="kbd-readout" id="kbd-readout" aria-live="polite"></span>
+        <button type="button" class="kbd-mute" id="kbd-mute" aria-pressed="false" aria-label="{{#if isRTL}}كتم صوت المفاتيح{{else}}Toggle key sound{{/if}}">
+          <i class="fa-solid fa-volume-high"></i><span>{{#if isRTL}}الصوت{{else}}SOUND{{/if}}</span>
+        </button>
       </div>
-      {{/each}}
     </div>
-    <button id="skillMore" class="skill-more" type="button" hidden
-            data-more="{{#if isRTL}}عرض كل المهارات{{else}}Show all skills{{/if}}"
-            data-less="{{#if isRTL}}عرض أقل{{else}}Show less{{/if}}"></button>
+    <div class="kbd-stage">
+      <div class="kbd-deck" id="kbd-deck">
+        {{#each (flattenSkills skills)}}
+        <button type="button" class="key {{cycle this.catIndex "kc-0" "kc-1" "kc-2" "kc-3" "kc-4" "kc-5"}}" data-skill="{{this.name}}" aria-label="{{this.name}}{{#if this.category}} — {{this.category}}{{/if}}">
+          <span class="cat">{{this.category}}</span>
+          {{#if (techIcon this.name)}}<i class="{{techIcon this.name}}"></i>{{else}}<span class="abbr">{{kbAbbr this.name}}</span>{{/if}}
+          <span class="label">{{this.name}}</span>
+        </button>
+        {{/each}}
+        <button type="button" class="key key-space" data-skill="{{basics.fullName}}" aria-label="{{basics.fullName}}">
+          <span class="label">{{basics.fullName}}</span>
+        </button>
+      </div>
+    </div>
   </div>
 </section>
 {{/if}}
@@ -559,53 +576,11 @@ html[dir="rtl"] .tl-item::before{left:auto;right:0}
   </div>
 </footer>
 
-{{!-- ░░ SPLINE 3D KEYBOARD (CDN, progressive enhancement) ░░ --}}
-<script type="module" src="https://unpkg.com/@splinetool/viewer@1.9.82/build/spline-viewer.js" onerror="window.__splineFailed=true"></script>
-
+{{!-- ░░ INTERACTIVE PAGE SCRIPT (self-contained, no external runtime) ░░ --}}
 <script>
 (function(){
   "use strict";
   var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion:reduce)").matches;
-  var splineUrl = {{#if customization.skillsSplineUrl}}"{{safeUrl customization.skillsSplineUrl}}"{{else}}"/assets/skills-keyboard.spline"{{/if}};
-
-  /* ── Clickable keyboard: each Spline key object (named by skill slug) maps to
-        a skill, exactly like nareshkhatri.site/#skills. Press/click/hover a key
-        → the panel updates + the scene's on-model text (heading/desc) is set. ── */
-  var SKILLS = {
-    js:{l:"JavaScript",ab:"JS",c:"#f7df1e",d:"The language of the web — async flows, events, and the DOM."},
-    ts:{l:"TypeScript",ab:"TS",c:"#3178c6",d:"Typed JavaScript that scales to large, refactor-safe codebases."},
-    html:{l:"HTML5",ab:"H5",c:"#e34f26",d:"Semantic, accessible markup — the foundation of every page."},
-    css:{l:"CSS3",ab:"C3",c:"#33a9dc",d:"Modern layout, animation, and responsive design."},
-    react:{l:"React",ab:"Re",c:"#61dafb",d:"Component-driven UIs with a fast, declarative render model."},
-    vue:{l:"Vue",ab:"Vue",c:"#42b883",d:"Approachable, reactive framework for building interfaces."},
-    nextjs:{l:"Next.js",ab:"N",c:"#cbd5e1",d:"React framework with SSR, routing, and edge rendering."},
-    tailwind:{l:"Tailwind CSS",ab:"TW",c:"#38bdf8",d:"Utility-first styling for fast, consistent design systems."},
-    nodejs:{l:"Node.js",ab:"No",c:"#539e43",d:"JavaScript on the server — fast, event-driven I/O."},
-    express:{l:"Express",ab:"Ex",c:"#cbd5e1",d:"Minimal, flexible Node.js web framework."},
-    postgres:{l:"PostgreSQL",ab:"PG",c:"#5a9fd4",d:"Powerful, reliable relational database."},
-    mongodb:{l:"MongoDB",ab:"M",c:"#47a248",d:"Document database for flexible, JSON-like data."},
-    git:{l:"Git",ab:"Git",c:"#f05032",d:"Distributed version control for every project."},
-    github:{l:"GitHub",ab:"GH",c:"#cbd5e1",d:"Code hosting, review, and CI/CD with Actions."},
-    prettier:{l:"Prettier",ab:"Pr",c:"#f7b93e",d:"Opinionated formatter that keeps code consistent."},
-    npm:{l:"npm",ab:"npm",c:"#cb3837",d:"Package manager for the JavaScript ecosystem."},
-    firebase:{l:"Firebase",ab:"Fb",c:"#ffca28",d:"Realtime backend, auth, and hosting."},
-    wordpress:{l:"WordPress",ab:"WP",c:"#4a90d9",d:"The web's most widely used CMS."},
-    linux:{l:"Linux",ab:"Lx",c:"#fcc624",d:"The OS that runs the servers of the world."},
-    docker:{l:"Docker",ab:"Dk",c:"#2496ed",d:"Containerize apps for reproducible deploys."},
-    nginx:{l:"Nginx",ab:"Nx",c:"#009639",d:"High-performance web server and reverse proxy."},
-    aws:{l:"AWS",ab:"AWS",c:"#ff9900",d:"Cloud infrastructure at global scale."},
-    gcp:{l:"Google Cloud",ab:"GC",c:"#4285f4",d:"Managed cloud compute, data, and ML."},
-    vim:{l:"Vim",ab:"Vim",c:"#33b955",d:"Keyboard-driven editing, everywhere."},
-    vercel:{l:"Vercel",ab:"▲",c:"#cbd5e1",d:"Frontend cloud — deploy and scale instantly."}
-  };
-  function skillSlug(raw){
-    var n = String(raw || "").toLowerCase().replace(/[^a-z0-9]/g, "");
-    var alias = { javascript:"js", typescript:"ts", html5:"html", css3:"css",
-      reactjs:"react", reactnative:"react", vuejs:"vue", next:"nextjs", nuxt:"vue",
-      tailwindcss:"tailwind", node:"nodejs", expressjs:"express", postgresql:"postgres",
-      mongo:"mongodb", googlecloud:"gcp", amazonwebservices:"aws", githubactions:"github" };
-    return alias[n] || n;
-  }
 
   /* ── year ── */
   var y = document.getElementById("year"); if(y){ y.textContent = new Date().getFullYear(); }
@@ -660,7 +635,6 @@ html[dir="rtl"] .tl-item::before{left:auto;right:0}
           var id = e.target.id;
           document.body.setAttribute("data-active", id);
           navLinks.forEach(function(a){ a.classList.toggle("active", a.getAttribute("data-sec") === id); });
-          if(window.__setKbdSection){ window.__setKbdSection(id); }
         }
       });
     }, {threshold:0.4});
@@ -716,43 +690,6 @@ html[dir="rtl"] .tl-item::before{left:auto;right:0}
     });
   }
 
-  /* ── keycap press feedback (mirror "press a key") ── */
-  document.querySelectorAll("[data-key]").forEach(function(k){
-    var lbl = k.querySelector(".label");
-    var slug = skillSlug(lbl ? lbl.textContent : "");
-    if(SKILLS[slug]){ k.setAttribute("data-skill", slug); k.setAttribute("role", "button"); k.setAttribute("aria-label", SKILLS[slug].l); }
-    function press(){
-      k.classList.add("pressed"); setTimeout(function(){ k.classList.remove("pressed"); }, 150);
-      // Drive the live 3D keyboard + skill panel when this maps to a real key.
-      if(SKILLS[slug] && typeof window.__pressSkill === "function"){ window.__pressSkill(slug); }
-    }
-    k.addEventListener("mousedown", press);
-    k.addEventListener("keydown", function(e){ if(e.key === "Enter" || e.key === " "){ e.preventDefault(); press(); } });
-  });
-
-  /* ── show the most important skills; collapse the rest behind a button ── */
-  (function(){
-    var HEADLINE = 8;
-    var grid = document.getElementById("skillGrid");
-    var btn  = document.getElementById("skillMore");
-    if(!grid || !btn){ return; }
-    var caps = Array.prototype.slice.call(grid.querySelectorAll(".keycap"));
-    var rest = caps.slice(HEADLINE);
-    if(rest.length === 0){ return; }                 // nothing to hide → no button
-    rest.forEach(function(c){ c.classList.add("is-rest"); });
-    var more = btn.getAttribute("data-more") || "Show all skills";
-    var less = btn.getAttribute("data-less") || "Show less";
-    var open = false;
-    function render(){
-      grid.classList.toggle("show-all", open);
-      btn.textContent = open ? less : (more + " (+" + rest.length + ")");
-      btn.setAttribute("aria-expanded", open ? "true" : "false");
-    }
-    btn.addEventListener("click", function(){ open = !open; render(); });
-    btn.hidden = false;
-    render();
-  })();
-
   /* ── project modal ── */
   function openModal(i){ var m = document.getElementById("modal-" + i); if(m){ m.classList.add("open"); document.body.style.overflow = "hidden"; } }
   function closeModals(){ document.querySelectorAll(".modal.open").forEach(function(m){ m.classList.remove("open"); }); document.body.style.overflow = ""; }
@@ -799,136 +736,112 @@ html[dir="rtl"] .tl-item::before{left:auto;right:0}
     document.head.appendChild(ls);
   }
 
-  /* ── mount the 3D keyboard + frame it per section (mirrors the source) ── */
-  // Keyboard poses in the scene's own units, per section, desktop + mobile.
-  var P = Math.PI;
-  var STATES = {
-    hero:       { d:{s:0.24, x:460, y:-55,  rx:0,    ry:0,     rz:0}, m:{s:0.36, x:0, y:-150, rx:0, ry:0, rz:0} },
-    skills:     { d:{s:0.26, x:0,   y:-30,  rx:0,    ry:P/12,  rz:0}, m:{s:0.30, x:0, y:-40,  rx:0, ry:P/12, rz:0} },
-    experience: { d:{s:0.22, x:0,   y:-40,  rx:P/12, ry:-P/4,  rz:0}, m:{s:0.28, x:0, y:-40,  rx:P/8, ry:-P/6, rz:0} },
-    projects:   { d:{s:0.19, x:0,   y:-40,  rx:P/16, ry:P/6,   rz:0}, m:{s:0.26, x:0, y:-40,  rx:P/10, ry:P/8, rz:0} },
-    extras:     { d:{s:0.20, x:-150,y:-40,  rx:0,    ry:P/8,   rz:0}, m:{s:0.26, x:0, y:-40,  rx:0, ry:P/8, rz:0} },
-    contact:    { d:{s:0.20, x:200, y:-40,  rx:0,    ry:-P/9,  rz:0}, m:{s:0.26, x:0, y:-40,  rx:0, ry:-P/9, rz:0} }
-  };
-  function poseFor(sec){ var st = STATES[sec] || STATES.hero; return (innerWidth < 768) ? st.m : st.d; }
+  /* ── interactive 3D skills keyboard: synth click + press + parallax ── */
+  (function(){
+    var deck = document.getElementById("kbd-deck");
+    if(!deck){ return; }
+    var keys = Array.prototype.slice.call(deck.querySelectorAll(".key"));
+    var readout = document.getElementById("kbd-readout");
+    var muteBtn = document.getElementById("kbd-mute");
 
-  /* Faithful clone of nareshkhatri.site/#skills: listen to the Spline runtime's
-     key events (each key object is named after the skill slug), update the panel
-     + the scene's on-model heading/desc, and let external HTML keycaps trigger a
-     key via emitEvent. Everything is wrapped in try/catch so a blocked or
-     differently-named scene degrades to the static keycap grid. */
-  function wireKeyboardSkills(app){
-    var box = document.getElementById("skillName");
-    if(!box || app.__skillsWired){ return; }
-    app.__skillsWired = true;
-    var nameEl = document.getElementById("snText");
-    var press = null, release = null;
-    try{
-      press = new Audio("/assets/keycap-sounds/press.mp3"); press.volume = 0.35;
-      release = new Audio("/assets/keycap-sounds/release.mp3"); release.volume = 0.3;
-    }catch(e){}
-    var current = null;
-    function litKeycap(slug){
-      document.querySelectorAll(".keycap.lit").forEach(function(k){ k.classList.remove("lit"); k.style.removeProperty("--skill"); });
-      if(!slug){ return; }
-      var el = document.querySelector('.keycap[data-skill="' + slug + '"]');
-      if(el){ el.style.setProperty("--skill", SKILLS[slug].c); el.classList.add("lit"); }
+    /* Web Audio synthesized mechanical "thock" — no audio file to host */
+    var AC = window.AudioContext || window.webkitAudioContext;
+    var actx = null, muted = false;
+    try{ muted = localStorage.getItem("kbdMuted") === "1"; }catch(e){}
+    function applyMuteUI(){
+      if(!muteBtn){ return; }
+      muteBtn.setAttribute("aria-pressed", muted ? "true" : "false");
+      var ic = muteBtn.querySelector("i");
+      if(ic){ ic.className = muted ? "fa-solid fa-volume-xmark" : "fa-solid fa-volume-high"; }
     }
-    function show(slug){
-      var s = SKILLS[slug]; if(!s){ return; }
-      current = slug;
-      box.style.setProperty("--skill", s.c);
-      if(nameEl){ nameEl.textContent = s.l; }    /* just the name, e.g. "Docker" */
-      box.classList.add("show");
-      litKeycap(slug);
-      if(press){ try{ press.currentTime = 0; press.play().catch(function(){}); }catch(e){} }
-      try{ app.setVariable("heading", s.l); app.setVariable("desc", ""); }catch(e){}
+    applyMuteUI();
+    function ensureCtx(){
+      if(!actx && AC){ try{ actx = new AC(); }catch(e){ actx = null; } }
+      if(actx && actx.state === "suspended"){ try{ actx.resume(); }catch(e){} }
     }
-    function fade(){
-      if(release){ try{ release.play().catch(function(){}); }catch(e){} }
-      try{ app.setVariable("heading", ""); app.setVariable("desc", ""); }catch(e){}
+    if(muteBtn){
+      muteBtn.addEventListener("click", function(){
+        muted = !muted;
+        try{ localStorage.setItem("kbdMuted", muted ? "1" : "0"); }catch(e){}
+        applyMuteUI(); ensureCtx();
+      });
     }
-    function nameOf(e){ return (e && e.target && e.target.name) ? e.target.name : ""; }
-    function onDown(e){ var n = nameOf(e); if(n === "body" || n === "platform"){ return; } if(SKILLS[n]){ show(n); } }
-    function onHover(e){ var n = nameOf(e); if(n === "body" || n === "platform"){ return; } if(SKILLS[n] && n !== current){ show(n); } }
-    try{ app.addEventListener("mouseDown", onDown); }catch(e){}
-    try{ app.addEventListener("keyDown", onDown); }catch(e){}
-    try{ app.addEventListener("mouseHover", onHover); }catch(e){}
-    try{ app.addEventListener("keyUp", fade); }catch(e){}
-    /* external HTML keycaps → press the matching 3D key + panel */
-    window.__pressSkill = function(slug){
-      if(!SKILLS[slug]){ return false; }
-      try{ app.emitEvent("mouseDown", slug); }catch(e){}
-      show(slug);
-      return true;
-    };
-  }
 
-  function mountScene(){
-    if(reduce){ return; }
-    var host = document.getElementById("scene");
-    if(!host || window.__splineFailed){ return; }
-    if(!("customElements" in window)){ return; }
-    customElements.whenDefined("spline-viewer").then(function(){
-      var v = document.createElement("spline-viewer");
-      v.setAttribute("url", splineUrl);
-      v.setAttribute("loading-anim-type", "none");
-      v.setAttribute("events-target", "global"); /* lets physical keypresses drive the scene */
-      v.style.width = "100%"; v.style.height = "100%";
-      v.addEventListener("error", function(){ host.style.display = "none"; finishLoad(); });
-      host.appendChild(v);
+    function click(pitch){
+      if(muted){ return; }
+      ensureCtx();
+      if(!actx){ return; }
+      var t = actx.currentTime;
+      /* low body of the press */
+      var o = actx.createOscillator(), g = actx.createGain();
+      o.type = "triangle";
+      o.frequency.setValueAtTime(150 + pitch * 26, t);
+      o.frequency.exponentialRampToValueAtTime(72, t + 0.06);
+      g.gain.setValueAtTime(0.0001, t);
+      g.gain.exponentialRampToValueAtTime(0.22, t + 0.004);
+      g.gain.exponentialRampToValueAtTime(0.0001, t + 0.09);
+      o.connect(g); g.connect(actx.destination); o.start(t); o.stop(t + 0.1);
+      /* click transient: short high-passed noise burst */
+      try{
+        var len = Math.floor(actx.sampleRate * 0.03);
+        var buf = actx.createBuffer(1, len, actx.sampleRate);
+        var d = buf.getChannelData(0);
+        for(var i = 0; i < len; i++){ d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 2); }
+        var n = actx.createBufferSource(); n.buffer = buf;
+        var hp = actx.createBiquadFilter(); hp.type = "highpass"; hp.frequency.value = 1700;
+        var ng = actx.createGain(); ng.gain.value = 0.16;
+        n.connect(hp); hp.connect(ng); ng.connect(actx.destination); n.start(t);
+      }catch(e){}
+    }
 
-      var kbd = null, target = poseFor("hero"), tries = 0;
-      window.__setKbdSection = function(sec){ target = poseFor(sec); };
-
-      function applyPose(p, snap){
-        if(!kbd){ return; }
-        var t = snap ? 1 : 0.07;
-        kbd.scale.x = kbd.scale.y = kbd.scale.z = kbd.scale.x + (p.s - kbd.scale.x) * t;
-        kbd.position.x += (p.x - kbd.position.x) * t;
-        kbd.position.y += (p.y - kbd.position.y) * t;
-        kbd.rotation.x += (p.rx - kbd.rotation.x) * t;
-        kbd.rotation.y += (p.ry - kbd.rotation.y) * t;
-        kbd.rotation.z += (p.rz - kbd.rotation.z) * t;
+    var roTimer;
+    function pressKey(k, pitch){
+      if(!k){ return; }
+      k.classList.add("pressed", "lit");
+      click(pitch || 0);
+      var skill = k.getAttribute("data-skill");
+      if(readout && skill){
+        readout.textContent = skill;
+        readout.classList.add("show");
+        clearTimeout(roTimer);
+        roTimer = setTimeout(function(){ readout.classList.remove("show"); }, 1400);
       }
-      function animate(){ applyPose(target, false); requestAnimationFrame(animate); }
+      setTimeout(function(){ k.classList.remove("pressed"); }, 130);
+      setTimeout(function(){ k.classList.remove("lit"); }, 330);
+    }
 
-      // Poll for the runtime (sv._spline) AND the keyboard object — keep trying
-      // until the object resolves, otherwise it stays at the scene's (large,
-      // centered) default pose and covers the hero text.
-      var poll = setInterval(function(){
-        tries++;
-        var app = v._spline;
-        var ready = app && typeof app.findObjectByName === "function" && typeof app.getAllObjects === "function";
-        if(ready){ try{ kbd = app.findObjectByName("keyboard"); }catch(e){ kbd = null; } }
-        if((ready && kbd) || tries > 60){   // wait for the keyboard; ~18s ceiling
-          clearInterval(poll);
-          host.classList.add("ready");
-          finishLoad();
-          if(ready){
-            // Reveal the keycaps: the scene EXPORTS them hidden — mirror the source
-            // by switching on the desktop (or mobile) keycap objects, staggered.
-            try{
-              var capName = (innerWidth < 768) ? "keycap-mobile" : "keycap-desktop";
-              var caps = app.getAllObjects().filter(function(o){ return o && (o.name === capName || o.name === "keycap"); });
-              caps.forEach(function(c, idx){ setTimeout(function(){ try{ c.visible = true; }catch(e){} }, 250 + idx * 55); });
-            }catch(e){}
-            try{ wireKeyboardSkills(app); }catch(e){}
-          }
-          if(kbd){
-            var active = document.body.getAttribute("data-active") || "hero";
-            target = poseFor(active);
-            applyPose(target, true);   // snap to the section's pose immediately
-            requestAnimationFrame(animate);
-          }
-        }
-      }, 300);
+    keys.forEach(function(k, idx){
+      var p = idx % 6;
+      k.addEventListener("pointerdown", function(){ ensureCtx(); pressKey(k, p); });
+      k.addEventListener("keydown", function(e){ if(e.key === "Enter" || e.key === " "){ e.preventDefault(); pressKey(k, p); } });
     });
-    /* if the custom element is never defined (blocked CDN), stop waiting on it */
-    setTimeout(function(){ if(!host.classList.contains("ready")){ finishLoad(); } }, 3500);
-  }
-  if(document.readyState !== "loading"){ mountScene(); }
-  else { document.addEventListener("DOMContentLoaded", mountScene); }
+
+    /* physical keyboard → press the matching skill key (by first letter), else a random key */
+    document.addEventListener("keydown", function(e){
+      if(e.metaKey || e.ctrlKey || e.altKey){ return; }
+      var tag = e.target && e.target.tagName;
+      if(tag === "INPUT" || tag === "TEXTAREA"){ return; }
+      if(e.key && e.key.length === 1 && /[a-z0-9]/i.test(e.key)){
+        var ch = e.key.toLowerCase();
+        var match = keys.filter(function(k){ return (k.getAttribute("data-skill") || "").toLowerCase().charAt(0) === ch; });
+        var pick = match.length ? match[(Math.random() * match.length) | 0] : keys[(Math.random() * keys.length) | 0];
+        pressKey(pick, ch.charCodeAt(0) % 6);
+      }
+    });
+
+    /* desktop pointer-parallax tilt (skip touch + reduced-motion) */
+    if(!reduce && window.matchMedia && window.matchMedia("(hover:hover)").matches){
+      var stage = deck.parentElement;
+      stage.addEventListener("pointermove", function(e){
+        var r = stage.getBoundingClientRect();
+        var dx = (e.clientX - r.left) / r.width - 0.5;
+        var dy = (e.clientY - r.top) / r.height - 0.5;
+        deck.style.animation = "none";
+        deck.style.transform = "rotateX(" + (26 - dy * 9) + "deg) rotateY(" + (dx * 9) + "deg)";
+      });
+      stage.addEventListener("pointerleave", function(){ deck.style.transform = ""; deck.style.animation = ""; });
+    }
+  })();
 })();
 </script>
 </body>
