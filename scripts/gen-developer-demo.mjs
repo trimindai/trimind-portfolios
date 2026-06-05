@@ -178,26 +178,35 @@ Handlebars.registerHelper("faviconLink", function (fullName, accentColor, bgColo
 });
 
 /* ── demo persona: Wadhah Almutairi (from his CV) ───────────── */
+// Demo persona: Maya Okafor's full profile, with the keyboard's Tech Stack
+// populated from Wadhah Almutairi's skills array (per request — no other
+// Wadhah personal info is used).
 const data = {
   locale: "en",
   isRTL: false,
   portfolioUrl: "https://portfolio-trimind.com/demo/developer",
   templateId: "developer",
   basics: {
-    fullName: "Wadhah Almutairi",
-    title: "Cybersecurity Engineer",
-    subtitle: "Computer Engineer",
+    fullName: "Maya Okafor",
+    title: "Full-Stack Engineer",
+    subtitle: "Creative Technologist",
     valueProposition:
-      "I secure enterprise environments end to end — penetration testing, Active Directory hardening, SIEM engineering, and security automation. CEH certified, and just as comfortable scripting the fix as I am writing the report.",
-    location: "Kuwait City, Kuwait",
-    email: "w.baazm@gmail.com",
-    phone: "99252378",
+      "I build fast, interactive web products — from real-time systems to 3D interfaces — and care about the millimetre of polish that makes software feel alive.",
+    location: "Lisbon, Portugal",
+    email: "maya@okafor.dev",
+    phone: "+351 900 000 000",
+    website: "https://okafor.dev",
+    linkedin: "https://www.linkedin.com/in/example",
+    github: "https://github.com/",
+    instagram: "https://www.instagram.com/",
+    resumeUrl: "https://okafor.dev/resume.pdf",
   },
   metrics: [
-    { value: "CEH", label: "Certified Ethical Hacker" },
-    { value: "KUNA", label: "Security & IT Engineer" },
-    { value: "AUM", label: "B.Sc. Computer Engineering" },
+    { value: "6+", label: "Years shipping" },
+    { value: "40+", label: "Projects delivered" },
+    { value: "1.2M", label: "Users reached" },
   ],
+  // Tech Stack keyboard — Wadhah Almutairi's skills (per request).
   skills: [
     {
       category: "Cybersecurity",
@@ -222,70 +231,83 @@ const data = {
   ],
   experience: [
     {
-      title: "Cybersecurity & IT Engineer",
-      company: "Kuwait News Agency (KUNA)",
-      startDate: "2024",
+      title: "Senior Full-Stack Engineer",
+      company: "Nebula Labs",
+      startDate: "Jan 2024",
       endDate: "",
-      description:
-        "Drive security operations across a national news agency — from offensive assessments to hardening, logging, and automation.",
+      description: "Lead engineer on a real-time collaboration product used by design teams.",
       highlights: [
-        "Ran security assessments uncovering SQL injection, information disclosure, and application-layer vulnerabilities.",
-        "Authored CEH-level penetration test reports with prioritized, actionable remediation.",
-        "Hardened Active Directory — GPO hardening, delegated permissions, and domain controller protections.",
-        "Engineered centralized logging pipelines with the Elastic Stack and Winlogbeat.",
-        "Used Docker for isolated security testing and repeatable deployments.",
-        "Deployed Wake-on-LAN across VLANs for remote maintenance and patching.",
+        "Architected an async job pipeline processing 1k+ AI tasks/day with at-least-once delivery.",
+        "Cut p95 page load by 47% by moving to streaming SSR and an edge cache layer.",
+        "Mentored four engineers and introduced trunk-based delivery with preview environments.",
       ],
+    },
+    {
+      title: "Full-Stack Developer",
+      company: "Orbit Studio",
+      startDate: "Jun 2021",
+      endDate: "Dec 2023",
+      description: "Built interactive marketing sites and internal tooling for an agency.",
+      highlights: [
+        "Shipped 20+ client sites with WebGL hero scenes and 95+ Lighthouse scores.",
+        "Built a headless CMS that cut content turnaround from days to minutes.",
+      ],
+    },
+    {
+      title: "Frontend Engineer",
+      company: "Pixel & Co.",
+      startDate: "Aug 2019",
+      endDate: "May 2021",
+      description: "First engineering hire on a small product team.",
+      highlights: ["Owned the design system and component library from scratch."],
     },
   ],
   projects: [
     {
-      title: "Trend Micro Vision One (XDR)",
-      tagline: "XDR / Security Ops",
+      title: "Aurora",
+      tagline: "Real-time collab",
       description:
-        "Led onboarding and security integration of Trend Micro Vision One XDR — unifying endpoint, network, and server telemetry into a single detection-and-response surface for the organisation.",
-      technologies: ["Trend Micro Vision One", "XDR", "Incident Response"],
+        "A multiplayer canvas where teams sketch, comment, and present together. Sub-100ms cursor sync over WebSockets with conflict-free merges.",
+      technologies: ["Next.js", "WebSockets", "Postgres", "Redis"],
+      metrics: [
+        { value: "<100ms", label: "Cursor sync" },
+        { value: "99.95%", label: "Uptime" },
+      ],
+      link: "https://okafor.dev",
+      links: [{ kind: "repo", label: "Source", url: "https://github.com/" }],
     },
     {
-      title: "Elastic Stack Logging Automation",
-      tagline: "SIEM / Automation",
+      title: "Stargazer",
+      tagline: "3D / WebGL",
       description:
-        "Built an automated logging pipeline that ingests and normalises security events with Python into structured databases, surfaced through the Elastic Stack for fast investigation.",
-      technologies: ["Elastic Stack", "Winlogbeat", "Python", "SIEM"],
+        "An interactive 3D star map that renders 100k+ points at 60fps in the browser using instanced geometry and a custom shader.",
+      technologies: ["Three.js", "TypeScript", "GLSL"],
+      metrics: [{ value: "100k+", label: "Points @ 60fps" }],
+      link: "https://okafor.dev",
     },
     {
-      title: "Wake-on-LAN Enterprise Deployment",
-      tagline: "Infrastructure",
+      title: "Switchboard",
+      tagline: "Developer tool",
       description:
-        "Designed and rolled out Wake-on-LAN across multiple VLANs, enabling remote power-on for maintenance and patching of machines spread across the network.",
-      technologies: ["Networking", "PowerShell", "Windows"],
+        "A feature-flag and config dashboard with typed SDKs, audit logs, and instant rollbacks. Used internally across a dozen services.",
+      technologies: ["React", "Node.js", "GraphQL"],
+      links: [{ kind: "demo", label: "Read more", url: "https://okafor.dev" }],
     },
     {
-      title: "Vulnerability Reporting Automation",
-      tagline: "Security Tooling",
+      title: "Quietbox",
+      tagline: "Side project",
       description:
-        "Automated the security reporting workflow — generating CEH-style vulnerability reports with consistent severity scoring and remediation guidance to speed up the assessment cycle.",
-      technologies: ["Python", "Penetration Testing", "Security"],
-    },
-    {
-      title: "Multilingual AI Chatbot",
-      tagline: "University Senior Project",
-      description:
-        "Built a multilingual AI chatbot using NLP and machine learning on custom datasets, deployed to assist students. Final-year capstone at the American University of the Middle East.",
-      technologies: ["Machine Learning", "NLP", "Python"],
+        "A distraction-free writing app with local-first sync, full-text search, and a focus timer. Open source.",
+      technologies: ["Svelte", "SQLite", "Rust"],
+      link: "https://github.com/",
     },
   ],
   education: [
-    {
-      degree: "B.Sc. Computer Engineering",
-      institution: "American University of the Middle East (AUM)",
-      year: "2024",
-    },
+    { degree: "BSc Computer Science", institution: "University of Porto", year: "2019" },
   ],
   certifications: [
-    { name: "Certified Ethical Hacker (CEH)", issuer: "EC-Council", year: "" },
-    { name: "Data Science Course", issuer: "CODED Academy", year: "" },
-    { name: "Web Development Bootcamp", issuer: "CODED Academy", year: "" },
+    { name: "AWS Solutions Architect – Associate", issuer: "Amazon Web Services", year: "2023" },
+    { name: "Professional Cloud Developer", issuer: "Google Cloud", year: "2022" },
   ],
   customization: {},
 };
