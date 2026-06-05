@@ -42,7 +42,8 @@
   --border: #D8C7AE;        /* sand-tinted hairline */
   --accent: #B86F52;  /* Cinnamon Wood — actions/labels */
   --accent-dim: rgba(184,111,82,.14);
-  --link: #496AB1;          /* Blue Slate — structure, nav, links */
+  --link: #496AB1;          /* Blue Slate — headings, structure, nav, links */
+  --blue-band: #3A5489;     /* deep Blue Slate — inverted bands (contact/footer) */
   --font-head: 'Geist', system-ui, sans-serif;
   --font-mono: 'Geist Mono', ui-monospace, monospace;
 }
@@ -67,12 +68,12 @@ a { color: inherit; text-decoration: none; }
   background: rgba(239,238,234,0.82); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
   border-bottom: 1px solid var(--border);
 }
-.nav-brand { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; transition: color .25s; }
-.nav-brand:hover { color: var(--link); }
+.nav-brand { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: var(--link); transition: color .25s; }
+.nav-brand:hover { color: var(--accent); }
 .nav-links { display: flex; align-items: center; gap: 24px; }
 .nav-link { font-family: var(--font-mono); font-size: 12px; text-transform: uppercase; letter-spacing: 1px; color: var(--text-dim); transition: color .25s; }
 .nav-link:hover { color: var(--link); }
-.nav-link .bk { color: var(--text-muted); }
+.nav-link .bk { color: var(--link); }
 .nav-toggle { display: none; }
 @media (max-width: 768px) {
   .nav-toggle { display: flex; flex-direction: column; justify-content: center; gap: 5px; width: 40px; height: 40px; padding: 0; background: none; border: none; cursor: pointer; z-index: 60; }
@@ -117,7 +118,7 @@ a { color: inherit; text-decoration: none; }
 .hero-portrait .c-tr { top: 18px; right: 18px; border-top: 1px solid var(--link); border-right: 1px solid var(--link); }
 .hero-portrait .c-bl { bottom: 18px; left: 18px; border-bottom: 1px solid var(--link); border-left: 1px solid var(--link); }
 .hero-portrait .c-br { bottom: 18px; right: 18px; border-bottom: 1px solid var(--link); border-right: 1px solid var(--link); }
-.hero-name { font-size: clamp(40px, 6vw, 68px); font-weight: 800; text-transform: uppercase; letter-spacing: -0.04em; line-height: 1.05; margin-bottom: 12px; }
+.hero-name { font-size: clamp(40px, 6vw, 68px); font-weight: 800; text-transform: uppercase; letter-spacing: -0.04em; line-height: 1.05; margin-bottom: 12px; color: var(--link); }
 .hero-tag { font-family: var(--font-mono); font-size: 10px; text-transform: uppercase; letter-spacing: 1.5px; color: var(--accent); margin-bottom: 8px; }
 .hero-loc { font-family: var(--font-mono); font-size: 10px; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); margin-bottom: 20px; }
 .hero-bio { font-size: 13px; color: var(--text-dim); line-height: 1.7; max-width: 340px; margin-bottom: 28px; overflow-wrap: anywhere; }
@@ -215,7 +216,7 @@ a { color: inherit; text-decoration: none; }
 .container { max-width: 1200px; margin: 0 auto; }
 .sec-head { display: flex; align-items: center; gap: 16px; margin-bottom: 48px; }
 .sec-head .line { flex: 1; height: 1px; background: var(--border); }
-.sec-title { font-size: clamp(28px, 4vw, 44px); font-weight: 800; letter-spacing: -0.03em; }
+.sec-title { font-size: clamp(28px, 4vw, 44px); font-weight: 800; letter-spacing: -0.03em; color: var(--link); }
 
 /* ── Gallery grid ── */
 .gal-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
@@ -270,7 +271,15 @@ a { color: inherit; text-decoration: none; }
 
 /* ── Footer ── */
 .footer { padding: 40px 24px; border-top: 1px solid var(--border); text-align: center; font-family: var(--font-mono); font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); }
-.footer a:hover { color: var(--link); }
+.footer a:hover { color: var(--sand); }
+
+/* ── Blue Slate closing band (contact + footer) ── */
+#contact { background: var(--blue-band); color: #E7E9F0; }
+#contact .sec-title { color: #F2EFE8; }
+#contact .contact-grid a, #contact .contact-grid p { color: #E9EAF1; }
+#contact .contact-grid .lbl { color: var(--sand); }
+#contact .contact-grid a:hover { color: var(--sand); }
+.footer.footer { background: var(--blue-band); color: rgba(242,239,232,0.6); border-top-color: rgba(255,255,255,0.14); }
 
 /* ── Testimonials ── */
 .quotes-grid { display: grid; grid-template-columns: 1fr; gap: 20px; }
@@ -320,7 +329,7 @@ a { color: inherit; text-decoration: none; }
   <a href="#top" class="nav-brand">Dalal Al-Kandari</a>
   <button class="nav-toggle" id="navToggle" aria-label="Open menu" aria-expanded="false" aria-controls="navLinks"><span></span><span></span><span></span></button>
   <nav class="nav-links" id="navLinks">
-    <a href="#gallery" class="nav-link"><span class="bk">[</span> Gallery <span class="bk">]</span></a>
+    <a href="#work" class="nav-link"><span class="bk">[</span> Gallery <span class="bk">]</span></a>
     <a href="#skills" class="nav-link"><span class="bk">[</span> Skills <span class="bk">]</span></a>
     
     
@@ -337,15 +346,15 @@ a { color: inherit; text-decoration: none; }
     <p class="hero-bio">I never studied ornamental art. My hand moves without planning, my eye sees, my brain feels, and what emerges is pure intuition. 46 works of bold lines, vivid color, and hearts that appear unbidden. This is not technique. This is my eye brain.</p>
     <div class="hero-actions">
       <a href="mailto:dalal@myeyebrain.art" class="cta">Get in Touch <span>&rarr;</span></a>
-      <a href="#gallery" class="cta cta-ghost">View Work <span>&rarr;</span></a>
+      <a href="#work" class="cta cta-ghost">View Work <span>&rarr;</span></a>
       
     </div>
   </div>
-  <div class="hero-right">
+  <div class="hero-right" id="work">
     <div class="cone-wrap" id="cone">
       <div class="cone-tilt" id="cone-tilt">
         <div class="cone-spin" id="cone-spin">
-          <a class="cone-card">
+          <a class="cone-card" href="#" data-full="/demo/creative/artworks/ornaments_1_digital.webp" data-cap="Purple Bouquet">
             <img src="/demo/creative/artworks/ornaments_1_digital.webp" alt="Purple Bouquet" loading="lazy" decoding="async" width="148" height="197">
             <div class="overlay"></div>
             <div class="info">
@@ -353,7 +362,7 @@ a { color: inherit; text-decoration: none; }
               <div class="info-title">Purple Bouquet</div>
             </div>
           </a>
-          <a class="cone-card">
+          <a class="cone-card" href="#" data-full="/demo/creative/artworks/ornaments_2_digital.webp" data-cap="Geometric Hearts">
             <img src="/demo/creative/artworks/ornaments_2_digital.webp" alt="Geometric Hearts" loading="lazy" decoding="async" width="148" height="197">
             <div class="overlay"></div>
             <div class="info">
@@ -361,7 +370,7 @@ a { color: inherit; text-decoration: none; }
               <div class="info-title">Geometric Hearts</div>
             </div>
           </a>
-          <a class="cone-card">
+          <a class="cone-card" href="#" data-full="/demo/creative/artworks/ornaments_3_digital.webp" data-cap="Cloud Garden">
             <img src="/demo/creative/artworks/ornaments_3_digital.webp" alt="Cloud Garden" loading="lazy" decoding="async" width="148" height="197">
             <div class="overlay"></div>
             <div class="info">
@@ -369,7 +378,7 @@ a { color: inherit; text-decoration: none; }
               <div class="info-title">Cloud Garden</div>
             </div>
           </a>
-          <a class="cone-card">
+          <a class="cone-card" href="#" data-full="/demo/creative/artworks/ornaments_4_digital.webp" data-cap="Golden Vessel">
             <img src="/demo/creative/artworks/ornaments_4_digital.webp" alt="Golden Vessel" loading="lazy" decoding="async" width="148" height="197">
             <div class="overlay"></div>
             <div class="info">
@@ -377,7 +386,7 @@ a { color: inherit; text-decoration: none; }
               <div class="info-title">Golden Vessel</div>
             </div>
           </a>
-          <a class="cone-card">
+          <a class="cone-card" href="#" data-full="/demo/creative/artworks/ornaments_5_digital.webp" data-cap="Autumn Bouquet">
             <img src="/demo/creative/artworks/ornaments_5_digital.webp" alt="Autumn Bouquet" loading="lazy" decoding="async" width="148" height="197">
             <div class="overlay"></div>
             <div class="info">
@@ -385,7 +394,7 @@ a { color: inherit; text-decoration: none; }
               <div class="info-title">Autumn Bouquet</div>
             </div>
           </a>
-          <a class="cone-card">
+          <a class="cone-card" href="#" data-full="/demo/creative/artworks/ornaments_6_digital.webp" data-cap="City Maze">
             <img src="/demo/creative/artworks/ornaments_6_digital.webp" alt="City Maze" loading="lazy" decoding="async" width="148" height="197">
             <div class="overlay"></div>
             <div class="info">
@@ -393,7 +402,7 @@ a { color: inherit; text-decoration: none; }
               <div class="info-title">City Maze</div>
             </div>
           </a>
-          <a class="cone-card">
+          <a class="cone-card" href="#" data-full="/demo/creative/artworks/ornaments_7_digital.webp" data-cap="Purple Mandala">
             <img src="/demo/creative/artworks/ornaments_7_digital.webp" alt="Purple Mandala" loading="lazy" decoding="async" width="148" height="197">
             <div class="overlay"></div>
             <div class="info">
@@ -401,7 +410,7 @@ a { color: inherit; text-decoration: none; }
               <div class="info-title">Purple Mandala</div>
             </div>
           </a>
-          <a class="cone-card">
+          <a class="cone-card" href="#" data-full="/demo/creative/artworks/ornaments_8_digital.webp" data-cap="Cosmic Spiral">
             <img src="/demo/creative/artworks/ornaments_8_digital.webp" alt="Cosmic Spiral" loading="lazy" decoding="async" width="148" height="197">
             <div class="overlay"></div>
             <div class="info">
@@ -409,7 +418,7 @@ a { color: inherit; text-decoration: none; }
               <div class="info-title">Cosmic Spiral</div>
             </div>
           </a>
-          <a class="cone-card">
+          <a class="cone-card" href="#" data-full="/demo/creative/artworks/ornaments_9_digital.webp" data-cap="Red Construct">
             <img src="/demo/creative/artworks/ornaments_9_digital.webp" alt="Red Construct" loading="lazy" decoding="async" width="148" height="197">
             <div class="overlay"></div>
             <div class="info">
@@ -417,7 +426,7 @@ a { color: inherit; text-decoration: none; }
               <div class="info-title">Red Construct</div>
             </div>
           </a>
-          <a class="cone-card">
+          <a class="cone-card" href="#" data-full="/demo/creative/artworks/ornaments_10_digital.webp" data-cap="Fruit Bowl">
             <img src="/demo/creative/artworks/ornaments_10_digital.webp" alt="Fruit Bowl" loading="lazy" decoding="async" width="148" height="197">
             <div class="overlay"></div>
             <div class="info">
@@ -425,7 +434,7 @@ a { color: inherit; text-decoration: none; }
               <div class="info-title">Fruit Bowl</div>
             </div>
           </a>
-          <a class="cone-card">
+          <a class="cone-card" href="#" data-full="/demo/creative/artworks/ornaments_11_digital.webp" data-cap="Blue Dreamer">
             <img src="/demo/creative/artworks/ornaments_11_digital.webp" alt="Blue Dreamer" loading="lazy" decoding="async" width="148" height="197">
             <div class="overlay"></div>
             <div class="info">
@@ -433,7 +442,7 @@ a { color: inherit; text-decoration: none; }
               <div class="info-title">Blue Dreamer</div>
             </div>
           </a>
-          <a class="cone-card">
+          <a class="cone-card" href="#" data-full="/demo/creative/artworks/ornaments_12_digital.webp" data-cap="Star Flower">
             <img src="/demo/creative/artworks/ornaments_12_digital.webp" alt="Star Flower" loading="lazy" decoding="async" width="148" height="197">
             <div class="overlay"></div>
             <div class="info">
@@ -441,7 +450,7 @@ a { color: inherit; text-decoration: none; }
               <div class="info-title">Star Flower</div>
             </div>
           </a>
-          <a class="cone-card">
+          <a class="cone-card" href="#" data-full="/demo/creative/artworks/ornaments_13_digital.webp" data-cap="Love Tree">
             <img src="/demo/creative/artworks/ornaments_13_digital.webp" alt="Love Tree" loading="lazy" decoding="async" width="148" height="197">
             <div class="overlay"></div>
             <div class="info">
@@ -449,7 +458,7 @@ a { color: inherit; text-decoration: none; }
               <div class="info-title">Love Tree</div>
             </div>
           </a>
-          <a class="cone-card">
+          <a class="cone-card" href="#" data-full="/demo/creative/artworks/ornaments_14_digital.webp" data-cap="Framed Bloom">
             <img src="/demo/creative/artworks/ornaments_14_digital.webp" alt="Framed Bloom" loading="lazy" decoding="async" width="148" height="197">
             <div class="overlay"></div>
             <div class="info">
@@ -457,7 +466,7 @@ a { color: inherit; text-decoration: none; }
               <div class="info-title">Framed Bloom</div>
             </div>
           </a>
-          <a class="cone-card">
+          <a class="cone-card" href="#" data-full="/demo/creative/artworks/ornaments_15_digital.webp" data-cap="Lotus Reflection">
             <img src="/demo/creative/artworks/ornaments_15_digital.webp" alt="Lotus Reflection" loading="lazy" decoding="async" width="148" height="197">
             <div class="overlay"></div>
             <div class="info">
@@ -465,7 +474,7 @@ a { color: inherit; text-decoration: none; }
               <div class="info-title">Lotus Reflection</div>
             </div>
           </a>
-          <a class="cone-card">
+          <a class="cone-card" href="#" data-full="/demo/creative/artworks/ornaments_16_digital.webp" data-cap="Silver Garden">
             <img src="/demo/creative/artworks/ornaments_16_digital.webp" alt="Silver Garden" loading="lazy" decoding="async" width="148" height="197">
             <div class="overlay"></div>
             <div class="info">
@@ -473,7 +482,7 @@ a { color: inherit; text-decoration: none; }
               <div class="info-title">Silver Garden</div>
             </div>
           </a>
-          <a class="cone-card">
+          <a class="cone-card" href="#" data-full="/demo/creative/artworks/ornaments_17_digital.webp" data-cap="Crystal Beacon">
             <img src="/demo/creative/artworks/ornaments_17_digital.webp" alt="Crystal Beacon" loading="lazy" decoding="async" width="148" height="197">
             <div class="overlay"></div>
             <div class="info">
@@ -481,7 +490,7 @@ a { color: inherit; text-decoration: none; }
               <div class="info-title">Crystal Beacon</div>
             </div>
           </a>
-          <a class="cone-card">
+          <a class="cone-card" href="#" data-full="/demo/creative/artworks/ornaments_18_digital.webp" data-cap="Desert Sun">
             <img src="/demo/creative/artworks/ornaments_18_digital.webp" alt="Desert Sun" loading="lazy" decoding="async" width="148" height="197">
             <div class="overlay"></div>
             <div class="info">
@@ -489,7 +498,7 @@ a { color: inherit; text-decoration: none; }
               <div class="info-title">Desert Sun</div>
             </div>
           </a>
-          <a class="cone-card">
+          <a class="cone-card" href="#" data-full="/demo/creative/artworks/ornaments_19_digital.webp" data-cap="Sun Totem">
             <img src="/demo/creative/artworks/ornaments_19_digital.webp" alt="Sun Totem" loading="lazy" decoding="async" width="148" height="197">
             <div class="overlay"></div>
             <div class="info">
@@ -497,7 +506,7 @@ a { color: inherit; text-decoration: none; }
               <div class="info-title">Sun Totem</div>
             </div>
           </a>
-          <a class="cone-card">
+          <a class="cone-card" href="#" data-full="/demo/creative/artworks/ornaments_20_digital.webp" data-cap="Pastel Cloud">
             <img src="/demo/creative/artworks/ornaments_20_digital.webp" alt="Pastel Cloud" loading="lazy" decoding="async" width="148" height="197">
             <div class="overlay"></div>
             <div class="info">
@@ -505,7 +514,7 @@ a { color: inherit; text-decoration: none; }
               <div class="info-title">Pastel Cloud</div>
             </div>
           </a>
-          <a class="cone-card">
+          <a class="cone-card" href="#" data-full="/demo/creative/artworks/ornaments_21_digital.webp" data-cap="Heart Clown">
             <img src="/demo/creative/artworks/ornaments_21_digital.webp" alt="Heart Clown" loading="lazy" decoding="async" width="148" height="197">
             <div class="overlay"></div>
             <div class="info">
@@ -513,7 +522,7 @@ a { color: inherit; text-decoration: none; }
               <div class="info-title">Heart Clown</div>
             </div>
           </a>
-          <a class="cone-card">
+          <a class="cone-card" href="#" data-full="/demo/creative/artworks/ornaments_22_digital.webp" data-cap="Rainbow Arch">
             <img src="/demo/creative/artworks/ornaments_22_digital.webp" alt="Rainbow Arch" loading="lazy" decoding="async" width="148" height="197">
             <div class="overlay"></div>
             <div class="info">
@@ -521,7 +530,7 @@ a { color: inherit; text-decoration: none; }
               <div class="info-title">Rainbow Arch</div>
             </div>
           </a>
-          <a class="cone-card">
+          <a class="cone-card" href="#" data-full="/demo/creative/artworks/ornaments_23_digital.webp" data-cap="Ocean Stars">
             <img src="/demo/creative/artworks/ornaments_23_digital.webp" alt="Ocean Stars" loading="lazy" decoding="async" width="148" height="197">
             <div class="overlay"></div>
             <div class="info">
@@ -529,7 +538,7 @@ a { color: inherit; text-decoration: none; }
               <div class="info-title">Ocean Stars</div>
             </div>
           </a>
-          <a class="cone-card">
+          <a class="cone-card" href="#" data-full="/demo/creative/artworks/ornaments_24_digital.webp" data-cap="Geometric Butterflies">
             <img src="/demo/creative/artworks/ornaments_24_digital.webp" alt="Geometric Butterflies" loading="lazy" decoding="async" width="148" height="197">
             <div class="overlay"></div>
             <div class="info">
@@ -537,7 +546,7 @@ a { color: inherit; text-decoration: none; }
               <div class="info-title">Geometric Butterflies</div>
             </div>
           </a>
-          <a class="cone-card">
+          <a class="cone-card" href="#" data-full="/demo/creative/artworks/ornaments_25_digital.webp" data-cap="Caterpillar Dream">
             <img src="/demo/creative/artworks/ornaments_25_digital.webp" alt="Caterpillar Dream" loading="lazy" decoding="async" width="148" height="197">
             <div class="overlay"></div>
             <div class="info">
@@ -545,7 +554,7 @@ a { color: inherit; text-decoration: none; }
               <div class="info-title">Caterpillar Dream</div>
             </div>
           </a>
-          <a class="cone-card">
+          <a class="cone-card" href="#" data-full="/demo/creative/artworks/ornaments_26_digital.webp" data-cap="Horned Heart">
             <img src="/demo/creative/artworks/ornaments_26_digital.webp" alt="Horned Heart" loading="lazy" decoding="async" width="148" height="197">
             <div class="overlay"></div>
             <div class="info">
@@ -553,7 +562,7 @@ a { color: inherit; text-decoration: none; }
               <div class="info-title">Horned Heart</div>
             </div>
           </a>
-          <a class="cone-card">
+          <a class="cone-card" href="#" data-full="/demo/creative/artworks/ornaments_27_digital.webp" data-cap="Golden Mandala">
             <img src="/demo/creative/artworks/ornaments_27_digital.webp" alt="Golden Mandala" loading="lazy" decoding="async" width="148" height="197">
             <div class="overlay"></div>
             <div class="info">
@@ -561,7 +570,7 @@ a { color: inherit; text-decoration: none; }
               <div class="info-title">Golden Mandala</div>
             </div>
           </a>
-          <a class="cone-card">
+          <a class="cone-card" href="#" data-full="/demo/creative/artworks/ornaments_28_digital.webp" data-cap="Electric Flower">
             <img src="/demo/creative/artworks/ornaments_28_digital.webp" alt="Electric Flower" loading="lazy" decoding="async" width="148" height="197">
             <div class="overlay"></div>
             <div class="info">
@@ -569,7 +578,7 @@ a { color: inherit; text-decoration: none; }
               <div class="info-title">Electric Flower</div>
             </div>
           </a>
-          <a class="cone-card">
+          <a class="cone-card" href="#" data-full="/demo/creative/artworks/ornaments_29_digital.webp" data-cap="Heart Burst">
             <img src="/demo/creative/artworks/ornaments_29_digital.webp" alt="Heart Burst" loading="lazy" decoding="async" width="148" height="197">
             <div class="overlay"></div>
             <div class="info">
@@ -577,7 +586,7 @@ a { color: inherit; text-decoration: none; }
               <div class="info-title">Heart Burst</div>
             </div>
           </a>
-          <a class="cone-card">
+          <a class="cone-card" href="#" data-full="/demo/creative/artworks/ornaments_30_digital.webp" data-cap="Geometric Still Life">
             <img src="/demo/creative/artworks/ornaments_30_digital.webp" alt="Geometric Still Life" loading="lazy" decoding="async" width="148" height="197">
             <div class="overlay"></div>
             <div class="info">
@@ -585,7 +594,7 @@ a { color: inherit; text-decoration: none; }
               <div class="info-title">Geometric Still Life</div>
             </div>
           </a>
-          <a class="cone-card">
+          <a class="cone-card" href="#" data-full="/demo/creative/artworks/ornaments_31_digital.webp" data-cap="Tropical Bouquet">
             <img src="/demo/creative/artworks/ornaments_31_digital.webp" alt="Tropical Bouquet" loading="lazy" decoding="async" width="148" height="197">
             <div class="overlay"></div>
             <div class="info">
@@ -593,7 +602,7 @@ a { color: inherit; text-decoration: none; }
               <div class="info-title">Tropical Bouquet</div>
             </div>
           </a>
-          <a class="cone-card">
+          <a class="cone-card" href="#" data-full="/demo/creative/artworks/ornaments_32_digital.webp" data-cap="Patterned Butterfly">
             <img src="/demo/creative/artworks/ornaments_32_digital.webp" alt="Patterned Butterfly" loading="lazy" decoding="async" width="148" height="197">
             <div class="overlay"></div>
             <div class="info">
@@ -601,7 +610,7 @@ a { color: inherit; text-decoration: none; }
               <div class="info-title">Patterned Butterfly</div>
             </div>
           </a>
-          <a class="cone-card">
+          <a class="cone-card" href="#" data-full="/demo/creative/artworks/ornaments_33_digital.webp" data-cap="Heart Flower Tree">
             <img src="/demo/creative/artworks/ornaments_33_digital.webp" alt="Heart Flower Tree" loading="lazy" decoding="async" width="148" height="197">
             <div class="overlay"></div>
             <div class="info">
@@ -609,7 +618,7 @@ a { color: inherit; text-decoration: none; }
               <div class="info-title">Heart Flower Tree</div>
             </div>
           </a>
-          <a class="cone-card">
+          <a class="cone-card" href="#" data-full="/demo/creative/artworks/ornaments_34_digital.webp" data-cap="Tropical Abstract">
             <img src="/demo/creative/artworks/ornaments_34_digital.webp" alt="Tropical Abstract" loading="lazy" decoding="async" width="148" height="197">
             <div class="overlay"></div>
             <div class="info">
@@ -617,7 +626,7 @@ a { color: inherit; text-decoration: none; }
               <div class="info-title">Tropical Abstract</div>
             </div>
           </a>
-          <a class="cone-card">
+          <a class="cone-card" href="#" data-full="/demo/creative/artworks/ornaments_35_digital.webp" data-cap="Celestial Flower">
             <img src="/demo/creative/artworks/ornaments_35_digital.webp" alt="Celestial Flower" loading="lazy" decoding="async" width="148" height="197">
             <div class="overlay"></div>
             <div class="info">
@@ -625,7 +634,7 @@ a { color: inherit; text-decoration: none; }
               <div class="info-title">Celestial Flower</div>
             </div>
           </a>
-          <a class="cone-card">
+          <a class="cone-card" href="#" data-full="/demo/creative/artworks/ornaments_36_digital.webp" data-cap="Diamond Burst">
             <img src="/demo/creative/artworks/ornaments_36_digital.webp" alt="Diamond Burst" loading="lazy" decoding="async" width="148" height="197">
             <div class="overlay"></div>
             <div class="info">
@@ -633,7 +642,7 @@ a { color: inherit; text-decoration: none; }
               <div class="info-title">Diamond Burst</div>
             </div>
           </a>
-          <a class="cone-card">
+          <a class="cone-card" href="#" data-full="/demo/creative/artworks/ornaments_37_digital.webp" data-cap="Pink Abstract Garden">
             <img src="/demo/creative/artworks/ornaments_37_digital.webp" alt="Pink Abstract Garden" loading="lazy" decoding="async" width="148" height="197">
             <div class="overlay"></div>
             <div class="info">
@@ -641,7 +650,7 @@ a { color: inherit; text-decoration: none; }
               <div class="info-title">Pink Abstract Garden</div>
             </div>
           </a>
-          <a class="cone-card">
+          <a class="cone-card" href="#" data-full="/demo/creative/artworks/ornaments_38_digital.webp" data-cap="Geometric Explosion">
             <img src="/demo/creative/artworks/ornaments_38_digital.webp" alt="Geometric Explosion" loading="lazy" decoding="async" width="148" height="197">
             <div class="overlay"></div>
             <div class="info">
@@ -649,7 +658,7 @@ a { color: inherit; text-decoration: none; }
               <div class="info-title">Geometric Explosion</div>
             </div>
           </a>
-          <a class="cone-card">
+          <a class="cone-card" href="#" data-full="/demo/creative/artworks/ornaments_39_digital.webp" data-cap="Blue Cross Mandala">
             <img src="/demo/creative/artworks/ornaments_39_digital.webp" alt="Blue Cross Mandala" loading="lazy" decoding="async" width="148" height="197">
             <div class="overlay"></div>
             <div class="info">
@@ -657,7 +666,7 @@ a { color: inherit; text-decoration: none; }
               <div class="info-title">Blue Cross Mandala</div>
             </div>
           </a>
-          <a class="cone-card">
+          <a class="cone-card" href="#" data-full="/demo/creative/artworks/ornaments_40_digital.webp" data-cap="Purple Sunburst">
             <img src="/demo/creative/artworks/ornaments_40_digital.webp" alt="Purple Sunburst" loading="lazy" decoding="async" width="148" height="197">
             <div class="overlay"></div>
             <div class="info">
@@ -665,7 +674,7 @@ a { color: inherit; text-decoration: none; }
               <div class="info-title">Purple Sunburst</div>
             </div>
           </a>
-          <a class="cone-card">
+          <a class="cone-card" href="#" data-full="/demo/creative/artworks/ornaments_41_digital.webp" data-cap="Red Creature">
             <img src="/demo/creative/artworks/ornaments_41_digital.webp" alt="Red Creature" loading="lazy" decoding="async" width="148" height="197">
             <div class="overlay"></div>
             <div class="info">
@@ -673,7 +682,7 @@ a { color: inherit; text-decoration: none; }
               <div class="info-title">Red Creature</div>
             </div>
           </a>
-          <a class="cone-card">
+          <a class="cone-card" href="#" data-full="/demo/creative/artworks/ornaments_42_digital.webp" data-cap="Geometric Totem">
             <img src="/demo/creative/artworks/ornaments_42_digital.webp" alt="Geometric Totem" loading="lazy" decoding="async" width="148" height="197">
             <div class="overlay"></div>
             <div class="info">
@@ -681,7 +690,7 @@ a { color: inherit; text-decoration: none; }
               <div class="info-title">Geometric Totem</div>
             </div>
           </a>
-          <a class="cone-card">
+          <a class="cone-card" href="#" data-full="/demo/creative/artworks/ornaments_43_digital.webp" data-cap="Pattern Explosion">
             <img src="/demo/creative/artworks/ornaments_43_digital.webp" alt="Pattern Explosion" loading="lazy" decoding="async" width="148" height="197">
             <div class="overlay"></div>
             <div class="info">
@@ -689,7 +698,7 @@ a { color: inherit; text-decoration: none; }
               <div class="info-title">Pattern Explosion</div>
             </div>
           </a>
-          <a class="cone-card">
+          <a class="cone-card" href="#" data-full="/demo/creative/artworks/ornaments_44_digital.webp" data-cap="Geometric Windmill">
             <img src="/demo/creative/artworks/ornaments_44_digital.webp" alt="Geometric Windmill" loading="lazy" decoding="async" width="148" height="197">
             <div class="overlay"></div>
             <div class="info">
@@ -697,7 +706,7 @@ a { color: inherit; text-decoration: none; }
               <div class="info-title">Geometric Windmill</div>
             </div>
           </a>
-          <a class="cone-card">
+          <a class="cone-card" href="#" data-full="/demo/creative/artworks/ornaments_45_digital.webp" data-cap="The House">
             <img src="/demo/creative/artworks/ornaments_45_digital.webp" alt="The House" loading="lazy" decoding="async" width="148" height="197">
             <div class="overlay"></div>
             <div class="info">
@@ -705,7 +714,7 @@ a { color: inherit; text-decoration: none; }
               <div class="info-title">The House</div>
             </div>
           </a>
-          <a class="cone-card">
+          <a class="cone-card" href="#" data-full="/demo/creative/artworks/ornaments_46_digital.webp" data-cap="My Eye Brain Blooms">
             <img src="/demo/creative/artworks/ornaments_46_digital.webp" alt="My Eye Brain Blooms" loading="lazy" decoding="async" width="148" height="197">
             <div class="overlay"></div>
             <div class="info">
@@ -718,7 +727,7 @@ a { color: inherit; text-decoration: none; }
       <div class="cone-hint">Drag to explore</div>
     </div>
     <div class="cube-stack" id="cubeStack" aria-label="Selected works">
-      <div class="cube-hint">Tap a cube &middot; <a href="#gallery">see all 46 &rarr;</a></div>
+      <div class="cube-hint">Tap a piece to view</div>
     </div>
   </div>
 </section>
@@ -730,523 +739,6 @@ a { color: inherit; text-decoration: none; }
     <span>Intuitive Creation<span class="sep">//</span></span><span>Color Sense<span class="sep">//</span></span><span>Pattern Design<span class="sep">//</span></span><span>Composition<span class="sep">//</span></span><span>Emotional Range<span class="sep">//</span></span><span>Markers<span class="sep">//</span></span><span>Paper<span class="sep">//</span></span><span>Intuition<span class="sep">//</span></span><span>Heart<span class="sep">//</span></span><span>Eye<span class="sep">//</span></span><span>Brain<span class="sep">//</span></span><span>Love<span class="sep">//</span></span>
   </div>
 </div>
-
-<!-- Gallery grid -->
-<section class="section" id="gallery" style="background: var(--bg-alt);">
-  <div class="container">
-    <div class="sec-head"><span class="section-label">The Collection</span><span class="line"></span></div>
-    <h2 class="sec-title" style="margin-bottom: 8px;">Selected Work</h2>
-    <p class="mono" style="font-size:11px;text-transform:uppercase;letter-spacing:1.5px;color:var(--text-muted);margin-bottom:40px;">46 Projects</p>
-    <div class="gal-grid">
-      <a class="gal-card gal-zoom" href="#" data-full="/demo/creative/artworks/ornaments_1_digital.webp" data-cap="Purple Bouquet">
-        <div class="ph">
-          <img src="/demo/creative/artworks/ornaments_1_digital.webp" alt="Purple Bouquet" loading="lazy" decoding="async">
-        </div>
-        <div class="gal-ov">
-          <div class="cat">Floral Ornamental</div>
-          <div class="ttl">Purple Bouquet</div>
-        </div>
-        <span class="gal-corner gc-tl"></span><span class="gal-corner gc-tr"></span>
-        <span class="gal-corner gc-bl"></span><span class="gal-corner gc-br"></span>
-      </a>
-      <a class="gal-card gal-zoom" href="#" data-full="/demo/creative/artworks/ornaments_2_digital.webp" data-cap="Geometric Hearts">
-        <div class="ph">
-          <img src="/demo/creative/artworks/ornaments_2_digital.webp" alt="Geometric Hearts" loading="lazy" decoding="async">
-        </div>
-        <div class="gal-ov">
-          <div class="cat">Geometric Abstract</div>
-          <div class="ttl">Geometric Hearts</div>
-        </div>
-        <span class="gal-corner gc-tl"></span><span class="gal-corner gc-tr"></span>
-        <span class="gal-corner gc-bl"></span><span class="gal-corner gc-br"></span>
-      </a>
-      <a class="gal-card gal-zoom" href="#" data-full="/demo/creative/artworks/ornaments_3_digital.webp" data-cap="Cloud Garden">
-        <div class="ph">
-          <img src="/demo/creative/artworks/ornaments_3_digital.webp" alt="Cloud Garden" loading="lazy" decoding="async">
-        </div>
-        <div class="gal-ov">
-          <div class="cat">Floral Fantasy</div>
-          <div class="ttl">Cloud Garden</div>
-        </div>
-        <span class="gal-corner gc-tl"></span><span class="gal-corner gc-tr"></span>
-        <span class="gal-corner gc-bl"></span><span class="gal-corner gc-br"></span>
-      </a>
-      <a class="gal-card gal-zoom" href="#" data-full="/demo/creative/artworks/ornaments_4_digital.webp" data-cap="Golden Vessel">
-        <div class="ph">
-          <img src="/demo/creative/artworks/ornaments_4_digital.webp" alt="Golden Vessel" loading="lazy" decoding="async">
-        </div>
-        <div class="gal-ov">
-          <div class="cat">Art Nouveau</div>
-          <div class="ttl">Golden Vessel</div>
-        </div>
-        <span class="gal-corner gc-tl"></span><span class="gal-corner gc-tr"></span>
-        <span class="gal-corner gc-bl"></span><span class="gal-corner gc-br"></span>
-      </a>
-      <a class="gal-card gal-zoom" href="#" data-full="/demo/creative/artworks/ornaments_5_digital.webp" data-cap="Autumn Bouquet">
-        <div class="ph">
-          <img src="/demo/creative/artworks/ornaments_5_digital.webp" alt="Autumn Bouquet" loading="lazy" decoding="async">
-        </div>
-        <div class="gal-ov">
-          <div class="cat">Floral Ornamental</div>
-          <div class="ttl">Autumn Bouquet</div>
-        </div>
-        <span class="gal-corner gc-tl"></span><span class="gal-corner gc-tr"></span>
-        <span class="gal-corner gc-bl"></span><span class="gal-corner gc-br"></span>
-      </a>
-      <a class="gal-card gal-zoom" href="#" data-full="/demo/creative/artworks/ornaments_6_digital.webp" data-cap="City Maze">
-        <div class="ph">
-          <img src="/demo/creative/artworks/ornaments_6_digital.webp" alt="City Maze" loading="lazy" decoding="async">
-        </div>
-        <div class="gal-ov">
-          <div class="cat">Geometric Abstract</div>
-          <div class="ttl">City Maze</div>
-        </div>
-        <span class="gal-corner gc-tl"></span><span class="gal-corner gc-tr"></span>
-        <span class="gal-corner gc-bl"></span><span class="gal-corner gc-br"></span>
-      </a>
-      <a class="gal-card gal-zoom" href="#" data-full="/demo/creative/artworks/ornaments_7_digital.webp" data-cap="Purple Mandala">
-        <div class="ph">
-          <img src="/demo/creative/artworks/ornaments_7_digital.webp" alt="Purple Mandala" loading="lazy" decoding="async">
-        </div>
-        <div class="gal-ov">
-          <div class="cat">Mandala</div>
-          <div class="ttl">Purple Mandala</div>
-        </div>
-        <span class="gal-corner gc-tl"></span><span class="gal-corner gc-tr"></span>
-        <span class="gal-corner gc-bl"></span><span class="gal-corner gc-br"></span>
-      </a>
-      <a class="gal-card gal-zoom" href="#" data-full="/demo/creative/artworks/ornaments_8_digital.webp" data-cap="Cosmic Spiral">
-        <div class="ph">
-          <img src="/demo/creative/artworks/ornaments_8_digital.webp" alt="Cosmic Spiral" loading="lazy" decoding="async">
-        </div>
-        <div class="gal-ov">
-          <div class="cat">Character Fantasy</div>
-          <div class="ttl">Cosmic Spiral</div>
-        </div>
-        <span class="gal-corner gc-tl"></span><span class="gal-corner gc-tr"></span>
-        <span class="gal-corner gc-bl"></span><span class="gal-corner gc-br"></span>
-      </a>
-      <a class="gal-card gal-zoom" href="#" data-full="/demo/creative/artworks/ornaments_9_digital.webp" data-cap="Red Construct">
-        <div class="ph">
-          <img src="/demo/creative/artworks/ornaments_9_digital.webp" alt="Red Construct" loading="lazy" decoding="async">
-        </div>
-        <div class="gal-ov">
-          <div class="cat">Geometric Abstract</div>
-          <div class="ttl">Red Construct</div>
-        </div>
-        <span class="gal-corner gc-tl"></span><span class="gal-corner gc-tr"></span>
-        <span class="gal-corner gc-bl"></span><span class="gal-corner gc-br"></span>
-      </a>
-      <a class="gal-card gal-zoom" href="#" data-full="/demo/creative/artworks/ornaments_10_digital.webp" data-cap="Fruit Bowl">
-        <div class="ph">
-          <img src="/demo/creative/artworks/ornaments_10_digital.webp" alt="Fruit Bowl" loading="lazy" decoding="async">
-        </div>
-        <div class="gal-ov">
-          <div class="cat">Pop Floral</div>
-          <div class="ttl">Fruit Bowl</div>
-        </div>
-        <span class="gal-corner gc-tl"></span><span class="gal-corner gc-tr"></span>
-        <span class="gal-corner gc-bl"></span><span class="gal-corner gc-br"></span>
-      </a>
-      <a class="gal-card gal-zoom" href="#" data-full="/demo/creative/artworks/ornaments_11_digital.webp" data-cap="Blue Dreamer">
-        <div class="ph">
-          <img src="/demo/creative/artworks/ornaments_11_digital.webp" alt="Blue Dreamer" loading="lazy" decoding="async">
-        </div>
-        <div class="gal-ov">
-          <div class="cat">Character Fantasy</div>
-          <div class="ttl">Blue Dreamer</div>
-        </div>
-        <span class="gal-corner gc-tl"></span><span class="gal-corner gc-tr"></span>
-        <span class="gal-corner gc-bl"></span><span class="gal-corner gc-br"></span>
-      </a>
-      <a class="gal-card gal-zoom" href="#" data-full="/demo/creative/artworks/ornaments_12_digital.webp" data-cap="Star Flower">
-        <div class="ph">
-          <img src="/demo/creative/artworks/ornaments_12_digital.webp" alt="Star Flower" loading="lazy" decoding="async">
-        </div>
-        <div class="gal-ov">
-          <div class="cat">Bold Floral</div>
-          <div class="ttl">Star Flower</div>
-        </div>
-        <span class="gal-corner gc-tl"></span><span class="gal-corner gc-tr"></span>
-        <span class="gal-corner gc-bl"></span><span class="gal-corner gc-br"></span>
-      </a>
-      <a class="gal-card gal-zoom" href="#" data-full="/demo/creative/artworks/ornaments_13_digital.webp" data-cap="Love Tree">
-        <div class="ph">
-          <img src="/demo/creative/artworks/ornaments_13_digital.webp" alt="Love Tree" loading="lazy" decoding="async">
-        </div>
-        <div class="gal-ov">
-          <div class="cat">Tree of Life</div>
-          <div class="ttl">Love Tree</div>
-        </div>
-        <span class="gal-corner gc-tl"></span><span class="gal-corner gc-tr"></span>
-        <span class="gal-corner gc-bl"></span><span class="gal-corner gc-br"></span>
-      </a>
-      <a class="gal-card gal-zoom" href="#" data-full="/demo/creative/artworks/ornaments_14_digital.webp" data-cap="Framed Bloom">
-        <div class="ph">
-          <img src="/demo/creative/artworks/ornaments_14_digital.webp" alt="Framed Bloom" loading="lazy" decoding="async">
-        </div>
-        <div class="gal-ov">
-          <div class="cat">Folk Art</div>
-          <div class="ttl">Framed Bloom</div>
-        </div>
-        <span class="gal-corner gc-tl"></span><span class="gal-corner gc-tr"></span>
-        <span class="gal-corner gc-bl"></span><span class="gal-corner gc-br"></span>
-      </a>
-      <a class="gal-card gal-zoom" href="#" data-full="/demo/creative/artworks/ornaments_15_digital.webp" data-cap="Lotus Reflection">
-        <div class="ph">
-          <img src="/demo/creative/artworks/ornaments_15_digital.webp" alt="Lotus Reflection" loading="lazy" decoding="async">
-        </div>
-        <div class="gal-ov">
-          <div class="cat">Serene Floral</div>
-          <div class="ttl">Lotus Reflection</div>
-        </div>
-        <span class="gal-corner gc-tl"></span><span class="gal-corner gc-tr"></span>
-        <span class="gal-corner gc-bl"></span><span class="gal-corner gc-br"></span>
-      </a>
-      <a class="gal-card gal-zoom" href="#" data-full="/demo/creative/artworks/ornaments_16_digital.webp" data-cap="Silver Garden">
-        <div class="ph">
-          <img src="/demo/creative/artworks/ornaments_16_digital.webp" alt="Silver Garden" loading="lazy" decoding="async">
-        </div>
-        <div class="gal-ov">
-          <div class="cat">Architectural</div>
-          <div class="ttl">Silver Garden</div>
-        </div>
-        <span class="gal-corner gc-tl"></span><span class="gal-corner gc-tr"></span>
-        <span class="gal-corner gc-bl"></span><span class="gal-corner gc-br"></span>
-      </a>
-      <a class="gal-card gal-zoom" href="#" data-full="/demo/creative/artworks/ornaments_17_digital.webp" data-cap="Crystal Beacon">
-        <div class="ph">
-          <img src="/demo/creative/artworks/ornaments_17_digital.webp" alt="Crystal Beacon" loading="lazy" decoding="async">
-        </div>
-        <div class="gal-ov">
-          <div class="cat">Geometric Ornamental</div>
-          <div class="ttl">Crystal Beacon</div>
-        </div>
-        <span class="gal-corner gc-tl"></span><span class="gal-corner gc-tr"></span>
-        <span class="gal-corner gc-bl"></span><span class="gal-corner gc-br"></span>
-      </a>
-      <a class="gal-card gal-zoom" href="#" data-full="/demo/creative/artworks/ornaments_18_digital.webp" data-cap="Desert Sun">
-        <div class="ph">
-          <img src="/demo/creative/artworks/ornaments_18_digital.webp" alt="Desert Sun" loading="lazy" decoding="async">
-        </div>
-        <div class="gal-ov">
-          <div class="cat">Symbolic Landscape</div>
-          <div class="ttl">Desert Sun</div>
-        </div>
-        <span class="gal-corner gc-tl"></span><span class="gal-corner gc-tr"></span>
-        <span class="gal-corner gc-bl"></span><span class="gal-corner gc-br"></span>
-      </a>
-      <a class="gal-card gal-zoom" href="#" data-full="/demo/creative/artworks/ornaments_19_digital.webp" data-cap="Sun Totem">
-        <div class="ph">
-          <img src="/demo/creative/artworks/ornaments_19_digital.webp" alt="Sun Totem" loading="lazy" decoding="async">
-        </div>
-        <div class="gal-ov">
-          <div class="cat">Totemic</div>
-          <div class="ttl">Sun Totem</div>
-        </div>
-        <span class="gal-corner gc-tl"></span><span class="gal-corner gc-tr"></span>
-        <span class="gal-corner gc-bl"></span><span class="gal-corner gc-br"></span>
-      </a>
-      <a class="gal-card gal-zoom" href="#" data-full="/demo/creative/artworks/ornaments_20_digital.webp" data-cap="Pastel Cloud">
-        <div class="ph">
-          <img src="/demo/creative/artworks/ornaments_20_digital.webp" alt="Pastel Cloud" loading="lazy" decoding="async">
-        </div>
-        <div class="gal-ov">
-          <div class="cat">Soft Floral</div>
-          <div class="ttl">Pastel Cloud</div>
-        </div>
-        <span class="gal-corner gc-tl"></span><span class="gal-corner gc-tr"></span>
-        <span class="gal-corner gc-bl"></span><span class="gal-corner gc-br"></span>
-      </a>
-      <a class="gal-card gal-zoom" href="#" data-full="/demo/creative/artworks/ornaments_21_digital.webp" data-cap="Heart Clown">
-        <div class="ph">
-          <img src="/demo/creative/artworks/ornaments_21_digital.webp" alt="Heart Clown" loading="lazy" decoding="async">
-        </div>
-        <div class="gal-ov">
-          <div class="cat">Character Fantasy</div>
-          <div class="ttl">Heart Clown</div>
-        </div>
-        <span class="gal-corner gc-tl"></span><span class="gal-corner gc-tr"></span>
-        <span class="gal-corner gc-bl"></span><span class="gal-corner gc-br"></span>
-      </a>
-      <a class="gal-card gal-zoom" href="#" data-full="/demo/creative/artworks/ornaments_22_digital.webp" data-cap="Rainbow Arch">
-        <div class="ph">
-          <img src="/demo/creative/artworks/ornaments_22_digital.webp" alt="Rainbow Arch" loading="lazy" decoding="async">
-        </div>
-        <div class="gal-ov">
-          <div class="cat">Geometric Nature</div>
-          <div class="ttl">Rainbow Arch</div>
-        </div>
-        <span class="gal-corner gc-tl"></span><span class="gal-corner gc-tr"></span>
-        <span class="gal-corner gc-bl"></span><span class="gal-corner gc-br"></span>
-      </a>
-      <a class="gal-card gal-zoom" href="#" data-full="/demo/creative/artworks/ornaments_23_digital.webp" data-cap="Ocean Stars">
-        <div class="ph">
-          <img src="/demo/creative/artworks/ornaments_23_digital.webp" alt="Ocean Stars" loading="lazy" decoding="async">
-        </div>
-        <div class="gal-ov">
-          <div class="cat">Marine Ornamental</div>
-          <div class="ttl">Ocean Stars</div>
-        </div>
-        <span class="gal-corner gc-tl"></span><span class="gal-corner gc-tr"></span>
-        <span class="gal-corner gc-bl"></span><span class="gal-corner gc-br"></span>
-      </a>
-      <a class="gal-card gal-zoom" href="#" data-full="/demo/creative/artworks/ornaments_24_digital.webp" data-cap="Geometric Butterflies">
-        <div class="ph">
-          <img src="/demo/creative/artworks/ornaments_24_digital.webp" alt="Geometric Butterflies" loading="lazy" decoding="async">
-        </div>
-        <div class="gal-ov">
-          <div class="cat">Nature Geometry</div>
-          <div class="ttl">Geometric Butterflies</div>
-        </div>
-        <span class="gal-corner gc-tl"></span><span class="gal-corner gc-tr"></span>
-        <span class="gal-corner gc-bl"></span><span class="gal-corner gc-br"></span>
-      </a>
-      <a class="gal-card gal-zoom" href="#" data-full="/demo/creative/artworks/ornaments_25_digital.webp" data-cap="Caterpillar Dream">
-        <div class="ph">
-          <img src="/demo/creative/artworks/ornaments_25_digital.webp" alt="Caterpillar Dream" loading="lazy" decoding="async">
-        </div>
-        <div class="gal-ov">
-          <div class="cat">Fantasy Ornamental</div>
-          <div class="ttl">Caterpillar Dream</div>
-        </div>
-        <span class="gal-corner gc-tl"></span><span class="gal-corner gc-tr"></span>
-        <span class="gal-corner gc-bl"></span><span class="gal-corner gc-br"></span>
-      </a>
-      <a class="gal-card gal-zoom" href="#" data-full="/demo/creative/artworks/ornaments_26_digital.webp" data-cap="Horned Heart">
-        <div class="ph">
-          <img src="/demo/creative/artworks/ornaments_26_digital.webp" alt="Horned Heart" loading="lazy" decoding="async">
-        </div>
-        <div class="gal-ov">
-          <div class="cat">Creature Fantasy</div>
-          <div class="ttl">Horned Heart</div>
-        </div>
-        <span class="gal-corner gc-tl"></span><span class="gal-corner gc-tr"></span>
-        <span class="gal-corner gc-bl"></span><span class="gal-corner gc-br"></span>
-      </a>
-      <a class="gal-card gal-zoom" href="#" data-full="/demo/creative/artworks/ornaments_27_digital.webp" data-cap="Golden Mandala">
-        <div class="ph">
-          <img src="/demo/creative/artworks/ornaments_27_digital.webp" alt="Golden Mandala" loading="lazy" decoding="async">
-        </div>
-        <div class="gal-ov">
-          <div class="cat">Mandala</div>
-          <div class="ttl">Golden Mandala</div>
-        </div>
-        <span class="gal-corner gc-tl"></span><span class="gal-corner gc-tr"></span>
-        <span class="gal-corner gc-bl"></span><span class="gal-corner gc-br"></span>
-      </a>
-      <a class="gal-card gal-zoom" href="#" data-full="/demo/creative/artworks/ornaments_28_digital.webp" data-cap="Electric Flower">
-        <div class="ph">
-          <img src="/demo/creative/artworks/ornaments_28_digital.webp" alt="Electric Flower" loading="lazy" decoding="async">
-        </div>
-        <div class="gal-ov">
-          <div class="cat">Pop Floral</div>
-          <div class="ttl">Electric Flower</div>
-        </div>
-        <span class="gal-corner gc-tl"></span><span class="gal-corner gc-tr"></span>
-        <span class="gal-corner gc-bl"></span><span class="gal-corner gc-br"></span>
-      </a>
-      <a class="gal-card gal-zoom" href="#" data-full="/demo/creative/artworks/ornaments_29_digital.webp" data-cap="Heart Burst">
-        <div class="ph">
-          <img src="/demo/creative/artworks/ornaments_29_digital.webp" alt="Heart Burst" loading="lazy" decoding="async">
-        </div>
-        <div class="gal-ov">
-          <div class="cat">Heart Motif</div>
-          <div class="ttl">Heart Burst</div>
-        </div>
-        <span class="gal-corner gc-tl"></span><span class="gal-corner gc-tr"></span>
-        <span class="gal-corner gc-bl"></span><span class="gal-corner gc-br"></span>
-      </a>
-      <a class="gal-card gal-zoom" href="#" data-full="/demo/creative/artworks/ornaments_30_digital.webp" data-cap="Geometric Still Life">
-        <div class="ph">
-          <img src="/demo/creative/artworks/ornaments_30_digital.webp" alt="Geometric Still Life" loading="lazy" decoding="async">
-        </div>
-        <div class="gal-ov">
-          <div class="cat">Abstract Still Life</div>
-          <div class="ttl">Geometric Still Life</div>
-        </div>
-        <span class="gal-corner gc-tl"></span><span class="gal-corner gc-tr"></span>
-        <span class="gal-corner gc-bl"></span><span class="gal-corner gc-br"></span>
-      </a>
-      <a class="gal-card gal-zoom" href="#" data-full="/demo/creative/artworks/ornaments_31_digital.webp" data-cap="Tropical Bouquet">
-        <div class="ph">
-          <img src="/demo/creative/artworks/ornaments_31_digital.webp" alt="Tropical Bouquet" loading="lazy" decoding="async">
-        </div>
-        <div class="gal-ov">
-          <div class="cat">Tropical Floral</div>
-          <div class="ttl">Tropical Bouquet</div>
-        </div>
-        <span class="gal-corner gc-tl"></span><span class="gal-corner gc-tr"></span>
-        <span class="gal-corner gc-bl"></span><span class="gal-corner gc-br"></span>
-      </a>
-      <a class="gal-card gal-zoom" href="#" data-full="/demo/creative/artworks/ornaments_32_digital.webp" data-cap="Patterned Butterfly">
-        <div class="ph">
-          <img src="/demo/creative/artworks/ornaments_32_digital.webp" alt="Patterned Butterfly" loading="lazy" decoding="async">
-        </div>
-        <div class="gal-ov">
-          <div class="cat">Butterfly Art</div>
-          <div class="ttl">Patterned Butterfly</div>
-        </div>
-        <span class="gal-corner gc-tl"></span><span class="gal-corner gc-tr"></span>
-        <span class="gal-corner gc-bl"></span><span class="gal-corner gc-br"></span>
-      </a>
-      <a class="gal-card gal-zoom" href="#" data-full="/demo/creative/artworks/ornaments_33_digital.webp" data-cap="Heart Flower Tree">
-        <div class="ph">
-          <img src="/demo/creative/artworks/ornaments_33_digital.webp" alt="Heart Flower Tree" loading="lazy" decoding="async">
-        </div>
-        <div class="gal-ov">
-          <div class="cat">Heart Motif</div>
-          <div class="ttl">Heart Flower Tree</div>
-        </div>
-        <span class="gal-corner gc-tl"></span><span class="gal-corner gc-tr"></span>
-        <span class="gal-corner gc-bl"></span><span class="gal-corner gc-br"></span>
-      </a>
-      <a class="gal-card gal-zoom" href="#" data-full="/demo/creative/artworks/ornaments_34_digital.webp" data-cap="Tropical Abstract">
-        <div class="ph">
-          <img src="/demo/creative/artworks/ornaments_34_digital.webp" alt="Tropical Abstract" loading="lazy" decoding="async">
-        </div>
-        <div class="gal-ov">
-          <div class="cat">Tropical Abstract</div>
-          <div class="ttl">Tropical Abstract</div>
-        </div>
-        <span class="gal-corner gc-tl"></span><span class="gal-corner gc-tr"></span>
-        <span class="gal-corner gc-bl"></span><span class="gal-corner gc-br"></span>
-      </a>
-      <a class="gal-card gal-zoom" href="#" data-full="/demo/creative/artworks/ornaments_35_digital.webp" data-cap="Celestial Flower">
-        <div class="ph">
-          <img src="/demo/creative/artworks/ornaments_35_digital.webp" alt="Celestial Flower" loading="lazy" decoding="async">
-        </div>
-        <div class="gal-ov">
-          <div class="cat">Celestial Ornamental</div>
-          <div class="ttl">Celestial Flower</div>
-        </div>
-        <span class="gal-corner gc-tl"></span><span class="gal-corner gc-tr"></span>
-        <span class="gal-corner gc-bl"></span><span class="gal-corner gc-br"></span>
-      </a>
-      <a class="gal-card gal-zoom" href="#" data-full="/demo/creative/artworks/ornaments_36_digital.webp" data-cap="Diamond Burst">
-        <div class="ph">
-          <img src="/demo/creative/artworks/ornaments_36_digital.webp" alt="Diamond Burst" loading="lazy" decoding="async">
-        </div>
-        <div class="gal-ov">
-          <div class="cat">Psychedelic Geometric</div>
-          <div class="ttl">Diamond Burst</div>
-        </div>
-        <span class="gal-corner gc-tl"></span><span class="gal-corner gc-tr"></span>
-        <span class="gal-corner gc-bl"></span><span class="gal-corner gc-br"></span>
-      </a>
-      <a class="gal-card gal-zoom" href="#" data-full="/demo/creative/artworks/ornaments_37_digital.webp" data-cap="Pink Abstract Garden">
-        <div class="ph">
-          <img src="/demo/creative/artworks/ornaments_37_digital.webp" alt="Pink Abstract Garden" loading="lazy" decoding="async">
-        </div>
-        <div class="gal-ov">
-          <div class="cat">Abstract Floral</div>
-          <div class="ttl">Pink Abstract Garden</div>
-        </div>
-        <span class="gal-corner gc-tl"></span><span class="gal-corner gc-tr"></span>
-        <span class="gal-corner gc-bl"></span><span class="gal-corner gc-br"></span>
-      </a>
-      <a class="gal-card gal-zoom" href="#" data-full="/demo/creative/artworks/ornaments_38_digital.webp" data-cap="Geometric Explosion">
-        <div class="ph">
-          <img src="/demo/creative/artworks/ornaments_38_digital.webp" alt="Geometric Explosion" loading="lazy" decoding="async">
-        </div>
-        <div class="gal-ov">
-          <div class="cat">Abstract Geometric</div>
-          <div class="ttl">Geometric Explosion</div>
-        </div>
-        <span class="gal-corner gc-tl"></span><span class="gal-corner gc-tr"></span>
-        <span class="gal-corner gc-bl"></span><span class="gal-corner gc-br"></span>
-      </a>
-      <a class="gal-card gal-zoom" href="#" data-full="/demo/creative/artworks/ornaments_39_digital.webp" data-cap="Blue Cross Mandala">
-        <div class="ph">
-          <img src="/demo/creative/artworks/ornaments_39_digital.webp" alt="Blue Cross Mandala" loading="lazy" decoding="async">
-        </div>
-        <div class="gal-ov">
-          <div class="cat">Mandala</div>
-          <div class="ttl">Blue Cross Mandala</div>
-        </div>
-        <span class="gal-corner gc-tl"></span><span class="gal-corner gc-tr"></span>
-        <span class="gal-corner gc-bl"></span><span class="gal-corner gc-br"></span>
-      </a>
-      <a class="gal-card gal-zoom" href="#" data-full="/demo/creative/artworks/ornaments_40_digital.webp" data-cap="Purple Sunburst">
-        <div class="ph">
-          <img src="/demo/creative/artworks/ornaments_40_digital.webp" alt="Purple Sunburst" loading="lazy" decoding="async">
-        </div>
-        <div class="gal-ov">
-          <div class="cat">Radial Abstract</div>
-          <div class="ttl">Purple Sunburst</div>
-        </div>
-        <span class="gal-corner gc-tl"></span><span class="gal-corner gc-tr"></span>
-        <span class="gal-corner gc-bl"></span><span class="gal-corner gc-br"></span>
-      </a>
-      <a class="gal-card gal-zoom" href="#" data-full="/demo/creative/artworks/ornaments_41_digital.webp" data-cap="Red Creature">
-        <div class="ph">
-          <img src="/demo/creative/artworks/ornaments_41_digital.webp" alt="Red Creature" loading="lazy" decoding="async">
-        </div>
-        <div class="gal-ov">
-          <div class="cat">Creature Fantasy</div>
-          <div class="ttl">Red Creature</div>
-        </div>
-        <span class="gal-corner gc-tl"></span><span class="gal-corner gc-tr"></span>
-        <span class="gal-corner gc-bl"></span><span class="gal-corner gc-br"></span>
-      </a>
-      <a class="gal-card gal-zoom" href="#" data-full="/demo/creative/artworks/ornaments_42_digital.webp" data-cap="Geometric Totem">
-        <div class="ph">
-          <img src="/demo/creative/artworks/ornaments_42_digital.webp" alt="Geometric Totem" loading="lazy" decoding="async">
-        </div>
-        <div class="gal-ov">
-          <div class="cat">Totemic Geometric</div>
-          <div class="ttl">Geometric Totem</div>
-        </div>
-        <span class="gal-corner gc-tl"></span><span class="gal-corner gc-tr"></span>
-        <span class="gal-corner gc-bl"></span><span class="gal-corner gc-br"></span>
-      </a>
-      <a class="gal-card gal-zoom" href="#" data-full="/demo/creative/artworks/ornaments_43_digital.webp" data-cap="Pattern Explosion">
-        <div class="ph">
-          <img src="/demo/creative/artworks/ornaments_43_digital.webp" alt="Pattern Explosion" loading="lazy" decoding="async">
-        </div>
-        <div class="gal-ov">
-          <div class="cat">Maximalist Pattern</div>
-          <div class="ttl">Pattern Explosion</div>
-        </div>
-        <span class="gal-corner gc-tl"></span><span class="gal-corner gc-tr"></span>
-        <span class="gal-corner gc-bl"></span><span class="gal-corner gc-br"></span>
-      </a>
-      <a class="gal-card gal-zoom" href="#" data-full="/demo/creative/artworks/ornaments_44_digital.webp" data-cap="Geometric Windmill">
-        <div class="ph">
-          <img src="/demo/creative/artworks/ornaments_44_digital.webp" alt="Geometric Windmill" loading="lazy" decoding="async">
-        </div>
-        <div class="gal-ov">
-          <div class="cat">Architectural Abstract</div>
-          <div class="ttl">Geometric Windmill</div>
-        </div>
-        <span class="gal-corner gc-tl"></span><span class="gal-corner gc-tr"></span>
-        <span class="gal-corner gc-bl"></span><span class="gal-corner gc-br"></span>
-      </a>
-      <a class="gal-card gal-zoom" href="#" data-full="/demo/creative/artworks/ornaments_45_digital.webp" data-cap="The House">
-        <div class="ph">
-          <img src="/demo/creative/artworks/ornaments_45_digital.webp" alt="The House" loading="lazy" decoding="async">
-        </div>
-        <div class="gal-ov">
-          <div class="cat">Narrative Abstract</div>
-          <div class="ttl">The House</div>
-        </div>
-        <span class="gal-corner gc-tl"></span><span class="gal-corner gc-tr"></span>
-        <span class="gal-corner gc-bl"></span><span class="gal-corner gc-br"></span>
-      </a>
-      <a class="gal-card gal-zoom" href="#" data-full="/demo/creative/artworks/ornaments_46_digital.webp" data-cap="My Eye Brain Blooms">
-        <div class="ph">
-          <img src="/demo/creative/artworks/ornaments_46_digital.webp" alt="My Eye Brain Blooms" loading="lazy" decoding="async">
-        </div>
-        <div class="gal-ov">
-          <div class="cat">Radial Mandala</div>
-          <div class="ttl">My Eye Brain Blooms</div>
-        </div>
-        <span class="gal-corner gc-tl"></span><span class="gal-corner gc-tr"></span>
-        <span class="gal-corner gc-bl"></span><span class="gal-corner gc-br"></span>
-      </a>
-    </div>
-  </div>
-</section>
 
 <!-- Skills -->
 <section class="section" id="skills">
@@ -1280,7 +772,7 @@ a { color: inherit; text-decoration: none; }
 <section class="section" id="contact">
   <div class="container">
     <h2 class="sec-title" style="margin-bottom: 12px;">Let's create something together</h2>
-    <p class="mono" style="font-size:11px;text-transform:uppercase;letter-spacing:1.5px;color:var(--accent);margin-bottom:48px;">Open for work</p>
+    <p class="mono" style="font-size:11px;text-transform:uppercase;letter-spacing:1.5px;color:var(--sand);margin-bottom:48px;">Open for work</p>
     <div class="contact-grid">
       <div><p class="lbl">Email</p><a href="mailto:dalal@myeyebrain.art">dalal@myeyebrain.art</a></div>
       <div><p class="lbl">Phone</p><a href="tel:+965 1234 5678">+965 1234 5678</a></div>
@@ -1328,12 +820,19 @@ a { color: inherit; text-decoration: none; }
       var title = (titleEl ? titleEl.textContent : (img ? img.alt : '')) || '';
       var nImg = picks[(i + 1) % picks.length].querySelector('img');
       var side = nImg ? (nImg.getAttribute('src') || nImg.src) : src;
-      var href = card.getAttribute('href') || '#gallery';
+      var df = card.getAttribute('data-full');
       var esc = title.replace(/"/g, '&quot;');
       var cube = document.createElement('a');
       cube.className = 'cube';
-      cube.href = href;
-      if (card.target) cube.target = card.target;
+      if (df) {
+        // image-only artwork: open in the lightbox (no detail page)
+        cube.href = '#'; cube.setAttribute('data-full', df);
+        cube.setAttribute('data-cap', card.getAttribute('data-cap') || title);
+      } else {
+        // real project: go to its own page
+        cube.href = card.getAttribute('href') || '#work';
+        if (card.target) cube.target = card.target;
+      }
       cube.style.setProperty('--cx', s[0] + 'px');
       cube.style.setProperty('--cy', s[1] + 'px');
       cube.style.zIndex = s[2];
@@ -1413,7 +912,7 @@ a { color: inherit; text-decoration: none; }
   wrap.addEventListener('pointerup', endDrag);
   wrap.addEventListener('pointerleave', endDrag);
   cards.forEach(function (card) {
-    card.addEventListener('click', function (e) { if (hasDragged) { e.preventDefault(); } });
+    card.addEventListener('click', function (e) { if (hasDragged) { e.preventDefault(); e.stopImmediatePropagation(); } });
   });
 })();
 </script>
@@ -1434,7 +933,7 @@ a { color: inherit; text-decoration: none; }
 <script>
 (function () {
   var lb = document.getElementById('galLb');
-  var triggers = Array.prototype.slice.call(document.querySelectorAll('.gal-zoom'));
+  var triggers = Array.prototype.slice.call(document.querySelectorAll('[data-full]'));
   if (!lb || !triggers.length) return;
   var img = document.getElementById('galImg'), stage = document.getElementById('galStage');
   var pct = document.getElementById('galPct'), cap = document.getElementById('galCap');

@@ -42,7 +42,8 @@
   --border: #D8C7AE;        /* sand-tinted hairline */
   --accent: {{safeColor customization.accentColor "#B86F52"}};  /* Cinnamon Wood — actions/labels */
   --accent-dim: rgba(184,111,82,.14);
-  --link: #496AB1;          /* Blue Slate — structure, nav, links */
+  --link: #496AB1;          /* Blue Slate — headings, structure, nav, links */
+  --blue-band: #3A5489;     /* deep Blue Slate — inverted bands (contact/footer) */
   --font-head: 'Geist', system-ui, sans-serif;
   --font-mono: 'Geist Mono', ui-monospace, monospace;
 }
@@ -67,12 +68,12 @@ a { color: inherit; text-decoration: none; }
   background: rgba(239,238,234,0.82); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
   border-bottom: 1px solid var(--border);
 }
-.nav-brand { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; transition: color .25s; }
-.nav-brand:hover { color: var(--link); }
+.nav-brand { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: var(--link); transition: color .25s; }
+.nav-brand:hover { color: var(--accent); }
 .nav-links { display: flex; align-items: center; gap: 24px; }
 .nav-link { font-family: var(--font-mono); font-size: 12px; text-transform: uppercase; letter-spacing: 1px; color: var(--text-dim); transition: color .25s; }
 .nav-link:hover { color: var(--link); }
-.nav-link .bk { color: var(--text-muted); }
+.nav-link .bk { color: var(--link); }
 .nav-toggle { display: none; }
 @media (max-width: 768px) {
   .nav-toggle { display: flex; flex-direction: column; justify-content: center; gap: 5px; width: 40px; height: 40px; padding: 0; background: none; border: none; cursor: pointer; z-index: 60; }
@@ -117,7 +118,7 @@ a { color: inherit; text-decoration: none; }
 .hero-portrait .c-tr { top: 18px; right: 18px; border-top: 1px solid var(--link); border-right: 1px solid var(--link); }
 .hero-portrait .c-bl { bottom: 18px; left: 18px; border-bottom: 1px solid var(--link); border-left: 1px solid var(--link); }
 .hero-portrait .c-br { bottom: 18px; right: 18px; border-bottom: 1px solid var(--link); border-right: 1px solid var(--link); }
-.hero-name { font-size: clamp(40px, 6vw, 68px); font-weight: 800; text-transform: uppercase; letter-spacing: -0.04em; line-height: 1.05; margin-bottom: 12px; }
+.hero-name { font-size: clamp(40px, 6vw, 68px); font-weight: 800; text-transform: uppercase; letter-spacing: -0.04em; line-height: 1.05; margin-bottom: 12px; color: var(--link); }
 .hero-tag { font-family: var(--font-mono); font-size: 10px; text-transform: uppercase; letter-spacing: 1.5px; color: var(--accent); margin-bottom: 8px; }
 .hero-loc { font-family: var(--font-mono); font-size: 10px; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); margin-bottom: 20px; }
 .hero-bio { font-size: 13px; color: var(--text-dim); line-height: 1.7; max-width: 340px; margin-bottom: 28px; overflow-wrap: anywhere; }
@@ -215,7 +216,7 @@ a { color: inherit; text-decoration: none; }
 .container { max-width: 1200px; margin: 0 auto; }
 .sec-head { display: flex; align-items: center; gap: 16px; margin-bottom: 48px; }
 .sec-head .line { flex: 1; height: 1px; background: var(--border); }
-.sec-title { font-size: clamp(28px, 4vw, 44px); font-weight: 800; letter-spacing: -0.03em; }
+.sec-title { font-size: clamp(28px, 4vw, 44px); font-weight: 800; letter-spacing: -0.03em; color: var(--link); }
 
 /* ── Gallery grid ── */
 .gal-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
@@ -270,7 +271,15 @@ a { color: inherit; text-decoration: none; }
 
 /* ── Footer ── */
 .footer { padding: 40px 24px; border-top: 1px solid var(--border); text-align: center; font-family: var(--font-mono); font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); }
-.footer a:hover { color: var(--link); }
+.footer a:hover { color: var(--sand); }
+
+/* ── Blue Slate closing band (contact + footer) ── */
+#contact { background: var(--blue-band); color: #E7E9F0; }
+#contact .sec-title { color: #F2EFE8; }
+#contact .contact-grid a, #contact .contact-grid p { color: #E9EAF1; }
+#contact .contact-grid .lbl { color: var(--sand); }
+#contact .contact-grid a:hover { color: var(--sand); }
+.footer.footer { background: var(--blue-band); color: rgba(242,239,232,0.6); border-top-color: rgba(255,255,255,0.14); }
 
 /* ── Testimonials ── */
 .quotes-grid { display: grid; grid-template-columns: 1fr; gap: 20px; }
@@ -320,7 +329,7 @@ a { color: inherit; text-decoration: none; }
   <a href="#top" class="nav-brand">{{basics.fullName}}</a>
   <button class="nav-toggle" id="navToggle" aria-label="Open menu" aria-expanded="false" aria-controls="navLinks"><span></span><span></span><span></span></button>
   <nav class="nav-links" id="navLinks">
-    {{#if projects}}<a href="#gallery" class="nav-link"><span class="bk">[</span> Gallery <span class="bk">]</span></a>{{/if}}
+    {{#if projects}}<a href="#work" class="nav-link"><span class="bk">[</span> Gallery <span class="bk">]</span></a>{{/if}}
     {{#if skills}}<a href="#skills" class="nav-link"><span class="bk">[</span> Skills <span class="bk">]</span></a>{{/if}}
     {{#if certifications}}<a href="#awards" class="nav-link"><span class="bk">[</span> Awards <span class="bk">]</span></a>{{/if}}
     {{#if endorsements}}<a href="#testimonials" class="nav-link"><span class="bk">[</span> Words <span class="bk">]</span></a>{{/if}}
@@ -344,18 +353,18 @@ a { color: inherit; text-decoration: none; }
     {{#if basics.bio}}<p class="hero-bio">{{basics.bio}}</p>{{else}}{{#if basics.valueProposition}}<p class="hero-bio">{{basics.valueProposition}}</p>{{/if}}{{/if}}
     <div class="hero-actions">
       {{#if basics.email}}<a href="mailto:{{basics.email}}" class="cta">Get in Touch <span>&rarr;</span></a>{{/if}}
-      {{#if projects}}<a href="#gallery" class="cta cta-ghost">View Work <span>&rarr;</span></a>{{/if}}
+      {{#if projects}}<a href="#work" class="cta cta-ghost">View Work <span>&rarr;</span></a>{{/if}}
       {{#if basics.resumeUrl}}<a href="{{safeUrl basics.resumeUrl}}" target="_blank" rel="noopener" class="cta cta-ghost">Download CV <span>&darr;</span></a>{{/if}}
     </div>
   </div>
-  <div class="hero-right">
+  <div class="hero-right" id="work">
     {{#if projects}}
     <div class="cone-wrap" id="cone">
       <div class="cone-tilt" id="cone-tilt">
         <div class="cone-spin" id="cone-spin">
           {{#each projects}}
           {{#if this.coverUrl}}
-          <a class="cone-card"{{#if this.slug}} href="{{../portfolioUrl}}/projects/{{this.slug}}"{{else}}{{#if this.link}} href="{{safeUrl this.link}}" target="_blank" rel="noopener"{{/if}}{{/if}}>
+          <a class="cone-card"{{#if this.slug}} href="{{../portfolioUrl}}/projects/{{this.slug}}"{{else}}{{#if this.link}} href="{{safeUrl this.link}}" target="_blank" rel="noopener"{{else}} href="#" data-full="{{safeUrl this.coverUrl}}" data-cap="{{this.title}}"{{/if}}{{/if}}>
             <img src="{{safeUrl this.coverUrl}}" alt="{{this.title}}" loading="lazy" decoding="async" width="148" height="197">
             <div class="overlay"></div>
             <div class="info">
@@ -370,7 +379,7 @@ a { color: inherit; text-decoration: none; }
       <div class="cone-hint">Drag to explore</div>
     </div>
     <div class="cube-stack" id="cubeStack" aria-label="Selected works">
-      <div class="cube-hint">Tap a cube &middot; <a href="#gallery">see all {{projects.length}} &rarr;</a></div>
+      <div class="cube-hint">Tap a piece to view</div>
     </div>
     {{/if}}
   </div>
@@ -384,36 +393,6 @@ a { color: inherit; text-decoration: none; }
     {{#each skills}}{{#each this.items}}<span>{{this}}<span class="sep">//</span></span>{{/each}}{{/each}}
   </div>
 </div>
-{{/if}}
-
-{{#if projects}}
-{{#unless (isHidden "portfolio-showcase")}}
-<!-- Gallery grid -->
-<section class="section" id="gallery" style="background: var(--bg-alt);">
-  <div class="container">
-    <div class="sec-head"><span class="section-label">The Collection</span><span class="line"></span></div>
-    <h2 class="sec-title" style="margin-bottom: 8px;">Selected Work</h2>
-    <p class="mono" style="font-size:11px;text-transform:uppercase;letter-spacing:1.5px;color:var(--text-muted);margin-bottom:40px;">{{projects.length}} Projects</p>
-    <div class="gal-grid">
-      {{#each projects}}
-      {{#if this.coverUrl}}
-      <a class="gal-card{{#unless this.slug}}{{#unless this.link}} gal-zoom{{/unless}}{{/unless}}"{{#if this.slug}} href="{{../portfolioUrl}}/projects/{{this.slug}}"{{else}}{{#if this.link}} href="{{safeUrl this.link}}" target="_blank" rel="noopener"{{else}} href="#" data-full="{{safeUrl this.coverUrl}}" data-cap="{{this.title}}"{{/if}}{{/if}}>
-        <div class="ph">
-          <img src="{{safeUrl this.coverUrl}}" alt="{{this.title}}" loading="lazy" decoding="async">
-        </div>
-        <div class="gal-ov">
-          <div class="cat">{{#if this.meta.type}}{{this.meta.type}}{{else}}{{#if this.technologies.[0]}}{{this.technologies.[0]}}{{else}}Work{{/if}}{{/if}}</div>
-          <div class="ttl">{{this.title}}</div>
-        </div>
-        <span class="gal-corner gc-tl"></span><span class="gal-corner gc-tr"></span>
-        <span class="gal-corner gc-bl"></span><span class="gal-corner gc-br"></span>
-      </a>
-      {{/if}}
-      {{/each}}
-    </div>
-  </div>
-</section>
-{{/unless}}
 {{/if}}
 
 {{#if skills}}
@@ -511,7 +490,7 @@ a { color: inherit; text-decoration: none; }
 <section class="section" id="contact">
   <div class="container">
     <h2 class="sec-title" style="margin-bottom: 12px;">Let's create something together</h2>
-    <p class="mono" style="font-size:11px;text-transform:uppercase;letter-spacing:1.5px;color:var(--accent);margin-bottom:48px;">Open for work</p>
+    <p class="mono" style="font-size:11px;text-transform:uppercase;letter-spacing:1.5px;color:var(--sand);margin-bottom:48px;">Open for work</p>
     <div class="contact-grid">
       {{#if basics.email}}<div><p class="lbl">Email</p><a href="mailto:{{basics.email}}">{{basics.email}}</a></div>{{/if}}
       {{#if basics.phone}}<div><p class="lbl">Phone</p><a href="tel:{{basics.phone}}">{{basics.phone}}</a></div>{{/if}}
@@ -562,12 +541,19 @@ a { color: inherit; text-decoration: none; }
       var title = (titleEl ? titleEl.textContent : (img ? img.alt : '')) || '';
       var nImg = picks[(i + 1) % picks.length].querySelector('img');
       var side = nImg ? (nImg.getAttribute('src') || nImg.src) : src;
-      var href = card.getAttribute('href') || '#gallery';
+      var df = card.getAttribute('data-full');
       var esc = title.replace(/"/g, '&quot;');
       var cube = document.createElement('a');
       cube.className = 'cube';
-      cube.href = href;
-      if (card.target) cube.target = card.target;
+      if (df) {
+        // image-only artwork: open in the lightbox (no detail page)
+        cube.href = '#'; cube.setAttribute('data-full', df);
+        cube.setAttribute('data-cap', card.getAttribute('data-cap') || title);
+      } else {
+        // real project: go to its own page
+        cube.href = card.getAttribute('href') || '#work';
+        if (card.target) cube.target = card.target;
+      }
       cube.style.setProperty('--cx', s[0] + 'px');
       cube.style.setProperty('--cy', s[1] + 'px');
       cube.style.zIndex = s[2];
@@ -647,7 +633,7 @@ a { color: inherit; text-decoration: none; }
   wrap.addEventListener('pointerup', endDrag);
   wrap.addEventListener('pointerleave', endDrag);
   cards.forEach(function (card) {
-    card.addEventListener('click', function (e) { if (hasDragged) { e.preventDefault(); } });
+    card.addEventListener('click', function (e) { if (hasDragged) { e.preventDefault(); e.stopImmediatePropagation(); } });
   });
 })();
 </script>
@@ -668,7 +654,7 @@ a { color: inherit; text-decoration: none; }
 <script>
 (function () {
   var lb = document.getElementById('galLb');
-  var triggers = Array.prototype.slice.call(document.querySelectorAll('.gal-zoom'));
+  var triggers = Array.prototype.slice.call(document.querySelectorAll('[data-full]'));
   if (!lb || !triggers.length) return;
   var img = document.getElementById('galImg'), stage = document.getElementById('galStage');
   var pct = document.getElementById('galPct'), cap = document.getElementById('galCap');
