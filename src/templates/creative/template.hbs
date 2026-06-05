@@ -164,26 +164,31 @@ a { color: inherit; text-decoration: none; }
   .cone-wrap { display: none !important; }
   .cube-stack {
     display: block; position: relative;
-    width: 300px; height: 366px; margin: 6px auto 0;
-    perspective: 1100px; perspective-origin: 50% 38%;
+    width: 340px; height: 392px; margin: 10px auto 0;
+    perspective: 1150px; perspective-origin: 50% 40%;
   }
 }
 .cube-stack .cube-hint {
-  position: absolute; left: 0; right: 0; bottom: -6px; text-align: center;
+  position: absolute; left: 0; right: 0; bottom: -10px; text-align: center;
   font-family: var(--font-mono); font-size: 10px; text-transform: uppercase;
-  letter-spacing: 1.6px; color: var(--text-muted); pointer-events: none;
+  letter-spacing: 1.6px; color: var(--text-muted);
 }
-.cube-stack .cube-hint a { color: var(--accent); font-weight: 600; pointer-events: auto; }
+.cube-stack .cube-hint a { color: var(--link); font-weight: 600; }
 .cube {
-  --s: 104px;
+  --s: 124px;
   position: absolute; width: var(--s); height: var(--s);
   left: var(--cx, 0); top: var(--cy, 0);
-  transform-style: preserve-3d;
-  transform: rotateX(-26deg) rotateY(-32deg);
-  transition: transform .45s cubic-bezier(.16,1,.3,1);
   cursor: pointer; -webkit-tap-highlight-color: transparent;
+  animation: cubeFloat var(--dur, 5s) ease-in-out var(--delay, 0s) infinite;
 }
-.cube:active { transform: rotateX(-26deg) rotateY(-32deg) scale(.94); }
+.cube-inner {
+  position: relative; display: block; width: 100%; height: 100%;
+  transform-style: preserve-3d;
+  transform: rotateX(-26deg) rotateY(-30deg);
+  transition: transform .4s cubic-bezier(.16,1,.3,1);
+  animation: cubeIn .6s cubic-bezier(.16,1,.3,1) var(--delay, 0s) backwards;
+}
+.cube:active .cube-inner { transform: rotateX(-26deg) rotateY(-30deg) scale(.93); }
 .cube .face {
   position: absolute; width: var(--s); height: var(--s); overflow: hidden;
   background: var(--bg-card); backface-visibility: hidden;
@@ -194,11 +199,14 @@ a { color: inherit; text-decoration: none; }
 .cube .f-left  { transform: rotateY(-90deg) translateZ(calc(var(--s) / 2)); filter: brightness(.8) saturate(.95); }
 .cube .f-top   { transform: rotateX(90deg) translateZ(calc(var(--s) / 2)); background: linear-gradient(135deg, #FBF8F2 0%, var(--sand) 120%); }
 .cube .shadow {
-  position: absolute; left: 50%; top: 92%; width: 122%; height: 32px;
+  position: absolute; left: 50%; top: 94%; width: 124%; height: 34px;
   transform: translate(-50%, 4px) rotateX(80deg); transform-origin: center top;
-  background: radial-gradient(ellipse at center, rgba(72,58,40,0.34), transparent 72%);
-  filter: blur(3px); pointer-events: none; z-index: -1;
+  background: radial-gradient(ellipse at center, rgba(72,58,40,0.32), transparent 72%);
+  filter: blur(3px); pointer-events: none;
 }
+@keyframes cubeFloat { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-9px); } }
+@keyframes cubeIn { from { opacity: 0; transform: rotateX(-26deg) rotateY(-30deg) scale(.84); } to { opacity: 1; transform: rotateX(-26deg) rotateY(-30deg) scale(1); } }
+@media (prefers-reduced-motion: reduce) { .cube { animation: none; } .cube-inner { animation: none; } }
 
 /* ── Marquee ── */
 .marquee-row { width: 100%; padding: 20px 0; overflow: hidden; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); background: var(--bg); }
@@ -302,6 +310,28 @@ a { color: inherit; text-decoration: none; }
 .gal-card img { transition: transform .6s cubic-bezier(.16,1,.3,1); }
 .gal-zoom { cursor: zoom-in; border: 1px solid var(--border); background: var(--bg-card); padding: 0; text-align: left; font: inherit; color: inherit; width: 100%; }
 
+/* ── Full collection overlay (Gallery button) ── */
+.gallery-modal { position: fixed; inset: 0; z-index: 90; display: none; flex-direction: column; background: var(--bg); }
+.gallery-modal.open { display: flex; animation: gmFade .3s ease-out; }
+@keyframes gmFade { from { opacity: 0; } to { opacity: 1; } }
+.gm-head { display: flex; align-items: center; justify-content: space-between; padding: 18px 24px; border-bottom: 1px solid var(--border); background: rgba(239,238,234,0.92); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); position: sticky; top: 0; z-index: 2; }
+.gm-title { font-family: var(--font-mono); font-size: 12px; text-transform: uppercase; letter-spacing: 2px; color: var(--link); font-weight: 600; }
+.gm-count { color: var(--text-muted); margin-left: 8px; }
+.gm-close { font-family: var(--font-mono); font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px; color: var(--text-dim); background: none; border: none; cursor: pointer; padding: 6px; }
+.gm-close:hover { color: var(--accent); }
+.gm-scroll { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+.gm-grid { max-width: 1200px; margin: 0 auto; padding: 20px; display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
+@media (min-width: 640px) { .gm-grid { grid-template-columns: repeat(3, 1fr); gap: 18px; padding: 32px; } }
+@media (min-width: 1024px) { .gm-grid { grid-template-columns: repeat(4, 1fr); } }
+.gm-card { display: block; position: relative; border: 1px solid var(--border); border-radius: 2px; overflow: hidden; background: var(--bg-card); }
+.gm-ph { aspect-ratio: 3 / 4; overflow: hidden; }
+.gm-card img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .5s cubic-bezier(.16,1,.3,1); }
+.gm-card:hover img { transform: scale(1.05); }
+.gm-meta { position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: flex-end; padding: 12px; gap: 2px; opacity: 0; transition: opacity .3s; background: linear-gradient(to top, rgba(28,34,52,0.92), transparent 60%); }
+.gm-card:hover .gm-meta, .gm-card:focus-visible .gm-meta { opacity: 1; }
+.gm-cat { font-family: var(--font-mono); font-size: 8px; text-transform: uppercase; letter-spacing: 1.5px; color: var(--sand); }
+.gm-ttl { font-size: 13px; font-weight: 600; color: #F2EFE8; line-height: 1.2; }
+
 /* ── Lightbox (main gallery quick-view) ── */
 .lb { position: fixed; inset: 0; z-index: 100; display: none; align-items: center; justify-content: center; background: rgba(17,17,17,0.97); }
 .lb.open { display: flex; }
@@ -329,7 +359,7 @@ a { color: inherit; text-decoration: none; }
   <a href="#top" class="nav-brand">{{basics.fullName}}</a>
   <button class="nav-toggle" id="navToggle" aria-label="Open menu" aria-expanded="false" aria-controls="navLinks"><span></span><span></span><span></span></button>
   <nav class="nav-links" id="navLinks">
-    {{#if projects}}<a href="#work" class="nav-link"><span class="bk">[</span> Gallery <span class="bk">]</span></a>{{/if}}
+    {{#if projects}}<a href="#" class="nav-link" data-open-gallery><span class="bk">[</span> Gallery <span class="bk">]</span></a>{{/if}}
     {{#if skills}}<a href="#skills" class="nav-link"><span class="bk">[</span> Skills <span class="bk">]</span></a>{{/if}}
     {{#if certifications}}<a href="#awards" class="nav-link"><span class="bk">[</span> Awards <span class="bk">]</span></a>{{/if}}
     {{#if endorsements}}<a href="#testimonials" class="nav-link"><span class="bk">[</span> Words <span class="bk">]</span></a>{{/if}}
@@ -353,7 +383,7 @@ a { color: inherit; text-decoration: none; }
     {{#if basics.bio}}<p class="hero-bio">{{basics.bio}}</p>{{else}}{{#if basics.valueProposition}}<p class="hero-bio">{{basics.valueProposition}}</p>{{/if}}{{/if}}
     <div class="hero-actions">
       {{#if basics.email}}<a href="mailto:{{basics.email}}" class="cta">Get in Touch <span>&rarr;</span></a>{{/if}}
-      {{#if projects}}<a href="#work" class="cta cta-ghost">View Work <span>&rarr;</span></a>{{/if}}
+      {{#if projects}}<a href="#" class="cta cta-ghost" data-open-gallery>View Work <span>&rarr;</span></a>{{/if}}
       {{#if basics.resumeUrl}}<a href="{{safeUrl basics.resumeUrl}}" target="_blank" rel="noopener" class="cta cta-ghost">Download CV <span>&darr;</span></a>{{/if}}
     </div>
   </div>
@@ -379,7 +409,7 @@ a { color: inherit; text-decoration: none; }
       <div class="cone-hint">Drag to explore</div>
     </div>
     <div class="cube-stack" id="cubeStack" aria-label="Selected works">
-      <div class="cube-hint">Tap a piece to view</div>
+      <div class="cube-hint">Tap a piece &middot; <a href="#" data-open-gallery>view all {{projects.length}} &rarr;</a></div>
     </div>
     {{/if}}
   </div>
@@ -532,7 +562,7 @@ a { color: inherit; text-decoration: none; }
     var picks = srcCards.slice(0, 6);
     if (!picks.length) { host.style.display = 'none'; return; }
     // nested pyramid: [left px, top px, z-index] — bottom row sits in front.
-    var slots = [[98, 4, 1], [50, 82, 3], [150, 80, 2], [8, 158, 5], [100, 160, 6], [192, 156, 4]];
+    var slots = [[108, 2, 1], [54, 78, 3], [162, 76, 2], [0, 158, 5], [108, 162, 6], [216, 156, 4]];
     picks.forEach(function (card, i) {
       var s = slots[i % slots.length];
       var img = card.querySelector('img');
@@ -556,13 +586,17 @@ a { color: inherit; text-decoration: none; }
       }
       cube.style.setProperty('--cx', s[0] + 'px');
       cube.style.setProperty('--cy', s[1] + 'px');
+      cube.style.setProperty('--delay', (i * 0.1).toFixed(2) + 's');
+      cube.style.setProperty('--dur', (4.4 + (i % 3) * 0.7).toFixed(2) + 's');
       cube.style.zIndex = s[2];
       cube.setAttribute('aria-label', title || 'Artwork');
       cube.innerHTML =
         '<span class="shadow"></span>' +
-        '<span class="face f-top"></span>' +
-        '<span class="face f-left">' + (side ? '<img src="' + side + '" alt="">' : '') + '</span>' +
-        '<span class="face f-front"><img src="' + src + '" alt="' + esc + '"></span>';
+        '<span class="cube-inner">' +
+          '<span class="face f-top"></span>' +
+          '<span class="face f-left">' + (side ? '<img src="' + side + '" alt="">' : '') + '</span>' +
+          '<span class="face f-front"><img src="' + src + '" alt="' + esc + '"></span>' +
+        '</span>';
       host.insertBefore(cube, host.firstChild);
     });
   }
@@ -638,6 +672,26 @@ a { color: inherit; text-decoration: none; }
 })();
 </script>
 
+<!-- Full collection overlay (opened by the Gallery button) -->
+<div class="gallery-modal" id="galleryModal" aria-hidden="true" role="dialog" aria-label="The Collection">
+  <div class="gm-head">
+    <span class="gm-title">The Collection <span class="gm-count">{{projects.length}} works</span></span>
+    <button class="gm-close" id="gmClose" aria-label="Close gallery">[ Close &times; ]</button>
+  </div>
+  <div class="gm-scroll">
+    <div class="gm-grid">
+      {{#each projects}}
+      {{#if this.coverUrl}}
+      <a class="gm-card"{{#if this.slug}} href="{{../portfolioUrl}}/projects/{{this.slug}}"{{else}}{{#if this.link}} href="{{safeUrl this.link}}" target="_blank" rel="noopener"{{else}} href="#" data-full="{{safeUrl this.coverUrl}}" data-cap="{{this.title}}"{{/if}}{{/if}}>
+        <div class="gm-ph"><img src="{{safeUrl this.coverUrl}}" alt="{{this.title}}" loading="lazy" decoding="async"></div>
+        <div class="gm-meta"><span class="gm-cat">{{#if this.meta.type}}{{this.meta.type}}{{else}}Work{{/if}}</span><span class="gm-ttl">{{this.title}}</span></div>
+      </a>
+      {{/if}}
+      {{/each}}
+    </div>
+  </div>
+</div>
+
 <!-- Gallery quick-view lightbox (for image-only items, no detail page) -->
 <div class="lb" id="galLb" aria-hidden="true">
   <span class="lcross lc-tl"></span><span class="lcross lc-tr"></span>
@@ -675,7 +729,23 @@ a { color: inherit; text-decoration: none; }
   stage.addEventListener('pointermove', function (e) { if (!dragging) return; ox = sox + (e.clientX - sx); oy = soy + (e.clientY - sy); apply(); });
   function up() { dragging = false; }
   stage.addEventListener('pointerup', up); stage.addEventListener('pointerleave', up);
-  document.addEventListener('keydown', function (e) { if (!lb.classList.contains('open')) return; if (e.key === 'Escape') close(); else if (e.key === '+' || e.key === '=') zoom(0.3); else if (e.key === '-' || e.key === '_') zoom(-0.3); });
+  document.addEventListener('keydown', function (e) { if (!lb.classList.contains('open')) return; if (e.key === 'Escape') { close(); e.stopImmediatePropagation(); } else if (e.key === '+' || e.key === '=') zoom(0.3); else if (e.key === '-' || e.key === '_') zoom(-0.3); });
+})();
+</script>
+
+<!-- Full collection overlay open/close -->
+<script>
+(function () {
+  var modal = document.getElementById('galleryModal');
+  if (!modal) return;
+  function openM() { modal.classList.add('open'); modal.setAttribute('aria-hidden', 'false'); document.body.style.overflow = 'hidden'; modal.querySelector('.gm-scroll').scrollTop = 0; }
+  function closeM() { modal.classList.remove('open'); modal.setAttribute('aria-hidden', 'true'); if (!document.querySelector('.lb.open')) document.body.style.overflow = ''; }
+  Array.prototype.slice.call(document.querySelectorAll('[data-open-gallery]')).forEach(function (el) {
+    el.addEventListener('click', function (e) { e.preventDefault(); openM(); });
+  });
+  var cb = document.getElementById('gmClose');
+  if (cb) cb.addEventListener('click', closeM);
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && modal.classList.contains('open')) closeM(); });
 })();
 </script>
 {{/if}}

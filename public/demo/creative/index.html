@@ -164,26 +164,31 @@ a { color: inherit; text-decoration: none; }
   .cone-wrap { display: none !important; }
   .cube-stack {
     display: block; position: relative;
-    width: 300px; height: 366px; margin: 6px auto 0;
-    perspective: 1100px; perspective-origin: 50% 38%;
+    width: 340px; height: 392px; margin: 10px auto 0;
+    perspective: 1150px; perspective-origin: 50% 40%;
   }
 }
 .cube-stack .cube-hint {
-  position: absolute; left: 0; right: 0; bottom: -6px; text-align: center;
+  position: absolute; left: 0; right: 0; bottom: -10px; text-align: center;
   font-family: var(--font-mono); font-size: 10px; text-transform: uppercase;
-  letter-spacing: 1.6px; color: var(--text-muted); pointer-events: none;
+  letter-spacing: 1.6px; color: var(--text-muted);
 }
-.cube-stack .cube-hint a { color: var(--accent); font-weight: 600; pointer-events: auto; }
+.cube-stack .cube-hint a { color: var(--link); font-weight: 600; }
 .cube {
-  --s: 104px;
+  --s: 124px;
   position: absolute; width: var(--s); height: var(--s);
   left: var(--cx, 0); top: var(--cy, 0);
-  transform-style: preserve-3d;
-  transform: rotateX(-26deg) rotateY(-32deg);
-  transition: transform .45s cubic-bezier(.16,1,.3,1);
   cursor: pointer; -webkit-tap-highlight-color: transparent;
+  animation: cubeFloat var(--dur, 5s) ease-in-out var(--delay, 0s) infinite;
 }
-.cube:active { transform: rotateX(-26deg) rotateY(-32deg) scale(.94); }
+.cube-inner {
+  position: relative; display: block; width: 100%; height: 100%;
+  transform-style: preserve-3d;
+  transform: rotateX(-26deg) rotateY(-30deg);
+  transition: transform .4s cubic-bezier(.16,1,.3,1);
+  animation: cubeIn .6s cubic-bezier(.16,1,.3,1) var(--delay, 0s) backwards;
+}
+.cube:active .cube-inner { transform: rotateX(-26deg) rotateY(-30deg) scale(.93); }
 .cube .face {
   position: absolute; width: var(--s); height: var(--s); overflow: hidden;
   background: var(--bg-card); backface-visibility: hidden;
@@ -194,11 +199,14 @@ a { color: inherit; text-decoration: none; }
 .cube .f-left  { transform: rotateY(-90deg) translateZ(calc(var(--s) / 2)); filter: brightness(.8) saturate(.95); }
 .cube .f-top   { transform: rotateX(90deg) translateZ(calc(var(--s) / 2)); background: linear-gradient(135deg, #FBF8F2 0%, var(--sand) 120%); }
 .cube .shadow {
-  position: absolute; left: 50%; top: 92%; width: 122%; height: 32px;
+  position: absolute; left: 50%; top: 94%; width: 124%; height: 34px;
   transform: translate(-50%, 4px) rotateX(80deg); transform-origin: center top;
-  background: radial-gradient(ellipse at center, rgba(72,58,40,0.34), transparent 72%);
-  filter: blur(3px); pointer-events: none; z-index: -1;
+  background: radial-gradient(ellipse at center, rgba(72,58,40,0.32), transparent 72%);
+  filter: blur(3px); pointer-events: none;
 }
+@keyframes cubeFloat { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-9px); } }
+@keyframes cubeIn { from { opacity: 0; transform: rotateX(-26deg) rotateY(-30deg) scale(.84); } to { opacity: 1; transform: rotateX(-26deg) rotateY(-30deg) scale(1); } }
+@media (prefers-reduced-motion: reduce) { .cube { animation: none; } .cube-inner { animation: none; } }
 
 /* ── Marquee ── */
 .marquee-row { width: 100%; padding: 20px 0; overflow: hidden; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); background: var(--bg); }
@@ -302,6 +310,28 @@ a { color: inherit; text-decoration: none; }
 .gal-card img { transition: transform .6s cubic-bezier(.16,1,.3,1); }
 .gal-zoom { cursor: zoom-in; border: 1px solid var(--border); background: var(--bg-card); padding: 0; text-align: left; font: inherit; color: inherit; width: 100%; }
 
+/* ── Full collection overlay (Gallery button) ── */
+.gallery-modal { position: fixed; inset: 0; z-index: 90; display: none; flex-direction: column; background: var(--bg); }
+.gallery-modal.open { display: flex; animation: gmFade .3s ease-out; }
+@keyframes gmFade { from { opacity: 0; } to { opacity: 1; } }
+.gm-head { display: flex; align-items: center; justify-content: space-between; padding: 18px 24px; border-bottom: 1px solid var(--border); background: rgba(239,238,234,0.92); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); position: sticky; top: 0; z-index: 2; }
+.gm-title { font-family: var(--font-mono); font-size: 12px; text-transform: uppercase; letter-spacing: 2px; color: var(--link); font-weight: 600; }
+.gm-count { color: var(--text-muted); margin-left: 8px; }
+.gm-close { font-family: var(--font-mono); font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px; color: var(--text-dim); background: none; border: none; cursor: pointer; padding: 6px; }
+.gm-close:hover { color: var(--accent); }
+.gm-scroll { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+.gm-grid { max-width: 1200px; margin: 0 auto; padding: 20px; display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
+@media (min-width: 640px) { .gm-grid { grid-template-columns: repeat(3, 1fr); gap: 18px; padding: 32px; } }
+@media (min-width: 1024px) { .gm-grid { grid-template-columns: repeat(4, 1fr); } }
+.gm-card { display: block; position: relative; border: 1px solid var(--border); border-radius: 2px; overflow: hidden; background: var(--bg-card); }
+.gm-ph { aspect-ratio: 3 / 4; overflow: hidden; }
+.gm-card img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .5s cubic-bezier(.16,1,.3,1); }
+.gm-card:hover img { transform: scale(1.05); }
+.gm-meta { position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: flex-end; padding: 12px; gap: 2px; opacity: 0; transition: opacity .3s; background: linear-gradient(to top, rgba(28,34,52,0.92), transparent 60%); }
+.gm-card:hover .gm-meta, .gm-card:focus-visible .gm-meta { opacity: 1; }
+.gm-cat { font-family: var(--font-mono); font-size: 8px; text-transform: uppercase; letter-spacing: 1.5px; color: var(--sand); }
+.gm-ttl { font-size: 13px; font-weight: 600; color: #F2EFE8; line-height: 1.2; }
+
 /* ── Lightbox (main gallery quick-view) ── */
 .lb { position: fixed; inset: 0; z-index: 100; display: none; align-items: center; justify-content: center; background: rgba(17,17,17,0.97); }
 .lb.open { display: flex; }
@@ -329,7 +359,7 @@ a { color: inherit; text-decoration: none; }
   <a href="#top" class="nav-brand">Dalal Al-Kandari</a>
   <button class="nav-toggle" id="navToggle" aria-label="Open menu" aria-expanded="false" aria-controls="navLinks"><span></span><span></span><span></span></button>
   <nav class="nav-links" id="navLinks">
-    <a href="#work" class="nav-link"><span class="bk">[</span> Gallery <span class="bk">]</span></a>
+    <a href="#" class="nav-link" data-open-gallery><span class="bk">[</span> Gallery <span class="bk">]</span></a>
     <a href="#skills" class="nav-link"><span class="bk">[</span> Skills <span class="bk">]</span></a>
     
     
@@ -346,7 +376,7 @@ a { color: inherit; text-decoration: none; }
     <p class="hero-bio">I never studied ornamental art. My hand moves without planning, my eye sees, my brain feels, and what emerges is pure intuition. 46 works of bold lines, vivid color, and hearts that appear unbidden. This is not technique. This is my eye brain.</p>
     <div class="hero-actions">
       <a href="mailto:dalal@myeyebrain.art" class="cta">Get in Touch <span>&rarr;</span></a>
-      <a href="#work" class="cta cta-ghost">View Work <span>&rarr;</span></a>
+      <a href="#" class="cta cta-ghost" data-open-gallery>View Work <span>&rarr;</span></a>
       
     </div>
   </div>
@@ -727,7 +757,7 @@ a { color: inherit; text-decoration: none; }
       <div class="cone-hint">Drag to explore</div>
     </div>
     <div class="cube-stack" id="cubeStack" aria-label="Selected works">
-      <div class="cube-hint">Tap a piece to view</div>
+      <div class="cube-hint">Tap a piece &middot; <a href="#" data-open-gallery>view all 46 &rarr;</a></div>
     </div>
   </div>
 </section>
@@ -811,7 +841,7 @@ a { color: inherit; text-decoration: none; }
     var picks = srcCards.slice(0, 6);
     if (!picks.length) { host.style.display = 'none'; return; }
     // nested pyramid: [left px, top px, z-index] — bottom row sits in front.
-    var slots = [[98, 4, 1], [50, 82, 3], [150, 80, 2], [8, 158, 5], [100, 160, 6], [192, 156, 4]];
+    var slots = [[108, 2, 1], [54, 78, 3], [162, 76, 2], [0, 158, 5], [108, 162, 6], [216, 156, 4]];
     picks.forEach(function (card, i) {
       var s = slots[i % slots.length];
       var img = card.querySelector('img');
@@ -835,13 +865,17 @@ a { color: inherit; text-decoration: none; }
       }
       cube.style.setProperty('--cx', s[0] + 'px');
       cube.style.setProperty('--cy', s[1] + 'px');
+      cube.style.setProperty('--delay', (i * 0.1).toFixed(2) + 's');
+      cube.style.setProperty('--dur', (4.4 + (i % 3) * 0.7).toFixed(2) + 's');
       cube.style.zIndex = s[2];
       cube.setAttribute('aria-label', title || 'Artwork');
       cube.innerHTML =
         '<span class="shadow"></span>' +
-        '<span class="face f-top"></span>' +
-        '<span class="face f-left">' + (side ? '<img src="' + side + '" alt="">' : '') + '</span>' +
-        '<span class="face f-front"><img src="' + src + '" alt="' + esc + '"></span>';
+        '<span class="cube-inner">' +
+          '<span class="face f-top"></span>' +
+          '<span class="face f-left">' + (side ? '<img src="' + side + '" alt="">' : '') + '</span>' +
+          '<span class="face f-front"><img src="' + src + '" alt="' + esc + '"></span>' +
+        '</span>';
       host.insertBefore(cube, host.firstChild);
     });
   }
@@ -917,6 +951,202 @@ a { color: inherit; text-decoration: none; }
 })();
 </script>
 
+<!-- Full collection overlay (opened by the Gallery button) -->
+<div class="gallery-modal" id="galleryModal" aria-hidden="true" role="dialog" aria-label="The Collection">
+  <div class="gm-head">
+    <span class="gm-title">The Collection <span class="gm-count">46 works</span></span>
+    <button class="gm-close" id="gmClose" aria-label="Close gallery">[ Close &times; ]</button>
+  </div>
+  <div class="gm-scroll">
+    <div class="gm-grid">
+      <a class="gm-card" href="#" data-full="/demo/creative/artworks/ornaments_1_digital.webp" data-cap="Purple Bouquet">
+        <div class="gm-ph"><img src="/demo/creative/artworks/ornaments_1_digital.webp" alt="Purple Bouquet" loading="lazy" decoding="async"></div>
+        <div class="gm-meta"><span class="gm-cat">Floral Ornamental</span><span class="gm-ttl">Purple Bouquet</span></div>
+      </a>
+      <a class="gm-card" href="#" data-full="/demo/creative/artworks/ornaments_2_digital.webp" data-cap="Geometric Hearts">
+        <div class="gm-ph"><img src="/demo/creative/artworks/ornaments_2_digital.webp" alt="Geometric Hearts" loading="lazy" decoding="async"></div>
+        <div class="gm-meta"><span class="gm-cat">Geometric Abstract</span><span class="gm-ttl">Geometric Hearts</span></div>
+      </a>
+      <a class="gm-card" href="#" data-full="/demo/creative/artworks/ornaments_3_digital.webp" data-cap="Cloud Garden">
+        <div class="gm-ph"><img src="/demo/creative/artworks/ornaments_3_digital.webp" alt="Cloud Garden" loading="lazy" decoding="async"></div>
+        <div class="gm-meta"><span class="gm-cat">Floral Fantasy</span><span class="gm-ttl">Cloud Garden</span></div>
+      </a>
+      <a class="gm-card" href="#" data-full="/demo/creative/artworks/ornaments_4_digital.webp" data-cap="Golden Vessel">
+        <div class="gm-ph"><img src="/demo/creative/artworks/ornaments_4_digital.webp" alt="Golden Vessel" loading="lazy" decoding="async"></div>
+        <div class="gm-meta"><span class="gm-cat">Art Nouveau</span><span class="gm-ttl">Golden Vessel</span></div>
+      </a>
+      <a class="gm-card" href="#" data-full="/demo/creative/artworks/ornaments_5_digital.webp" data-cap="Autumn Bouquet">
+        <div class="gm-ph"><img src="/demo/creative/artworks/ornaments_5_digital.webp" alt="Autumn Bouquet" loading="lazy" decoding="async"></div>
+        <div class="gm-meta"><span class="gm-cat">Floral Ornamental</span><span class="gm-ttl">Autumn Bouquet</span></div>
+      </a>
+      <a class="gm-card" href="#" data-full="/demo/creative/artworks/ornaments_6_digital.webp" data-cap="City Maze">
+        <div class="gm-ph"><img src="/demo/creative/artworks/ornaments_6_digital.webp" alt="City Maze" loading="lazy" decoding="async"></div>
+        <div class="gm-meta"><span class="gm-cat">Geometric Abstract</span><span class="gm-ttl">City Maze</span></div>
+      </a>
+      <a class="gm-card" href="#" data-full="/demo/creative/artworks/ornaments_7_digital.webp" data-cap="Purple Mandala">
+        <div class="gm-ph"><img src="/demo/creative/artworks/ornaments_7_digital.webp" alt="Purple Mandala" loading="lazy" decoding="async"></div>
+        <div class="gm-meta"><span class="gm-cat">Mandala</span><span class="gm-ttl">Purple Mandala</span></div>
+      </a>
+      <a class="gm-card" href="#" data-full="/demo/creative/artworks/ornaments_8_digital.webp" data-cap="Cosmic Spiral">
+        <div class="gm-ph"><img src="/demo/creative/artworks/ornaments_8_digital.webp" alt="Cosmic Spiral" loading="lazy" decoding="async"></div>
+        <div class="gm-meta"><span class="gm-cat">Character Fantasy</span><span class="gm-ttl">Cosmic Spiral</span></div>
+      </a>
+      <a class="gm-card" href="#" data-full="/demo/creative/artworks/ornaments_9_digital.webp" data-cap="Red Construct">
+        <div class="gm-ph"><img src="/demo/creative/artworks/ornaments_9_digital.webp" alt="Red Construct" loading="lazy" decoding="async"></div>
+        <div class="gm-meta"><span class="gm-cat">Geometric Abstract</span><span class="gm-ttl">Red Construct</span></div>
+      </a>
+      <a class="gm-card" href="#" data-full="/demo/creative/artworks/ornaments_10_digital.webp" data-cap="Fruit Bowl">
+        <div class="gm-ph"><img src="/demo/creative/artworks/ornaments_10_digital.webp" alt="Fruit Bowl" loading="lazy" decoding="async"></div>
+        <div class="gm-meta"><span class="gm-cat">Pop Floral</span><span class="gm-ttl">Fruit Bowl</span></div>
+      </a>
+      <a class="gm-card" href="#" data-full="/demo/creative/artworks/ornaments_11_digital.webp" data-cap="Blue Dreamer">
+        <div class="gm-ph"><img src="/demo/creative/artworks/ornaments_11_digital.webp" alt="Blue Dreamer" loading="lazy" decoding="async"></div>
+        <div class="gm-meta"><span class="gm-cat">Character Fantasy</span><span class="gm-ttl">Blue Dreamer</span></div>
+      </a>
+      <a class="gm-card" href="#" data-full="/demo/creative/artworks/ornaments_12_digital.webp" data-cap="Star Flower">
+        <div class="gm-ph"><img src="/demo/creative/artworks/ornaments_12_digital.webp" alt="Star Flower" loading="lazy" decoding="async"></div>
+        <div class="gm-meta"><span class="gm-cat">Bold Floral</span><span class="gm-ttl">Star Flower</span></div>
+      </a>
+      <a class="gm-card" href="#" data-full="/demo/creative/artworks/ornaments_13_digital.webp" data-cap="Love Tree">
+        <div class="gm-ph"><img src="/demo/creative/artworks/ornaments_13_digital.webp" alt="Love Tree" loading="lazy" decoding="async"></div>
+        <div class="gm-meta"><span class="gm-cat">Tree of Life</span><span class="gm-ttl">Love Tree</span></div>
+      </a>
+      <a class="gm-card" href="#" data-full="/demo/creative/artworks/ornaments_14_digital.webp" data-cap="Framed Bloom">
+        <div class="gm-ph"><img src="/demo/creative/artworks/ornaments_14_digital.webp" alt="Framed Bloom" loading="lazy" decoding="async"></div>
+        <div class="gm-meta"><span class="gm-cat">Folk Art</span><span class="gm-ttl">Framed Bloom</span></div>
+      </a>
+      <a class="gm-card" href="#" data-full="/demo/creative/artworks/ornaments_15_digital.webp" data-cap="Lotus Reflection">
+        <div class="gm-ph"><img src="/demo/creative/artworks/ornaments_15_digital.webp" alt="Lotus Reflection" loading="lazy" decoding="async"></div>
+        <div class="gm-meta"><span class="gm-cat">Serene Floral</span><span class="gm-ttl">Lotus Reflection</span></div>
+      </a>
+      <a class="gm-card" href="#" data-full="/demo/creative/artworks/ornaments_16_digital.webp" data-cap="Silver Garden">
+        <div class="gm-ph"><img src="/demo/creative/artworks/ornaments_16_digital.webp" alt="Silver Garden" loading="lazy" decoding="async"></div>
+        <div class="gm-meta"><span class="gm-cat">Architectural</span><span class="gm-ttl">Silver Garden</span></div>
+      </a>
+      <a class="gm-card" href="#" data-full="/demo/creative/artworks/ornaments_17_digital.webp" data-cap="Crystal Beacon">
+        <div class="gm-ph"><img src="/demo/creative/artworks/ornaments_17_digital.webp" alt="Crystal Beacon" loading="lazy" decoding="async"></div>
+        <div class="gm-meta"><span class="gm-cat">Geometric Ornamental</span><span class="gm-ttl">Crystal Beacon</span></div>
+      </a>
+      <a class="gm-card" href="#" data-full="/demo/creative/artworks/ornaments_18_digital.webp" data-cap="Desert Sun">
+        <div class="gm-ph"><img src="/demo/creative/artworks/ornaments_18_digital.webp" alt="Desert Sun" loading="lazy" decoding="async"></div>
+        <div class="gm-meta"><span class="gm-cat">Symbolic Landscape</span><span class="gm-ttl">Desert Sun</span></div>
+      </a>
+      <a class="gm-card" href="#" data-full="/demo/creative/artworks/ornaments_19_digital.webp" data-cap="Sun Totem">
+        <div class="gm-ph"><img src="/demo/creative/artworks/ornaments_19_digital.webp" alt="Sun Totem" loading="lazy" decoding="async"></div>
+        <div class="gm-meta"><span class="gm-cat">Totemic</span><span class="gm-ttl">Sun Totem</span></div>
+      </a>
+      <a class="gm-card" href="#" data-full="/demo/creative/artworks/ornaments_20_digital.webp" data-cap="Pastel Cloud">
+        <div class="gm-ph"><img src="/demo/creative/artworks/ornaments_20_digital.webp" alt="Pastel Cloud" loading="lazy" decoding="async"></div>
+        <div class="gm-meta"><span class="gm-cat">Soft Floral</span><span class="gm-ttl">Pastel Cloud</span></div>
+      </a>
+      <a class="gm-card" href="#" data-full="/demo/creative/artworks/ornaments_21_digital.webp" data-cap="Heart Clown">
+        <div class="gm-ph"><img src="/demo/creative/artworks/ornaments_21_digital.webp" alt="Heart Clown" loading="lazy" decoding="async"></div>
+        <div class="gm-meta"><span class="gm-cat">Character Fantasy</span><span class="gm-ttl">Heart Clown</span></div>
+      </a>
+      <a class="gm-card" href="#" data-full="/demo/creative/artworks/ornaments_22_digital.webp" data-cap="Rainbow Arch">
+        <div class="gm-ph"><img src="/demo/creative/artworks/ornaments_22_digital.webp" alt="Rainbow Arch" loading="lazy" decoding="async"></div>
+        <div class="gm-meta"><span class="gm-cat">Geometric Nature</span><span class="gm-ttl">Rainbow Arch</span></div>
+      </a>
+      <a class="gm-card" href="#" data-full="/demo/creative/artworks/ornaments_23_digital.webp" data-cap="Ocean Stars">
+        <div class="gm-ph"><img src="/demo/creative/artworks/ornaments_23_digital.webp" alt="Ocean Stars" loading="lazy" decoding="async"></div>
+        <div class="gm-meta"><span class="gm-cat">Marine Ornamental</span><span class="gm-ttl">Ocean Stars</span></div>
+      </a>
+      <a class="gm-card" href="#" data-full="/demo/creative/artworks/ornaments_24_digital.webp" data-cap="Geometric Butterflies">
+        <div class="gm-ph"><img src="/demo/creative/artworks/ornaments_24_digital.webp" alt="Geometric Butterflies" loading="lazy" decoding="async"></div>
+        <div class="gm-meta"><span class="gm-cat">Nature Geometry</span><span class="gm-ttl">Geometric Butterflies</span></div>
+      </a>
+      <a class="gm-card" href="#" data-full="/demo/creative/artworks/ornaments_25_digital.webp" data-cap="Caterpillar Dream">
+        <div class="gm-ph"><img src="/demo/creative/artworks/ornaments_25_digital.webp" alt="Caterpillar Dream" loading="lazy" decoding="async"></div>
+        <div class="gm-meta"><span class="gm-cat">Fantasy Ornamental</span><span class="gm-ttl">Caterpillar Dream</span></div>
+      </a>
+      <a class="gm-card" href="#" data-full="/demo/creative/artworks/ornaments_26_digital.webp" data-cap="Horned Heart">
+        <div class="gm-ph"><img src="/demo/creative/artworks/ornaments_26_digital.webp" alt="Horned Heart" loading="lazy" decoding="async"></div>
+        <div class="gm-meta"><span class="gm-cat">Creature Fantasy</span><span class="gm-ttl">Horned Heart</span></div>
+      </a>
+      <a class="gm-card" href="#" data-full="/demo/creative/artworks/ornaments_27_digital.webp" data-cap="Golden Mandala">
+        <div class="gm-ph"><img src="/demo/creative/artworks/ornaments_27_digital.webp" alt="Golden Mandala" loading="lazy" decoding="async"></div>
+        <div class="gm-meta"><span class="gm-cat">Mandala</span><span class="gm-ttl">Golden Mandala</span></div>
+      </a>
+      <a class="gm-card" href="#" data-full="/demo/creative/artworks/ornaments_28_digital.webp" data-cap="Electric Flower">
+        <div class="gm-ph"><img src="/demo/creative/artworks/ornaments_28_digital.webp" alt="Electric Flower" loading="lazy" decoding="async"></div>
+        <div class="gm-meta"><span class="gm-cat">Pop Floral</span><span class="gm-ttl">Electric Flower</span></div>
+      </a>
+      <a class="gm-card" href="#" data-full="/demo/creative/artworks/ornaments_29_digital.webp" data-cap="Heart Burst">
+        <div class="gm-ph"><img src="/demo/creative/artworks/ornaments_29_digital.webp" alt="Heart Burst" loading="lazy" decoding="async"></div>
+        <div class="gm-meta"><span class="gm-cat">Heart Motif</span><span class="gm-ttl">Heart Burst</span></div>
+      </a>
+      <a class="gm-card" href="#" data-full="/demo/creative/artworks/ornaments_30_digital.webp" data-cap="Geometric Still Life">
+        <div class="gm-ph"><img src="/demo/creative/artworks/ornaments_30_digital.webp" alt="Geometric Still Life" loading="lazy" decoding="async"></div>
+        <div class="gm-meta"><span class="gm-cat">Abstract Still Life</span><span class="gm-ttl">Geometric Still Life</span></div>
+      </a>
+      <a class="gm-card" href="#" data-full="/demo/creative/artworks/ornaments_31_digital.webp" data-cap="Tropical Bouquet">
+        <div class="gm-ph"><img src="/demo/creative/artworks/ornaments_31_digital.webp" alt="Tropical Bouquet" loading="lazy" decoding="async"></div>
+        <div class="gm-meta"><span class="gm-cat">Tropical Floral</span><span class="gm-ttl">Tropical Bouquet</span></div>
+      </a>
+      <a class="gm-card" href="#" data-full="/demo/creative/artworks/ornaments_32_digital.webp" data-cap="Patterned Butterfly">
+        <div class="gm-ph"><img src="/demo/creative/artworks/ornaments_32_digital.webp" alt="Patterned Butterfly" loading="lazy" decoding="async"></div>
+        <div class="gm-meta"><span class="gm-cat">Butterfly Art</span><span class="gm-ttl">Patterned Butterfly</span></div>
+      </a>
+      <a class="gm-card" href="#" data-full="/demo/creative/artworks/ornaments_33_digital.webp" data-cap="Heart Flower Tree">
+        <div class="gm-ph"><img src="/demo/creative/artworks/ornaments_33_digital.webp" alt="Heart Flower Tree" loading="lazy" decoding="async"></div>
+        <div class="gm-meta"><span class="gm-cat">Heart Motif</span><span class="gm-ttl">Heart Flower Tree</span></div>
+      </a>
+      <a class="gm-card" href="#" data-full="/demo/creative/artworks/ornaments_34_digital.webp" data-cap="Tropical Abstract">
+        <div class="gm-ph"><img src="/demo/creative/artworks/ornaments_34_digital.webp" alt="Tropical Abstract" loading="lazy" decoding="async"></div>
+        <div class="gm-meta"><span class="gm-cat">Tropical Abstract</span><span class="gm-ttl">Tropical Abstract</span></div>
+      </a>
+      <a class="gm-card" href="#" data-full="/demo/creative/artworks/ornaments_35_digital.webp" data-cap="Celestial Flower">
+        <div class="gm-ph"><img src="/demo/creative/artworks/ornaments_35_digital.webp" alt="Celestial Flower" loading="lazy" decoding="async"></div>
+        <div class="gm-meta"><span class="gm-cat">Celestial Ornamental</span><span class="gm-ttl">Celestial Flower</span></div>
+      </a>
+      <a class="gm-card" href="#" data-full="/demo/creative/artworks/ornaments_36_digital.webp" data-cap="Diamond Burst">
+        <div class="gm-ph"><img src="/demo/creative/artworks/ornaments_36_digital.webp" alt="Diamond Burst" loading="lazy" decoding="async"></div>
+        <div class="gm-meta"><span class="gm-cat">Psychedelic Geometric</span><span class="gm-ttl">Diamond Burst</span></div>
+      </a>
+      <a class="gm-card" href="#" data-full="/demo/creative/artworks/ornaments_37_digital.webp" data-cap="Pink Abstract Garden">
+        <div class="gm-ph"><img src="/demo/creative/artworks/ornaments_37_digital.webp" alt="Pink Abstract Garden" loading="lazy" decoding="async"></div>
+        <div class="gm-meta"><span class="gm-cat">Abstract Floral</span><span class="gm-ttl">Pink Abstract Garden</span></div>
+      </a>
+      <a class="gm-card" href="#" data-full="/demo/creative/artworks/ornaments_38_digital.webp" data-cap="Geometric Explosion">
+        <div class="gm-ph"><img src="/demo/creative/artworks/ornaments_38_digital.webp" alt="Geometric Explosion" loading="lazy" decoding="async"></div>
+        <div class="gm-meta"><span class="gm-cat">Abstract Geometric</span><span class="gm-ttl">Geometric Explosion</span></div>
+      </a>
+      <a class="gm-card" href="#" data-full="/demo/creative/artworks/ornaments_39_digital.webp" data-cap="Blue Cross Mandala">
+        <div class="gm-ph"><img src="/demo/creative/artworks/ornaments_39_digital.webp" alt="Blue Cross Mandala" loading="lazy" decoding="async"></div>
+        <div class="gm-meta"><span class="gm-cat">Mandala</span><span class="gm-ttl">Blue Cross Mandala</span></div>
+      </a>
+      <a class="gm-card" href="#" data-full="/demo/creative/artworks/ornaments_40_digital.webp" data-cap="Purple Sunburst">
+        <div class="gm-ph"><img src="/demo/creative/artworks/ornaments_40_digital.webp" alt="Purple Sunburst" loading="lazy" decoding="async"></div>
+        <div class="gm-meta"><span class="gm-cat">Radial Abstract</span><span class="gm-ttl">Purple Sunburst</span></div>
+      </a>
+      <a class="gm-card" href="#" data-full="/demo/creative/artworks/ornaments_41_digital.webp" data-cap="Red Creature">
+        <div class="gm-ph"><img src="/demo/creative/artworks/ornaments_41_digital.webp" alt="Red Creature" loading="lazy" decoding="async"></div>
+        <div class="gm-meta"><span class="gm-cat">Creature Fantasy</span><span class="gm-ttl">Red Creature</span></div>
+      </a>
+      <a class="gm-card" href="#" data-full="/demo/creative/artworks/ornaments_42_digital.webp" data-cap="Geometric Totem">
+        <div class="gm-ph"><img src="/demo/creative/artworks/ornaments_42_digital.webp" alt="Geometric Totem" loading="lazy" decoding="async"></div>
+        <div class="gm-meta"><span class="gm-cat">Totemic Geometric</span><span class="gm-ttl">Geometric Totem</span></div>
+      </a>
+      <a class="gm-card" href="#" data-full="/demo/creative/artworks/ornaments_43_digital.webp" data-cap="Pattern Explosion">
+        <div class="gm-ph"><img src="/demo/creative/artworks/ornaments_43_digital.webp" alt="Pattern Explosion" loading="lazy" decoding="async"></div>
+        <div class="gm-meta"><span class="gm-cat">Maximalist Pattern</span><span class="gm-ttl">Pattern Explosion</span></div>
+      </a>
+      <a class="gm-card" href="#" data-full="/demo/creative/artworks/ornaments_44_digital.webp" data-cap="Geometric Windmill">
+        <div class="gm-ph"><img src="/demo/creative/artworks/ornaments_44_digital.webp" alt="Geometric Windmill" loading="lazy" decoding="async"></div>
+        <div class="gm-meta"><span class="gm-cat">Architectural Abstract</span><span class="gm-ttl">Geometric Windmill</span></div>
+      </a>
+      <a class="gm-card" href="#" data-full="/demo/creative/artworks/ornaments_45_digital.webp" data-cap="The House">
+        <div class="gm-ph"><img src="/demo/creative/artworks/ornaments_45_digital.webp" alt="The House" loading="lazy" decoding="async"></div>
+        <div class="gm-meta"><span class="gm-cat">Narrative Abstract</span><span class="gm-ttl">The House</span></div>
+      </a>
+      <a class="gm-card" href="#" data-full="/demo/creative/artworks/ornaments_46_digital.webp" data-cap="My Eye Brain Blooms">
+        <div class="gm-ph"><img src="/demo/creative/artworks/ornaments_46_digital.webp" alt="My Eye Brain Blooms" loading="lazy" decoding="async"></div>
+        <div class="gm-meta"><span class="gm-cat">Radial Mandala</span><span class="gm-ttl">My Eye Brain Blooms</span></div>
+      </a>
+    </div>
+  </div>
+</div>
+
 <!-- Gallery quick-view lightbox (for image-only items, no detail page) -->
 <div class="lb" id="galLb" aria-hidden="true">
   <span class="lcross lc-tl"></span><span class="lcross lc-tr"></span>
@@ -954,7 +1184,23 @@ a { color: inherit; text-decoration: none; }
   stage.addEventListener('pointermove', function (e) { if (!dragging) return; ox = sox + (e.clientX - sx); oy = soy + (e.clientY - sy); apply(); });
   function up() { dragging = false; }
   stage.addEventListener('pointerup', up); stage.addEventListener('pointerleave', up);
-  document.addEventListener('keydown', function (e) { if (!lb.classList.contains('open')) return; if (e.key === 'Escape') close(); else if (e.key === '+' || e.key === '=') zoom(0.3); else if (e.key === '-' || e.key === '_') zoom(-0.3); });
+  document.addEventListener('keydown', function (e) { if (!lb.classList.contains('open')) return; if (e.key === 'Escape') { close(); e.stopImmediatePropagation(); } else if (e.key === '+' || e.key === '=') zoom(0.3); else if (e.key === '-' || e.key === '_') zoom(-0.3); });
+})();
+</script>
+
+<!-- Full collection overlay open/close -->
+<script>
+(function () {
+  var modal = document.getElementById('galleryModal');
+  if (!modal) return;
+  function openM() { modal.classList.add('open'); modal.setAttribute('aria-hidden', 'false'); document.body.style.overflow = 'hidden'; modal.querySelector('.gm-scroll').scrollTop = 0; }
+  function closeM() { modal.classList.remove('open'); modal.setAttribute('aria-hidden', 'true'); if (!document.querySelector('.lb.open')) document.body.style.overflow = ''; }
+  Array.prototype.slice.call(document.querySelectorAll('[data-open-gallery]')).forEach(function (el) {
+    el.addEventListener('click', function (e) { e.preventDefault(); openM(); });
+  });
+  var cb = document.getElementById('gmClose');
+  if (cb) cb.addEventListener('click', closeM);
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && modal.classList.contains('open')) closeM(); });
 })();
 </script>
 
