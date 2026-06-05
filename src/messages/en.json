@@ -221,10 +221,11 @@
       "accentHint": "Secondary highlights, stars",
       "bgLabel": "Background",
       "bgHint": "Deep-space backdrop",
-      "splineHeading": "Advanced: 3D Keyboard Scene",
-      "splineLabel": "Custom Spline Scene URL (optional)",
-      "splineHint": "Advanced. Leave blank to use the default floating 3D keyboard. Paste a custom Spline scene URL (.spline) to swap it.",
-      "splinePlaceholder": "https://prod.spline.design/your-scene/scene.spline"
+      "kbdBodyHeading": "Keyboard Body Color",
+      "kbdBodyHint": "The chassis colour of your 3D skills keyboard. Keycaps stay tinted by each tool's own colour.",
+      "kbdBodyBlack": "Black",
+      "kbdBodyWhite": "White",
+      "kbdBodyGray": "Gray"
     },
     "basics": {
       "fullName": "Full Name",

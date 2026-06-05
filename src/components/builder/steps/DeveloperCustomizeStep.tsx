@@ -1,7 +1,6 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { TextField } from "../fields/TextField";
 
 interface DeveloperCustomizeStepProps {
   data: any;
@@ -16,6 +15,13 @@ const COLOR_PRESETS = [
   { name: "Cobalt", primary: "#3b82f6", accent: "#06b6d4", bg: "#020817" },
   { name: "Violet Night", primary: "#a78bfa", accent: "#f472b6", bg: "#0b0614" },
   { name: "Mono", primary: "#e2e8f0", accent: "#94a3b8", bg: "#0a0a0a" },
+];
+
+// Chassis colour of the 3D skills keyboard (maps to customization.keyboardBody)
+const KBD_BODIES = [
+  { value: "black", label: "kbdBodyBlack", swatch: "linear-gradient(180deg,#202a45,#0a1120)" },
+  { value: "white", label: "kbdBodyWhite", swatch: "linear-gradient(180deg,#f2f4f8,#c5cbd8)" },
+  { value: "gray", label: "kbdBodyGray", swatch: "linear-gradient(180deg,#3b4150,#1e222b)" },
 ];
 
 export function DeveloperCustomizeStep({ data, onChange }: DeveloperCustomizeStepProps) {
@@ -92,16 +98,31 @@ export function DeveloperCustomizeStep({ data, onChange }: DeveloperCustomizeSte
         </div>
       </div>
 
-      {/* Advanced: custom Spline keyboard scene */}
+      {/* Keyboard body colour */}
       <div className="bg-[var(--land-surface-raised)]/30 border border-[var(--land-border)] rounded-lg p-4">
-        <h3 className="text-lg font-medium text-[var(--land-bright)] mb-2">{t("splineHeading")}</h3>
-        <TextField
-          label={t("splineLabel")}
-          value={customization.skillsSplineUrl || ""}
-          onChange={(v) => updateCustomization("skillsSplineUrl", v)}
-          placeholder={t("splinePlaceholder")}
-          hint={t("splineHint")}
-        />
+        <h3 className="text-lg font-medium text-[var(--land-bright)] mb-2">{t("kbdBodyHeading")}</h3>
+        <p className="text-sm text-[var(--land-body)] mb-4">{t("kbdBodyHint")}</p>
+        <div className="flex flex-wrap gap-2">
+          {KBD_BODIES.map((body) => {
+            const active = (customization.keyboardBody || "black") === body.value;
+            return (
+              <button
+                key={body.value}
+                type="button"
+                onClick={() => updateCustomization("keyboardBody", body.value)}
+                aria-pressed={active}
+                className={`flex items-center gap-2.5 rounded-lg border px-4 py-2.5 min-h-[44px] transition-colors ${
+                  active
+                    ? "border-[var(--land-accent-hover)] bg-[var(--land-surface-raised)]/60"
+                    : "border-[var(--land-border)] hover:border-[var(--land-accent-hover)]"
+                }`}
+              >
+                <span className="w-5 h-5 rounded-md border border-[var(--land-border)]" style={{ background: body.swatch }} />
+                <span className="text-sm text-[var(--land-bright)]">{t(body.label)}</span>
+              </button>
+            );
+          })}
+        </div>
       </div>
     </div>
   );
