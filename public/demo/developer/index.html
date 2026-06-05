@@ -160,69 +160,110 @@ section{position:relative;z-index:1}
 .scroll-cue .mouse::after{content:"";position:absolute;left:50%;top:7px;width:3px;height:6px;background:var(--muted);border-radius:2px;transform:translateX(-50%);animation:wheel 1.5s infinite}
 @keyframes wheel{0%{opacity:0;transform:translate(-50%,0)}40%{opacity:1}100%{opacity:0;transform:translate(-50%,10px)}}
 
-/* ── skills / interactive 3D tech-stack keyboard ─────────────── */
-#skills{padding:80px 0 110px;min-height:90svh}
+/* ── skills / Dygma-style split 3D keyboard ──────────────────── */
+#skills{padding:80px 0 110px;--ks:62px;--glow:#2f6bff}
 .kbd-toolbar{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-top:10px}
 .kbd-hint{font-family:var(--font-mono);color:var(--muted-2);font-size:.85rem}
-.kbd-readout{font-family:var(--font-mono);font-size:.82rem;color:var(--accent);min-height:1.2em;min-width:6ch;opacity:0;transition:opacity .25s ease}
-.kbd-readout.show{opacity:1}
 .kbd-mute{margin-inline-start:auto;display:inline-flex;align-items:center;gap:8px;font-family:var(--font-mono);font-size:.72rem;letter-spacing:.08em;color:var(--muted);
   padding:9px 13px;border-radius:10px;border:1px solid var(--border-strong);background:var(--card);cursor:pointer;transition:border-color .2s,color .2s,transform .12s}
 .kbd-mute:hover{border-color:var(--brand);color:var(--fg)}
 .kbd-mute:active{transform:translateY(1px)}
 .kbd-mute[aria-pressed="true"]{color:var(--muted-2);border-color:var(--border)}
 
-/* tilted 3D deck holding the keycaps (no WebGL, no external runtime) */
-.kbd-stage{margin-top:34px;perspective:1500px;perspective-origin:50% 0%}
-.kbd-deck{
-  transform-style:preserve-3d;transform:rotateX(26deg);
-  transition:transform .35s cubic-bezier(.22,1,.36,1);
-  display:flex;flex-wrap:wrap;gap:13px;justify-content:center;align-items:flex-start;
-  max-width:980px;margin:0 auto;padding:32px clamp(14px,3vw,40px);
-  border-radius:26px;
-  background:linear-gradient(180deg,rgba(30,41,70,.55),rgba(9,15,32,.78));
-  border:1px solid var(--border-strong);
-  box-shadow:0 46px 90px -34px rgba(0,0,0,.85),inset 0 1px 0 rgba(255,255,255,.05);
-  animation:deckFloat 7s ease-in-out infinite;
-}
-@keyframes deckFloat{0%,100%{transform:rotateX(26deg) translateY(0)}50%{transform:rotateX(26deg) translateY(-10px)}}
+.kbd-wrap{display:grid;grid-template-columns:1fr;gap:26px;margin-top:36px}
+@media(min-width:1040px){.kbd-wrap{grid-template-columns:minmax(0,1fr) 322px;align-items:center}}
 
+/* perspective stage + floating, glowing split chassis */
+.kbd-stage{perspective:1800px;perspective-origin:50% 22%}
+.kbd-deck{
+  position:relative;transform-style:preserve-3d;
+  display:flex;justify-content:center;align-items:flex-start;gap:clamp(16px,3vw,46px);
+  padding:clamp(22px,2.6vw,40px) clamp(20px,3vw,52px) clamp(28px,3vw,46px);
+  border-radius:30px;
+  background:linear-gradient(180deg,#1b2335 0%,#11192b 50%,#0a1120 100%);
+  border:1px solid rgba(148,163,184,.18);
+  box-shadow:0 2px 0 rgba(255,255,255,.06) inset,0 -16px 40px rgba(0,0,0,.5) inset,0 40px 80px -28px rgba(0,0,0,.85),0 12px 0 #060a14,0 0 46px 3px var(--glow),0 0 100px 12px color-mix(in srgb,var(--glow) 45%,transparent);
+  animation:deckFloat 11s ease-in-out infinite;
+}
+@keyframes deckFloat{
+  0%{transform:rotateX(23deg) rotateY(-7deg) translateY(0)}
+  50%{transform:rotateX(20deg) rotateY(7deg) translateY(-12px)}
+  100%{transform:rotateX(23deg) rotateY(-7deg) translateY(0)}
+}
+
+/* chassis body colour — per user: black (default) / white / gray */
+.kbd-deck.kbd-light{background:linear-gradient(180deg,#f2f4f8 0%,#dce1ea 50%,#c5cbd8 100%);border-color:rgba(2,6,23,.14);
+  box-shadow:0 2px 0 rgba(255,255,255,.7) inset,0 -16px 40px rgba(120,130,150,.32) inset,0 40px 80px -28px rgba(0,0,0,.55),0 12px 0 #9aa2b4,0 0 46px 3px var(--glow),0 0 100px 12px color-mix(in srgb,var(--glow) 45%,transparent)}
+.kbd-deck.kbd-light::before{background:radial-gradient(120% 80% at 50% -12%,rgba(124,92,255,.08),transparent 60%)}
+.kbd-deck.kbd-light .kbd-palm{background:linear-gradient(180deg,#ffffff,#e3e7ef);box-shadow:0 6px 0 #b7bdcc,0 10px 16px rgba(0,0,0,.25)}
+.kbd-deck.kbd-light .key.blank{--kc:#c9cfdb;background:linear-gradient(180deg,#e9ecf2,#cfd5e1)}
+.kbd-deck.kbd-gray{background:linear-gradient(180deg,#3b4150 0%,#2b303b 50%,#1e222b 100%)}
+.kbd-deck.kbd-gray .kbd-palm{background:linear-gradient(180deg,#cdd2dc,#9aa1b0)}
+.kbd-deck.kbd-gray .key.blank{--kc:#4a5160;background:linear-gradient(180deg,#4a5160,#333944)}
+
+/* two ergonomic hand clusters (built by JS) */
+.kbd-hand{display:flex;flex-direction:column;align-items:center;gap:clamp(8px,1.2vw,14px);transform-style:preserve-3d}
+.kbd-hand.left{transform:rotateZ(-6deg)}
+.kbd-hand.right{transform:rotateZ(6deg)}
+.kbd-cols{display:flex;gap:clamp(7px,.9vw,11px);align-items:flex-start}
+.kbd-col{display:flex;flex-direction:column;gap:clamp(7px,.9vw,11px)} /* translateY stagger set inline by JS */
+.kbd-palm{width:80%;height:calc(var(--ks)*.6);border-radius:14px;margin-top:4px;
+  background:linear-gradient(180deg,#d8dde6,#aeb6c4);box-shadow:0 6px 0 #6b7488,0 10px 16px rgba(0,0,0,.4)}
+
+/* tinted mechanical keycap — the cap colour IS the tool colour */
 .key{
-  --kc:#a78bfa;
-  position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;
-  width:84px;height:84px;min-width:62px;
-  border:none;border-radius:13px;cursor:pointer;color:var(--fg);font-family:inherit;
-  background:linear-gradient(180deg,#28324f,#1a2238);
-  box-shadow:0 7px 0 #0d1426,0 8px 0 #0a0f1e,0 13px 20px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.08);
-  transition:transform .08s ease,box-shadow .08s ease;
+  --kc:#5b6478;
+  position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;
+  width:var(--ks);height:var(--ks);
+  border:none;border-radius:12px;cursor:pointer;color:#fff;font-family:inherit;
+  background:radial-gradient(120% 80% at 50% 16%,rgba(255,255,255,.35),transparent 58%),linear-gradient(180deg,color-mix(in srgb,var(--kc) 80%,#fff 10%),color-mix(in srgb,var(--kc) 90%,#000 26%));
+  box-shadow:0 1px 0 rgba(255,255,255,.22) inset,0 -3px 6px rgba(0,0,0,.4) inset,0 5px 0 color-mix(in srgb,var(--kc) 55%,#000 55%),0 7px 0 rgba(0,0,0,.55),0 11px 14px rgba(0,0,0,.5);
+  transition:transform .07s ease,box-shadow .07s ease,filter .2s ease;
   -webkit-tap-highlight-color:transparent;
 }
-.key::before{content:"";position:absolute;inset:5px 5px auto 5px;height:32%;border-radius:9px 9px 16px 16px;
-  background:linear-gradient(180deg,color-mix(in srgb,var(--kc) 26%,transparent),transparent);pointer-events:none}
-.key i{font-size:1.55rem;color:var(--kc);filter:drop-shadow(0 0 8px color-mix(in srgb,var(--kc) 38%,transparent))}
-.key .abbr{font-family:var(--font-mono);font-size:1.05rem;font-weight:600;color:var(--kc)}
-.key .label{font-size:.6rem;color:var(--muted);max-width:74px;text-align:center;line-height:1.1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.key .cat{position:absolute;top:-8px;right:-5px;font-family:var(--font-mono);font-size:.5rem;padding:1px 5px;border-radius:999px;background:var(--bg-2);border:1px solid var(--border-strong);color:var(--muted)}
-.key:hover{transform:translateY(-3px)}
-.key:focus-visible{outline:2px solid var(--brand);outline-offset:3px}
-.key.pressed,.key:active{transform:translateY(6px);box-shadow:0 1px 0 #0d1426,0 2px 0 #0a0f1e,0 3px 6px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.06)}
-.key.lit{box-shadow:0 7px 0 #0d1426,0 8px 0 #0a0f1e,0 14px 26px color-mix(in srgb,var(--kc) 48%,transparent),inset 0 1px 0 rgba(255,255,255,.1)}
-/* category colour families (sets the key's accent var) */
+.key i{font-size:clamp(1.1rem,1.9vw,1.5rem);color:#fff;filter:drop-shadow(0 1px 2px rgba(0,0,0,.55));z-index:1}
+.key .abbr{font-family:var(--font-mono);font-size:clamp(.7rem,1.3vw,.92rem);font-weight:700;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.55);z-index:1}
+.key .label{font-size:clamp(.4rem,.8vw,.5rem);color:rgba(255,255,255,.94);max-width:92%;text-align:center;line-height:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-shadow:0 1px 2px rgba(0,0,0,.5);z-index:1}
+.key:hover{transform:translateY(-3px);filter:brightness(1.08)}
+.key:focus-visible{outline:2px solid #fff;outline-offset:3px}
+.key.pressed,.key:active{transform:translateY(5px);box-shadow:0 1px 0 rgba(255,255,255,.15) inset,0 -2px 5px rgba(0,0,0,.4) inset,0 1px 0 color-mix(in srgb,var(--kc) 55%,#000 55%),0 2px 0 rgba(0,0,0,.55),0 3px 6px rgba(0,0,0,.5)}
+.key.active{box-shadow:0 1px 0 rgba(255,255,255,.25) inset,0 -3px 6px rgba(0,0,0,.4) inset,0 5px 0 color-mix(in srgb,var(--kc) 55%,#000 55%),0 7px 0 rgba(0,0,0,.55),0 12px 28px color-mix(in srgb,var(--kc) 70%,transparent)}
+.key.blank{--kc:#39435c;cursor:default;background:linear-gradient(180deg,#39435c,#222b40)}
+.key.blank>*{display:none}
+/* category colour fallback when a tool has no brand colour */
 .kc-0{--kc:#a78bfa}.kc-1{--kc:#38bdf8}.kc-2{--kc:#34d399}.kc-3{--kc:#f472b6}.kc-4{--kc:#fbbf24}.kc-5{--kc:#fb7185}
-/* spacebar — wide key carrying the owner's name */
-.key-space{width:auto;flex:1 1 280px;max-width:440px;height:56px}
-.key-space .label{font-size:.68rem;max-width:none;color:var(--muted)}
 
-@media(max-width:768px){
-  .kbd-deck{transform:rotateX(14deg);animation:none;padding:20px 12px;gap:9px}
-  @keyframes deckFloat{0%,100%{transform:rotateX(14deg)}50%{transform:rotateX(14deg)}}
-  .key{width:72px;height:72px;min-width:58px}
-  .key i{font-size:1.3rem}
+/* info panel: tool name + custom description */
+.kbd-panel{align-self:center;border:1px solid var(--border-strong);border-radius:16px;
+  background:linear-gradient(180deg,var(--card-hover),var(--card));padding:22px;min-height:178px;position:relative;overflow:hidden}
+.kbd-panel::before{content:"";position:absolute;inset:0;pointer-events:none;transition:background .35s ease;
+  background:radial-gradient(90% 60% at 100% 0%,color-mix(in srgb,var(--pk,#7c5cff) 18%,transparent),transparent 60%)}
+.kbd-panel .pk-cat{font-family:var(--font-mono);font-size:.66rem;letter-spacing:.12em;text-transform:uppercase;color:var(--pk,#a78bfa);position:relative}
+.kbd-panel .pk-name{font-family:var(--font-display);font-size:1.5rem;margin:8px 0 10px;line-height:1.12;position:relative}
+.kbd-panel .pk-desc{color:var(--muted);font-size:.92rem;line-height:1.55;position:relative}
+.kbd-panel.empty .pk-cat,.kbd-panel.empty .pk-name{opacity:.5}
+
+/* all-skills list tab (full list; also holds any skills beyond the keyboard) */
+.kbd-listwrap{margin-top:44px}
+.kbd-listhead{font-family:var(--font-mono);font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted-2);text-align:center;margin-bottom:14px}
+.kbd-list{display:flex;flex-wrap:wrap;gap:9px;justify-content:center;max-width:920px;margin:0 auto}
+.kbd-chip{--kc:#a78bfa;display:inline-flex;align-items:center;gap:8px;padding:8px 13px;border-radius:999px;border:1px solid var(--border-strong);background:var(--card);font-size:.82rem;color:var(--fg);cursor:pointer;transition:border-color .2s,transform .12s,background .2s}
+.kbd-chip .dot{width:9px;height:9px;border-radius:50%;background:var(--kc);box-shadow:0 0 8px var(--kc)}
+.kbd-chip i{color:var(--kc);font-size:.95rem}
+.kbd-chip:hover{border-color:var(--kc);transform:translateY(-2px)}
+.kbd-chip.active{border-color:var(--kc);background:color-mix(in srgb,var(--kc) 14%,var(--card))}
+
+@media(max-width:1040px){
+  .kbd-deck{animation-name:deckFloatM}
+  @keyframes deckFloatM{0%{transform:rotateX(16deg) rotateY(-5deg)}50%{transform:rotateX(14deg) rotateY(5deg) translateY(-8px)}100%{transform:rotateX(16deg) rotateY(-5deg)}}
 }
-@media(max-width:430px){
-  .key{width:64px;height:64px}
-  .key .label{font-size:.54rem;max-width:54px}
+@media(max-width:768px){#skills{--ks:54px}}
+@media(max-width:560px){
+  #skills{--ks:44px}
+  .kbd-deck{gap:14px;padding:18px 14px 24px;animation:none;transform:rotateX(10deg)}
+  .kbd-hand.left,.kbd-hand.right{transform:none}
   .kbd-mute{margin-inline-start:0}
+  .kbd-panel{min-height:0}
 }
 
 /* ── experience timeline ────────────────────────────────────── */
@@ -379,121 +420,192 @@ html[dir="rtl"] .tl-item::before{left:auto;right:0}
       <h2>Tech Stack</h2>
       <div class="kbd-toolbar">
         <p class="kbd-hint">(press a key — every key is a skill)</p>
-        <span class="kbd-readout" id="kbd-readout" aria-live="polite"></span>
         <button type="button" class="kbd-mute" id="kbd-mute" aria-pressed="false" aria-label="Toggle key sound">
           <i class="fa-solid fa-volume-high"></i><span>SOUND</span>
         </button>
       </div>
     </div>
-    <div class="kbd-stage">
-      <div class="kbd-deck" id="kbd-deck">
-        <button type="button" class="key kc-0" data-skill="Penetration Testing" aria-label="Penetration Testing — Cybersecurity">
-          <span class="cat">Cybersecurity</span>
-          <span class="abbr">PT</span>
-          <span class="label">Penetration Testing</span>
+    <div class="kbd-wrap">
+      <div class="kbd-stage">
+        <div class="kbd-deck " id="kbd-deck">
+          <button type="button" class="key kc-0" data-skill="Penetration Testing" data-cat="Cybersecurity" data-desc="Simulating real attacks to find and prove exploitable weaknesses before adversaries do." aria-label="Penetration Testing — Cybersecurity">
+            <span class="abbr">PT</span>
+            <span class="label">Penetration Testing</span>
+          </button>
+          <button type="button" class="key kc-0" data-skill="Vulnerability Assessment" data-cat="Cybersecurity" data-desc="Systematically scanning systems and ranking findings by severity and business risk." aria-label="Vulnerability Assessment — Cybersecurity">
+            <span class="abbr">VA</span>
+            <span class="label">Vulnerability Assessment</span>
+          </button>
+          <button type="button" class="key kc-0" data-skill="Active Directory" data-cat="Cybersecurity" data-desc="Securing and administering Windows domain identity, users, and group policy." aria-label="Active Directory — Cybersecurity">
+            <span class="abbr">AD</span>
+            <span class="label">Active Directory</span>
+          </button>
+          <button type="button" class="key kc-0" data-skill="GPO Hardening" data-cat="Cybersecurity" data-desc="Locking down endpoints and servers through Group Policy security baselines." aria-label="GPO Hardening — Cybersecurity">
+            <span class="abbr">GH</span>
+            <span class="label">GPO Hardening</span>
+          </button>
+          <button type="button" class="key kc-0" data-skill="Incident Response" data-cat="Cybersecurity" data-desc="Detecting, containing, and recovering from security incidents with clear post-mortems." aria-label="Incident Response — Cybersecurity">
+            <span class="abbr">IR</span>
+            <span class="label">Incident Response</span>
+          </button>
+          <button type="button" class="key kc-0" data-skill="IIS" data-cat="Cybersecurity" data-desc="Configuring and hardening Microsoft&#x27;s web server for safe production hosting." aria-label="IIS — Cybersecurity">
+            <span class="abbr">IIS</span>
+            <span class="label">IIS</span>
+          </button>
+          <button type="button" class="key kc-0" data-skill="DNS" data-cat="Cybersecurity" data-desc="Managing name resolution and defending against DNS-based attacks and misconfig." aria-label="DNS — Cybersecurity">
+            <span class="abbr">DNS</span>
+            <span class="label">DNS</span>
+          </button>
+          <button type="button" class="key kc-1" data-skill="Trend Micro Vision One" data-cat="Security Platforms" data-desc="XDR platform unifying endpoint, network, and server telemetry for detection &amp; response." aria-label="Trend Micro Vision One — Security Platforms">
+            <span class="abbr">TMV</span>
+            <span class="label">Trend Micro Vision One</span>
+          </button>
+          <button type="button" class="key kc-1" data-skill="Elastic Stack" data-cat="Security Platforms" data-desc="Elasticsearch + Kibana for centralized log search, dashboards, and threat hunting." aria-label="Elastic Stack — Security Platforms">
+            <span class="abbr">ES</span>
+            <span class="label">Elastic Stack</span>
+          </button>
+          <button type="button" class="key kc-1" data-skill="SIEM" data-cat="Security Platforms" data-desc="Aggregating and correlating security events to surface threats in real time." aria-label="SIEM — Security Platforms">
+            <span class="abbr">SIEM</span>
+            <span class="label">SIEM</span>
+          </button>
+          <button type="button" class="key kc-1" data-skill="Winlogbeat" data-cat="Security Platforms" data-desc="Shipping Windows event logs into the Elastic Stack for monitoring and alerting." aria-label="Winlogbeat — Security Platforms">
+            <span class="abbr">Winl</span>
+            <span class="label">Winlogbeat</span>
+          </button>
+          <button type="button" class="key kc-2" data-skill="Docker" data-cat="DevOps" data-desc="Containerizing tools and labs for isolated, repeatable security testing." aria-label="Docker — DevOps">
+            <i class="fab fa-docker"></i>
+            <span class="label">Docker</span>
+          </button>
+          <button type="button" class="key kc-3" data-skill="Python" data-cat="Programming" data-desc="Automating assessments, parsing data, and building security tooling." aria-label="Python — Programming">
+            <i class="fab fa-python"></i>
+            <span class="label">Python</span>
+          </button>
+          <button type="button" class="key kc-3" data-skill="PowerShell" data-cat="Programming" data-desc="Scripting Windows administration, hardening, and incident-response tasks." aria-label="PowerShell — Programming">
+            <span class="abbr">Powe</span>
+            <span class="label">PowerShell</span>
+          </button>
+          <button type="button" class="key kc-3" data-skill="Java" data-cat="Programming" data-desc="Building cross-platform application logic and tooling." aria-label="Java — Programming">
+            <i class="fab fa-java"></i>
+            <span class="label">Java</span>
+          </button>
+          <button type="button" class="key kc-3" data-skill="C" data-cat="Programming" data-desc="Low-level programming for understanding memory, exploits, and systems." aria-label="C — Programming">
+            <span class="abbr">C</span>
+            <span class="label">C</span>
+          </button>
+          <button type="button" class="key kc-4" data-skill="Machine Learning" data-cat="AI &amp; Data" data-desc="Training models on custom datasets for classification and detection." aria-label="Machine Learning — AI &amp; Data">
+            <i class="fas fa-robot"></i>
+            <span class="label">Machine Learning</span>
+          </button>
+          <button type="button" class="key kc-4" data-skill="NLP" data-cat="AI &amp; Data" data-desc="Processing natural language for chatbots and text understanding." aria-label="NLP — AI &amp; Data">
+            <span class="abbr">NLP</span>
+            <span class="label">NLP</span>
+          </button>
+          <button type="button" class="key kc-4" data-skill="Pandas" data-cat="AI &amp; Data" data-desc="Wrangling and analyzing structured data in Python pipelines." aria-label="Pandas — AI &amp; Data">
+            <span class="abbr">Pand</span>
+            <span class="label">Pandas</span>
+          </button>
+          <button type="button" class="key kc-5" data-skill="HTML" data-cat="Web" data-desc="Structuring accessible, semantic web content." aria-label="HTML — Web">
+            <i class="fab fa-html5"></i>
+            <span class="label">HTML</span>
+          </button>
+          <button type="button" class="key kc-5" data-skill="CSS" data-cat="Web" data-desc="Styling responsive, polished interfaces." aria-label="CSS — Web">
+            <i class="fab fa-css3-alt"></i>
+            <span class="label">CSS</span>
+          </button>
+        </div>
+      </div>
+      <aside class="kbd-panel empty" id="kbd-panel" aria-live="polite">
+        <div class="pk-cat">Select a key</div>
+        <div class="pk-name">Tech Stack</div>
+        <div class="pk-desc">Press any key to see the tool and what it's used for.</div>
+      </aside>
+    </div>
+    <div class="kbd-listwrap">
+      <div class="kbd-listhead">All skills</div>
+      <div class="kbd-list" id="kbd-list">
+        <button type="button" class="kbd-chip kc-0" data-skill="Penetration Testing" data-cat="Cybersecurity" data-desc="Simulating real attacks to find and prove exploitable weaknesses before adversaries do.">
+          <span class="dot"></span>
+          <span>Penetration Testing</span>
         </button>
-        <button type="button" class="key kc-0" data-skill="Vulnerability Assessment" aria-label="Vulnerability Assessment — Cybersecurity">
-          <span class="cat">Cybersecurity</span>
-          <span class="abbr">VA</span>
-          <span class="label">Vulnerability Assessment</span>
+        <button type="button" class="kbd-chip kc-0" data-skill="Vulnerability Assessment" data-cat="Cybersecurity" data-desc="Systematically scanning systems and ranking findings by severity and business risk.">
+          <span class="dot"></span>
+          <span>Vulnerability Assessment</span>
         </button>
-        <button type="button" class="key kc-0" data-skill="Active Directory" aria-label="Active Directory — Cybersecurity">
-          <span class="cat">Cybersecurity</span>
-          <span class="abbr">AD</span>
-          <span class="label">Active Directory</span>
+        <button type="button" class="kbd-chip kc-0" data-skill="Active Directory" data-cat="Cybersecurity" data-desc="Securing and administering Windows domain identity, users, and group policy.">
+          <span class="dot"></span>
+          <span>Active Directory</span>
         </button>
-        <button type="button" class="key kc-0" data-skill="GPO Hardening" aria-label="GPO Hardening — Cybersecurity">
-          <span class="cat">Cybersecurity</span>
-          <span class="abbr">GH</span>
-          <span class="label">GPO Hardening</span>
+        <button type="button" class="kbd-chip kc-0" data-skill="GPO Hardening" data-cat="Cybersecurity" data-desc="Locking down endpoints and servers through Group Policy security baselines.">
+          <span class="dot"></span>
+          <span>GPO Hardening</span>
         </button>
-        <button type="button" class="key kc-0" data-skill="Incident Response" aria-label="Incident Response — Cybersecurity">
-          <span class="cat">Cybersecurity</span>
-          <span class="abbr">IR</span>
-          <span class="label">Incident Response</span>
+        <button type="button" class="kbd-chip kc-0" data-skill="Incident Response" data-cat="Cybersecurity" data-desc="Detecting, containing, and recovering from security incidents with clear post-mortems.">
+          <span class="dot"></span>
+          <span>Incident Response</span>
         </button>
-        <button type="button" class="key kc-0" data-skill="IIS" aria-label="IIS — Cybersecurity">
-          <span class="cat">Cybersecurity</span>
-          <span class="abbr">IIS</span>
-          <span class="label">IIS</span>
+        <button type="button" class="kbd-chip kc-0" data-skill="IIS" data-cat="Cybersecurity" data-desc="Configuring and hardening Microsoft&#x27;s web server for safe production hosting.">
+          <span class="dot"></span>
+          <span>IIS</span>
         </button>
-        <button type="button" class="key kc-0" data-skill="DNS" aria-label="DNS — Cybersecurity">
-          <span class="cat">Cybersecurity</span>
-          <span class="abbr">DNS</span>
-          <span class="label">DNS</span>
+        <button type="button" class="kbd-chip kc-0" data-skill="DNS" data-cat="Cybersecurity" data-desc="Managing name resolution and defending against DNS-based attacks and misconfig.">
+          <span class="dot"></span>
+          <span>DNS</span>
         </button>
-        <button type="button" class="key kc-1" data-skill="Trend Micro Vision One" aria-label="Trend Micro Vision One — Security Platforms">
-          <span class="cat">Security Platforms</span>
-          <span class="abbr">TMV</span>
-          <span class="label">Trend Micro Vision One</span>
+        <button type="button" class="kbd-chip kc-1" data-skill="Trend Micro Vision One" data-cat="Security Platforms" data-desc="XDR platform unifying endpoint, network, and server telemetry for detection &amp; response.">
+          <span class="dot"></span>
+          <span>Trend Micro Vision One</span>
         </button>
-        <button type="button" class="key kc-1" data-skill="Elastic Stack" aria-label="Elastic Stack — Security Platforms">
-          <span class="cat">Security Platforms</span>
-          <span class="abbr">ES</span>
-          <span class="label">Elastic Stack</span>
+        <button type="button" class="kbd-chip kc-1" data-skill="Elastic Stack" data-cat="Security Platforms" data-desc="Elasticsearch + Kibana for centralized log search, dashboards, and threat hunting.">
+          <span class="dot"></span>
+          <span>Elastic Stack</span>
         </button>
-        <button type="button" class="key kc-1" data-skill="SIEM" aria-label="SIEM — Security Platforms">
-          <span class="cat">Security Platforms</span>
-          <span class="abbr">SIEM</span>
-          <span class="label">SIEM</span>
+        <button type="button" class="kbd-chip kc-1" data-skill="SIEM" data-cat="Security Platforms" data-desc="Aggregating and correlating security events to surface threats in real time.">
+          <span class="dot"></span>
+          <span>SIEM</span>
         </button>
-        <button type="button" class="key kc-1" data-skill="Winlogbeat" aria-label="Winlogbeat — Security Platforms">
-          <span class="cat">Security Platforms</span>
-          <span class="abbr">Winl</span>
-          <span class="label">Winlogbeat</span>
+        <button type="button" class="kbd-chip kc-1" data-skill="Winlogbeat" data-cat="Security Platforms" data-desc="Shipping Windows event logs into the Elastic Stack for monitoring and alerting.">
+          <span class="dot"></span>
+          <span>Winlogbeat</span>
         </button>
-        <button type="button" class="key kc-2" data-skill="Docker" aria-label="Docker — DevOps">
-          <span class="cat">DevOps</span>
+        <button type="button" class="kbd-chip kc-2" data-skill="Docker" data-cat="DevOps" data-desc="Containerizing tools and labs for isolated, repeatable security testing.">
           <i class="fab fa-docker"></i>
-          <span class="label">Docker</span>
+          <span>Docker</span>
         </button>
-        <button type="button" class="key kc-3" data-skill="Python" aria-label="Python — Programming">
-          <span class="cat">Programming</span>
+        <button type="button" class="kbd-chip kc-3" data-skill="Python" data-cat="Programming" data-desc="Automating assessments, parsing data, and building security tooling.">
           <i class="fab fa-python"></i>
-          <span class="label">Python</span>
+          <span>Python</span>
         </button>
-        <button type="button" class="key kc-3" data-skill="PowerShell" aria-label="PowerShell — Programming">
-          <span class="cat">Programming</span>
-          <span class="abbr">Powe</span>
-          <span class="label">PowerShell</span>
+        <button type="button" class="kbd-chip kc-3" data-skill="PowerShell" data-cat="Programming" data-desc="Scripting Windows administration, hardening, and incident-response tasks.">
+          <span class="dot"></span>
+          <span>PowerShell</span>
         </button>
-        <button type="button" class="key kc-3" data-skill="Java" aria-label="Java — Programming">
-          <span class="cat">Programming</span>
+        <button type="button" class="kbd-chip kc-3" data-skill="Java" data-cat="Programming" data-desc="Building cross-platform application logic and tooling.">
           <i class="fab fa-java"></i>
-          <span class="label">Java</span>
+          <span>Java</span>
         </button>
-        <button type="button" class="key kc-3" data-skill="C" aria-label="C — Programming">
-          <span class="cat">Programming</span>
-          <span class="abbr">C</span>
-          <span class="label">C</span>
+        <button type="button" class="kbd-chip kc-3" data-skill="C" data-cat="Programming" data-desc="Low-level programming for understanding memory, exploits, and systems.">
+          <span class="dot"></span>
+          <span>C</span>
         </button>
-        <button type="button" class="key kc-4" data-skill="Machine Learning" aria-label="Machine Learning — AI &amp; Data">
-          <span class="cat">AI &amp; Data</span>
+        <button type="button" class="kbd-chip kc-4" data-skill="Machine Learning" data-cat="AI &amp; Data" data-desc="Training models on custom datasets for classification and detection.">
           <i class="fas fa-robot"></i>
-          <span class="label">Machine Learning</span>
+          <span>Machine Learning</span>
         </button>
-        <button type="button" class="key kc-4" data-skill="NLP" aria-label="NLP — AI &amp; Data">
-          <span class="cat">AI &amp; Data</span>
-          <span class="abbr">NLP</span>
-          <span class="label">NLP</span>
+        <button type="button" class="kbd-chip kc-4" data-skill="NLP" data-cat="AI &amp; Data" data-desc="Processing natural language for chatbots and text understanding.">
+          <span class="dot"></span>
+          <span>NLP</span>
         </button>
-        <button type="button" class="key kc-4" data-skill="Pandas" aria-label="Pandas — AI &amp; Data">
-          <span class="cat">AI &amp; Data</span>
-          <span class="abbr">Pand</span>
-          <span class="label">Pandas</span>
+        <button type="button" class="kbd-chip kc-4" data-skill="Pandas" data-cat="AI &amp; Data" data-desc="Wrangling and analyzing structured data in Python pipelines.">
+          <span class="dot"></span>
+          <span>Pandas</span>
         </button>
-        <button type="button" class="key kc-5" data-skill="HTML" aria-label="HTML — Web">
-          <span class="cat">Web</span>
+        <button type="button" class="kbd-chip kc-5" data-skill="HTML" data-cat="Web" data-desc="Structuring accessible, semantic web content.">
           <i class="fab fa-html5"></i>
-          <span class="label">HTML</span>
+          <span>HTML</span>
         </button>
-        <button type="button" class="key kc-5" data-skill="CSS" aria-label="CSS — Web">
-          <span class="cat">Web</span>
+        <button type="button" class="kbd-chip kc-5" data-skill="CSS" data-cat="Web" data-desc="Styling responsive, polished interfaces.">
           <i class="fab fa-css3-alt"></i>
-          <span class="label">CSS</span>
-        </button>
-        <button type="button" class="key key-space" data-skill="Maya Okafor" aria-label="Maya Okafor">
-          <span class="label">Maya Okafor</span>
+          <span>CSS</span>
         </button>
       </div>
     </div>
@@ -889,15 +1001,63 @@ html[dir="rtl"] .tl-item::before{left:auto;right:0}
     document.head.appendChild(ls);
   }
 
-  /* ── interactive 3D skills keyboard: synth click + press + parallax ── */
+  /* ── Dygma-style split 3D keyboard: build, tint, sound, info panel ── */
   (function(){
     var deck = document.getElementById("kbd-deck");
     if(!deck){ return; }
-    var keys = Array.prototype.slice.call(deck.querySelectorAll(".key"));
-    var readout = document.getElementById("kbd-readout");
+    var panel = document.getElementById("kbd-panel");
+    var pCat = panel && panel.querySelector(".pk-cat");
+    var pName = panel && panel.querySelector(".pk-name");
+    var pDesc = panel && panel.querySelector(".pk-desc");
     var muteBtn = document.getElementById("kbd-mute");
+    var chips = Array.prototype.slice.call(document.querySelectorAll("#kbd-list .kbd-chip"));
+    var hoverable = !!(window.matchMedia && window.matchMedia("(hover:hover)").matches);
 
-    /* Web Audio synthesized mechanical "thock" — no audio file to host */
+    /* ── per-tool brand colours; the keycap takes its tool's colour ── */
+    var BRAND = {
+      react:"#61dafb",reactjs:"#61dafb",reactnative:"#61dafb",javascript:"#f7df1e",js:"#f7df1e",
+      typescript:"#3178c6",ts:"#3178c6",node:"#3c873a",nodejs:"#3c873a",express:"#3c873a",
+      python:"#3776ab",django:"#3776ab",flask:"#3776ab",docker:"#2496ed",kubernetes:"#326ce5",k8s:"#326ce5",
+      java:"#ea2d2e",spring:"#6db33f",springboot:"#6db33f",html:"#e34f26",html5:"#e34f26",css:"#1572b6",css3:"#1572b6",
+      sass:"#cc6699",scss:"#cc6699",php:"#777bb4",laravel:"#ff2d20",vue:"#42b883",vuejs:"#42b883",angular:"#dd0031",
+      aws:"#ff9900",azure:"#0078d4",gcp:"#4285f4",googlecloud:"#4285f4",graphql:"#e10098",
+      postgresql:"#336791",postgres:"#336791",mysql:"#4479a1",mongodb:"#47a248",redis:"#dc382d",sqlite:"#003b57",
+      git:"#f05032",github:"#e6edf3",gitlab:"#fc6d26",linux:"#fcc624",ubuntu:"#e95420",rust:"#dea584",
+      go:"#00add8",golang:"#00add8",swift:"#fa7343",kotlin:"#7f52ff",figma:"#f24e1e",tailwind:"#38bdf8",tailwindcss:"#38bdf8",
+      bootstrap:"#7952b3",nextjs:"#e6edf3",next:"#e6edf3",pandas:"#8a4baf",tensorflow:"#ff6f00",pytorch:"#ee4c2c",
+      elasticstack:"#00bfb3",elastic:"#00bfb3",powershell:"#5391fe",windows:"#0078d4"
+    };
+    function brandOf(name){ var k = String(name||"").toLowerCase().replace(/[^a-z0-9]/g,""); return BRAND[k] || ""; }
+    function tint(el){ var b = brandOf(el.getAttribute("data-skill")); if(b){ el.style.setProperty("--kc", b); } }
+
+    /* ── build the two ergonomic hand clusters from the skill keys ── */
+    var COLS = 4, ROWS = 3, HALF = COLS * ROWS, CAP = HALF * 2;     /* fixed 24-key board */
+    var master = Array.prototype.slice.call(deck.querySelectorAll(".key"));
+    master.forEach(tint);
+    chips.forEach(tint);
+    var board = master.slice(0, CAP);
+    master.slice(CAP).forEach(function(k){ k.remove(); });          /* overflow lives in the list */
+    var staL = [10, 2, -8, -2], staR = [-2, -8, 2, 10];             /* ergonomic column stagger */
+    function makeBlank(){ var b = document.createElement("button"); b.type = "button"; b.className = "key blank"; b.tabIndex = -1; b.setAttribute("aria-hidden","true"); return b; }
+    function buildHand(cls, hk, stag){
+      var hand = document.createElement("div"); hand.className = "kbd-hand " + cls;
+      var cols = document.createElement("div"); cols.className = "kbd-cols";
+      var ki = 0;
+      for(var c = 0; c < COLS; c++){
+        var col = document.createElement("div"); col.className = "kbd-col";
+        col.style.transform = "translateY(" + stag[c] + "px)";
+        for(var r = 0; r < ROWS; r++){ col.appendChild(hk[ki++] || makeBlank()); }
+        cols.appendChild(col);
+      }
+      hand.appendChild(cols);
+      var palm = document.createElement("div"); palm.className = "kbd-palm"; hand.appendChild(palm);
+      return hand;
+    }
+    deck.innerHTML = "";
+    deck.appendChild(buildHand("left", board.slice(0, HALF), staL));
+    deck.appendChild(buildHand("right", board.slice(HALF), staR));
+
+    /* ── Web Audio: a richer synthesized mechanical key press (no asset) ── */
     var AC = window.AudioContext || window.webkitAudioContext;
     var actx = null, muted = false;
     try{ muted = localStorage.getItem("kbdMuted") === "1"; }catch(e){}
@@ -919,78 +1079,92 @@ html[dir="rtl"] .tl-item::before{left:auto;right:0}
         applyMuteUI(); ensureCtx();
       });
     }
-
-    function click(pitch){
+    function noiseBurst(dur, type, freq, gainVal){
+      var len = Math.max(1, Math.floor(actx.sampleRate * dur));
+      var buf = actx.createBuffer(1, len, actx.sampleRate);
+      var d = buf.getChannelData(0);
+      for(var i = 0; i < len; i++){ d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 2.2); }
+      var src = actx.createBufferSource(); src.buffer = buf;
+      var f = actx.createBiquadFilter(); f.type = type; f.frequency.value = freq;
+      var g = actx.createGain(); g.gain.value = gainVal;
+      src.connect(f); f.connect(g); g.connect(actx.destination); src.start();
+    }
+    function playClick(pitch){
       if(muted){ return; }
       ensureCtx();
       if(!actx){ return; }
       var t = actx.currentTime;
-      /* low body of the press */
-      var o = actx.createOscillator(), g = actx.createGain();
-      o.type = "triangle";
-      o.frequency.setValueAtTime(150 + pitch * 26, t);
-      o.frequency.exponentialRampToValueAtTime(72, t + 0.06);
+      var jit = (Math.random() - 0.5) * 18;
+      try{ noiseBurst(0.012, "highpass", 2400, 0.16); }catch(e){}  /* sharp top click */
+      try{ noiseBurst(0.05, "lowpass", 420 + jit, 0.5); }catch(e){} /* "thock" body */
+      var o = actx.createOscillator(), g = actx.createGain();        /* weighted thump */
+      o.type = "sine";
+      o.frequency.setValueAtTime(168 + pitch * 20 + jit, t);
+      o.frequency.exponentialRampToValueAtTime(78, t + 0.07);
       g.gain.setValueAtTime(0.0001, t);
-      g.gain.exponentialRampToValueAtTime(0.22, t + 0.004);
-      g.gain.exponentialRampToValueAtTime(0.0001, t + 0.09);
-      o.connect(g); g.connect(actx.destination); o.start(t); o.stop(t + 0.1);
-      /* click transient: short high-passed noise burst */
-      try{
-        var len = Math.floor(actx.sampleRate * 0.03);
-        var buf = actx.createBuffer(1, len, actx.sampleRate);
-        var d = buf.getChannelData(0);
-        for(var i = 0; i < len; i++){ d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 2); }
-        var n = actx.createBufferSource(); n.buffer = buf;
-        var hp = actx.createBiquadFilter(); hp.type = "highpass"; hp.frequency.value = 1700;
-        var ng = actx.createGain(); ng.gain.value = 0.16;
-        n.connect(hp); hp.connect(ng); ng.connect(actx.destination); n.start(t);
-      }catch(e){}
+      g.gain.exponentialRampToValueAtTime(0.28, t + 0.004);
+      g.gain.exponentialRampToValueAtTime(0.0001, t + 0.11);
+      o.connect(g); g.connect(actx.destination); o.start(t); o.stop(t + 0.12);
     }
 
-    var roTimer;
-    function pressKey(k, pitch){
-      if(!k){ return; }
-      k.classList.add("pressed", "lit");
-      click(pitch || 0);
-      var skill = k.getAttribute("data-skill");
-      if(readout && skill){
-        readout.textContent = skill;
-        readout.classList.add("show");
-        clearTimeout(roTimer);
-        roTimer = setTimeout(function(){ readout.classList.remove("show"); }, 1400);
+    /* ── info panel: show the tool name + its custom description ── */
+    var activeEl = null;
+    function showInfo(el, lock){
+      if(!panel){ return; }
+      var name = el.getAttribute("data-skill") || "";
+      var cat = el.getAttribute("data-cat") || "";
+      var desc = el.getAttribute("data-desc") || "";
+      var col = (getComputedStyle(el).getPropertyValue("--kc") || "").trim() || "#7c5cff";
+      panel.style.setProperty("--pk", col);
+      panel.classList.remove("empty");
+      if(pCat){ pCat.textContent = cat || "Tech"; }
+      if(pName){ pName.textContent = name; }
+      if(pDesc){ pDesc.textContent = desc || (cat ? (name + " — part of the " + cat + " stack.") : ""); }
+      if(lock){
+        if(activeEl && activeEl !== el){ activeEl.classList.remove("active"); }
+        el.classList.add("active"); activeEl = el;
       }
-      setTimeout(function(){ k.classList.remove("pressed"); }, 130);
-      setTimeout(function(){ k.classList.remove("lit"); }, 330);
     }
 
-    keys.forEach(function(k, idx){
-      var p = idx % 6;
-      k.addEventListener("pointerdown", function(){ ensureCtx(); pressKey(k, p); });
-      k.addEventListener("keydown", function(e){ if(e.key === "Enter" || e.key === " "){ e.preventDefault(); pressKey(k, p); } });
-    });
+    function press(el, pitch){
+      if(!el){ return; }
+      var isKey = el.classList.contains("key");
+      if(isKey){ el.classList.add("pressed"); }
+      playClick(pitch || 0);
+      showInfo(el, true);
+      if(isKey){ setTimeout(function(){ el.classList.remove("pressed"); }, 120); }
+    }
+    function wire(el, p){
+      el.addEventListener("pointerdown", function(){ ensureCtx(); press(el, p); });
+      el.addEventListener("keydown", function(e){ if(e.key === "Enter" || e.key === " "){ e.preventDefault(); press(el, p); } });
+      if(hoverable){ el.addEventListener("mouseenter", function(){ showInfo(el, false); }); }
+    }
+    /* keyboard keys + every chip in the "all skills" list are interactive */
+    board.forEach(function(k, i){ wire(k, i % 6); });
+    chips.forEach(function(c, i){ wire(c, i % 6); });
 
-    /* physical keyboard → press the matching skill key (by first letter), else a random key */
+    /* physical keyboard → press the matching skill key (by first letter), else a random board key */
     document.addEventListener("keydown", function(e){
       if(e.metaKey || e.ctrlKey || e.altKey){ return; }
       var tag = e.target && e.target.tagName;
       if(tag === "INPUT" || tag === "TEXTAREA"){ return; }
-      if(e.key && e.key.length === 1 && /[a-z0-9]/i.test(e.key)){
+      if(e.key && e.key.length === 1 && /[a-z0-9]/i.test(e.key) && board.length){
         var ch = e.key.toLowerCase();
-        var match = keys.filter(function(k){ return (k.getAttribute("data-skill") || "").toLowerCase().charAt(0) === ch; });
-        var pick = match.length ? match[(Math.random() * match.length) | 0] : keys[(Math.random() * keys.length) | 0];
-        pressKey(pick, ch.charCodeAt(0) % 6);
+        var m = board.filter(function(k){ return (k.getAttribute("data-skill") || "").toLowerCase().charAt(0) === ch; });
+        var pick = m.length ? m[(Math.random() * m.length) | 0] : board[(Math.random() * board.length) | 0];
+        press(pick, ch.charCodeAt(0) % 6);
       }
     });
 
     /* desktop pointer-parallax tilt (skip touch + reduced-motion) */
-    if(!reduce && window.matchMedia && window.matchMedia("(hover:hover)").matches){
+    if(!reduce && hoverable){
       var stage = deck.parentElement;
       stage.addEventListener("pointermove", function(e){
         var r = stage.getBoundingClientRect();
         var dx = (e.clientX - r.left) / r.width - 0.5;
         var dy = (e.clientY - r.top) / r.height - 0.5;
         deck.style.animation = "none";
-        deck.style.transform = "rotateX(" + (26 - dy * 9) + "deg) rotateY(" + (dx * 9) + "deg)";
+        deck.style.transform = "rotateX(" + (22 - dy * 8) + "deg) rotateY(" + (dx * 10) + "deg)";
       });
       stage.addEventListener("pointerleave", function(){ deck.style.transform = ""; deck.style.animation = ""; });
     }
