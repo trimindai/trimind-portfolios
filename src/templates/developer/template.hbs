@@ -134,8 +134,15 @@ section{position:relative;z-index:1}
 
 /* ── hero ───────────────────────────────────────────────────── */
 #hero{min-height:100svh;display:flex;align-items:center;padding:120px 0 80px}
-#hero .grid{display:grid;grid-template-columns:minmax(0,1fr);gap:8px}
-@media(min-width:900px){#hero .grid{max-width:440px}} /* keep text in the left column; keyboard owns the right (two-column hero, like the source) */
+#hero .wrap{position:relative}
+#hero .grid{display:grid;grid-template-columns:minmax(0,1fr);gap:8px;position:relative;z-index:1}
+@media(min-width:900px){#hero .grid{max-width:440px}} /* text owns the left column; the 3D keyboard render owns the right */
+/* photoreal split-keyboard hero render (Blender) */
+.hero-kbd{position:absolute;right:0;top:50%;transform:translateY(-50%);width:min(48%,660px);height:auto;pointer-events:none;z-index:0;
+  filter:drop-shadow(0 30px 50px rgba(0,0,0,.6));
+  -webkit-mask-image:linear-gradient(90deg,transparent 0,#000 26%);mask-image:linear-gradient(90deg,transparent 0,#000 26%)}
+@media(max-width:900px){.hero-kbd{position:static;transform:none;display:block;width:100%;max-width:520px;margin:28px auto 0;opacity:.92;
+  -webkit-mask-image:none;mask-image:none;filter:drop-shadow(0 20px 36px rgba(0,0,0,.55))}}
 #hero .hello{font-family:var(--font-mono);color:var(--accent);font-size:.95rem;letter-spacing:.08em;margin-bottom:18px}
 #hero h1{
   font-family:var(--font-display);font-weight:400;
@@ -164,7 +171,7 @@ section{position:relative;z-index:1}
 #skills{padding:80px 0 110px;--ks:62px;--glow:#2f6bff;--body:#243049}
 .kbd-toolbar{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-top:10px}
 .kbd-hint{font-family:var(--font-mono);color:var(--muted-2);font-size:.85rem}
-.kbd-mute{display:none;margin-inline-start:auto;align-items:center;gap:8px;font-family:var(--font-mono);font-size:.72rem;letter-spacing:.08em;color:var(--muted);
+.kbd-mute{margin-inline-start:auto;display:inline-flex;align-items:center;gap:8px;font-family:var(--font-mono);font-size:.72rem;letter-spacing:.08em;color:var(--muted);
   padding:9px 13px;border-radius:10px;border:1px solid var(--border-strong);background:var(--card);cursor:pointer;transition:border-color .2s,color .2s,transform .12s}
 .kbd-mute:hover{border-color:var(--brand);color:var(--fg)}
 .kbd-mute:active{transform:translateY(1px)}
@@ -435,6 +442,7 @@ html[dir="rtl"] .tl-item::before{left:auto;right:0}
       {{/if}}
       <div class="scroll-cue blur-in" data-delay="440"><span class="mouse"></span>{{#if isRTL}}مرّر{{else}}SCROLL{{/if}}</div>
     </div>
+    <img class="hero-kbd" src="/assets/hero-keyboard.png" alt="3D split mechanical keyboard" loading="eager" width="1600" height="900">
   </div>
 </section>
 
@@ -898,6 +906,16 @@ html[dir="rtl"] .tl-item::before{left:auto;right:0}
         applyMuteUI(); ensureCtx();
       });
     }
+    /* unlock audio on the very first user gesture anywhere — so the first
+       key press is reliably audible (browsers gate audio until a gesture) */
+    function primeAudio(){
+      ensureCtx();
+      if(actx){ try{ var b = actx.createBuffer(1, 1, actx.sampleRate); var s = actx.createBufferSource(); s.buffer = b; s.connect(actx.destination); s.start(0); }catch(e){} }
+      document.removeEventListener("pointerdown", primeAudio);
+      document.removeEventListener("keydown", primeAudio);
+    }
+    document.addEventListener("pointerdown", primeAudio);
+    document.addEventListener("keydown", primeAudio);
     function noiseBurst(dur, type, freq, gainVal){
       var len = Math.max(1, Math.floor(actx.sampleRate * dur));
       var buf = actx.createBuffer(1, len, actx.sampleRate);
@@ -909,7 +927,6 @@ html[dir="rtl"] .tl-item::before{left:auto;right:0}
       src.connect(f); f.connect(g); g.connect(actx.destination); src.start();
     }
     function playClick(pitch){
-      return; /* sound disabled per request — re-enable by removing this line */
       if(muted){ return; }
       ensureCtx();
       if(!actx){ return; }
