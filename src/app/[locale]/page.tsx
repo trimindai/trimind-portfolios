@@ -3,8 +3,11 @@ import { Link } from "@/i18n/navigation";
 import { ScrollReveal } from "@/components/landing/ScrollReveal";
 import { HowItWorks } from "@/components/landing/HowItWorks";
 import { Testimonials } from "@/components/landing/Testimonials";
-import { Palette, Languages, FileDown, Globe, Plus, Eye } from "lucide-react";
+import { Palette, Languages, FileDown, Globe, Plus, Eye, Check } from "lucide-react";
 import Image from "next/image";
+import { HOSTING_ENABLED } from "@/lib/flags";
+import { AdminLink } from "@/components/AdminLink";
+import { TryItForm } from "@/components/landing/TryItForm";
 
 export default async function LandingPage({
   params,
@@ -44,11 +47,13 @@ export default async function LandingPage({
         },
         {
           q: "كيف أبدأ؟",
-          a: "اختر قالبًا، أضف تفاصيلك بالعربي أو الإنجليزي، واضغط نشر. يصبح بورتفوليوك حيًا فورًا برابط خاص.",
+          a: HOSTING_ENABLED
+            ? "اختر قالبًا، أضف تفاصيلك بالعربي أو الإنجليزي، واضغط نشر. يصبح بورتفوليوك حيًا فورًا برابط خاص."
+            : "اختر قالبًا، أضف تفاصيلك بالعربي أو الإنجليزي، ثم حمّل بورتفوليوك كملف PDF احترافي.",
         },
         {
-          q: "ماذا لو لم يعجبني بورتفوليوي؟",
-          a: "يمكنك التعديل في أي وقت من لوحة التحكم حتى يصبح كما تريده تمامًا.",
+          q: "هل أقدر أسترجع المبلغ؟",
+          a: "جميع عمليات الدفع نهائية. تحصل على وصول فوري لبناء ونشر ملفك، لذلك لا نوفر استرجاع. تقدر تشوف كل القوالب والعروض المباشرة كاملة قبل الدفع — ادفع فقط لما تكون جاهز.",
         },
         {
           q: "هل يمكنني تغيير القالب لاحقًا؟",
@@ -65,8 +70,10 @@ export default async function LandingPage({
           a: "No. Portfolio Pro is a one-time payment of 4.900 KD. No subscriptions, no renewals, no hidden fees.",
         },
         {
-          q: "Can I edit after publishing?",
-          a: "Yes. Your portfolio updates instantly whenever you make changes from your dashboard.",
+          q: HOSTING_ENABLED ? "Can I edit after publishing?" : "Can I edit my portfolio?",
+          a: HOSTING_ENABLED
+            ? "Yes. Your portfolio updates instantly whenever you make changes from your dashboard."
+            : "Yes. Update your details anytime from your dashboard, then download a fresh PDF.",
         },
         {
           q: "Which payment methods are accepted?",
@@ -82,11 +89,13 @@ export default async function LandingPage({
         },
         {
           q: "How do I get started?",
-          a: "Pick a template, fill in your details in Arabic or English, and click publish. Your portfolio goes live instantly with its own URL.",
+          a: HOSTING_ENABLED
+            ? "Pick a template, fill in your details in Arabic or English, and click publish. Your portfolio goes live instantly with its own URL."
+            : "Pick a template, fill in your details in Arabic or English, and download your portfolio as a professional PDF.",
         },
         {
-          q: "What if I don't like my portfolio?",
-          a: "You can edit it anytime from your dashboard until it's exactly the way you want it.",
+          q: "Can I get a refund?",
+          a: "All sales are final. You get instant access to build and publish your portfolio, so we don't offer refunds. You can fully preview every template and live demo before paying — pay only when you're ready.",
         },
         {
           q: "Can I switch templates later?",
@@ -98,14 +107,46 @@ export default async function LandingPage({
         },
       ];
 
-  const regions = [
-    { flag: "🇰🇼", en: "Kuwait", ar: "الكويت" },
-    { flag: "🇦🇪", en: "UAE", ar: "الإمارات" },
-    { flag: "🇸🇦", en: "Saudi Arabia", ar: "السعودية" },
-  ];
 
   return (
     <div className="min-h-screen bg-[var(--land-bg)] text-[var(--land-bright)] land-grain">
+      {/* Schema.org: Product */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "SoftwareApplication",
+            name: "Portfolio Pro",
+            applicationCategory: "BusinessApplication",
+            operatingSystem: "Web",
+            offers: {
+              "@type": "Offer",
+              price: "4.900",
+              priceCurrency: "KWD",
+              availability: "https://schema.org/InStock",
+            },
+            description: "Create a professional CV + portfolio in minutes. Pick a template, fill your info, get your PDF.",
+            url: "https://portfolio-trimind.com",
+            provider: { "@type": "Organization", name: "TriMind", url: "https://trimind.ai" },
+          }),
+        }}
+      />
+      {/* Schema.org: FAQPage */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "FAQPage",
+            mainEntity: faqs.map((item) => ({
+              "@type": "Question",
+              name: item.q,
+              acceptedAnswer: { "@type": "Answer", text: item.a },
+            })),
+          }),
+        }}
+      />
       {/* ── Navbar ─────────────────────────────── */}
       <nav className="fixed top-0 z-50 w-full border-b border-[var(--land-border)]/50 bg-[var(--land-bg)]/80 backdrop-blur-md">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
@@ -113,10 +154,11 @@ export default async function LandingPage({
             {tc("appName")}
           </Link>
           <div className="flex items-center gap-4">
+            <AdminLink />
             <Link
               href="/"
               locale={otherLocale}
-              className="text-sm text-[var(--land-muted)] hover:text-[var(--land-bright)] transition-colors"
+              className="text-sm font-medium text-[var(--land-body)] hover:text-[var(--land-bright)] border border-[var(--land-border)] rounded-full px-3 py-1 transition-colors hover:border-[var(--land-accent)]/50"
             >
               {otherLabel}
             </Link>
@@ -138,66 +180,50 @@ export default async function LandingPage({
 
       {/* ── Hero ───────────────────────────────── */}
       <section className="relative min-h-[100dvh] flex items-center overflow-hidden">
-        {/* Hero background image */}
-        <Image
-          src="/landing/hero-bg.jpg"
-          alt=""
-          fill
-          sizes="100vw"
-          className="object-cover object-center opacity-40 pointer-events-none"
-          priority
-          quality={60}
-        />
-        {/* Background glows — vivid and dramatic */}
+        {/* Soft gradient background */}
         <div
           className="absolute inset-0 pointer-events-none"
           style={{
-            background: `radial-gradient(ellipse 80% 60% at ${isRTL ? "25%" : "75%"} 35%, oklch(0.25 0.12 160 / 0.7), transparent 70%), radial-gradient(circle at ${isRTL ? "85%" : "15%"} 85%, oklch(0.2 0.08 160 / 0.4), transparent 50%), radial-gradient(circle at 50% 0%, oklch(0.15 0.05 160 / 0.3), transparent 60%)`,
+            background: `radial-gradient(ellipse 80% 60% at ${isRTL ? "25%" : "75%"} 35%, rgba(5,150,105,0.06), transparent 70%), radial-gradient(circle at ${isRTL ? "85%" : "15%"} 85%, rgba(5,150,105,0.04), transparent 50%), linear-gradient(180deg, #f8fafc 0%, #ffffff 100%)`,
           }}
         />
-        {/* Grid pattern overlay */}
+        {/* Subtle grid pattern */}
         <div
-          className="absolute inset-0 pointer-events-none opacity-[0.04]"
+          className="absolute inset-0 pointer-events-none opacity-[0.03]"
           style={{
-            backgroundImage: `linear-gradient(var(--land-border) 1px, transparent 1px), linear-gradient(90deg, var(--land-border) 1px, transparent 1px)`,
+            backgroundImage: `linear-gradient(#cbd5e1 1px, transparent 1px), linear-gradient(90deg, #cbd5e1 1px, transparent 1px)`,
             backgroundSize: "64px 64px",
           }}
         />
         <div className="relative z-10 mx-auto w-full max-w-7xl px-6 pt-28 pb-16 lg:pt-0">
           <div className="flex flex-col lg:grid lg:grid-cols-[1fr_1.2fr] items-center gap-12 lg:gap-20">
             <div className="land-stagger">
-              <p className="text-xs font-medium tracking-[0.2em] uppercase text-emerald-400">
+              <p className="text-xs font-medium tracking-[0.2em] uppercase text-[var(--land-accent)]">
                 {isRTL
-                  ? "منشئ بورتفوليو لمحترفي الخليج"
-                  : "Portfolio builder for GCC professionals"}
+                  ? "أنشئ سيرتك الذاتية وبورتفوليوك"
+                  : "Build your CV & portfolio"}
               </p>
               <h1
                 className="mt-4 font-extrabold leading-[1] tracking-tighter"
                 style={{ fontSize: "clamp(3rem, 6.5vw, 5.5rem)" }}
               >
                 {isRTL
-                  ? "البورتفوليو الذي تستحقه مسيرتك"
-                  : "The portfolio your career has earned"}
+                  ? "سيرة ذاتية + بورتفوليو احترافي في دقائق"
+                  : "Professional CV + Portfolio in Minutes"}
               </h1>
               <p className="mt-8 max-w-lg text-lg leading-relaxed text-[var(--land-body)]">
                 {isRTL
-                  ? "بورتفوليوهات احترافية لمهندسي النفط والغاز والقيادات والمتخصصين في الكويت. ثنائية اللغة. جاهزة للطباعة. جاهزة في دقائق."
-                  : "Professional portfolios for Kuwait's oil and gas engineers, corporate leaders, and technical specialists. Bilingual. Print-ready. Live in minutes."}
+                  ? "اختر قالبًا، أدخل بياناتك، واحصل على سيرة ذاتية PDF احترافية في دقائق. بالعربي والإنجليزي."
+                  : "Pick a template, fill your info, and get a professional PDF portfolio in minutes. Arabic & English supported."}
               </p>
-              <div className="mt-10 flex flex-col items-start gap-4">
-                <Link
-                  href="/templates"
-                  className="land-cta-glow inline-block rounded-xl bg-[var(--land-accent)] px-10 py-4 text-lg font-semibold text-white hover:bg-[var(--land-accent-hover)] transition-colors"
-                >
-                  {isRTL ? "ابنِ بورتفوليوك" : "Build yours"}
-                </Link>
-                <a
-                  href="#templates"
-                  className="text-sm text-[var(--land-body)] hover:text-[var(--land-accent)] transition-colors"
-                >
-                  {isRTL ? "شاهد العروض المباشرة ←" : "View live demos →"}
-                </a>
-              </div>
+              {/* Try-it form — no signup needed */}
+              <TryItForm locale={locale} />
+              <a
+                href="#templates"
+                className="mt-4 inline-block text-sm text-[var(--land-body)] hover:text-[var(--land-accent)] transition-colors"
+              >
+                {isRTL ? "شاهد العروض المباشرة ←" : "View live demos →"}
+              </a>
               <p className="mt-5 text-sm text-[var(--land-muted)]">
                 {isRTL ? (
                   <>
@@ -224,7 +250,7 @@ export default async function LandingPage({
                   : ["No subscription", "Secure payment (K-NET, Apple Pay)"]
                 ).map((b) => (
                   <li key={b} className="flex items-center gap-1.5">
-                    <span className="text-[var(--land-accent)]">✓</span>
+                    <Check className="h-4 w-4 text-[var(--land-accent)] shrink-0" />
                     {b}
                   </li>
                 ))}
@@ -252,7 +278,7 @@ export default async function LandingPage({
                   }}
                 >
                   <Image
-                    src="/landing/mockup-engineer.jpg"
+                    src="/landing/mockup-engineer-2026a.jpg"
                     alt=""
                     width={1200}
                     height={800}
@@ -272,7 +298,7 @@ export default async function LandingPage({
                   }}
                 >
                   <Image
-                    src="/landing/mockup-corporate.jpg"
+                    src="/landing/mockup-corporate-2026a.jpg"
                     alt="Corporate portfolio template preview"
                     width={1200}
                     height={800}
@@ -290,7 +316,7 @@ export default async function LandingPage({
               {/* Mobile: single image */}
               <div className="lg:hidden rounded-xl overflow-hidden border border-[var(--land-border)]">
                 <Image
-                  src="/landing/mockup-corporate.jpg"
+                  src="/landing/mockup-corporate-2026a.jpg"
                   alt="Corporate portfolio template preview"
                   width={1200}
                   height={800}
@@ -305,46 +331,9 @@ export default async function LandingPage({
         </div>
       </section>
 
-      {/* ── Social proof bar ───────────────────── */}
-      <div className="border-y border-[var(--land-border)]/50 bg-[#0f1612] py-6 px-6">
-        <div className="mx-auto max-w-5xl">
-          {/* Desktop: static centered */}
-          <div className="hidden flex-wrap items-center justify-center gap-x-8 gap-y-3 sm:flex">
-            <p className="text-sm text-[var(--land-muted)]">
-              {isRTL ? "موثوق من محترفين في" : "Trusted by professionals in"}
-            </p>
-            {regions.map((r) => (
-              <span
-                key={r.en}
-                className="flex items-center gap-2 text-sm font-medium text-[var(--land-body)]"
-              >
-                <span className="text-base">{r.flag}</span>
-                {isRTL ? r.ar : r.en}
-              </span>
-            ))}
-          </div>
-          {/* Mobile: marquee */}
-          <div className="overflow-hidden sm:hidden">
-            <p className="mb-3 text-center text-sm text-[var(--land-muted)]">
-              {isRTL ? "موثوق من محترفين في" : "Trusted by professionals in"}
-            </p>
-            <div className="land-marquee flex w-max gap-8">
-              {[...regions, ...regions, ...regions, ...regions].map((r, i) => (
-                <span
-                  key={i}
-                  className="flex shrink-0 items-center gap-2 text-sm font-medium text-[var(--land-body)]"
-                >
-                  <span className="text-base">{r.flag}</span>
-                  {isRTL ? r.ar : r.en}
-                </span>
-              ))}
-            </div>
-          </div>
-        </div>
-      </div>
 
       {/* ── Template showcase ──────────────────── */}
-      <section id="templates" className="scroll-mt-20 pt-32 pb-24 px-6">
+      <section id="templates" className="scroll-mt-20 pt-16 sm:pt-32 pb-16 sm:pb-24 px-6">
         <ScrollReveal>
           <div className="mx-auto max-w-7xl">
             <p className="text-sm font-medium tracking-widest uppercase text-[var(--land-accent)]">
@@ -370,7 +359,7 @@ export default async function LandingPage({
               <div className="group">
                 <div className="relative rounded-xl overflow-hidden border border-[var(--land-border)] transition-all duration-500 group-hover:translate-y-[-2px] group-hover:border-[var(--land-accent)]/30">
                   <Image
-                    src="/landing/mockup-corporate.jpg"
+                    src="/landing/mockup-corporate-2026a.jpg"
                     alt="Corporate portfolio template"
                     width={1200}
                     height={800}
@@ -379,9 +368,9 @@ export default async function LandingPage({
                     quality={90}
                   />
                   <span className="absolute top-3 start-3 z-10 rounded-full border border-[var(--land-accent)]/30 bg-[var(--land-bg)]/80 px-2.5 py-1 text-[10px] font-medium uppercase tracking-wider text-[var(--land-accent)] backdrop-blur">
-                    {isRTL ? "مؤسسي" : "Corporate"}
+                    {isRTL ? "عام" : "General"}
                   </span>
-                  <div className="absolute inset-0 bg-[oklch(0.08_0.02_260_/_0)] group-hover:bg-[oklch(0.08_0.02_260_/_0.6)] transition-all duration-300 flex items-center justify-center">
+                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-all duration-300 flex items-center justify-center">
                     <span className="text-sm font-medium text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center gap-2">
                       <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path strokeLinecap="round" strokeLinejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
                       {isRTL ? "عرض مباشر" : "View live demo"}
@@ -399,7 +388,7 @@ export default async function LandingPage({
                   </p>
                   <div className="mt-4 flex flex-wrap gap-4">
                     <a
-                      href="/demo/corporate"
+                      href="/demo/general"
                       target="_blank"
                       rel="noopener noreferrer"
                       className="text-sm text-[var(--land-accent)] hover:text-[var(--land-accent-hover)] transition-colors"
@@ -421,7 +410,7 @@ export default async function LandingPage({
               <div className="group h-full">
                 <div className="relative rounded-xl overflow-hidden border border-[var(--land-border)] transition-all duration-500 group-hover:translate-y-[-2px] group-hover:border-[var(--land-accent)]/30">
                   <Image
-                    src="/landing/mockup-engineer.jpg"
+                    src="/landing/mockup-engineer-2026a.jpg"
                     alt="Engineer portfolio template"
                     width={1200}
                     height={800}
@@ -432,7 +421,7 @@ export default async function LandingPage({
                   <span className="absolute top-3 start-3 z-10 rounded-full border border-[var(--land-accent)]/30 bg-[var(--land-bg)]/80 px-2.5 py-1 text-[10px] font-medium uppercase tracking-wider text-[var(--land-accent)] backdrop-blur">
                     {isRTL ? "هندسي" : "Engineering"}
                   </span>
-                  <div className="absolute inset-0 bg-[oklch(0.08_0.02_260_/_0)] group-hover:bg-[oklch(0.08_0.02_260_/_0.6)] transition-all duration-300 flex items-center justify-center">
+                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-all duration-300 flex items-center justify-center">
                     <span className="text-sm font-medium text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center gap-2">
                       <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path strokeLinecap="round" strokeLinejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
                       {isRTL ? "عرض مباشر" : "View live demo"}
@@ -472,17 +461,15 @@ export default async function LandingPage({
             <ScrollReveal delay={300}>
               <div className="group h-full">
                 <div className="relative rounded-xl overflow-hidden border border-[var(--land-border)] transition-all duration-500 group-hover:translate-y-[-2px] group-hover:border-[var(--land-accent)]/30">
-                  <div
-                    className="flex aspect-[16/10] items-center justify-center"
-                    style={{ background: "linear-gradient(135deg, #0a0a0a, #050505)" }}
-                  >
-                    <span
-                      className="text-2xl font-bold tracking-tight"
-                      style={{ color: "#ec4899", textShadow: "0 2px 24px rgba(0,0,0,0.5)" }}
-                    >
-                      {isRTL ? "إبداعي" : "Creative"}
-                    </span>
-                  </div>
+                  <Image
+                    src="/landing/mockup-creative-2026a.jpg"
+                    alt="Creative portfolio template"
+                    width={1200}
+                    height={800}
+                    sizes="(min-width: 1024px) 400px, (min-width: 640px) 50vw, 100vw"
+                    className="w-full h-auto"
+                    quality={90}
+                  />
                   <span className="absolute top-3 start-3 z-10 rounded-full border border-[var(--land-accent)]/30 bg-[var(--land-bg)]/80 px-2.5 py-1 text-[10px] font-medium uppercase tracking-wider text-[var(--land-accent)] backdrop-blur">
                     {isRTL ? "إبداعي" : "Creative"}
                   </span>
@@ -552,7 +539,7 @@ export default async function LandingPage({
       <HowItWorks isRTL={isRTL} />
 
       {/* ── Features (2x2 grid) ────────────────── */}
-      <section className="py-28 px-6">
+      <section className="py-16 sm:py-28 px-6">
         <div className="mx-auto max-w-5xl">
           <ScrollReveal>
             <div className="grid gap-6 md:grid-cols-2">
@@ -595,7 +582,7 @@ export default async function LandingPage({
                       English (LTR)
                     </div>
                     <div className="space-y-1.5 p-2.5">
-                      <div className="h-2 w-16 rounded-full bg-[oklch(0.8_0.01_250)]" />
+                      <div className="h-2 w-16 rounded-full bg-[var(--land-border)]" />
                       <div className="h-1.5 w-full rounded-full bg-[var(--land-border)]" />
                       <div className="h-1.5 w-4/5 rounded-full bg-[var(--land-border)]" />
                     </div>
@@ -606,7 +593,7 @@ export default async function LandingPage({
                       العربية (RTL)
                     </div>
                     <div className="space-y-1.5 p-2.5">
-                      <div className="ms-0 h-2 w-16 rounded-full bg-[oklch(0.8_0.01_250)]" />
+                      <div className="ms-0 h-2 w-16 rounded-full bg-[var(--land-border)]" />
                       <div className="h-1.5 w-full rounded-full bg-[var(--land-border)]" />
                       <div className="h-1.5 w-4/5 rounded-full bg-[var(--land-border)]" />
                     </div>
@@ -620,16 +607,27 @@ export default async function LandingPage({
                   <FileDown className="h-5 w-5" />
                 </span>
                 <h3 className="mt-4 text-xl font-bold tracking-tight">
-                  {isRTL ? "سيرة ذاتية PDF مع باركود" : "CV page with scannable barcode"}
+                  {HOSTING_ENABLED
+                    ? isRTL
+                      ? "سيرة ذاتية PDF مع باركود QR"
+                      : "CV PDF with a QR code"
+                    : isRTL
+                      ? "سيرة ذاتية PDF احترافية"
+                      : "Professional PDF download"}
                 </h3>
                 <p className="mt-3 text-sm text-[var(--land-body)] leading-relaxed">
-                  {isRTL
-                    ? "حمّل صفحة سيرة ذاتية احترافية كملف PDF مع باركود يوجّه مباشرة إلى بورتفوليوك الحي."
-                    : "Download a professional CV page as PDF with a scannable barcode that links directly to your live portfolio."}
+                  {HOSTING_ENABLED
+                    ? isRTL
+                      ? "سيرة ذاتية احترافية جاهزة لأنظمة التوظيف (ATS) بصيغة PDF، تحمل باركود QR يفتح بورتفوليوك الحيّ عند مسحه — تطبعها وتشاركها في أي مقابلة."
+                      : "An ATS-ready professional CV as a PDF, carrying a QR code that opens your live portfolio when scanned — print it, attach it, share it in any interview."
+                    : isRTL
+                      ? "حمّل بورتفوليوك كصفحة سيرة ذاتية احترافية بصيغة PDF جاهزة للطباعة والمشاركة."
+                      : "Download your portfolio as a polished, print-ready PDF you can share anywhere."}
                 </p>
               </div>
 
-              {/* Feature 4 */}
+              {/* Feature 4 — hosted URL (only while hosting is enabled) */}
+              {HOSTING_ENABLED && (
               <div className="rounded-2xl border border-[var(--land-border)] bg-[var(--land-surface)] p-7">
                 <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-[var(--land-accent-subtle)] text-[var(--land-accent)]">
                   <Globe className="h-5 w-5" />
@@ -643,6 +641,7 @@ export default async function LandingPage({
                     : "Your portfolio gets its own hosted URL. Update anytime from your dashboard; changes appear instantly."}
                 </p>
               </div>
+              )}
             </div>
           </ScrollReveal>
         </div>
@@ -653,7 +652,7 @@ export default async function LandingPage({
 
       {/* ── Pricing ────────────────────────────── */}
       <ScrollReveal>
-        <section className="relative py-24 px-6 bg-[var(--land-surface-raised)]">
+        <section className="relative py-16 sm:py-24 px-6 bg-[var(--land-surface-raised)]">
           <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[var(--land-accent)] to-transparent opacity-40" />
           <div className="mx-auto max-w-3xl lg:grid lg:grid-cols-[1fr_auto] gap-16 items-start">
             <div>
@@ -687,26 +686,32 @@ export default async function LandingPage({
               <div className="mt-8 grid grid-cols-1 gap-y-3 text-sm text-[var(--land-body)] sm:grid-cols-2 sm:gap-x-6">
                 {(isRTL
                   ? [
-                      "رابط بورتفوليو مستضاف",
+                      HOSTING_ENABLED ? "رابط بورتفوليو مستضاف" : null,
                       "عربي + إنجليزي",
                       "تصدير PDF جاهز للطباعة",
-                      "صفحة سيرة ذاتية مع باركود",
+                      HOSTING_ENABLED
+                        ? "سيرة ذاتية PDF مع باركود QR"
+                        : "تحميل PDF احترافي",
                       "ثيمات ألوان مخصصة",
                       "رفع صورة شخصية",
                       "تحديثات فورية",
                       "وصول لمرة واحدة",
                     ]
                   : [
-                      "Hosted portfolio URL",
+                      HOSTING_ENABLED ? "Hosted portfolio URL" : null,
                       "Arabic + English bilingual",
                       "Print-optimized PDF export",
-                      "CV page with scannable barcode",
+                      HOSTING_ENABLED
+                        ? "CV PDF with a QR code"
+                        : "Professional PDF download",
                       "Custom color themes",
                       "Photo upload",
                       "Instant updates",
                       "One-time access",
                     ]
-                ).map((item) => (
+                )
+                  .filter((item): item is string => Boolean(item))
+                  .map((item) => (
                   <div key={item} className="flex items-center gap-2">
                     <span className="shrink-0 text-[var(--land-accent)]">✓</span>
                     {item}
@@ -730,7 +735,7 @@ export default async function LandingPage({
                   href="/templates"
                   className="inline-block rounded-lg bg-[var(--land-accent)] px-8 py-3.5 text-base font-semibold text-white hover:bg-[var(--land-accent-hover)] transition-colors"
                 >
-                  {isRTL ? "ابنِ بورتفوليوك" : "Build yours"}
+                  {isRTL ? "ابدأ الآن" : "Start Now — It's Free"}
                 </Link>
                 <p className="mt-3 text-xs text-[var(--land-muted)]">
                   {isRTL
@@ -822,7 +827,7 @@ export default async function LandingPage({
 
       {/* ── Pre-footer CTA ─────────────────────── */}
       <ScrollReveal>
-        <section className="border-t border-[var(--land-border)] bg-[var(--land-surface-raised)] px-6 py-20 text-center">
+        <section className="border-t border-[var(--land-border)] bg-[var(--land-surface-raised)] px-6 py-14 sm:py-20 text-center">
           <div className="mx-auto max-w-2xl">
             <h2
               className="font-extrabold tracking-tighter"
@@ -833,14 +838,18 @@ export default async function LandingPage({
                 : "The portfolio your career has earned"}
             </h2>
             <p className="mt-4 text-[var(--land-body)]">
-              {isRTL
-                ? "اختر قالبًا وانشر بورتفوليوك خلال دقائق."
-                : "Pick a template and publish your portfolio in minutes."}
+              {HOSTING_ENABLED
+                ? isRTL
+                  ? "اختر قالبًا وانشر بورتفوليوك خلال دقائق."
+                  : "Pick a template and publish your portfolio in minutes."
+                : isRTL
+                  ? "اختر قالبًا وحمّل بورتفوليوك كملف PDF خلال دقائق."
+                  : "Pick a template and download your portfolio as a PDF in minutes."}
             </p>
             <div className="mt-8 flex flex-col items-center">
               <Link
                 href="/templates"
-                className="land-cta-glow inline-block rounded-xl bg-[var(--land-accent)] px-10 py-4 text-lg font-semibold text-white transition-colors hover:bg-[var(--land-accent-hover)]"
+                className="inline-block rounded-lg shadow-sm bg-[var(--land-accent)] px-10 py-4 text-lg font-semibold text-white transition-colors hover:bg-[var(--land-accent-hover)] active:scale-[0.98]"
               >
                 {isRTL ? "ابدأ البناء — ٤.٩٠٠ دك" : "Start Building — 4.900 KD"}
               </Link>
@@ -886,7 +895,7 @@ export default async function LandingPage({
               </li>
               <li>
                 <a
-                  href="/demo/corporate"
+                  href="/demo/general"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="hover:text-[var(--land-bright)] transition-colors"
@@ -917,14 +926,6 @@ export default async function LandingPage({
                   {isRTL ? "الشروط" : "Terms"}
                 </Link>
               </li>
-              <li>
-                <Link
-                  href="/refund"
-                  className="hover:text-[var(--land-bright)] transition-colors"
-                >
-                  {isRTL ? "الاسترداد" : "Refund Policy"}
-                </Link>
-              </li>
             </ul>
           </nav>
           <nav aria-label={isRTL ? "تواصل" : "Contact"}>
@@ -939,6 +940,24 @@ export default async function LandingPage({
                 >
                   support@portfolio-trimind.com
                 </a>
+              </li>
+              <li>
+                <a
+                  href="https://wa.me/96550439150"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-[var(--land-bright)] transition-colors"
+                >
+                  WhatsApp
+                </a>
+              </li>
+              <li>
+                <Link
+                  href="/dashboard"
+                  className="hover:text-[var(--land-bright)] transition-colors"
+                >
+                  {isRTL ? "لوحة التحكم" : "Dashboard"}
+                </Link>
               </li>
             </ul>
           </nav>

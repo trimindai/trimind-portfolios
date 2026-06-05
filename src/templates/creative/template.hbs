@@ -24,19 +24,26 @@
 <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700;800;900&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 /* ══════════════════════════════════════════════════════
-   CREATIVE PORTFOLIO — "My Eye Brain" Dark + Lime Theme
-   3D spiral cone gallery for artists & creative pros
+   CREATIVE PORTFOLIO — "Atelier" Warm Editorial Theme
+   Four-role palette: Cloud Dancer paper, deep-slate ink,
+   Blue Slate (structure/links), Cinnamon Wood (actions),
+   Desert Sand (bands, cards, frames). Cone gallery on
+   desktop/tablet; stacked photo-cubes on phone.
    ══════════════════════════════════════════════════════ */
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 :root {
-  --bg: {{safeColor customization.bgColor "#1b1b1b"}};
-  --bg-alt: #151515;
-  --bg-card: #111111;
-  --text: #e8e8e8;
-  --text-dim: #a0a0a0;
-  --text-muted: #6a6a6a;
-  --border: #2a2a2a;
-  --accent: {{safeColor customization.accentColor "#DFFF00"}};
+  --bg: {{safeColor customization.bgColor "#EFEEEA"}};   /* Cloud Dancer — paper */
+  --bg-alt: #E6DAC6;        /* Desert Sand band */
+  --bg-card: #F5F0E7;       /* warm off-white card, lets art pop */
+  --sand: #EBBEAA;          /* Desert Sand — frames, dividers, cube tops */
+  --text: #1E2A44;          /* deep slate ink (Blue Slate hue, darkened) */
+  --text-dim: #4C587A;      /* mid slate */
+  --text-muted: #8B8473;    /* warm taupe — mono labels */
+  --border: #D8C7AE;        /* sand-tinted hairline */
+  --accent: {{safeColor customization.accentColor "#B86F52"}};  /* Cinnamon Wood — actions/labels */
+  --accent-dim: rgba(184,111,82,.14);
+  --link: #496AB1;          /* Blue Slate — headings, structure, nav, links */
+  --blue-band: #3A5489;     /* deep Blue Slate — inverted bands (contact/footer) */
   --font-head: 'Geist', system-ui, sans-serif;
   --font-mono: 'Geist Mono', ui-monospace, monospace;
 }
@@ -51,22 +58,22 @@ body {
 }
 a { color: inherit; text-decoration: none; }
 .mono { font-family: var(--font-mono); }
-.section-label { font-family: var(--font-mono); font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px; color: var(--text-muted); }
+.section-label { font-family: var(--font-mono); font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px; color: var(--link); }
 
 /* ── Navbar ── */
 .nav {
   position: fixed; top: 0; left: 0; right: 0; z-index: 50;
   display: flex; align-items: center; justify-content: space-between;
   height: 60px; padding: 0 24px;
-  background: rgba(27,27,27,0.8); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+  background: rgba(239,238,234,0.82); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
   border-bottom: 1px solid var(--border);
 }
-.nav-brand { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; transition: color .25s; }
+.nav-brand { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: var(--link); transition: color .25s; }
 .nav-brand:hover { color: var(--accent); }
 .nav-links { display: flex; align-items: center; gap: 24px; }
 .nav-link { font-family: var(--font-mono); font-size: 12px; text-transform: uppercase; letter-spacing: 1px; color: var(--text-dim); transition: color .25s; }
-.nav-link:hover { color: var(--accent); }
-.nav-link .bk { color: var(--text-muted); }
+.nav-link:hover { color: var(--link); }
+.nav-link .bk { color: var(--link); }
 .nav-toggle { display: none; }
 @media (max-width: 768px) {
   .nav-toggle { display: flex; flex-direction: column; justify-content: center; gap: 5px; width: 40px; height: 40px; padding: 0; background: none; border: none; cursor: pointer; z-index: 60; }
@@ -77,7 +84,7 @@ a { color: inherit; text-decoration: none; }
   .nav-links {
     position: fixed; top: 60px; left: 0; right: 0;
     flex-direction: column; align-items: stretch; gap: 0;
-    background: rgba(17,17,17,0.98); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
+    background: rgba(239,238,234,0.98); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
     border-bottom: 1px solid var(--border);
     transform: translateY(-130%); transition: transform .35s cubic-bezier(.16,1,.3,1);
     max-height: calc(100dvh - 60px); overflow-y: auto;
@@ -98,18 +105,20 @@ a { color: inherit; text-decoration: none; }
   padding: 96px 24px 48px; order: 1;
 }
 @media (min-width: 1024px) { .hero-left { width: 36%; padding: 0 40px; order: 1; } }
-.monogram {
-  position: relative; width: 220px; height: 290px; margin-bottom: 28px;
-  display: flex; align-items: center; justify-content: center;
-  background: var(--bg-card); border: 1px solid var(--border); border-radius: 2px;
+/* Hero portrait — optional. Renders only when basics.photoUrl is set;
+   otherwise the hero is text-led (no empty placeholder). */
+.hero-portrait {
+  position: relative; width: 200px; height: 240px; margin-bottom: 30px;
+  background: var(--sand); padding: 10px; border-radius: 2px;
+  box-shadow: 0 18px 40px -20px rgba(72,58,40,0.45);
 }
-.monogram .corner { position: absolute; width: 16px; height: 16px; }
-.monogram .c-tl { top: 12px; left: 12px; border-top: 1px solid var(--accent); border-left: 1px solid var(--accent); }
-.monogram .c-tr { top: 12px; right: 12px; border-top: 1px solid var(--accent); border-right: 1px solid var(--accent); }
-.monogram .c-bl { bottom: 12px; left: 12px; border-bottom: 1px solid var(--accent); border-left: 1px solid var(--accent); }
-.monogram .c-br { bottom: 12px; right: 12px; border-bottom: 1px solid var(--accent); border-right: 1px solid var(--accent); }
-.monogram span { font-size: 72px; font-weight: 900; letter-spacing: -2px; color: var(--accent); opacity: 0.32; user-select: none; }
-.hero-name { font-size: clamp(40px, 6vw, 68px); font-weight: 800; text-transform: uppercase; letter-spacing: -0.04em; line-height: 1.05; margin-bottom: 12px; }
+.hero-portrait img { width: 100%; height: 100%; object-fit: cover; display: block; border-radius: 1px; }
+.hero-portrait .corner { position: absolute; width: 16px; height: 16px; }
+.hero-portrait .c-tl { top: 18px; left: 18px; border-top: 1px solid var(--link); border-left: 1px solid var(--link); }
+.hero-portrait .c-tr { top: 18px; right: 18px; border-top: 1px solid var(--link); border-right: 1px solid var(--link); }
+.hero-portrait .c-bl { bottom: 18px; left: 18px; border-bottom: 1px solid var(--link); border-left: 1px solid var(--link); }
+.hero-portrait .c-br { bottom: 18px; right: 18px; border-bottom: 1px solid var(--link); border-right: 1px solid var(--link); }
+.hero-name { font-size: clamp(40px, 6vw, 68px); font-weight: 800; text-transform: uppercase; letter-spacing: -0.04em; line-height: 1.05; margin-bottom: 12px; color: var(--link); }
 .hero-tag { font-family: var(--font-mono); font-size: 10px; text-transform: uppercase; letter-spacing: 1.5px; color: var(--accent); margin-bottom: 8px; }
 .hero-loc { font-family: var(--font-mono); font-size: 10px; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); margin-bottom: 20px; }
 .hero-bio { font-size: 13px; color: var(--text-dim); line-height: 1.7; max-width: 340px; margin-bottom: 28px; overflow-wrap: anywhere; }
@@ -137,8 +146,8 @@ a { color: inherit; text-decoration: none; }
 .cone-card {
   position: absolute; top: 0; left: 0; width: 148px; height: 197px; margin: -98px 0 0 -74px;
   border-radius: 3px; overflow: hidden; transform-style: preserve-3d; backface-visibility: hidden;
-  border: 1px solid rgba(255,255,255,0.06); background: var(--bg-card);
-  box-shadow: 0 12px 30px rgba(0,0,0,0.5);
+  border: 1px solid rgba(30,42,68,0.10); background: var(--bg-card);
+  box-shadow: 0 14px 34px -8px rgba(72,58,40,0.40);
 }
 .cone-card img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .cone-card .overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,0.85), transparent 60%); opacity: 0; transition: opacity .3s; }
@@ -148,6 +157,55 @@ a { color: inherit; text-decoration: none; }
 .cone-card .info-cat { font-family: var(--font-mono); font-size: 8px; text-transform: uppercase; letter-spacing: 1px; color: var(--accent); }
 .cone-card .info-title { font-size: 12px; font-weight: 600; line-height: 1.2; }
 .cone-hint { position: absolute; bottom: 16px; left: 50%; transform: translateX(-50%); font-family: var(--font-mono); font-size: 9px; text-transform: uppercase; letter-spacing: 1.5px; color: var(--text-muted); pointer-events: none; }
+
+/* ── Phone photo-cube cluster (replaces the cone < 768px) ── */
+.cube-stack { display: none; }
+@media (max-width: 767px) {
+  .cone-wrap { display: none !important; }
+  .cube-stack {
+    display: block; position: relative;
+    width: 340px; height: 392px; margin: 10px auto 0;
+    perspective: 1150px; perspective-origin: 50% 40%;
+  }
+}
+.cube-stack .cube-hint {
+  position: absolute; left: 0; right: 0; bottom: -10px; text-align: center;
+  font-family: var(--font-mono); font-size: 10px; text-transform: uppercase;
+  letter-spacing: 1.6px; color: var(--text-muted);
+}
+.cube-stack .cube-hint a { color: var(--link); font-weight: 600; }
+.cube {
+  --s: 112px;
+  position: absolute; width: var(--s); height: var(--s);
+  left: var(--cx, 0); top: var(--cy, 0);
+  cursor: pointer; -webkit-tap-highlight-color: transparent;
+  transition: transform .3s cubic-bezier(.16,1,.3,1);
+}
+.cube:active { transform: scale(.93); }
+.cube-inner {
+  position: relative; display: block; width: 100%; height: 100%;
+  transform-style: preserve-3d;
+  animation: cubeSpin var(--dur, 17s) linear var(--delay, 0s) infinite;
+}
+.cube .face {
+  position: absolute; width: var(--s); height: var(--s); overflow: hidden;
+  background: var(--bg-card); backface-visibility: hidden;
+  box-shadow: inset 0 0 0 1px rgba(245,240,231,0.85);
+}
+.cube .face img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.cube .f-front { transform: translateZ(calc(var(--s) / 2)); }
+.cube .f-back  { transform: rotateY(180deg) translateZ(calc(var(--s) / 2)); }
+.cube .f-right { transform: rotateY(90deg) translateZ(calc(var(--s) / 2)); }
+.cube .f-left  { transform: rotateY(-90deg) translateZ(calc(var(--s) / 2)); }
+.cube .f-top   { transform: rotateX(90deg) translateZ(calc(var(--s) / 2)); background: linear-gradient(135deg, #FBF8F2 0%, var(--sand) 120%); }
+.cube .shadow {
+  position: absolute; left: 50%; top: 98%; width: 116%; height: 28px;
+  transform: translate(-50%, 0) rotateX(80deg); transform-origin: center top;
+  background: radial-gradient(ellipse at center, rgba(72,58,40,0.28), transparent 72%);
+  filter: blur(3px); pointer-events: none;
+}
+@keyframes cubeSpin { from { transform: rotateX(-14deg) rotateY(0deg); } to { transform: rotateX(-14deg) rotateY(360deg); } }
+@media (prefers-reduced-motion: reduce) { .cube-inner { animation: none; transform: rotateX(-16deg) rotateY(-28deg); } }
 
 /* ── Marquee ── */
 .marquee-row { width: 100%; padding: 20px 0; overflow: hidden; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); background: var(--bg); }
@@ -165,7 +223,7 @@ a { color: inherit; text-decoration: none; }
 .container { max-width: 1200px; margin: 0 auto; }
 .sec-head { display: flex; align-items: center; gap: 16px; margin-bottom: 48px; }
 .sec-head .line { flex: 1; height: 1px; background: var(--border); }
-.sec-title { font-size: clamp(28px, 4vw, 44px); font-weight: 800; letter-spacing: -0.03em; }
+.sec-title { font-size: clamp(28px, 4vw, 44px); font-weight: 800; letter-spacing: -0.03em; color: var(--link); }
 
 /* ── Gallery grid ── */
 .gal-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
@@ -214,13 +272,21 @@ a { color: inherit; text-decoration: none; }
 @media (min-width: 768px) { .contact-grid { grid-template-columns: repeat(2, 1fr); } }
 @media (min-width: 1024px) { .contact-grid { grid-template-columns: repeat(4, 1fr); } }
 .contact-grid a, .contact-grid p { font-size: 14px; color: var(--text-dim); transition: color .25s; }
-.contact-grid a:hover { color: var(--accent); }
+.contact-grid a:hover { color: var(--link); }
 .contact-grid .lbl { font-family: var(--font-mono); font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px; color: var(--text-muted); margin-bottom: 12px; }
 .contact-flex { display: flex; flex-direction: column; gap: 8px; }
 
 /* ── Footer ── */
 .footer { padding: 40px 24px; border-top: 1px solid var(--border); text-align: center; font-family: var(--font-mono); font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); }
-.footer a:hover { color: var(--accent); }
+.footer a:hover { color: var(--sand); }
+
+/* ── Blue Slate closing band (contact + footer) ── */
+#contact { background: var(--blue-band); color: #E7E9F0; }
+#contact .sec-title { color: #F2EFE8; }
+#contact .contact-grid a, #contact .contact-grid p { color: #E9EAF1; }
+#contact .contact-grid .lbl { color: var(--sand); }
+#contact .contact-grid a:hover { color: var(--sand); }
+.footer.footer { background: var(--blue-band); color: rgba(242,239,232,0.6); border-top-color: rgba(255,255,255,0.14); }
 
 /* ── Testimonials ── */
 .quotes-grid { display: grid; grid-template-columns: 1fr; gap: 20px; }
@@ -243,10 +309,32 @@ a { color: inherit; text-decoration: none; }
 .gal-card img { transition: transform .6s cubic-bezier(.16,1,.3,1); }
 .gal-zoom { cursor: zoom-in; border: 1px solid var(--border); background: var(--bg-card); padding: 0; text-align: left; font: inherit; color: inherit; width: 100%; }
 
+/* ── Full collection overlay (Gallery button) ── */
+.gallery-modal { position: fixed; inset: 0; z-index: 90; display: none; flex-direction: column; background: var(--bg); }
+.gallery-modal.open { display: flex; animation: gmFade .3s ease-out; }
+@keyframes gmFade { from { opacity: 0; } to { opacity: 1; } }
+.gm-head { display: flex; align-items: center; justify-content: space-between; padding: 18px 24px; border-bottom: 1px solid var(--border); background: rgba(239,238,234,0.92); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); position: sticky; top: 0; z-index: 2; }
+.gm-title { font-family: var(--font-mono); font-size: 12px; text-transform: uppercase; letter-spacing: 2px; color: var(--link); font-weight: 600; }
+.gm-count { color: var(--text-muted); margin-left: 8px; }
+.gm-close { font-family: var(--font-mono); font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px; color: var(--text-dim); background: none; border: none; cursor: pointer; padding: 6px; }
+.gm-close:hover { color: var(--accent); }
+.gm-scroll { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+.gm-grid { max-width: 1200px; margin: 0 auto; padding: 20px; display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
+@media (min-width: 640px) { .gm-grid { grid-template-columns: repeat(3, 1fr); gap: 18px; padding: 32px; } }
+@media (min-width: 1024px) { .gm-grid { grid-template-columns: repeat(4, 1fr); } }
+.gm-card { display: block; position: relative; border: 1px solid var(--border); border-radius: 2px; overflow: hidden; background: var(--bg-card); }
+.gm-ph { aspect-ratio: 3 / 4; overflow: hidden; }
+.gm-card img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .5s cubic-bezier(.16,1,.3,1); }
+.gm-card:hover img { transform: scale(1.05); }
+.gm-meta { position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: flex-end; padding: 12px; gap: 2px; opacity: 0; transition: opacity .3s; background: linear-gradient(to top, rgba(28,34,52,0.92), transparent 60%); }
+.gm-card:hover .gm-meta, .gm-card:focus-visible .gm-meta { opacity: 1; }
+.gm-cat { font-family: var(--font-mono); font-size: 8px; text-transform: uppercase; letter-spacing: 1.5px; color: var(--sand); }
+.gm-ttl { font-size: 13px; font-weight: 600; color: #F2EFE8; line-height: 1.2; }
+
 /* ── Lightbox (main gallery quick-view) ── */
 .lb { position: fixed; inset: 0; z-index: 100; display: none; align-items: center; justify-content: center; background: rgba(17,17,17,0.97); }
 .lb.open { display: flex; }
-.lb .lcross { position: absolute; width: 18px; height: 18px; color: rgba(223,255,0,0.4); }
+.lb .lcross { position: absolute; width: 18px; height: 18px; color: rgba(235,190,170,0.45); }
 .lb .lcross::before, .lb .lcross::after { content: ''; position: absolute; background: currentColor; }
 .lb .lcross::before { left: 0; top: 50%; width: 100%; height: 1px; transform: translateY(-50%); }
 .lb .lcross::after { top: 0; left: 50%; height: 100%; width: 1px; transform: translateX(-50%); }
@@ -270,7 +358,7 @@ a { color: inherit; text-decoration: none; }
   <a href="#top" class="nav-brand">{{basics.fullName}}</a>
   <button class="nav-toggle" id="navToggle" aria-label="Open menu" aria-expanded="false" aria-controls="navLinks"><span></span><span></span><span></span></button>
   <nav class="nav-links" id="navLinks">
-    {{#if projects}}<a href="#gallery" class="nav-link"><span class="bk">[</span> Gallery <span class="bk">]</span></a>{{/if}}
+    {{#if projects}}<a href="#" class="nav-link" data-open-gallery><span class="bk">[</span> Gallery <span class="bk">]</span></a>{{/if}}
     {{#if skills}}<a href="#skills" class="nav-link"><span class="bk">[</span> Skills <span class="bk">]</span></a>{{/if}}
     {{#if certifications}}<a href="#awards" class="nav-link"><span class="bk">[</span> Awards <span class="bk">]</span></a>{{/if}}
     {{#if endorsements}}<a href="#testimonials" class="nav-link"><span class="bk">[</span> Words <span class="bk">]</span></a>{{/if}}
@@ -281,29 +369,31 @@ a { color: inherit; text-decoration: none; }
 <!-- Hero -->
 <section class="hero" id="top">
   <div class="hero-left">
-    <div class="monogram">
+    {{#if basics.photoUrl}}
+    <div class="hero-portrait">
+      <img src="{{safeUrl basics.photoUrl}}" alt="{{basics.fullName}}" width="200" height="240" loading="eager" decoding="async">
       <span class="corner c-tl"></span><span class="corner c-tr"></span>
       <span class="corner c-bl"></span><span class="corner c-br"></span>
-      <span>{{initials basics.fullName}}</span>
     </div>
+    {{/if}}
     <h1 class="hero-name">{{basics.fullName}}</h1>
     {{#if basics.subtitle}}<p class="hero-tag">{{basics.subtitle}}</p>{{else}}<p class="hero-tag">{{basics.title}}</p>{{/if}}
     {{#if basics.location}}<p class="hero-loc">{{basics.location}}{{#if basics.nationality}} &middot; {{basics.nationality}}{{/if}}</p>{{/if}}
     {{#if basics.bio}}<p class="hero-bio">{{basics.bio}}</p>{{else}}{{#if basics.valueProposition}}<p class="hero-bio">{{basics.valueProposition}}</p>{{/if}}{{/if}}
     <div class="hero-actions">
       {{#if basics.email}}<a href="mailto:{{basics.email}}" class="cta">Get in Touch <span>&rarr;</span></a>{{/if}}
-      {{#if projects}}<a href="#gallery" class="cta cta-ghost">View Work <span>&rarr;</span></a>{{/if}}
+      {{#if projects}}<a href="#" class="cta cta-ghost" data-open-gallery>View Work <span>&rarr;</span></a>{{/if}}
       {{#if basics.resumeUrl}}<a href="{{safeUrl basics.resumeUrl}}" target="_blank" rel="noopener" class="cta cta-ghost">Download CV <span>&darr;</span></a>{{/if}}
     </div>
   </div>
-  <div class="hero-right">
+  <div class="hero-right" id="work">
     {{#if projects}}
     <div class="cone-wrap" id="cone">
       <div class="cone-tilt" id="cone-tilt">
         <div class="cone-spin" id="cone-spin">
           {{#each projects}}
           {{#if this.coverUrl}}
-          <a class="cone-card"{{#if this.slug}} href="{{../portfolioUrl}}/projects/{{this.slug}}"{{else}}{{#if this.link}} href="{{safeUrl this.link}}" target="_blank" rel="noopener"{{/if}}{{/if}}>
+          <a class="cone-card"{{#if this.slug}} href="{{../portfolioUrl}}/projects/{{this.slug}}"{{else}}{{#if this.link}} href="{{safeUrl this.link}}" target="_blank" rel="noopener"{{else}} href="#" data-full="{{safeUrl this.coverUrl}}" data-cap="{{this.title}}"{{/if}}{{/if}}>
             <img src="{{safeUrl this.coverUrl}}" alt="{{this.title}}" loading="lazy" decoding="async" width="148" height="197">
             <div class="overlay"></div>
             <div class="info">
@@ -317,6 +407,9 @@ a { color: inherit; text-decoration: none; }
       </div>
       <div class="cone-hint">Drag to explore</div>
     </div>
+    <div class="cube-stack" id="cubeStack" aria-label="Selected works">
+      <div class="cube-hint">Tap a piece &middot; <a href="#" data-open-gallery>view all {{projects.length}} &rarr;</a></div>
+    </div>
     {{/if}}
   </div>
 </section>
@@ -329,36 +422,6 @@ a { color: inherit; text-decoration: none; }
     {{#each skills}}{{#each this.items}}<span>{{this}}<span class="sep">//</span></span>{{/each}}{{/each}}
   </div>
 </div>
-{{/if}}
-
-{{#if projects}}
-{{#unless (isHidden "portfolio-showcase")}}
-<!-- Gallery grid -->
-<section class="section" id="gallery" style="background: var(--bg-alt);">
-  <div class="container">
-    <div class="sec-head"><span class="section-label">The Collection</span><span class="line"></span></div>
-    <h2 class="sec-title" style="margin-bottom: 8px;">Selected Work</h2>
-    <p class="mono" style="font-size:11px;text-transform:uppercase;letter-spacing:1.5px;color:var(--text-muted);margin-bottom:40px;">{{projects.length}} Projects</p>
-    <div class="gal-grid">
-      {{#each projects}}
-      {{#if this.coverUrl}}
-      <a class="gal-card{{#unless this.slug}}{{#unless this.link}} gal-zoom{{/unless}}{{/unless}}"{{#if this.slug}} href="{{../portfolioUrl}}/projects/{{this.slug}}"{{else}}{{#if this.link}} href="{{safeUrl this.link}}" target="_blank" rel="noopener"{{else}} href="#" data-full="{{safeUrl this.coverUrl}}" data-cap="{{this.title}}"{{/if}}{{/if}}>
-        <div class="ph">
-          <img src="{{safeUrl this.coverUrl}}" alt="{{this.title}}" loading="lazy" decoding="async">
-        </div>
-        <div class="gal-ov">
-          <div class="cat">{{#if this.meta.type}}{{this.meta.type}}{{else}}{{#if this.technologies.[0]}}{{this.technologies.[0]}}{{else}}Work{{/if}}{{/if}}</div>
-          <div class="ttl">{{this.title}}</div>
-        </div>
-        <span class="gal-corner gc-tl"></span><span class="gal-corner gc-tr"></span>
-        <span class="gal-corner gc-bl"></span><span class="gal-corner gc-br"></span>
-      </a>
-      {{/if}}
-      {{/each}}
-    </div>
-  </div>
-</section>
-{{/unless}}
 {{/if}}
 
 {{#if skills}}
@@ -456,7 +519,7 @@ a { color: inherit; text-decoration: none; }
 <section class="section" id="contact">
   <div class="container">
     <h2 class="sec-title" style="margin-bottom: 12px;">Let's create something together</h2>
-    <p class="mono" style="font-size:11px;text-transform:uppercase;letter-spacing:1.5px;color:var(--accent);margin-bottom:48px;">Open for work</p>
+    <p class="mono" style="font-size:11px;text-transform:uppercase;letter-spacing:1.5px;color:var(--sand);margin-bottom:48px;">Open for work</p>
     <div class="contact-grid">
       {{#if basics.email}}<div><p class="lbl">Email</p><a href="mailto:{{basics.email}}">{{basics.email}}</a></div>{{/if}}
       {{#if basics.phone}}<div><p class="lbl">Phone</p><a href="tel:{{basics.phone}}">{{basics.phone}}</a></div>{{/if}}
@@ -487,6 +550,60 @@ a { color: inherit; text-decoration: none; }
   var cards = Array.prototype.slice.call(wrap.querySelectorAll('.cone-card'));
   var N = cards.length;
   if (!N) { wrap.style.display = 'none'; return; }
+
+  // Phone: replace the spinning cone with a static stacked photo-cube
+  // cluster (calmer + easier to tap). Skip the cone rAF loop entirely.
+  if (window.matchMedia('(max-width: 767px)').matches) { buildCubes(cards); return; }
+
+  function buildCubes(srcCards) {
+    var host = document.getElementById('cubeStack');
+    if (!host) return;
+    var picks = srcCards.slice(0, 6);
+    if (!picks.length) { host.style.display = 'none'; return; }
+    // nested pyramid: [left px, top px, z-index] — bottom row sits in front.
+    var slots = [[114, 2, 1], [48, 84, 3], [180, 82, 2], [4, 166, 5], [114, 170, 6], [224, 162, 4]];
+    picks.forEach(function (card, i) {
+      var s = slots[i % slots.length];
+      var img = card.querySelector('img');
+      var src = img ? (img.getAttribute('src') || img.src) : '';
+      var titleEl = card.querySelector('.info-title');
+      var title = (titleEl ? titleEl.textContent : (img ? img.alt : '')) || '';
+      var nImg = picks[(i + 3) % picks.length].querySelector('img');
+      var side = nImg ? (nImg.getAttribute('src') || nImg.src) : src;
+      var df = card.getAttribute('data-full');
+      var esc = title.replace(/"/g, '&quot;');
+      var cube = document.createElement('a');
+      cube.className = 'cube';
+      if (df) {
+        // image-only artwork: open in the lightbox (no detail page)
+        cube.href = '#'; cube.setAttribute('data-full', df);
+        cube.setAttribute('data-cap', card.getAttribute('data-cap') || title);
+      } else {
+        // real project: go to its own page
+        cube.href = card.getAttribute('href') || '#work';
+        if (card.target) cube.target = card.target;
+      }
+      cube.style.setProperty('--cx', s[0] + 'px');
+      cube.style.setProperty('--cy', s[1] + 'px');
+      cube.style.setProperty('--delay', (-i * 2.3).toFixed(2) + 's');
+      cube.style.setProperty('--dur', (15 + (i % 4) * 2.5).toFixed(2) + 's');
+      cube.style.zIndex = s[2];
+      cube.setAttribute('aria-label', title || 'Artwork');
+      // Two artworks per cube: art1 on front/left, art2 on right/back.
+      var a1 = src ? '<img src="' + src + '" alt="' + esc + '">' : '';
+      var a2 = side ? '<img src="' + side + '" alt="">' : a1;
+      cube.innerHTML =
+        '<span class="shadow"></span>' +
+        '<span class="cube-inner">' +
+          '<span class="face f-top"></span>' +
+          '<span class="face f-front">' + a1 + '</span>' +
+          '<span class="face f-left">' + a1 + '</span>' +
+          '<span class="face f-right">' + a2 + '</span>' +
+          '<span class="face f-back">' + a2 + '</span>' +
+        '</span>';
+      host.insertBefore(cube, host.firstChild);
+    });
+  }
 
   // Shrink the cone on small screens so it stays inside the viewport.
   var SMALL = window.matchMedia('(max-width: 1023px)').matches;
@@ -554,10 +671,30 @@ a { color: inherit; text-decoration: none; }
   wrap.addEventListener('pointerup', endDrag);
   wrap.addEventListener('pointerleave', endDrag);
   cards.forEach(function (card) {
-    card.addEventListener('click', function (e) { if (hasDragged) { e.preventDefault(); } });
+    card.addEventListener('click', function (e) { if (hasDragged) { e.preventDefault(); e.stopImmediatePropagation(); } });
   });
 })();
 </script>
+
+<!-- Full collection overlay (opened by the Gallery button) -->
+<div class="gallery-modal" id="galleryModal" aria-hidden="true" role="dialog" aria-label="The Collection">
+  <div class="gm-head">
+    <span class="gm-title">The Collection <span class="gm-count">{{projects.length}} works</span></span>
+    <button class="gm-close" id="gmClose" aria-label="Close gallery">[ Close &times; ]</button>
+  </div>
+  <div class="gm-scroll">
+    <div class="gm-grid">
+      {{#each projects}}
+      {{#if this.coverUrl}}
+      <a class="gm-card"{{#if this.slug}} href="{{../portfolioUrl}}/projects/{{this.slug}}"{{else}}{{#if this.link}} href="{{safeUrl this.link}}" target="_blank" rel="noopener"{{else}} href="#" data-full="{{safeUrl this.coverUrl}}" data-cap="{{this.title}}"{{/if}}{{/if}}>
+        <div class="gm-ph"><img src="{{safeUrl this.coverUrl}}" alt="{{this.title}}" loading="lazy" decoding="async"></div>
+        <div class="gm-meta"><span class="gm-cat">{{#if this.meta.type}}{{this.meta.type}}{{else}}Work{{/if}}</span><span class="gm-ttl">{{this.title}}</span></div>
+      </a>
+      {{/if}}
+      {{/each}}
+    </div>
+  </div>
+</div>
 
 <!-- Gallery quick-view lightbox (for image-only items, no detail page) -->
 <div class="lb" id="galLb" aria-hidden="true">
@@ -575,7 +712,7 @@ a { color: inherit; text-decoration: none; }
 <script>
 (function () {
   var lb = document.getElementById('galLb');
-  var triggers = Array.prototype.slice.call(document.querySelectorAll('.gal-zoom'));
+  var triggers = Array.prototype.slice.call(document.querySelectorAll('[data-full]'));
   if (!lb || !triggers.length) return;
   var img = document.getElementById('galImg'), stage = document.getElementById('galStage');
   var pct = document.getElementById('galPct'), cap = document.getElementById('galCap');
@@ -596,7 +733,23 @@ a { color: inherit; text-decoration: none; }
   stage.addEventListener('pointermove', function (e) { if (!dragging) return; ox = sox + (e.clientX - sx); oy = soy + (e.clientY - sy); apply(); });
   function up() { dragging = false; }
   stage.addEventListener('pointerup', up); stage.addEventListener('pointerleave', up);
-  document.addEventListener('keydown', function (e) { if (!lb.classList.contains('open')) return; if (e.key === 'Escape') close(); else if (e.key === '+' || e.key === '=') zoom(0.3); else if (e.key === '-' || e.key === '_') zoom(-0.3); });
+  document.addEventListener('keydown', function (e) { if (!lb.classList.contains('open')) return; if (e.key === 'Escape') { close(); e.stopImmediatePropagation(); } else if (e.key === '+' || e.key === '=') zoom(0.3); else if (e.key === '-' || e.key === '_') zoom(-0.3); });
+})();
+</script>
+
+<!-- Full collection overlay open/close -->
+<script>
+(function () {
+  var modal = document.getElementById('galleryModal');
+  if (!modal) return;
+  function openM() { modal.classList.add('open'); modal.setAttribute('aria-hidden', 'false'); document.body.style.overflow = 'hidden'; modal.querySelector('.gm-scroll').scrollTop = 0; }
+  function closeM() { modal.classList.remove('open'); modal.setAttribute('aria-hidden', 'true'); if (!document.querySelector('.lb.open')) document.body.style.overflow = ''; }
+  Array.prototype.slice.call(document.querySelectorAll('[data-open-gallery]')).forEach(function (el) {
+    el.addEventListener('click', function (e) { e.preventDefault(); openM(); });
+  });
+  var cb = document.getElementById('gmClose');
+  if (cb) cb.addEventListener('click', closeM);
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && modal.classList.contains('open')) closeM(); });
 })();
 </script>
 {{/if}}

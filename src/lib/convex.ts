@@ -58,5 +58,9 @@ export async function convexClientForUser(): Promise<ConvexHttpClient> {
 export function serverSecret(): string {
   const s = process.env.INTERNAL_API_SECRET;
   if (!s) throw new Error("INTERNAL_API_SECRET not configured");
-  return s;
+  // Trim: the Vercel env value carried trailing whitespace, so the raw value
+  // (secret + whitespace) never matched Convex's stored secret (Convex trims on
+  // store) — every server-to-server mutation (payments.create, markPaid,
+  // free-access) failed verifyServerSecret with a masked "Server Error".
+  return s.trim();
 }

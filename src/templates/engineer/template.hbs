@@ -697,7 +697,7 @@ a:focus-visible, button:focus-visible {
   <div class="footer-bottom">
     <span>&copy; {{basics.fullName}}{{#if basics.title}} — {{basics.title}}{{/if}}</span>
     <div class="footer-qr">
-      {{#if portfolioUrl}}<img src="https://api.qrserver.com/v1/create-qr-code/?size=80x80&data={{portfolioUrl}}" alt="QR">{{/if}}
+      {{#if qrDataUrl}}<img src="{{qrDataUrl}}" alt="QR">{{/if}}
     </div>
   </div>
 </footer>

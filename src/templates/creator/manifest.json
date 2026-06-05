@@ -5,21 +5,21 @@
   "category": "media",
   "targetProfessions": ["Content Creator", "YouTuber", "Blogger", "Social Media Manager", "Marketer", "Artist", "Influencer", "Podcast Host", "Musician", "Brand Strategist", "Copywriter", "Digital Marketer"],
   "colors": {
-    "bg": "#0c0a09",
-    "bgDeep": "#050403",
-    "bgCard": "rgba(28, 25, 23, 0.70)",
-    "primary": "#f59e0b",
-    "primaryGlow": "rgba(245, 158, 11, 0.35)",
-    "primaryDim": "rgba(245, 158, 11, 0.12)",
-    "secondary": "#ef4444",
-    "secondaryGlow": "rgba(239, 68, 68, 0.30)",
-    "secondaryDim": "rgba(239, 68, 68, 0.10)",
-    "accent": "#f5f5f4",
-    "text": "#f5f5f4",
-    "textSecondary": "#a8a29e",
-    "textTertiary": "#57534e",
-    "border": "rgba(245, 158, 11, 0.08)",
-    "gradientHero": "linear-gradient(135deg, #f59e0b 0%, #ef4444 50%, #8b5cf6 100%)"
+    "bg": "#F1EDDC",
+    "bgDeep": "#E8E2CB",
+    "bgCard": "rgba(255, 255, 255, 0.62)",
+    "primary": "#097251",
+    "primaryGlow": "rgba(9, 114, 81, 0.22)",
+    "primaryDim": "rgba(9, 114, 81, 0.10)",
+    "secondary": "#EF453F",
+    "secondaryGlow": "rgba(239, 69, 63, 0.22)",
+    "secondaryDim": "rgba(239, 69, 63, 0.10)",
+    "accent": "#F69C40",
+    "text": "#2a2520",
+    "textSecondary": "#5c554c",
+    "textTertiary": "#8a8276",
+    "border": "rgba(9, 114, 81, 0.12)",
+    "gradientHero": "linear-gradient(135deg, #097251 0%, #F69C40 50%, #DD8CF1 100%)"
   },
   "fonts": {
     "heading": "Plus Jakarta Sans",
@@ -30,6 +30,6 @@
   },
   "sections": ["hero", "social-stats", "content-showcase", "brands-worked-with", "skills", "experience", "education", "contact"],
   "specialSections": ["social-stats", "content-showcase", "brands-worked-with"],
-  "features": ["animated-gradient-hero-name", "social-stats-count-up", "platform-cards-with-engagement", "brand-logo-marquee", "content-category-pills", "video-thumbnail-grid", "spring-overshoot-card-hover", "noise-texture-overlay", "warm-amber-palette", "print-media-kit-style"],
-  "designNotes": "The Creator template speaks the language of digital audiences: warm amber and red tones evoke energy and engagement over near-black backgrounds. Social stats (followers, views, engagement rate) are first-class citizens, not afterthoughts. The content showcase section uses a grid optimized for video thumbnails and blog post previews. Brand collaboration logos scroll in an infinite marquee, establishing credibility at a glance. Plus Jakarta Sans brings a friendly, approachable confidence that matches the creator economy's tone."
+  "features": ["light-eggshell-canvas", "social-pulse-palette", "social-stats-grid", "photo-work-cards", "content-category-pills", "gradient-fallback-covers", "pastel-award-badges", "brand-logo-marquee", "ambient-color-glow", "print-media-kit-style"],
+  "designNotes": "The Creator template is built on the 'Social Pulse' identity — a warm eggshell (#F1EDDC) canvas with Dartmouth-emerald, sunshade-orange, valentine-coral and bright-ube accents, the palette social brands actually use. Social stats (followers, views, engagement) lead as a clean four-up grid. Selected work renders as full-bleed photo cards with a duotone gradient + monogram fallback so it never breaks on slow mobile or before images load. Milestones and awards become pastel colour-block badges, and collaborator names scroll in an infinite marquee. Plus Jakarta Sans brings friendly, confident headlines over Inter body text. Mirrors the approved playable demo at /demo/creator (Skip-to-the-work view)."
 }

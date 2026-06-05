@@ -1,6 +1,7 @@
 import { NextRequest } from "next/server";
 import { convexClient } from "@/lib/convex";
 import { api } from "@convex/_generated/api";
+import { HOSTING_ENABLED } from "@/lib/flags";
 import {
   renderEngineerProjectDetail,
   renderCreativeProjectDetail,
@@ -60,6 +61,11 @@ export async function GET(
   { params }: { params: Promise<{ slug: string; projectSlug: string }> }
 ) {
   const { slug, projectSlug } = await params;
+
+  // Hosting kill-switch: project detail pages are part of hosting.
+  if (!HOSTING_ENABLED) {
+    return notFound();
+  }
 
   try {
     const portfolio = await convexClient.query(api.portfolios.getBySlug, {

@@ -13,8 +13,8 @@ export function LanguageToggle({ lang, onChange }: LanguageToggleProps) {
         onClick={() => onChange("en")}
         className={`px-4 py-1.5 rounded-md text-sm font-medium transition-colors ${
           lang === "en"
-            ? "bg-[var(--land-accent)] text-white"
-            : "text-[var(--land-body)] hover:text-white"
+            ? "bg-[var(--land-accent)] text-[var(--land-bright)]"
+            : "text-[var(--land-body)] hover:text-[var(--land-bright)]"
         }`}
       >
         English
@@ -24,8 +24,8 @@ export function LanguageToggle({ lang, onChange }: LanguageToggleProps) {
         onClick={() => onChange("ar")}
         className={`px-4 py-1.5 rounded-md text-sm font-medium transition-colors ${
           lang === "ar"
-            ? "bg-[var(--land-accent)] text-white"
-            : "text-[var(--land-body)] hover:text-white"
+            ? "bg-[var(--land-accent)] text-[var(--land-bright)]"
+            : "text-[var(--land-body)] hover:text-[var(--land-bright)]"
         }`}
         dir="rtl"
       >

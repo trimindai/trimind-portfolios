@@ -31,6 +31,7 @@ export default defineSchema({
       title: v.string(),
       subtitle: v.optional(v.string()),
       bio: v.optional(v.string()),
+      summary: v.optional(v.string()),
       valueProposition: v.optional(v.string()),
       location: v.optional(v.string()),
       nationality: v.optional(v.string()),
@@ -41,9 +42,23 @@ export default defineSchema({
       linkedin: v.optional(v.string()),
       github: v.optional(v.string()),
       instagram: v.optional(v.string()),
+      youtube: v.optional(v.string()),
+      tiktok: v.optional(v.string()),
       photoUrl: v.optional(v.string()),
       resumeUrl: v.optional(v.string()),
+      languages: v.optional(
+        v.array(
+          v.object({
+            name: v.string(),
+            level: v.optional(v.string()),
+          })
+        )
+      ),
     }),
+
+    brands: v.optional(
+      v.array(v.object({ name: v.string(), logoUrl: v.optional(v.string()) }))
+    ),
 
     metrics: v.optional(
       v.array(
@@ -213,6 +228,16 @@ export default defineSchema({
       )
     ),
 
+    references: v.optional(
+      v.array(
+        v.object({
+          name: v.string(),
+          title: v.optional(v.string()),
+          contact: v.optional(v.string()),
+        })
+      )
+    ),
+
     professionalAffiliations: v.optional(
       v.array(
         v.object({
@@ -255,6 +280,7 @@ export default defineSchema({
         })
       )
     ),
+    viewCount: v.optional(v.number()),
     paymentId: v.optional(v.string()),
     publishedAt: v.optional(v.number()),
     lastEditedAt: v.number(),

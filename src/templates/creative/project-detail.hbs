@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>{{project.title}} — {{basics.fullName}}</title>
 <meta name="description" content="{{#if project.tagline}}{{project.tagline}}{{else}}{{project.title}} by {{basics.fullName}}{{/if}}">
-<meta name="theme-color" content="{{safeColor customization.bgColor "#1b1b1b"}}">
+<meta name="theme-color" content="{{safeColor customization.bgColor "#EFEEEA"}}">
 <link rel="canonical" href="{{portfolioUrl}}/projects/{{project.slug}}">
 {{{faviconLink basics.fullName customization.accentColor customization.bgColor}}}
 <meta property="og:type" content="article">
@@ -25,16 +25,17 @@
 <style>
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 :root {
-  --bg: {{safeColor customization.bgColor "#1b1b1b"}};
-  --bg-alt: #151515; --bg-card: #111111;
-  --text: #e8e8e8; --text-dim: #a0a0a0; --text-muted: #6a6a6a; --border: #2a2a2a;
-  --accent: {{safeColor customization.accentColor "#DFFF00"}};
+  --bg: {{safeColor customization.bgColor "#EFEEEA"}};
+  --bg-alt: #E6DAC6; --bg-card: #F5F0E7; --sand: #EBBEAA;
+  --text: #1E2A44; --text-dim: #4C587A; --text-muted: #8B8473; --border: #D8C7AE;
+  --accent: {{safeColor customization.accentColor "#B86F52"}};
+  --link: #496AB1;
   --font-head: 'Geist', system-ui, sans-serif; --font-mono: 'Geist Mono', ui-monospace, monospace;
 }
 body { font-family: var(--font-head); background: var(--bg); color: var(--text); min-height: 100dvh; overflow-x: hidden; -webkit-font-smoothing: antialiased; }
 a { color: inherit; text-decoration: none; }
-.nav { position: fixed; top: 0; left: 0; right: 0; z-index: 50; display: flex; align-items: center; justify-content: space-between; height: 60px; padding: 0 24px; background: rgba(27,27,27,0.8); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); }
-.nav-brand { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; transition: color .25s; }
+.nav { position: fixed; top: 0; left: 0; right: 0; z-index: 50; display: flex; align-items: center; justify-content: space-between; height: 60px; padding: 0 24px; background: rgba(239,238,234,0.82); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); }
+.nav-brand { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: var(--link); transition: color .25s; }
 .nav-brand:hover { color: var(--accent); }
 .nav-back { font-family: var(--font-mono); font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: var(--text-dim); transition: color .25s; }
 .nav-back:hover { color: var(--accent); }
@@ -42,7 +43,7 @@ a { color: inherit; text-decoration: none; }
 .back { display: inline-flex; align-items: center; gap: 8px; font-family: var(--font-mono); font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); margin-bottom: 32px; transition: color .25s; }
 .back:hover { color: var(--accent); }
 .phase { font-family: var(--font-mono); font-size: 9px; text-transform: uppercase; letter-spacing: 1.5px; color: var(--accent); margin-bottom: 12px; }
-.title { font-size: clamp(28px, 4vw, 48px); font-weight: 800; letter-spacing: -0.03em; line-height: 1.1; margin-bottom: 8px; }
+.title { font-size: clamp(28px, 4vw, 48px); font-weight: 800; letter-spacing: -0.03em; line-height: 1.1; margin-bottom: 8px; color: var(--link); }
 .tagline { font-size: 16px; color: var(--text-dim); margin-bottom: 16px; }
 .meta-row { display: flex; flex-wrap: wrap; align-items: center; gap: 16px; margin-bottom: 32px; }
 .meta-row span { font-family: var(--font-mono); font-size: 10px; text-transform: uppercase; letter-spacing: 1px; color: var(--text-dim); }
@@ -56,10 +57,10 @@ a { color: inherit; text-decoration: none; }
 .hero-img { position: relative; display: block; width: 100%; overflow: hidden; border: 1px solid var(--border); border-radius: 2px; margin-bottom: 40px; cursor: zoom-in; background: none; padding: 0; }
 .hero-img img { width: 100%; height: auto; display: block; transition: transform .5s; }
 .hero-img:hover img { transform: scale(1.02); }
-.hero-img .cross { position: absolute; width: 16px; height: 16px; color: rgba(223,255,0,0.45); }
+.hero-img .cross { position: absolute; width: 16px; height: 16px; color: rgba(73,106,177,0.5); }
 .hero-img .ic-tl { top: 12px; left: 12px; } .hero-img .ic-tr { top: 12px; right: 12px; }
 .hero-img .ic-bl { bottom: 12px; left: 12px; } .hero-img .ic-br { bottom: 12px; right: 12px; }
-.zoom-hint { position: absolute; bottom: 12px; left: 50%; transform: translateX(-50%); padding: 4px 12px; font-family: var(--font-mono); font-size: 9px; text-transform: uppercase; letter-spacing: 1.5px; color: #1b1b1b; background: var(--accent); border-radius: 2px; opacity: 0; transition: opacity .3s; }
+.zoom-hint { position: absolute; bottom: 12px; left: 50%; transform: translateX(-50%); padding: 4px 12px; font-family: var(--font-mono); font-size: 9px; text-transform: uppercase; letter-spacing: 1.5px; color: #F5F0E7; background: var(--accent); border-radius: 2px; opacity: 0; transition: opacity .3s; }
 .hero-img:hover .zoom-hint { opacity: 1; }
 .desc { font-size: 15px; line-height: 1.7; color: var(--text-dim); margin-bottom: 32px; }
 /* Content blocks */
@@ -97,7 +98,7 @@ figure figcaption { font-family: var(--font-mono); font-size: 10px; text-transfo
 /* Lightbox */
 .lb { position: fixed; inset: 0; z-index: 100; display: none; align-items: center; justify-content: center; background: rgba(17,17,17,0.97); }
 .lb.open { display: flex; }
-.lb .cross { position: absolute; width: 18px; height: 18px; color: rgba(223,255,0,0.4); }
+.lb .cross { position: absolute; width: 18px; height: 18px; color: rgba(235,190,170,0.45); }
 .lb .lc-tl { top: 20px; left: 20px; } .lb .lc-tr { top: 20px; right: 20px; }
 .lb .lc-bl { bottom: 20px; left: 20px; } .lb .lc-br { bottom: 20px; right: 20px; }
 .lb-close { position: absolute; top: 20px; left: 50%; transform: translateX(-50%); font-family: var(--font-mono); font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px; color: var(--text-dim); background: none; border: none; cursor: pointer; }
@@ -114,11 +115,11 @@ figure figcaption { font-family: var(--font-mono); font-size: 10px; text-transfo
 
 <header class="nav">
   <a href="{{portfolioUrl}}" class="nav-brand">{{basics.fullName}}</a>
-  <a href="{{portfolioUrl}}#gallery" class="nav-back">[ All Work ]</a>
+  <a href="{{portfolioUrl}}#work" class="nav-back">[ All Work ]</a>
 </header>
 
 <div class="wrap">
-  <a href="{{portfolioUrl}}#gallery" class="back"><span>&larr;</span><span>Back to Gallery</span></a>
+  <a href="{{portfolioUrl}}#work" class="back"><span>&larr;</span><span>Back to Gallery</span></a>
 
   {{#if project.meta.type}}<p class="phase">{{project.meta.type}}{{#if project.meta.year}} &middot; {{project.meta.year}}{{/if}}</p>{{else}}{{#if project.technologies.[0]}}<p class="phase">{{project.technologies.[0]}}{{#if project.meta.year}} &middot; {{project.meta.year}}{{/if}}</p>{{/if}}{{/if}}
   <h1 class="title">{{project.title}}</h1>
@@ -135,8 +136,12 @@ figure figcaption { font-family: var(--font-mono); font-size: 10px; text-transfo
 
   {{#if project.description}}<p class="desc">{{project.description}}</p>{{/if}}
 
-  {{#if (or project.meta.role project.meta.duration project.meta.institution project.meta.teamSize)}}
+  {{#if (or project.meta.medium project.meta.dimensions project.meta.year project.meta.series project.meta.role project.meta.duration project.meta.institution project.meta.teamSize)}}
   <div class="metabox">
+    {{#if project.meta.medium}}<div><p class="k">Medium</p><p class="v">{{project.meta.medium}}</p></div>{{/if}}
+    {{#if project.meta.dimensions}}<div><p class="k">Dimensions</p><p class="v">{{project.meta.dimensions}}</p></div>{{/if}}
+    {{#if project.meta.year}}<div><p class="k">Year</p><p class="v">{{project.meta.year}}</p></div>{{/if}}
+    {{#if project.meta.series}}<div><p class="k">Series</p><p class="v">{{project.meta.series}}</p></div>{{/if}}
     {{#if project.meta.role}}<div><p class="k">Role</p><p class="v">{{project.meta.role}}</p></div>{{/if}}
     {{#if project.meta.duration}}<div><p class="k">Duration</p><p class="v">{{project.meta.duration}}</p></div>{{/if}}
     {{#if project.meta.institution}}<div><p class="k">For</p><p class="v">{{project.meta.institution}}</p></div>{{/if}}

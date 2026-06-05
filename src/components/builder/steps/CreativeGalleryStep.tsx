@@ -39,7 +39,7 @@ export function CreativeGalleryStep({ data, onChange }: CreativeGalleryStepProps
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-xl font-semibold text-white">Your Work</h2>
+        <h2 className="text-xl font-semibold text-[var(--land-bright)]">Your Work</h2>
         <p className="text-sm text-[var(--land-body)] mt-1">
           Each piece becomes a card in the rotating 3D cone and the gallery grid. The cover image is
           what visitors see first. Open <em>Detail page</em> to build a full case study with images,
@@ -60,6 +60,7 @@ export function CreativeGalleryStep({ data, onChange }: CreativeGalleryStepProps
           title: "",
           description: "",
           coverUrl: "",
+          link: "",
           slug: "",
           tagline: "",
           technologies: [] as string[],
@@ -105,7 +106,15 @@ export function CreativeGalleryStep({ data, onChange }: CreativeGalleryStepProps
                 value={item.coverUrl || ""}
                 onChange={(v) => update({ coverUrl: v })}
                 placeholder="https://example.com/cover.jpg"
-                hint="Direct link to the image. Portrait (3:4) looks best in the cone."
+                hint="Direct link to the image. Portrait (3:4) looks best."
+              />
+
+              <TextField
+                label="Link to this work"
+                value={item.link || ""}
+                onChange={(v) => update({ link: v })}
+                placeholder="https://youtube.com/watch?v=…"
+                hint="Tapping the card opens this — the video, live ad, campaign or post. Leave blank for no link."
               />
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -155,7 +164,7 @@ export function CreativeGalleryStep({ data, onChange }: CreativeGalleryStepProps
                     })
                   }
                   placeholder="Figma, Photoshop, Oil on canvas, Next.js"
-                  className="w-full bg-[var(--land-surface-raised)] border border-[var(--land-border)] rounded-lg px-4 py-2.5 text-white placeholder:text-[var(--land-muted)] focus:border-[var(--land-accent)] focus:ring-1 focus:ring-[var(--land-accent)] outline-none transition-colors"
+                  className="w-full bg-white border border-[var(--land-border)] rounded-lg px-4 py-2.5 text-[var(--land-bright)] placeholder:text-[var(--land-muted)] shadow-sm focus:border-[var(--land-accent)] focus:ring-1 focus:ring-[var(--land-accent)] outline-none transition-colors"
                 />
                 <p className="text-xs text-[var(--land-muted)] mt-1">Comma-separated. Shown as tags on the detail page.</p>
               </div>
@@ -233,7 +242,7 @@ export function CreativeGalleryStep({ data, onChange }: CreativeGalleryStepProps
                             <select
                               value={link.kind}
                               onChange={(e) => updateLink({ kind: e.target.value })}
-                              className="w-full bg-[var(--land-surface-raised)] border border-[var(--land-border)] rounded-lg px-4 py-2.5 text-white focus:border-[var(--land-accent)] focus:ring-1 focus:ring-[var(--land-accent)] outline-none transition-colors"
+                              className="w-full bg-[var(--land-surface-raised)] border border-[var(--land-border)] rounded-lg px-4 py-2.5 text-[var(--land-bright)] focus:border-[var(--land-accent)] focus:ring-1 focus:ring-[var(--land-accent)] outline-none transition-colors"
                             >
                               {LINK_KINDS.map((k) => (
                                 <option key={k.value} value={k.value}>{k.label}</option>
@@ -266,7 +275,7 @@ export function CreativeGalleryStep({ data, onChange }: CreativeGalleryStepProps
                             <select
                               value={block.kind}
                               onChange={(e) => updateBlock({ kind: e.target.value })}
-                              className="w-full bg-[var(--land-surface-raised)] border border-[var(--land-border)] rounded-lg px-4 py-2.5 text-white focus:border-[var(--land-accent)] focus:ring-1 focus:ring-[var(--land-accent)] outline-none transition-colors"
+                              className="w-full bg-[var(--land-surface-raised)] border border-[var(--land-border)] rounded-lg px-4 py-2.5 text-[var(--land-bright)] focus:border-[var(--land-accent)] focus:ring-1 focus:ring-[var(--land-accent)] outline-none transition-colors"
                             >
                               {BLOCK_KINDS.map((k) => (
                                 <option key={k.value} value={k.value}>{k.label}</option>

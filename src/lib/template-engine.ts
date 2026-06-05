@@ -1,13 +1,12 @@
 import Handlebars from "handlebars";
-import corporateTemplateSource from "@/templates/corporate/template.hbs";
+import generalTemplateSource from "@/templates/general/template.hbs";
 import engineerTemplateSource from "@/templates/engineer/template.hbs";
 import engineerProjectDetailSource from "@/templates/engineer/project-detail.hbs";
 import creativeTemplateSource from "@/templates/creative/template.hbs";
 import creativeProjectDetailSource from "@/templates/creative/project-detail.hbs";
 import creatorTemplateSource from "@/templates/creator/template.hbs";
 import developerTemplateSource from "@/templates/developer/template.hbs";
-import medicalTemplateSource from "@/templates/medical/template.hbs";
-import educatorTemplateSource from "@/templates/educator/template.hbs";
+import cvTemplateSource from "@/templates/_cv/cv.hbs";
 
 export interface PortfolioData {
   basics: {
@@ -15,6 +14,7 @@ export interface PortfolioData {
     title: string;
     subtitle?: string;
     bio?: string;
+    summary?: string;
     valueProposition?: string;
     location?: string;
     nationality?: string;
@@ -25,9 +25,13 @@ export interface PortfolioData {
     linkedin?: string;
     github?: string;
     instagram?: string;
+    youtube?: string;
+    tiktok?: string;
     photoUrl?: string;
     resumeUrl?: string;
+    languages?: Array<{ name: string; level?: string }>;
   };
+  brands?: Array<{ name: string; logoUrl?: string }>;
   metrics?: Array<{ value: string; label: string }>;
   experience?: Array<{
     title: string;
@@ -89,6 +93,7 @@ export interface PortfolioData {
     title: string;
     company: string;
   }>;
+  references?: Array<{ name: string; title?: string; contact?: string }>;
   professionalAffiliations?: Array<{ name: string; role?: string }>;
   continuousDevelopment?: Array<{
     name: string;
@@ -426,15 +431,14 @@ Handlebars.registerHelper(
   }
 );
 
-let compiledCorporateTemplate: Handlebars.TemplateDelegate | null = null;
+let compiledGeneralTemplate: Handlebars.TemplateDelegate | null = null;
 let compiledEngineerTemplate: Handlebars.TemplateDelegate | null = null;
 let compiledEngineerProjectDetail: Handlebars.TemplateDelegate | null = null;
 let compiledCreativeTemplate: Handlebars.TemplateDelegate | null = null;
 let compiledCreativeProjectDetail: Handlebars.TemplateDelegate | null = null;
 let compiledCreatorTemplate: Handlebars.TemplateDelegate | null = null;
 let compiledDeveloperTemplate: Handlebars.TemplateDelegate | null = null;
-let compiledMedicalTemplate: Handlebars.TemplateDelegate | null = null;
-let compiledEducatorTemplate: Handlebars.TemplateDelegate | null = null;
+let compiledCvTemplate: Handlebars.TemplateDelegate | null = null;
 
 function prepareTemplateData(data: PortfolioData & { contentAr?: any }) {
   const templateData: any = { ...data };
@@ -447,11 +451,11 @@ function prepareTemplateData(data: PortfolioData & { contentAr?: any }) {
   return templateData;
 }
 
-export function renderCorporateTemplate(data: PortfolioData & { contentAr?: any }): string {
-  if (!compiledCorporateTemplate) {
-    compiledCorporateTemplate = Handlebars.compile(corporateTemplateSource as string);
+export function renderGeneralTemplate(data: PortfolioData & { contentAr?: any }): string {
+  if (!compiledGeneralTemplate) {
+    compiledGeneralTemplate = Handlebars.compile(generalTemplateSource as string);
   }
-  return compiledCorporateTemplate(prepareTemplateData(data));
+  return compiledGeneralTemplate(prepareTemplateData(data));
 }
 
 export function renderEngineerTemplate(data: PortfolioData & { contentAr?: any }): string {
@@ -482,18 +486,32 @@ export function renderDeveloperTemplate(data: PortfolioData & { contentAr?: any 
   return compiledDeveloperTemplate(prepareTemplateData(data));
 }
 
-export function renderMedicalTemplate(data: PortfolioData & { contentAr?: any }): string {
-  if (!compiledMedicalTemplate) {
-    compiledMedicalTemplate = Handlebars.compile(medicalTemplateSource as string);
+/**
+ * Render the shared ATS PDF CV (`_cv/cv.hbs`).
+ *
+ * One quiet, A4, print-optimised CV for every discipline: all job-application
+ * sections, hide-if-empty, discipline accent pulled from
+ * `customization.accentColor`, and a QR code in the header that points at the
+ * candidate's live portfolio. Supports EN (LTR) and AR (RTL) via the data's
+ * `locale` / `isRTL`. Reuses the engine's existing helpers (isHidden, ifEq,
+ * safeColor, safeUrl, …).
+ *
+ * @param data       the full `PortfolioData`
+ * @param qrDataUrl  PNG data-URL for the QR (see `portfolioQrDataUrl`)
+ * @param liveUrl    the live portfolio URL printed beneath the QR
+ */
+export function renderCvPdf(
+  data: PortfolioData & { contentAr?: any },
+  { qrDataUrl, liveUrl }: { qrDataUrl?: string; liveUrl?: string } = {}
+): string {
+  if (!compiledCvTemplate) {
+    compiledCvTemplate = Handlebars.compile(cvTemplateSource as string);
   }
-  return compiledMedicalTemplate(prepareTemplateData(data));
-}
-
-export function renderEducatorTemplate(data: PortfolioData & { contentAr?: any }): string {
-  if (!compiledEducatorTemplate) {
-    compiledEducatorTemplate = Handlebars.compile(educatorTemplateSource as string);
-  }
-  return compiledEducatorTemplate(prepareTemplateData(data));
+  return compiledCvTemplate({
+    ...prepareTemplateData(data),
+    qrDataUrl: qrDataUrl || "",
+    liveUrl: liveUrl || "",
+  });
 }
 
 /**
@@ -566,7 +584,7 @@ export function renderCreativeProjectDetail(
 export function renderAllProjectDetailPages(
   data: PortfolioData & { contentAr?: any; slug?: string }
 ): Array<{ slug: string; html: string }> {
-  const templateId = data.templateId || "corporate";
+  const templateId = data.templateId || "general";
   const slugged = (data.projects || []).filter((p) => p.slug);
   const detailRenderer =
     templateId === "engineer"

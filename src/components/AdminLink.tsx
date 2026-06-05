@@ -5,7 +5,16 @@ import { Link } from "@/i18n/navigation";
 import { ADMIN_EMAILS } from "@/lib/admin";
 
 export function AdminLink() {
-  const { user, isLoaded } = useUser();
+  let user = null;
+  let isLoaded = false;
+
+  try {
+    const clerk = useUser();
+    user = clerk.user;
+    isLoaded = clerk.isLoaded;
+  } catch {
+    return null;
+  }
 
   if (!isLoaded || !user) return null;
 

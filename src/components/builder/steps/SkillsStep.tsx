@@ -15,7 +15,7 @@ export function SkillsStep({ data, onChange }: SkillsStepProps) {
   return (
     <div className="space-y-8">
       <div>
-        <h2 className="text-xl font-semibold text-white mb-2">Skills & Competencies</h2>
+        <h2 className="text-xl font-semibold text-[var(--land-bright)] mb-2">Skills & Competencies</h2>
         <p className="text-sm text-[var(--land-body)] mb-4">Group skills by category (e.g., Technical, Leadership).</p>
 
         <DynamicList
@@ -33,7 +33,7 @@ export function SkillsStep({ data, onChange }: SkillsStepProps) {
                   value={item.items.join(", ")}
                   onChange={(e) => update({ items: e.target.value.split(",").map((s: string) => s.trim()).filter(Boolean) })}
                   placeholder="Python, Excel, Power BI, SQL"
-                  className="w-full bg-[var(--land-surface-raised)] border border-[var(--land-border)] rounded-lg px-4 py-2.5 text-white placeholder:text-[var(--land-muted)] focus:border-[var(--land-accent)] focus:ring-1 focus:ring-[var(--land-accent)] outline-none transition-colors"
+                  className="w-full bg-white border border-[var(--land-border)] rounded-lg px-4 py-2.5 text-[var(--land-bright)] placeholder:text-[var(--land-muted)] shadow-sm focus:border-[var(--land-accent)] focus:ring-1 focus:ring-[var(--land-accent)] outline-none transition-colors"
                 />
               </div>
             </div>
@@ -42,7 +42,7 @@ export function SkillsStep({ data, onChange }: SkillsStepProps) {
       </div>
 
       <div>
-        <h2 className="text-xl font-semibold text-white mb-2">Certifications</h2>
+        <h2 className="text-xl font-semibold text-[var(--land-bright)] mb-2">Certifications</h2>
         <DynamicList
           items={certifications}
           onChange={(items) => onChange({ certifications: items })}
@@ -50,7 +50,7 @@ export function SkillsStep({ data, onChange }: SkillsStepProps) {
           maxItems={10}
           addLabel="Add Certification"
           renderItem={(item, _, update) => (
-            <div className="grid grid-cols-3 gap-3 pr-16">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pr-10 sm:pr-16">
               <TextField label="Name" value={item.name} onChange={(v) => update({ name: v })} placeholder="CFA" />
               <TextField label="Issuer" value={item.issuer} onChange={(v) => update({ issuer: v })} placeholder="CFA Institute" />
               <TextField label="Year" value={item.year || ""} onChange={(v) => update({ year: v })} placeholder="2022" />

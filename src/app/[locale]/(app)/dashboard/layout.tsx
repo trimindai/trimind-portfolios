@@ -7,6 +7,8 @@ import { useEffect, useState } from "react";
 import { DashboardContext } from "@/contexts/DashboardContext";
 import { Id } from "@convex/_generated/dataModel";
 import { AdminLink } from "@/components/AdminLink";
+import { Link } from "@/i18n/navigation";
+import { useParams } from "next/navigation";
 
 export default function DashboardLayout({
   children,
@@ -14,6 +16,9 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   const { user, isLoaded } = useUser();
+  const params = useParams();
+  const locale = (params.locale as string) || "en";
+  const isRTL = locale === "ar";
   const upsertUser = useMutation(api.users.upsertFromClerk);
   const currentUser = useQuery(api.users.getCurrent);
   const [convexUserId, setConvexUserId] = useState<Id<"users"> | null>(null);
@@ -46,17 +51,17 @@ export default function DashboardLayout({
       <div className="min-h-screen bg-[var(--land-bg)]">
         <header className="border-b border-[var(--land-border)] bg-[var(--land-bg)]/80 backdrop-blur-md">
           <div className="mx-auto max-w-7xl flex items-center justify-between px-6 py-4">
-            <span className="text-xl font-bold text-white tracking-tight">
+            <Link href="/" className="text-xl font-bold text-[var(--land-bright)] tracking-tight hover:text-[var(--land-accent-hover)] transition-colors">
               Portfolio Pro
-            </span>
-            <div className="flex items-center gap-4">
+            </Link>
+            <div className="flex items-center gap-3 sm:gap-4">
               <AdminLink />
-              <span className="text-sm text-[var(--land-body)]">
+              <span className="hidden sm:inline text-sm text-[var(--land-body)]">
                 {user?.fullName || user?.primaryEmailAddress?.emailAddress}
               </span>
               <SignOutButton>
-                <button className="text-sm text-[var(--land-muted)] hover:text-white transition-colors">
-                  Sign out
+                <button className="inline-flex items-center min-h-[44px] px-2 -mr-2 text-sm text-[var(--land-muted)] hover:text-[var(--land-bright)] transition-colors">
+                  {isRTL ? "خروج" : "Sign out"}
                 </button>
               </SignOutButton>
             </div>

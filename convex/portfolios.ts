@@ -77,6 +77,7 @@ const basicsValidator = v.object({
   title: v.string(),
   subtitle: v.optional(v.string()),
   bio: v.optional(v.string()),
+  summary: v.optional(v.string()),
   valueProposition: v.optional(v.string()),
   location: v.optional(v.string()),
   nationality: v.optional(v.string()),
@@ -87,8 +88,18 @@ const basicsValidator = v.object({
   linkedin: v.optional(v.string()),
   github: v.optional(v.string()),
   instagram: v.optional(v.string()),
+  youtube: v.optional(v.string()),
+  tiktok: v.optional(v.string()),
   photoUrl: v.optional(v.string()),
   resumeUrl: v.optional(v.string()),
+  languages: v.optional(
+    v.array(
+      v.object({
+        name: v.string(),
+        level: v.optional(v.string()),
+      })
+    )
+  ),
 });
 
 const customizationValidator = v.optional(
@@ -123,10 +134,34 @@ export const create = mutation({
   },
 });
 
+export const duplicate = mutation({
+  args: { id: v.id("portfolios") },
+  handler: async (ctx, { id }) => {
+    const user = await requireUser(ctx);
+    const original = await ctx.db.get(id);
+    if (!original) throw new Error("Portfolio not found");
+    if (original.userId !== user._id) throw new Error("Not your portfolio");
+
+    const now = Date.now();
+    const { _id, _creationTime, status, slug, slugReservedAt, generatedHtml, generatedProjectPages, paymentId, publishedAt, viewCount, createdAt, lastEditedAt, ...data } = original;
+    return await ctx.db.insert("portfolios", {
+      ...data,
+      name: `${original.name} (copy)`,
+      status: "draft",
+      slug: undefined,
+      lastEditedAt: now,
+      createdAt: now,
+    });
+  },
+});
+
 export const update = mutation({
   args: {
     id: v.id("portfolios"),
     basics: v.optional(basicsValidator),
+    brands: v.optional(
+      v.array(v.object({ name: v.string(), logoUrl: v.optional(v.string()) }))
+    ),
     metrics: v.optional(
       v.array(v.object({ value: v.string(), label: v.string() }))
     ),
@@ -248,6 +283,15 @@ export const update = mutation({
         })
       )
     ),
+    references: v.optional(
+      v.array(
+        v.object({
+          name: v.string(),
+          title: v.optional(v.string()),
+          contact: v.optional(v.string()),
+        })
+      )
+    ),
     professionalAffiliations: v.optional(
       v.array(
         v.object({
@@ -339,6 +383,29 @@ export const getBySlug = query({
       .first();
     if (!portfolio || portfolio.status !== "published") return null;
     return portfolio;
+  },
+});
+
+export const listPublishedSlugs = query({
+  handler: async (ctx) => {
+    const portfolios = await ctx.db.query("portfolios").collect();
+    return portfolios
+      .filter((p) => p.status === "published" && p.slug)
+      .map((p) => ({ slug: p.slug!, publishedAt: p.publishedAt ?? p.lastEditedAt }));
+  },
+});
+
+export const incrementViews = mutation({
+  args: { slug: v.string() },
+  handler: async (ctx, { slug }) => {
+    const portfolio = await ctx.db
+      .query("portfolios")
+      .withIndex("by_slug", (q) => q.eq("slug", slug))
+      .first();
+    if (!portfolio || portfolio.status !== "published") return;
+    await ctx.db.patch(portfolio._id, {
+      viewCount: (portfolio.viewCount ?? 0) + 1,
+    });
   },
 });
 

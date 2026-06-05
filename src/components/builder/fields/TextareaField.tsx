@@ -35,9 +35,10 @@ export function TextareaField({
             <button
               type="button"
               onClick={() => setShowTips(!showTips)}
-              className="text-xs text-amber-400 hover:text-amber-300 transition-colors"
+              // Mobile: 44px tappable chip. Desktop (md+): original underline link.
+              className="inline-flex items-center min-h-[44px] px-3 rounded-lg bg-amber-50 text-xs font-medium text-amber-600 hover:text-amber-700 transition-colors md:min-h-0 md:px-0 md:rounded-none md:bg-transparent md:underline md:underline-offset-2 md:decoration-amber-300"
             >
-              {showTips ? "Hide tips" : "Writing tips"}
+              {showTips ? "Hide tips" : "Writing tips +"}
             </button>
           )}
           <span className="text-xs text-[var(--land-muted)]">{charCount}</span>
@@ -74,7 +75,7 @@ export function TextareaField({
         placeholder={placeholder}
         rows={rows}
         spellCheck={true}
-        className="w-full bg-[var(--land-surface-raised)] border border-[var(--land-border)] rounded-lg px-4 py-2.5 text-white placeholder:text-[var(--land-muted)] focus:border-[var(--land-accent)] focus:ring-1 focus:ring-[var(--land-accent)] outline-none transition-colors resize-none"
+        className="w-full bg-white border border-[var(--land-border)] rounded-lg px-4 py-2.5 text-[var(--land-bright)] placeholder:text-[var(--land-muted)] focus:border-[var(--land-accent)] focus:ring-1 focus:ring-[var(--land-accent)] outline-none transition-colors resize-none shadow-sm"
       />
     </div>
   );

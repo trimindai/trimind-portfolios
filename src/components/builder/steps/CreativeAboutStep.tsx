@@ -20,7 +20,7 @@ export function CreativeAboutStep({ data, onChange }: CreativeAboutStepProps) {
     <div className="space-y-10">
       {/* Skills / mediums */}
       <div>
-        <h2 className="text-xl font-semibold text-white mb-1">Skills &amp; Mediums</h2>
+        <h2 className="text-xl font-semibold text-[var(--land-bright)] mb-1">Skills &amp; Mediums</h2>
         <p className="text-sm text-[var(--land-body)] mb-4">
           Grouped into categories. These appear as pills and in the scrolling marquee.
         </p>
@@ -51,7 +51,7 @@ export function CreativeAboutStep({ data, onChange }: CreativeAboutStepProps) {
                     })
                   }
                   placeholder="Oil, Acrylic, Charcoal, Resin"
-                  className="w-full bg-[var(--land-surface-raised)] border border-[var(--land-border)] rounded-lg px-4 py-2.5 text-white placeholder:text-[var(--land-muted)] focus:border-[var(--land-accent)] focus:ring-1 focus:ring-[var(--land-accent)] outline-none transition-colors"
+                  className="w-full bg-white border border-[var(--land-border)] rounded-lg px-4 py-2.5 text-[var(--land-bright)] placeholder:text-[var(--land-muted)] shadow-sm focus:border-[var(--land-accent)] focus:ring-1 focus:ring-[var(--land-accent)] outline-none transition-colors"
                 />
               </div>
             </div>
@@ -61,7 +61,7 @@ export function CreativeAboutStep({ data, onChange }: CreativeAboutStepProps) {
 
       {/* Experience / exhibitions */}
       <div>
-        <h2 className="text-xl font-semibold text-white mb-1">Exhibitions &amp; Experience</h2>
+        <h2 className="text-xl font-semibold text-[var(--land-bright)] mb-1">Exhibitions &amp; Experience</h2>
         <p className="text-sm text-[var(--land-body)] mb-4">
           Shows, residencies, roles. Listed as a timeline under &quot;Journey&quot;.
         </p>
@@ -119,7 +119,7 @@ export function CreativeAboutStep({ data, onChange }: CreativeAboutStepProps) {
 
       {/* Awards / certifications / licenses */}
       <div>
-        <h2 className="text-xl font-semibold text-white mb-1">Awards, Certificates &amp; Licenses</h2>
+        <h2 className="text-xl font-semibold text-[var(--land-bright)] mb-1">Awards, Certificates &amp; Licenses</h2>
         <p className="text-sm text-[var(--land-body)] mb-4">
           Show off recognition — awards, certifications, licenses, or honors. Shown in their own section.
         </p>
@@ -157,7 +157,7 @@ export function CreativeAboutStep({ data, onChange }: CreativeAboutStepProps) {
 
       {/* Metrics */}
       <div>
-        <h2 className="text-xl font-semibold text-white mb-1">By the Numbers</h2>
+        <h2 className="text-xl font-semibold text-[var(--land-bright)] mb-1">By the Numbers</h2>
         <p className="text-sm text-[var(--land-body)] mb-4">
           Optional highlights shown in a scrolling strip (e.g. works, exhibitions, awards).
         </p>
@@ -190,7 +190,7 @@ export function CreativeAboutStep({ data, onChange }: CreativeAboutStepProps) {
 
       {/* Testimonials / endorsements */}
       <div>
-        <h2 className="text-xl font-semibold text-white mb-1">Testimonials</h2>
+        <h2 className="text-xl font-semibold text-[var(--land-bright)] mb-1">Testimonials</h2>
         <p className="text-sm text-[var(--land-body)] mb-4">
           What collectors, curators, or clients say about your work. Shown as quoted endorsements.
         </p>

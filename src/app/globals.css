@@ -79,20 +79,20 @@
   }
 }
 
-/* ─── Landing page tokens — Quiet Atelier palette ── */
+/* ─── Landing page tokens — Fresh Light palette ── */
 :root {
-  --land-bg: oklch(0.129 0.014 256);           /* Deep Ink #020617 */
-  --land-surface: oklch(0.208 0.018 265);       /* Workshop Dark #0f172a */
-  --land-surface-raised: oklch(0.282 0.018 260);/* Surface Recessed #1e293b */
-  --land-border: oklch(0.371 0.013 261);        /* Frame Line #334155 */
-  --land-border-subtle: oklch(0.282 0.018 260);
-  --land-muted: oklch(0.554 0.019 254);         /* Whisper Text #64748b */
-  --land-body: oklch(0.685 0.019 250);          /* Quiet Text #94a3b8 */
-  --land-bright: oklch(0.835 0.013 253);        /* Soft Text #cbd5e1 */
-  --land-accent: oklch(0.596 0.145 163);        /* Atelier Emerald #059669 */
-  --land-accent-hover: oklch(0.65 0.17 163);    /* Emerald Hover #10b981 */
-  --land-accent-subtle: oklch(0.596 0.145 163 / 0.10);
-  --land-glow: oklch(0.596 0.145 163 / 0.08);
+  --land-bg: #ffffff;                           /* Clean White */
+  --land-surface: #f8fafc;                      /* Soft Gray */
+  --land-surface-raised: #f1f5f9;              /* Raised Surface */
+  --land-border: #e2e8f0;                       /* Light Border */
+  --land-border-subtle: #f1f5f9;
+  --land-muted: #94a3b8;                        /* Muted Text */
+  --land-body: #64748b;                         /* Body Text */
+  --land-bright: #1e293b;                       /* Dark Text */
+  --land-accent: #059669;                       /* Emerald */
+  --land-accent-hover: #047857;                 /* Emerald Hover (darker for light bg) */
+  --land-accent-subtle: rgba(5, 150, 105, 0.08);
+  --land-glow: rgba(5, 150, 105, 0.06);
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
 }
@@ -102,8 +102,8 @@
 
 /* ─── Selection color ────────────────────────── */
 ::selection {
-  background: oklch(0.596 0.145 163 / 0.3);
-  color: oklch(0.95 0.005 253);
+  background: rgba(5, 150, 105, 0.15);
+  color: #1e293b;
 }
 
 /* ─── Landing page animations ─────────────────── */
@@ -134,8 +134,8 @@
 
 /* ─── CRO landing motion: CTA glow pulse, mockup float, mobile marquee ── */
 @keyframes land-cta-pulse {
-  0%, 100% { box-shadow: 0 0 0 0 oklch(0.596 0.145 163 / 0.45); }
-  50% { box-shadow: 0 0 26px 5px oklch(0.596 0.145 163 / 0.35); }
+  0%, 100% { box-shadow: 0 0 0 0 rgba(5, 150, 105, 0.3); }
+  50% { box-shadow: 0 0 20px 4px rgba(5, 150, 105, 0.2); }
 }
 .land-cta-glow { animation: land-cta-pulse 2s ease-in-out infinite; }
 

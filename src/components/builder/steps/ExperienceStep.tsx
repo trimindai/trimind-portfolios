@@ -16,7 +16,7 @@ export function ExperienceStep({ data, onChange }: ExperienceStepProps) {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-xl font-semibold text-white">Work Experience</h2>
+        <h2 className="text-xl font-semibold text-[var(--land-bright)]">Work Experience</h2>
         <p className="text-sm text-[var(--land-body)] mt-1">Most recent first. Focus on <strong className="text-[var(--land-bright)]">results and impact</strong>.</p>
       </div>
 

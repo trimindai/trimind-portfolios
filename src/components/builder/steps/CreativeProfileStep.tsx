@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { TextField } from "../fields/TextField";
 import { TextareaField } from "../fields/TextareaField";
 
@@ -10,6 +11,8 @@ interface CreativeProfileStepProps {
 
 export function CreativeProfileStep({ data, onChange }: CreativeProfileStepProps) {
   const basics = data.basics || {};
+  // Mobile: collapse optional fields; desktop (md+) always shows everything.
+  const [showOptional, setShowOptional] = useState(false);
 
   const updateBasics = (field: string, value: string) => {
     onChange({ basics: { ...basics, [field]: value } });
@@ -18,40 +21,64 @@ export function CreativeProfileStep({ data, onChange }: CreativeProfileStepProps
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-xl font-semibold text-white">Your Profile</h2>
+        <h2 className="text-xl font-semibold text-[var(--land-bright)]">Your Profile</h2>
         <p className="text-sm text-[var(--land-body)] mt-1">
           The headline of your portfolio. Your initials become the monogram — no profile photo needed.
         </p>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      {/* REQUIRED — always visible */}
+      <div className="space-y-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <TextField
+            label="Full Name"
+            value={basics.fullName}
+            onChange={(v) => updateBasics("fullName", v)}
+            required
+            placeholder="Dalal Al-Kandari"
+            hint="Shown large in the hero and as your monogram"
+          />
+          <TextField
+            label="Title / Discipline"
+            value={basics.title}
+            onChange={(v) => updateBasics("title", v)}
+            required
+            placeholder="Visual Artist"
+            examples={[
+              "Visual Artist",
+              "Photographer",
+              "Illustrator",
+              "Sculptor",
+              "Graphic Designer",
+              "Art Director",
+              "Mixed-Media Artist",
+              "Ceramicist",
+            ]}
+          />
+        </div>
         <TextField
-          label="Full Name"
-          value={basics.fullName}
-          onChange={(v) => updateBasics("fullName", v)}
+          label="Email"
+          value={basics.email}
+          onChange={(v) => updateBasics("email", v)}
           required
-          placeholder="Dalal Al-Kandari"
-          hint="Shown large in the hero and as your monogram"
-        />
-        <TextField
-          label="Title / Discipline"
-          value={basics.title}
-          onChange={(v) => updateBasics("title", v)}
-          required
-          placeholder="Visual Artist"
-          examples={[
-            "Visual Artist",
-            "Photographer",
-            "Illustrator",
-            "Sculptor",
-            "Graphic Designer",
-            "Art Director",
-            "Mixed-Media Artist",
-            "Ceramicist",
-          ]}
+          type="email"
+          placeholder="you@example.com"
         />
       </div>
 
+      {/* OPTIONAL toggle — MOBILE ONLY. Desktop always shows the fields below. */}
+      <button
+        type="button"
+        onClick={() => setShowOptional(!showOptional)}
+        className="md:hidden w-full flex items-center justify-between min-h-[48px] px-4 rounded-lg border border-[var(--land-border)] bg-[var(--land-surface)]/40 text-sm font-medium text-[var(--land-bright)]"
+        aria-expanded={showOptional}
+      >
+        <span>{showOptional ? "▼ " : "▶ "}Optional details</span>
+        <span className="text-xs text-[var(--land-muted)]">{showOptional ? "Hide" : "Tagline, links, bio…"}</span>
+      </button>
+
+      {/* OPTIONAL — collapsed on mobile (unless expanded), always shown on md+ */}
+      <div className={`${showOptional ? "block" : "hidden"} md:block space-y-6`}>
       <TextField
         label="Tagline"
         value={basics.subtitle}
@@ -66,22 +93,12 @@ export function CreativeProfileStep({ data, onChange }: CreativeProfileStepProps
         ]}
       />
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <TextField
-          label="Email"
-          value={basics.email}
-          onChange={(v) => updateBasics("email", v)}
-          required
-          type="email"
-          placeholder="you@example.com"
-        />
-        <TextField
-          label="Phone"
-          value={basics.phone}
-          onChange={(v) => updateBasics("phone", v)}
-          placeholder="+965 1234 5678"
-        />
-      </div>
+      <TextField
+        label="Phone"
+        value={basics.phone}
+        onChange={(v) => updateBasics("phone", v)}
+        placeholder="+965 1234 5678"
+      />
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <TextField
@@ -153,6 +170,7 @@ export function CreativeProfileStep({ data, onChange }: CreativeProfileStepProps
           },
         ]}
       />
+      </div>
     </div>
   );
 }

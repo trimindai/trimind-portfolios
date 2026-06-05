@@ -93,9 +93,14 @@ export async function POST(req: NextRequest) {
     });
 
     if (!result.IsSuccess) {
+      // Log the raw provider error internally; never expose it to the client.
+      console.error("MyFatoorah SendPayment failed:", JSON.stringify(result));
       return NextResponse.json(
-        { error: result.Message || "Payment initiation failed" },
-        { status: 400 }
+        {
+          error: "PAYMENT_INIT_FAILED",
+          message: "Unable to start payment. Please try again.",
+        },
+        { status: 502 }
       );
     }
 
@@ -112,9 +117,15 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ paymentUrl: result.Data.InvoiceURL });
   } catch (error) {
+    // Full detail to server logs only; the client gets a generic message so
+    // raw provider/Convex errors are never surfaced in the UI.
     console.error("MyFatoorah initiate error:", error);
-    const message =
-      error instanceof Error ? error.message : "Internal server error";
-    return NextResponse.json({ error: message }, { status: 500 });
+    return NextResponse.json(
+      {
+        error: "PAYMENT_INIT_FAILED",
+        message: "Something went wrong. Please try again later.",
+      },
+      { status: 500 }
+    );
   }
 }

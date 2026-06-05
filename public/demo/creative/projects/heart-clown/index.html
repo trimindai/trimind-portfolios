@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Heart Clown — Dalal Al-Kandari</title>
+<meta name="description" content="No sketch. No reference. Only the pen.">
+<meta name="theme-color" content="#EFEEEA">
+<link rel="canonical" href="https://portfolio-trimind.com/demo/creative/projects/heart-clown">
+<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2064%2064%22%3E%3Crect%20width%3D%2264%22%20height%3D%2264%22%20rx%3D%2210%22%20fill%3D%22%23EFEEEA%22%2F%3E%3Ctext%20x%3D%2232%22%20y%3D%2234%22%20font-family%3D%22Archivo%20Black%2CArial%2Csans-serif%22%20font-size%3D%2228%22%20font-weight%3D%22800%22%20letter-spacing%3D%22-1%22%20fill%3D%22%23B86F52%22%20text-anchor%3D%22middle%22%20dominant-baseline%3D%22central%22%3EDA%3C%2Ftext%3E%3C%2Fsvg%3E">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Dalal Al-Kandari">
+<meta property="og:url" content="https://portfolio-trimind.com/demo/creative/projects/heart-clown">
+<meta property="og:title" content="Heart Clown | Dalal Al-Kandari">
+<meta property="og:description" content="No sketch. No reference. Only the pen.">
+<meta property="og:image" content="/demo/creative/artworks/ornaments_21_digital.webp">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="/demo/creative/artworks/ornaments_21_digital.webp">
+<meta name="twitter:title" content="Heart Clown | Dalal Al-Kandari">
+<meta name="twitter:description" content="No sketch. No reference. Only the pen.">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700;800;900&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --bg: #EFEEEA;
+  --bg-alt: #E6DAC6; --bg-card: #F5F0E7; --sand: #EBBEAA;
+  --text: #1E2A44; --text-dim: #4C587A; --text-muted: #8B8473; --border: #D8C7AE;
+  --accent: #B86F52;
+  --link: #496AB1;
+  --font-head: 'Geist', system-ui, sans-serif; --font-mono: 'Geist Mono', ui-monospace, monospace;
+}
+body { font-family: var(--font-head); background: var(--bg); color: var(--text); min-height: 100dvh; overflow-x: hidden; -webkit-font-smoothing: antialiased; }
+a { color: inherit; text-decoration: none; }
+.nav { position: fixed; top: 0; left: 0; right: 0; z-index: 50; display: flex; align-items: center; justify-content: space-between; height: 60px; padding: 0 24px; background: rgba(239,238,234,0.82); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); }
+.nav-brand { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: var(--link); transition: color .25s; }
+.nav-brand:hover { color: var(--accent); }
+.nav-back { font-family: var(--font-mono); font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: var(--text-dim); transition: color .25s; }
+.nav-back:hover { color: var(--accent); }
+.wrap { max-width: 900px; margin: 0 auto; padding: 90px 24px 40px; }
+.back { display: inline-flex; align-items: center; gap: 8px; font-family: var(--font-mono); font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); margin-bottom: 32px; transition: color .25s; }
+.back:hover { color: var(--accent); }
+.phase { font-family: var(--font-mono); font-size: 9px; text-transform: uppercase; letter-spacing: 1.5px; color: var(--accent); margin-bottom: 12px; }
+.title { font-size: clamp(28px, 4vw, 48px); font-weight: 800; letter-spacing: -0.03em; line-height: 1.1; margin-bottom: 8px; color: var(--link); }
+.tagline { font-size: 16px; color: var(--text-dim); margin-bottom: 16px; }
+.meta-row { display: flex; flex-wrap: wrap; align-items: center; gap: 16px; margin-bottom: 32px; }
+.meta-row span { font-family: var(--font-mono); font-size: 10px; text-transform: uppercase; letter-spacing: 1px; color: var(--text-dim); }
+.meta-row .dot { color: var(--accent); }
+/* Plus crosshair */
+.cross { position: relative; display: inline-block; width: 24px; height: 24px; color: var(--text-muted); }
+.cross::before, .cross::after { content: ''; position: absolute; background: currentColor; }
+.cross::before { left: 0; top: 50%; width: 100%; height: 1px; transform: translateY(-50%); }
+.cross::after { top: 0; left: 50%; height: 100%; width: 1px; transform: translateX(-50%); }
+/* Hero image */
+.hero-img { position: relative; display: block; width: 100%; overflow: hidden; border: 1px solid var(--border); border-radius: 2px; margin-bottom: 40px; cursor: zoom-in; background: none; padding: 0; }
+.hero-img img { width: 100%; height: auto; display: block; transition: transform .5s; }
+.hero-img:hover img { transform: scale(1.02); }
+.hero-img .cross { position: absolute; width: 16px; height: 16px; color: rgba(73,106,177,0.5); }
+.hero-img .ic-tl { top: 12px; left: 12px; } .hero-img .ic-tr { top: 12px; right: 12px; }
+.hero-img .ic-bl { bottom: 12px; left: 12px; } .hero-img .ic-br { bottom: 12px; right: 12px; }
+.zoom-hint { position: absolute; bottom: 12px; left: 50%; transform: translateX(-50%); padding: 4px 12px; font-family: var(--font-mono); font-size: 9px; text-transform: uppercase; letter-spacing: 1.5px; color: #F5F0E7; background: var(--accent); border-radius: 2px; opacity: 0; transition: opacity .3s; }
+.hero-img:hover .zoom-hint { opacity: 1; }
+.desc { font-size: 15px; line-height: 1.7; color: var(--text-dim); margin-bottom: 32px; }
+/* Content blocks */
+.blocks { display: flex; flex-direction: column; gap: 28px; margin-bottom: 40px; }
+.blk-text { font-size: 15px; line-height: 1.8; color: var(--text-dim); }
+.blk-img { border: 1px solid var(--border); border-radius: 2px; overflow: hidden; }
+.blk-img img { width: 100%; height: auto; display: block; }
+.blk-img.full { margin-left: calc(50% - 50vw); margin-right: calc(50% - 50vw); width: 100vw; max-width: 100vw; border-left: 0; border-right: 0; border-radius: 0; }
+.blk-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+@media (min-width: 768px) { .blk-grid { grid-template-columns: repeat(3, 1fr); } }
+.blk-grid figure { border: 1px solid var(--border); border-radius: 2px; overflow: hidden; }
+.blk-grid img { width: 100%; height: 100%; aspect-ratio: 1; object-fit: cover; display: block; }
+figure figcaption { font-family: var(--font-mono); font-size: 10px; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); margin-top: 8px; }
+.blk-video .video-embed { position: relative; width: 100%; padding-top: 56.25%; border: 1px solid var(--border); border-radius: 2px; overflow: hidden; background: #000; }
+.blk-video .video-embed iframe, .blk-video .video-embed video { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; object-fit: contain; }
+.metabox { display: grid; grid-template-columns: 1fr; gap: 24px; padding: 24px; background: var(--bg-alt); border: 1px solid var(--border); margin-bottom: 32px; }
+@media (min-width: 768px) { .metabox { grid-template-columns: repeat(2, 1fr); } }
+.metabox .k { font-family: var(--font-mono); font-size: 9px; text-transform: uppercase; letter-spacing: 1.5px; color: var(--accent); margin-bottom: 8px; }
+.metabox .v { font-size: 13px; color: var(--text-dim); }
+.tags { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 32px; }
+.tag { padding: 6px 14px; font-family: var(--font-mono); font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: var(--text-dim); border: 1px solid var(--border); border-radius: 2px; }
+.links { display: flex; flex-wrap: wrap; gap: 16px; margin-bottom: 40px; }
+.lnk { display: inline-flex; align-items: center; gap: 8px; font-family: var(--font-mono); font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: var(--accent); transition: gap .3s; }
+.lnk:hover { gap: 14px; }
+/* Plus-shape prev/next */
+.pnav { display: flex; align-items: stretch; justify-content: space-between; gap: 16px; padding-top: 32px; border-top: 1px solid var(--border); }
+.pnav-item { display: flex; align-items: center; gap: 16px; color: var(--text-muted); background: none; border: none; cursor: pointer; }
+.pnav-item.next { flex-direction: row-reverse; text-align: right; }
+.pnav-item .cross { transition: transform .3s, color .3s; }
+.pnav-item:hover .cross { transform: rotate(90deg) scale(1.1); color: var(--accent); }
+.pnav-item .pn-lbl { font-family: var(--font-mono); font-size: 9px; text-transform: uppercase; letter-spacing: 1.5px; }
+.pnav-item .pn-ttl { font-size: 14px; font-weight: 500; color: var(--text); transition: color .3s; }
+.pnav-item:hover .pn-ttl { color: var(--accent); }
+.footer { padding: 40px 24px; border-top: 1px solid var(--border); text-align: center; font-family: var(--font-mono); font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); }
+/* Lightbox */
+.lb { position: fixed; inset: 0; z-index: 100; display: none; align-items: center; justify-content: center; background: rgba(17,17,17,0.97); }
+.lb.open { display: flex; }
+.lb .cross { position: absolute; width: 18px; height: 18px; color: rgba(235,190,170,0.45); }
+.lb .lc-tl { top: 20px; left: 20px; } .lb .lc-tr { top: 20px; right: 20px; }
+.lb .lc-bl { bottom: 20px; left: 20px; } .lb .lc-br { bottom: 20px; right: 20px; }
+.lb-close { position: absolute; top: 20px; left: 50%; transform: translateX(-50%); font-family: var(--font-mono); font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px; color: var(--text-dim); background: none; border: none; cursor: pointer; }
+.lb-close:hover { color: var(--accent); }
+.lb-stage { width: 90vw; height: 80vh; overflow: hidden; display: flex; align-items: center; justify-content: center; touch-action: none; }
+.lb-stage img { max-width: 100%; max-height: 100%; user-select: none; transition: transform .15s ease-out; }
+.lb-ctrl { position: absolute; bottom: 24px; left: 50%; transform: translateX(-50%); display: flex; align-items: center; gap: 20px; }
+.lb-ctrl button { font-family: var(--font-mono); font-size: 16px; color: var(--text-dim); background: none; border: none; cursor: pointer; }
+.lb-ctrl button:hover { color: var(--accent); }
+.lb-ctrl .pct { font-family: var(--font-mono); font-size: 11px; color: var(--text-muted); }
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <a href="https://portfolio-trimind.com/demo/creative" class="nav-brand">Dalal Al-Kandari</a>
+  <a href="https://portfolio-trimind.com/demo/creative#work" class="nav-back">[ All Work ]</a>
+</header>
+
+<div class="wrap">
+  <a href="https://portfolio-trimind.com/demo/creative#work" class="back"><span>&larr;</span><span>Back to Gallery</span></a>
+
+  <p class="phase">Character Fantasy &middot; 2024</p>
+  <h1 class="title">Heart Clown</h1>
+  <p class="tagline">No sketch. No reference. Only the pen.</p>
+
+  <button type="button" class="hero-img" id="zoomBtn" aria-label="Zoom image">
+    <span class="cross ic-tl"></span><span class="cross ic-tr"></span>
+    <span class="cross ic-bl"></span><span class="cross ic-br"></span>
+    <img src="/demo/creative/artworks/ornaments_21_digital.webp" alt="Heart Clown" id="heroImg" decoding="async">
+    <span class="zoom-hint">Click to Zoom</span>
+  </button>
+
+  <p class="desc">Heart Clown began with no sketch and no plan. Bold lines gather into character fantasy the moment I stop thinking, and the hearts appear on their own.</p>
+
+  <div class="metabox">
+    <div><p class="k">Medium</p><p class="v">Marker on paper</p></div>
+    <div><p class="k">Dimensions</p><p class="v">29.7 × 42 cm (A3)</p></div>
+    <div><p class="k">Year</p><p class="v">2024</p></div>
+    <div><p class="k">Series</p><p class="v">My Eye Brain</p></div>
+    
+    
+    
+    
+  </div>
+
+  <div class="tags"><span class="tag">Character Fantasy</span><span class="tag">Hand-drawn</span><span class="tag">Intuitive</span></div>
+
+
+  <div class="links"><a href="https://www.instagram.com/" target="_blank" rel="noopener" class="lnk">View on Instagram <span>&rarr;</span></a></div>
+  
+
+  <div class="pnav">
+    <a class="pnav-item prev" href="https://portfolio-trimind.com/demo/creative/projects/pastel-cloud">
+      <span class="cross"></span>
+      <span><span class="pn-lbl">Previous</span><br><span class="pn-ttl">Pastel Cloud</span></span>
+    </a>
+    
+    <a class="pnav-item next" href="https://portfolio-trimind.com/demo/creative/projects/rainbow-arch">
+      <span class="cross"></span>
+      <span><span class="pn-lbl">Next</span><br><span class="pn-ttl">Rainbow Arch</span></span>
+    </a>
+    
+  </div>
+</div>
+
+<footer class="footer">&copy; Dalal Al-Kandari &middot; <a href="https://portfolio-trimind.com/demo/creative">Back to Portfolio</a></footer>
+
+<div class="lb" id="lb">
+  <span class="cross lc-tl"></span><span class="cross lc-tr"></span>
+  <span class="cross lc-bl"></span><span class="cross lc-br"></span>
+  <button class="lb-close" id="lbClose">[ Close &times; ]</button>
+  <div class="lb-stage" id="lbStage">
+    <img src="/demo/creative/artworks/ornaments_21_digital.webp" alt="Heart Clown" id="lbImg" draggable="false">
+  </div>
+  <div class="lb-ctrl">
+    <button id="zOut" aria-label="Zoom out">[ &minus; ]</button>
+    <span class="pct" id="zPct">100%</span>
+    <button id="zIn" aria-label="Zoom in">[ + ]</button>
+  </div>
+</div>
+<script>
+(function () {
+  var lb = document.getElementById('lb'), img = document.getElementById('lbImg'), stage = document.getElementById('lbStage');
+  var pct = document.getElementById('zPct'), btn = document.getElementById('zoomBtn');
+  var scale = 1, ox = 0, oy = 0, dragging = false, sx = 0, sy = 0, sox = 0, soy = 0;
+  function apply() { img.style.transform = 'translate(' + ox + 'px,' + oy + 'px) scale(' + scale + ')'; pct.textContent = Math.round(scale * 100) + '%'; img.style.cursor = scale > 1 ? 'grab' : 'default'; }
+  function zoom(d) { scale = Math.min(4, Math.max(1, +(scale + d).toFixed(2))); if (scale === 1) { ox = 0; oy = 0; } apply(); }
+  function open() { lb.classList.add('open'); document.body.style.overflow = 'hidden'; scale = 1; ox = 0; oy = 0; apply(); }
+  function close() { lb.classList.remove('open'); document.body.style.overflow = ''; }
+  if (btn) btn.addEventListener('click', open);
+  document.getElementById('lbClose').addEventListener('click', close);
+  document.getElementById('zIn').addEventListener('click', function () { zoom(0.3); });
+  document.getElementById('zOut').addEventListener('click', function () { zoom(-0.3); });
+  lb.addEventListener('click', function (e) { if (e.target === lb) close(); });
+  stage.addEventListener('wheel', function (e) { e.preventDefault(); zoom(e.deltaY < 0 ? 0.3 : -0.3); }, { passive: false });
+  stage.addEventListener('pointerdown', function (e) { if (scale <= 1) return; dragging = true; sx = e.clientX; sy = e.clientY; sox = ox; soy = oy; });
+  stage.addEventListener('pointermove', function (e) { if (!dragging) return; ox = sox + (e.clientX - sx); oy = soy + (e.clientY - sy); apply(); });
+  function up() { dragging = false; }
+  stage.addEventListener('pointerup', up); stage.addEventListener('pointerleave', up);
+  document.addEventListener('keydown', function (e) { if (!lb.classList.contains('open')) return; if (e.key === 'Escape') close(); else if (e.key === '+' || e.key === '=') zoom(0.3); else if (e.key === '-' || e.key === '_') zoom(-0.3); });
+})();
+</script>
+</body>
+</html>

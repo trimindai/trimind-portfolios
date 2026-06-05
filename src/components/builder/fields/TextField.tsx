@@ -36,9 +36,11 @@ export function TextField({
           <button
             type="button"
             onClick={() => setShowExamples(!showExamples)}
-            className="text-xs text-[var(--land-accent-hover)] hover:text-[var(--land-accent-hover)] transition-colors"
+            // Mobile: a real 44px-tall tappable chip. Desktop (md+): the original
+            // compact underline link — desktop stays visually unchanged.
+            className="inline-flex items-center min-h-[44px] px-3 rounded-lg bg-[var(--land-accent)]/10 text-xs font-medium text-[var(--land-accent)] hover:text-[var(--land-accent-hover)] transition-colors md:min-h-0 md:px-0 md:rounded-none md:bg-transparent md:underline md:underline-offset-2 md:decoration-[var(--land-accent)]/30"
           >
-            {showExamples ? "Hide examples" : "See examples"}
+            {showExamples ? "Hide examples" : "See examples +"}
           </button>
         )}
       </div>
@@ -64,7 +66,7 @@ export function TextField({
         placeholder={placeholder}
         spellCheck={true}
         autoComplete="off"
-        className="w-full bg-[var(--land-surface-raised)] border border-[var(--land-border)] rounded-lg px-4 py-2.5 text-white placeholder:text-[var(--land-muted)] focus:border-[var(--land-accent)] focus:ring-1 focus:ring-[var(--land-accent)] outline-none transition-colors"
+        className="w-full bg-white border border-[var(--land-border)] rounded-lg px-4 py-2.5 text-[var(--land-bright)] placeholder:text-[var(--land-muted)] focus:border-[var(--land-accent)] focus:ring-1 focus:ring-[var(--land-accent)] outline-none transition-colors shadow-sm"
       />
     </div>
   );

@@ -27,14 +27,28 @@ export default function NewPortfolioPage() {
         const userEmail = user?.primaryEmailAddress?.emailAddress || "";
 
         // Create draft portfolio (Convex enforces auth; no userId arg).
-        const templateId = searchParams.get("template") || "corporate";
+        const templateId = searchParams.get("template") || "general";
+
+        // Restore draft from landing page try-it form
+        let draftName = user?.fullName || "";
+        let draftTitle = "";
+        try {
+          const saved = localStorage.getItem("portfolio-draft");
+          if (saved) {
+            const parsed = JSON.parse(saved);
+            if (parsed.fullName) draftName = parsed.fullName;
+            if (parsed.title) draftTitle = parsed.title;
+            localStorage.removeItem("portfolio-draft");
+          }
+        } catch {}
+
         const portfolioId = await createPortfolio({
           templateId,
           locale,
           name: "My Portfolio",
           basics: {
-            fullName: user?.fullName || "",
-            title: "",
+            fullName: draftName,
+            title: draftTitle,
             email: userEmail,
           },
         });
