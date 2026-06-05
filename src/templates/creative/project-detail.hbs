@@ -114,11 +114,11 @@ figure figcaption { font-family: var(--font-mono); font-size: 10px; text-transfo
 
 <header class="nav">
   <a href="{{portfolioUrl}}" class="nav-brand">{{basics.fullName}}</a>
-  <a href="{{portfolioUrl}}#gallery" class="nav-back">[ All Work ]</a>
+  <a href="{{portfolioUrl}}#work" class="nav-back">[ All Work ]</a>
 </header>
 
 <div class="wrap">
-  <a href="{{portfolioUrl}}#gallery" class="back"><span>&larr;</span><span>Back to Gallery</span></a>
+  <a href="{{portfolioUrl}}#work" class="back"><span>&larr;</span><span>Back to Gallery</span></a>
 
   {{#if project.meta.type}}<p class="phase">{{project.meta.type}}{{#if project.meta.year}} &middot; {{project.meta.year}}{{/if}}</p>{{else}}{{#if project.technologies.[0]}}<p class="phase">{{project.technologies.[0]}}{{#if project.meta.year}} &middot; {{project.meta.year}}{{/if}}</p>{{/if}}{{/if}}
   <h1 class="title">{{project.title}}</h1>
