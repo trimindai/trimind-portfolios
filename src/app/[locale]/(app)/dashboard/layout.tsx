@@ -8,7 +8,7 @@ import { DashboardContext } from "@/contexts/DashboardContext";
 import { Id } from "@convex/_generated/dataModel";
 import { AdminLink } from "@/components/AdminLink";
 import { Link } from "@/i18n/navigation";
-import { useParams } from "next/navigation";
+import { useParams, usePathname } from "next/navigation";
 
 export default function DashboardLayout({
   children,
@@ -19,6 +19,10 @@ export default function DashboardLayout({
   const params = useParams();
   const locale = (params.locale as string) || "en";
   const isRTL = locale === "ar";
+  // The preview route is a self-contained, full-screen tool with its own
+  // toolbar; on phones it should render edge-to-edge (no shell padding/max-w).
+  const pathname = usePathname();
+  const isPreview = !!pathname?.endsWith("/preview");
   const upsertUser = useMutation(api.users.upsertFromClerk);
   const currentUser = useQuery(api.users.getCurrent);
   const [convexUserId, setConvexUserId] = useState<Id<"users"> | null>(null);
@@ -67,7 +71,15 @@ export default function DashboardLayout({
             </div>
           </div>
         </header>
-        <main className="mx-auto max-w-7xl px-6 py-8">{children}</main>
+        <main
+          className={
+            isPreview
+              ? "w-full md:mx-auto md:max-w-7xl md:px-6 md:py-8"
+              : "mx-auto max-w-7xl px-6 py-8"
+          }
+        >
+          {children}
+        </main>
       </div>
     </DashboardContext.Provider>
   );
