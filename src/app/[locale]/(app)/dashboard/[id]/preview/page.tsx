@@ -251,11 +251,11 @@ export default function PreviewPage() {
             </>
           )}
 
-          {/* Zoom / fit — CV (document) only */}
+          {/* Zoom / fit — CV (document) only; md+ only (mobile previews fit-width) */}
           {view === "cv" && (
             <>
-              {divider()}
-              <div className="flex shrink-0 items-center gap-1 rounded-lg bg-[var(--land-surface-raised)]/50 p-1">
+              {divider("hidden md:block")}
+              <div className="hidden shrink-0 items-center gap-1 rounded-lg bg-[var(--land-surface-raised)]/50 p-1 md:flex">
                 <button
                   onClick={() => setCvZoom("fit")}
                   aria-pressed={cvZoom === "fit"}
@@ -300,12 +300,13 @@ export default function PreviewPage() {
             </>
           )}
 
-          {/* Fullscreen */}
-          {divider()}
+          {/* Fullscreen — md+ only (element fullscreen is unsupported on iOS;
+              phones are already near-fullscreen) */}
+          {divider("hidden md:block")}
           <button
             onClick={toggleFullscreen}
             aria-pressed={isFullscreen}
-            className={`${segBtn(isFullscreen)} shrink-0`}
+            className={`${segBtn(isFullscreen)} hidden shrink-0 md:flex`}
             title={isFullscreen ? t("exitFullscreen") : t("fullscreen")}
           >
             {isFullscreen ? <Minimize className="h-4 w-4 shrink-0" /> : <Maximize className="h-4 w-4 shrink-0" />}
