@@ -9,10 +9,13 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Inter:wght@100;200;300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="/demo/developer/vendor/fa/all.min.css">
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"Person","name":"Maya Okafor","jobTitle":"Full-Stack Engineer","description":"Creative Technologist","url":"https://portfolio-trimind.com/demo/developer","email":"maya@okafor.dev","address":{"@type":"PostalAddress","addressLocality":"Lisbon, Portugal"},"sameAs":["https://www.instagram.com/","https://www.linkedin.com/in/example","https://github.com/","https://okafor.dev"]}</script>
 <style>
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+/* Font Awesome is self-hosted via /vendor/fa/all.min.css (CSP-safe) — it defines
+   the "Font Awesome 6 Brands/Free" @font-faces used by both the DOM icons and the
+   3D keycap logos drawn to canvas. */
 
 /* ═══════════════════════════════════════════════════════════════
    DEVELOPER — "Spacebar"
@@ -831,7 +834,7 @@ html[dir="rtl"] .tl-item::before{left:auto;right:0}
   /* ── Lenis smooth scroll (progressive enhancement) ── */
   if(!reduce){
     var ls = document.createElement("script");
-    ls.src = "https://unpkg.com/lenis@1.1.14/dist/lenis.min.js";
+    ls.src = "/demo/developer/vendor/lenis.min.js";
     ls.onload = function(){
       try{
         if(!window.Lenis){ return; }
@@ -932,8 +935,8 @@ html[dir="rtl"] .tl-item::before{left:auto;right:0}
 <!-- ── 3D split-ergo keyboard (Three.js, self-contained, CDN ESM) ───────────── -->
 <script type="importmap">
 { "imports": {
-  "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
-  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+  "three": "/demo/developer/vendor/three.module.js",
+  "three/addons/": "/demo/developer/vendor/addons/"
 }}
 </script>
 <script type="module">
