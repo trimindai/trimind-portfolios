@@ -109,7 +109,15 @@ function injectOgTags(html: string, portfolio: { basics: { fullName: string; tit
     <meta name="description" content="${description.replace(/"/g, "&quot;")}" />
     <link rel="canonical" href="${url}" />`;
 
-  return html.replace("</head>", `${ogTags}\n</head>`);
+  // The generated template already emits a <meta name="description">; strip it
+  // so we don't ship two competing description tags (we inject the bio-based one
+  // above as the single source of truth).
+  const cleaned = html.replace(
+    /\s*<meta\s+name=["']description["'][^>]*>/gi,
+    ""
+  );
+
+  return cleaned.replace("</head>", `${ogTags}\n</head>`);
 }
 
 export async function GET(

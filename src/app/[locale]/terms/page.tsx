@@ -3,10 +3,16 @@ import { LegalLayout } from "@/components/LegalLayout";
 
 type PageProps = { params: Promise<{ locale: string }> };
 
-export const metadata = {
-  title: "Terms of Service — Portfolio Pro",
-  description: "Terms governing the use of Portfolio Pro.",
-};
+export async function generateMetadata({ params }: PageProps) {
+  const { locale } = await params;
+  return {
+    title: "Terms of Service — Portfolio Pro",
+    description: "Terms governing the use of Portfolio Pro.",
+    alternates: {
+      canonical: `https://portfolio-trimind.com/${locale}/terms`,
+    },
+  };
+}
 
 const UPDATED = "April 19, 2026";
 

@@ -11,11 +11,17 @@ const MOCKUP_IMAGES: Record<string, string> = {
 
 type PageProps = { params: Promise<{ locale: string }> };
 
-export const metadata = {
-  title: "Portfolio Templates — Portfolio Pro",
-  description:
-    "Professional portfolio templates: General, Engineer, Creative, Creator, Developer.",
-};
+export async function generateMetadata({ params }: PageProps) {
+  const { locale } = await params;
+  return {
+    title: "Portfolio Templates — Portfolio Pro",
+    description:
+      "Professional portfolio templates: General, Engineer, Creative, Creator, Developer.",
+    alternates: {
+      canonical: `https://portfolio-trimind.com/${locale}/templates`,
+    },
+  };
+}
 
 export default async function TemplatesPage({ params }: PageProps) {
   const { locale } = await params;

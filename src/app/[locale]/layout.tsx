@@ -1,9 +1,11 @@
+import type { Metadata } from "next";
 import { NextIntlClientProvider, hasLocale } from "next-intl";
 import { getMessages, setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { routing } from "@/i18n/routing";
 import { Geist, Noto_Kufi_Arabic } from "next/font/google";
 import { cn } from "@/lib/utils";
+import { Providers } from "../providers";
 
 const geist = Geist({ subsets: ["latin"], variable: "--font-sans" });
 const notoKufi = Noto_Kufi_Arabic({
@@ -11,10 +13,64 @@ const notoKufi = Noto_Kufi_Arabic({
   variable: "--font-arabic",
 });
 
+const SITE_URL = "https://portfolio-trimind.com";
+
 // Pre-generate every locale at build time so pages under [locale] can be
 // statically rendered instead of dynamically server-rendered per request.
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
+}
+
+// Per-locale metadata so each statically-rendered locale ships the correct
+// canonical (self-referential to the locale root), hreflang alternates, and
+// og:locale. Sub-pages (e.g. /templates) override `canonical` themselves.
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  const isAr = locale === "ar";
+  return {
+    metadataBase: new URL(SITE_URL),
+    title: isAr
+      ? "بورتفوليو برو — أنشئ سيرتك وبورتفوليوك الاحترافي"
+      : "Portfolio Pro — Build Your Professional Portfolio",
+    description: isAr
+      ? "أنشئ سيرة ذاتية وبورتفوليو احترافي في دقائق. اختر قالبًا، أضف بياناتك، واحصل على ملف PDF. يدعم العربية والإنجليزية."
+      : "Create a professional CV + portfolio in minutes. Pick a template, fill your info, get your PDF. Arabic & English supported.",
+    openGraph: {
+      title: isAr
+        ? "بورتفوليو برو — سيرة وبورتفوليو احترافي في دقائق"
+        : "Portfolio Pro — Professional CV + Portfolio in Minutes",
+      description: isAr
+        ? "اختر قالبًا، أضف بياناتك، واحصل على بورتفوليو PDF احترافي. العربية والإنجليزية. دفعة واحدة."
+        : "Pick a template, fill your info, get a professional PDF portfolio. Arabic & English. One-time payment.",
+      url: `${SITE_URL}/${locale}`,
+      siteName: "Portfolio Pro",
+      type: "website",
+      locale: isAr ? "ar_KW" : "en_US",
+      alternateLocale: isAr ? "en_US" : "ar_KW",
+      images: [{ url: "/og-image.png", width: 1200, height: 630, alt: "Portfolio Pro" }],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: isAr
+        ? "بورتفوليو برو — سيرة وبورتفوليو احترافي في دقائق"
+        : "Portfolio Pro — Professional CV + Portfolio in Minutes",
+      description: isAr
+        ? "اختر قالبًا، أضف بياناتك، واحصل على PDF احترافي. العربية والإنجليزية."
+        : "Pick a template, fill your info, get a professional PDF. Arabic & English.",
+      images: ["/og-image.png"],
+    },
+    alternates: {
+      canonical: `${SITE_URL}/${locale}`,
+      languages: {
+        en: `${SITE_URL}/en`,
+        ar: `${SITE_URL}/ar`,
+      },
+    },
+  };
 }
 
 export default async function LocaleLayout({
@@ -37,41 +93,26 @@ export default async function LocaleLayout({
   const isRTL = locale === "ar";
 
   return (
-    <NextIntlClientProvider messages={messages}>
-      <LocaleHead locale={locale} isRTL={isRTL} />
-      {/* Failsafe: if JS is disabled, scroll-reveal content must stay visible. */}
-      <noscript>
-        <style>{`.reveal-up{opacity:1!important;transform:none!important}`}</style>
-      </noscript>
-      <div
-        dir={isRTL ? "rtl" : "ltr"}
-        className={cn(
-          geist.variable,
-          notoKufi.variable,
-          isRTL ? "font-arabic" : "font-sans"
-        )}
-      >
-        {children}
-      </div>
-    </NextIntlClientProvider>
-  );
-}
-
-function LocaleHead({ locale, isRTL }: { locale: string; isRTL: boolean }) {
-  return (
-    <>
-      {/* Set html lang/dir at runtime since root layout can't access [locale] param */}
-      <script
-        suppressHydrationWarning
-        dangerouslySetInnerHTML={{
-          __html: `document.documentElement.lang=${JSON.stringify(locale)};${isRTL ? 'document.documentElement.dir="rtl"' : 'document.documentElement.removeAttribute("dir")'}`,
-        }}
-      />
-      {/* TODO: Replace G-XXXXXXXXXX with real GA4 measurement ID */}
-      {/*
-      <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX" />
-      <script dangerouslySetInnerHTML={{ __html: `window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','G-XXXXXXXXXX');` }} />
-      */}
-    </>
+    <html lang={locale} dir={isRTL ? "rtl" : "ltr"} suppressHydrationWarning>
+      <body className="antialiased">
+        <Providers>
+          <NextIntlClientProvider messages={messages}>
+            {/* Failsafe: if JS is disabled, scroll-reveal content must stay visible. */}
+            <noscript>
+              <style>{`.reveal-up{opacity:1!important;transform:none!important}`}</style>
+            </noscript>
+            <div
+              className={cn(
+                geist.variable,
+                notoKufi.variable,
+                isRTL ? "font-arabic" : "font-sans"
+              )}
+            >
+              {children}
+            </div>
+          </NextIntlClientProvider>
+        </Providers>
+      </body>
+    </html>
   );
 }
