@@ -13,7 +13,10 @@ const isProtectedRoute = createRouteMatcher([
 const isStaticRoute = (req: NextRequest) =>
   req.nextUrl.pathname.startsWith("/api") ||
   req.nextUrl.pathname.startsWith("/p/") ||
-  req.nextUrl.pathname.startsWith("/demo");
+  req.nextUrl.pathname.startsWith("/demo") ||
+  // Locale-prefixed demo routes (e.g. /ar/demo/engineer) are served by static
+  // vercel.json rewrites; skip the intl middleware so it doesn't intercept them.
+  /^\/(en|ar)\/demo(\/|$)/.test(req.nextUrl.pathname);
 
 export default clerkMiddleware(async (auth, req) => {
   // Skip intl middleware for API routes and public portfolio routes

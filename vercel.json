@@ -6,6 +6,13 @@
     { "source": "/demo/creative", "destination": "/demo/creative/index.html" },
     { "source": "/demo/creative/projects/:slug", "destination": "/demo/creative/projects/:slug/index.html" },
     { "source": "/demo/developer", "destination": "/demo/developer/index.html" },
-    { "source": "/demo/creator", "destination": "/demo/creator/index.html" }
+    { "source": "/demo/creator", "destination": "/demo/creator/index.html" },
+    { "source": "/ar/demo/general", "destination": "/demo/corporate/index-ar.html" },
+    { "source": "/ar/demo/corporate", "destination": "/demo/corporate/index-ar.html" },
+    { "source": "/ar/demo/engineer", "destination": "/demo/engineer/index-ar.html" },
+    { "source": "/ar/demo/creative", "destination": "/demo/creative/index-ar.html" },
+    { "source": "/ar/demo/creative/projects/:slug", "destination": "/demo/creative/projects/:slug/index-ar.html" },
+    { "source": "/ar/demo/developer", "destination": "/demo/developer/index-ar.html" },
+    { "source": "/ar/demo/creator", "destination": "/demo/creator/index-ar.html" }
   ]
 }
