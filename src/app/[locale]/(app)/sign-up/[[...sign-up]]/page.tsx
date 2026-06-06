@@ -42,6 +42,7 @@ function SignUpForm() {
   const redirectUrl = safeRedirect(search.get("redirect_url"), locale);
 
   const [step, setStep] = useState<"start" | "verify">("start");
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [code, setCode] = useState("");
@@ -52,6 +53,9 @@ function SignUpForm() {
     ? {
         title: "أنشئ حسابك",
         subtitle: "ابدأ بناء بورتفوليوك الاحترافي",
+        fullName: "الاسم الكامل",
+        fullNamePh: "الاسم الكامل",
+        nameTooShort: "يرجى إدخال اسمك الكامل.",
         email: "البريد الإلكتروني",
         password: "كلمة المرور",
         continue: "متابعة",
@@ -69,6 +73,9 @@ function SignUpForm() {
     : {
         title: "Create your account",
         subtitle: "Start building your professional portfolio",
+        fullName: "Full name",
+        fullNamePh: "Your full name",
+        nameTooShort: "Please enter your full name.",
         email: "Email address",
         password: "Password",
         continue: "Continue",
@@ -87,10 +94,18 @@ function SignUpForm() {
   async function handleStart(e: React.FormEvent) {
     e.preventDefault();
     if (!isLoaded || loading) return;
+    if (name.trim().length < 2) {
+      setError(t.nameTooShort);
+      return;
+    }
     setError(null);
     setLoading(true);
     try {
-      await signUp.create({ emailAddress: email, password });
+      await signUp.create({
+        emailAddress: email,
+        password,
+        unsafeMetadata: { fullName: name.trim() },
+      });
       await signUp.prepareEmailAddressVerification({ strategy: "email_code" });
       setStep("verify");
     } catch (err) {
@@ -177,6 +192,22 @@ function SignUpForm() {
               </div>
 
               <form onSubmit={handleStart} className="space-y-4">
+                <div>
+                  <label htmlFor="name" className="mb-1.5 block text-sm text-[var(--land-body)]">
+                    {t.fullName}
+                  </label>
+                  <input
+                    id="name"
+                    type="text"
+                    autoComplete="name"
+                    required
+                    minLength={2}
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    className={inputClass}
+                    placeholder={t.fullNamePh}
+                  />
+                </div>
                 <div>
                   <label htmlFor="email" className="mb-1.5 block text-sm text-[var(--land-body)]">
                     {t.email}

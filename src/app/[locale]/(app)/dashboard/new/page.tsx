@@ -30,7 +30,9 @@ export default function NewPortfolioPage() {
         const templateId = searchParams.get("template") || "general";
 
         // Restore draft from landing page try-it form
-        let draftName = user?.fullName || "";
+        const clerkName =
+          (user?.unsafeMetadata?.fullName as string) || user?.fullName || "";
+        let draftName = clerkName;
         let draftTitle = "";
         try {
           const saved = localStorage.getItem("portfolio-draft");
