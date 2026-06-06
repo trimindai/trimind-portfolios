@@ -10,6 +10,10 @@ interface SendPaymentParams {
   invoiceValue: number;
   customerName: string;
   customerEmail: string;
+  /** Digits only, no country code (e.g. "51234567"). Enables SMS/email delivery. */
+  customerMobile?: string;
+  /** e.g. "+965" (Kuwait). Required by MyFatoorah whenever CustomerMobile is set. */
+  mobileCountryCode?: string;
   callBackUrl: string;
   errorUrl: string;
   userDefinedField: string;
@@ -53,15 +57,23 @@ export async function sendPayment(
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      // "LNK" = return an invoice link only. We redirect the browser to
-      // Data.InvoiceURL, so MyFatoorah does NOT need to SMS/email the invoice.
-      // "ALL" (SMS+email) makes CustomerMobile mandatory — and we never send a
-      // mobile, so every SendPayment failed with "CustomerMobile is mandatory".
-      NotificationOption: "LNK",
+      // We now collect a customer mobile at checkout, so we use "ALL" — the
+      // invoice is delivered by SMS + email AND we still redirect the browser to
+      // Data.InvoiceURL. "ALL" makes CustomerMobile + MobileCountryCode
+      // mandatory, so we only send it when a mobile is present; otherwise we
+      // fall back to "LNK" (link only) to avoid the historic
+      // "CustomerMobile is mandatory" failure.
+      NotificationOption: params.customerMobile ? "ALL" : "LNK",
       InvoiceValue: params.invoiceValue,
       DisplayCurrencyIso: "KWD",
       CustomerName: params.customerName,
       CustomerEmail: params.customerEmail,
+      ...(params.customerMobile
+        ? {
+            CustomerMobile: params.customerMobile,
+            MobileCountryCode: params.mobileCountryCode || "+965",
+          }
+        : {}),
       CallBackUrl: params.callBackUrl,
       ErrorUrl: params.errorUrl,
       Language: params.language || "EN",
@@ -142,6 +154,32 @@ export async function verifyAndProcessPayment(
     return { ok: false, reason: "amount_mismatch" };
   }
 
+  // Mark portfolio paid FIRST — if this fails, the payment stays pending and
+  // the next callback/webhook retry will re-attempt. Marking the payment
+  // completed first would leave a "completed" payment with no unlocked portfolio.
+  let resolvedPortfolioId = portfolioId;
+  try {
+    await convexClient.mutation(api.portfolios.markPaid, {
+      id: portfolioId as Id<"portfolios">,
+      paymentId: invoiceId,
+      serverSecret: secret,
+    });
+  } catch (e: unknown) {
+    const msg = e instanceof Error ? e.message : "";
+    if (msg.includes("not found") && existing?.userId) {
+      // Portfolio was deleted/recreated — fall back to the user's current draft.
+      const fallbackId = await convexClient.mutation(api.portfolios.markPaidByUser, {
+        userId: existing.userId,
+        paymentId: invoiceId,
+        serverSecret: secret,
+      });
+      resolvedPortfolioId = fallbackId;
+      console.log(`[payment] portfolio ${portfolioId} gone, fell back to ${fallbackId} for user ${existing.userId}`);
+    } else {
+      throw e;
+    }
+  }
+
   if (existing) {
     await convexClient.mutation(api.payments.markCompleted, {
       id: existing._id,
@@ -150,11 +188,5 @@ export async function verifyAndProcessPayment(
     });
   }
 
-  await convexClient.mutation(api.portfolios.markPaid, {
-    id: portfolioId as Id<"portfolios">,
-    paymentId: invoiceId,
-    serverSecret: secret,
-  });
-
-  return { ok: true, invoiceId, portfolioId, locale, alreadyProcessed: false };
+  return { ok: true, invoiceId, portfolioId: resolvedPortfolioId as string, locale, alreadyProcessed: false };
 }

@@ -12,6 +12,7 @@ import type * as admin from "../admin.js";
 import type * as auth from "../auth.js";
 import type * as payments from "../payments.js";
 import type * as portfolios from "../portfolios.js";
+import type * as seedData_abdulrahman from "../seedData/abdulrahman.js";
 import type * as seeds from "../seeds.js";
 import type * as storage from "../storage.js";
 import type * as users from "../users.js";
@@ -27,6 +28,7 @@ declare const fullApi: ApiFromModules<{
   auth: typeof auth;
   payments: typeof payments;
   portfolios: typeof portfolios;
+  "seedData/abdulrahman": typeof seedData_abdulrahman;
   seeds: typeof seeds;
   storage: typeof storage;
   users: typeof users;

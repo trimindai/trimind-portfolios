@@ -347,7 +347,6 @@ export const markPaid = mutation({
     verifyServerSecret(serverSecret);
     const portfolio = await ctx.db.get(id);
     if (!portfolio) throw new Error("Portfolio not found");
-    // Idempotent: if already paid/published, do nothing.
     if (portfolio.status === "paid" || portfolio.status === "published") {
       return;
     }
@@ -356,6 +355,29 @@ export const markPaid = mutation({
       paymentId,
       lastEditedAt: Date.now(),
     });
+  },
+});
+
+export const markPaidByUser = mutation({
+  args: {
+    userId: v.id("users"),
+    paymentId: v.string(),
+    serverSecret: v.string(),
+  },
+  handler: async (ctx, { userId, paymentId, serverSecret }) => {
+    verifyServerSecret(serverSecret);
+    const drafts = await ctx.db
+      .query("portfolios")
+      .withIndex("by_user", (q) => q.eq("userId", userId))
+      .collect();
+    const target = drafts.find((p) => p.status === "draft");
+    if (!target) throw new Error("No draft portfolio found for user");
+    await ctx.db.patch(target._id, {
+      status: "paid",
+      paymentId,
+      lastEditedAt: Date.now(),
+    });
+    return target._id;
   },
 });
 
