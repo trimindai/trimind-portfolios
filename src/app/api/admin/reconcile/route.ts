@@ -5,7 +5,7 @@ import { api } from "@convex/_generated/api";
 import { getPaymentStatus, verifyAndProcessPayment } from "@/lib/myfatoorah";
 import { Id } from "@convex/_generated/dataModel";
 
-const ADMIN_EMAILS = (process.env.ADMIN_EMAILS || "trimindai@trimindai.com,90dalal@gmail.com,test@trimindai.com,w.baazm@gmail.com").split(",").map((e) => e.trim().toLowerCase()).filter(Boolean);
+const ADMIN_EMAILS = (process.env.ADMIN_EMAILS || "trimindai@trimindai.com,90dalal@gmail.com,test@trimindai.com,w.baazm@gmail.com,trimindartificial@gmail.com").split(",").map((e) => e.trim().toLowerCase()).filter(Boolean);
 
 async function requireAdminAuth() {
   const { userId } = await auth();
