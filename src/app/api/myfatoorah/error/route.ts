@@ -7,7 +7,7 @@ export async function GET(req: NextRequest) {
   const baseUrl = process.env.NEXT_PUBLIC_APP_URL || req.nextUrl.origin;
 
   const dest = portfolioId
-    ? `/${locale}/dashboard/${portfolioId}/preview?error=payment_cancelled`
+    ? `/${locale}/dashboard/${portfolioId}/publish?error=payment_cancelled`
     : `/${locale}/dashboard?error=payment_cancelled`;
 
   return NextResponse.redirect(new URL(dest, baseUrl));

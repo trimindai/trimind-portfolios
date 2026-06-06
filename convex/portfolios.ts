@@ -369,6 +369,7 @@ export const markPaidByUser = mutation({
     const drafts = await ctx.db
       .query("portfolios")
       .withIndex("by_user", (q) => q.eq("userId", userId))
+      .order("desc")
       .collect();
     const target = drafts.find((p) => p.status === "draft");
     if (!target) throw new Error("No draft portfolio found for user");

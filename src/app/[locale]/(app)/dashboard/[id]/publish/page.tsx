@@ -45,6 +45,7 @@ function HostingPublishPage() {
   const params = useParams();
   const id = params.id as string;
   const locale = (params.locale as string) || "en";
+  const isRTL = locale === "ar";
   const t = useTranslations("publish");
   const tc = useTranslations("common");
 
@@ -58,6 +59,7 @@ function HostingPublishPage() {
   });
 
   const [slug, setSlug] = useState("");
+  const [mobile, setMobile] = useState("");
   const [slugInitialized, setSlugInitialized] = useState(false);
   const [publishing, setPublishing] = useState(false);
   const [published, setPublished] = useState(false);
@@ -166,11 +168,28 @@ function HostingPublishPage() {
           // Free access granted — portfolio is now "paid" server-side.
           // Fall through to HTML generation + publish.
         } else if (freeRes.status === 403) {
-          // Not eligible for free access — redirect to MyFatoorah payment.
+          // Not eligible for free access — payment is due. MyFatoorah needs a
+          // valid mobile to deliver the invoice (NotificationOption "ALL").
+          const mobileDigits = mobile.replace(/\D/g, "");
+          if (mobileDigits.length < 8) {
+            setError(
+              isRTL
+                ? "أدخل رقم هاتف صحيح (٨ أرقام) للمتابعة إلى الدفع."
+                : "Enter a valid mobile number (8 digits) to continue to payment."
+            );
+            setPublishing(false);
+            return;
+          }
+          // Redirect to MyFatoorah payment.
           const payRes = await fetch("/api/myfatoorah/initiate", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ portfolioId: id, locale }),
+            body: JSON.stringify({
+              portfolioId: id,
+              locale,
+              mobile: mobileDigits,
+              mobileCountryCode: "+965",
+            }),
           });
 
           const payData = await payRes.json();
@@ -226,7 +245,7 @@ function HostingPublishPage() {
     } finally {
       setPublishing(false);
     }
-  }, [portfolio, slugAvailable, locale, slug, id, publishMutation, reserveSlugMutation, isAdmin, t]);
+  }, [portfolio, slugAvailable, locale, slug, mobile, isRTL, id, publishMutation, reserveSlugMutation, isAdmin, t]);
 
   const handleCopyUrl = useCallback(async () => {
     try {
@@ -403,6 +422,37 @@ function HostingPublishPage() {
             </div>
           </div>
 
+          {/* Mobile — only when a payment is actually due (draft, non-admin).
+              MyFatoorah uses it to deliver the invoice/receipt by SMS + email. */}
+          {portfolio.status === "draft" && !isAdmin && (
+            <div className="mt-5">
+              <label className="mb-2 block text-sm font-medium text-[var(--land-bright)]">
+                {isRTL ? "رقم الهاتف" : "Mobile number"}
+              </label>
+              <div className="flex items-center gap-0 rounded-lg border border-[var(--land-border)] bg-[var(--land-surface-raised)] focus-within:border-[var(--land-accent)] focus-within:ring-1 focus-within:ring-[var(--land-accent)]/50">
+                <span className="whitespace-nowrap border-r border-[var(--land-border)] px-3 py-2.5 text-sm text-[var(--land-muted)]">
+                  +965
+                </span>
+                <input
+                  type="tel"
+                  inputMode="numeric"
+                  value={mobile}
+                  onChange={(e) =>
+                    setMobile(e.target.value.replace(/[^\d]/g, "").slice(0, 12))
+                  }
+                  className="flex-1 bg-transparent px-3 py-2.5 text-sm text-[var(--land-bright)] placeholder-[var(--land-muted)] outline-none"
+                  placeholder="5XXXXXXX"
+                  dir="ltr"
+                />
+              </div>
+              <p className="mt-2 text-xs text-[var(--land-muted)]">
+                {isRTL
+                  ? "لإرسال الفاتورة والإيصال عبر الرسائل والبريد."
+                  : "For your invoice and receipt via SMS/email."}
+              </p>
+            </div>
+          )}
+
           {/* Error */}
           {error && (
             <div className="mt-4 rounded-lg bg-red-950/50 p-3 text-sm text-red-400">
@@ -485,8 +535,7 @@ function PdfCheckout() {
   const unlocked =
     isAdmin ||
     portfolio?.status === "paid" ||
-    portfolio?.status === "published" ||
-    paidViaCallback;
+    portfolio?.status === "published";
 
   const handleGetPdf = useCallback(async () => {
     if (!portfolio) return;

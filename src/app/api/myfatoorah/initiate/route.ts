@@ -28,6 +28,20 @@ export async function POST(req: NextRequest) {
     }
     const locale = rawLocale === "ar" ? "ar" : "en";
 
+    // Customer mobile — enables MyFatoorah "ALL" (SMS + email + link) delivery.
+    // Strip everything but digits; validate length if present. Defaults to the
+    // Kuwait country code. If absent/invalid we omit it and SendPayment falls
+    // back to "LNK" (link only) rather than failing.
+    const mobileDigits = String(body?.mobile ?? "").replace(/\D/g, "");
+    const mobileCountryCode =
+      String(body?.mobileCountryCode ?? "+965").trim() || "+965";
+    if (mobileDigits && (mobileDigits.length < 6 || mobileDigits.length > 15)) {
+      return NextResponse.json(
+        { error: "INVALID_MOBILE", message: "Please enter a valid mobile number." },
+        { status: 400 }
+      );
+    }
+
     // Ownership: re-fetch portfolio AS the authenticated user. Convex
     // `portfolios.get` enforces ownership and throws otherwise — so a user
     // cannot initiate payment for another user's portfolio.
@@ -73,6 +87,19 @@ export async function POST(req: NextRequest) {
       });
     }
 
+    if (
+      existingPayment?.status === "pending" &&
+      existingPayment.myfatoorahInvoiceId
+    ) {
+      return NextResponse.json(
+        {
+          error: "PAYMENT_IN_PROGRESS",
+          message: "A payment is already in progress. Please complete it or wait a moment.",
+        },
+        { status: 409 }
+      );
+    }
+
     const user = await currentUser();
     const email = user?.emailAddresses?.[0]?.emailAddress || "";
     const name =
@@ -86,7 +113,9 @@ export async function POST(req: NextRequest) {
       invoiceValue: PRICE_KWD,
       customerName: name,
       customerEmail: email,
-      callBackUrl: `${baseUrl}/api/myfatoorah/callback`,
+      customerMobile: mobileDigits || undefined,
+      mobileCountryCode,
+      callBackUrl: `${baseUrl}/api/myfatoorah/callback?locale=${locale}`,
       errorUrl: `${baseUrl}/api/myfatoorah/error?portfolioId=${portfolioId}&locale=${locale}`,
       userDefinedField: `${portfolioId}:${locale}`,
       language: locale === "ar" ? "AR" : "EN",

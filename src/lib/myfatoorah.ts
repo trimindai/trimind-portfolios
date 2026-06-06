@@ -186,6 +186,17 @@ export async function verifyAndProcessPayment(
       myfatoorahInvoiceId: invoiceId,
       serverSecret: secret,
     });
+  } else {
+    // No payment record (initiate's payments.create may have failed).
+    // Create one now so the payment is auditable.
+    await convexClient.mutation(api.payments.create, {
+      portfolioId: resolvedPortfolioId as Id<"portfolios">,
+      amount: status.Data.InvoiceValue,
+      currency: "KWD",
+      myfatoorahInvoiceId: invoiceId,
+      serverSecret: secret,
+    });
+    console.log(`[payment] created missing payment record for invoice ${invoiceId}`);
   }
 
   return { ok: true, invoiceId, portfolioId: resolvedPortfolioId as string, locale, alreadyProcessed: false };
