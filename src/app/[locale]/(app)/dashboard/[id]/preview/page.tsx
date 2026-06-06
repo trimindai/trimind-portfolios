@@ -7,7 +7,7 @@ import { Id } from "@convex/_generated/dataModel";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { useState, useMemo, useRef, useEffect } from "react";
-import { Monitor, Tablet, Smartphone, ArrowLeft, Download, CheckCircle2, FileText, Globe, ZoomIn, ZoomOut, Maximize2 } from "lucide-react";
+import { Monitor, Tablet, Smartphone, ArrowLeft, Download, CheckCircle2, FileText, Globe, ZoomIn, ZoomOut, Maximize2, Maximize, Minimize } from "lucide-react";
 import { useUser } from "@clerk/nextjs";
 import PreviewFrame from "@/components/preview/PreviewFrame";
 import type { PreviewFrameHandle } from "@/components/preview/PreviewFrame";
@@ -25,6 +25,7 @@ export default function PreviewPage() {
   const t = useTranslations("preview");
   const tc = useTranslations("common");
   const previewRef = useRef<PreviewFrameHandle>(null);
+  const rootRef = useRef<HTMLDivElement>(null);
   const searchParams = useSearchParams();
   const { user: clerkUser } = useUser();
 
@@ -51,6 +52,22 @@ export default function PreviewPage() {
     window.addEventListener("resize", sync);
     return () => window.removeEventListener("resize", sync);
   }, []);
+
+  // Fullscreen the whole preview shell (toolbar stays visible so the user can
+  // exit). Progressive enhancement — silently no-ops where unsupported (iOS).
+  const [isFullscreen, setIsFullscreen] = useState(false);
+  useEffect(() => {
+    const onChange = () => setIsFullscreen(!!document.fullscreenElement);
+    document.addEventListener("fullscreenchange", onChange);
+    return () => document.removeEventListener("fullscreenchange", onChange);
+  }, []);
+  const toggleFullscreen = () => {
+    if (document.fullscreenElement) {
+      document.exitFullscreen?.();
+    } else {
+      rootRef.current?.requestFullscreen?.().catch(() => {});
+    }
+  };
 
   // Always print the ATS CV (carries the QR), regardless of the current view.
   const printCv = () => {
@@ -94,8 +111,8 @@ export default function PreviewPage() {
   ];
 
   const views: { mode: PreviewView; icon: typeof FileText; label: string }[] = [
-    { mode: "cv", icon: FileText, label: t("cvView") },
-    { mode: "live", icon: Globe, label: t("liveView") },
+    { mode: "cv", icon: FileText, label: t("cvPreview") },
+    { mode: "live", icon: Globe, label: t("webPreview") },
   ];
 
   // URL shown in the live device frames (QR target). Falls back to a slug of
@@ -134,25 +151,68 @@ export default function PreviewPage() {
   const getPdfLabel = locale === "ar" ? "احصل على PDF — ٤.٩٠٠ د.ك" : "Get PDF — 4.900 KD";
   const downloadLabel = locale === "ar" ? "حمّل PDF" : "Download PDF";
 
+  // Mobile-only CTA: a thumb-reachable bottom pill. Hidden on md+, where the
+  // CTA lives at the far-right of the toolbar instead (never both at once).
+  // Overrides renderCta's default rounding/padding into a full-width bottom bar.
   const pillClass =
-    "fixed bottom-6 right-6 z-50 flex items-center gap-2 rounded-full bg-[var(--land-accent)] px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-emerald-600/25 hover:bg-[var(--land-accent-hover)] hover:shadow-emerald-500/30 transition-all hover:-translate-y-0.5";
+    "!fixed bottom-6 left-4 right-4 z-50 md:hidden !rounded-full !px-5 !py-3.5 shadow-lg shadow-emerald-600/25";
+
+  // Get PDF CTA — same action/label logic, rendered twice: in the toolbar on
+  // md+ and as the bottom pill on mobile. `extra` carries the variant classes.
+  const renderCta = (extra: string) =>
+    HOSTING_ENABLED ? (
+      <Link
+        href={`/dashboard/${id}/publish`}
+        className={`inline-flex items-center justify-center gap-2 rounded-lg bg-[var(--land-accent)] px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-[var(--land-accent-hover)] ${extra}`}
+      >
+        {tc("publish")}
+      </Link>
+    ) : canDownload ? (
+      <button
+        onClick={printCv}
+        className={`inline-flex items-center justify-center gap-2 rounded-lg bg-[var(--land-accent)] px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-[var(--land-accent-hover)] ${extra}`}
+      >
+        <Download className="h-4 w-4" />
+        {downloadLabel}
+      </button>
+    ) : (
+      <Link
+        href={`/dashboard/${id}/publish`}
+        className={`inline-flex items-center justify-center gap-2 rounded-lg bg-[var(--land-accent)] px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-[var(--land-accent-hover)] ${extra}`}
+      >
+        <Download className="h-4 w-4" />
+        {getPdfLabel}
+      </Link>
+    );
+
+  const divider = (cls = "") => (
+    <span
+      aria-hidden
+      className={`h-6 w-px shrink-0 bg-[var(--land-border)] ${cls}`}
+    />
+  );
 
   return (
-    <div className="flex h-screen flex-col bg-[var(--land-bg)]">
-      {/* Top toolbar */}
-      <div className="flex items-center justify-between border-b border-[var(--land-border)] bg-[var(--land-surface)] px-4 py-3">
+    <div ref={rootRef} className="flex h-screen flex-col bg-[var(--land-bg)]">
+      {/* Top toolbar — grouped: [Back] | [CV/Web] | [Zoom] | [Fullscreen] → [CTA] */}
+      <div className="flex items-center gap-1.5 border-b border-[var(--land-border)] bg-[var(--land-surface)] px-3 py-2.5 sm:px-4">
+        {/* Back to Edit — outlined button */}
         <Link
           href={`/dashboard/${id}/edit`}
-          className="flex items-center gap-2 text-sm text-[var(--land-body)] transition-colors hover:text-[var(--land-bright)]"
+          title={t("backToEdit")}
+          className="inline-flex min-h-[44px] shrink-0 items-center gap-1.5 rounded-lg border border-[var(--land-border)] bg-[var(--land-surface-raised)]/40 px-3 text-sm font-medium text-[var(--land-bright)] transition-colors hover:border-[var(--land-accent)]/40 hover:bg-[var(--land-surface-raised)] sm:min-h-[40px]"
         >
-          <ArrowLeft className="h-4 w-4" />
-          {t("backToEdit")}
+          <ArrowLeft className="h-4 w-4 shrink-0 rtl:rotate-180" />
+          <span className="hidden sm:inline">{t("backToEdit")}</span>
         </Link>
 
-        <div className="flex items-center gap-2">
-          {/* CV ⇄ Live portfolio toggle */}
+        {divider("hidden sm:block")}
+
+        {/* Middle controls — scroll horizontally on very narrow screens */}
+        <div className="flex min-w-0 flex-1 items-center gap-1.5 overflow-x-auto">
+          {/* CV ⇄ Web toggle (labels always visible) */}
           <div
-            className="flex items-center gap-1 rounded-lg bg-[var(--land-surface-raised)]/50 p-1"
+            className="flex shrink-0 items-center gap-1 rounded-lg bg-[var(--land-surface-raised)]/50 p-1"
             role="group"
             aria-label={t("viewToggleLabel")}
           >
@@ -161,109 +221,102 @@ export default function PreviewPage() {
                 key={mode}
                 onClick={() => setView(mode)}
                 aria-pressed={view === mode}
-                className={`flex min-h-[44px] items-center gap-2 rounded-md px-3 py-1.5 text-sm transition-colors sm:min-h-0 ${
-                  view === mode
-                    ? "bg-[var(--land-accent)] text-white"
-                    : "text-[var(--land-body)] hover:bg-[var(--land-border)] hover:text-[var(--land-bright)]"
-                }`}
+                className={segBtn(view === mode)}
                 title={label}
               >
-                <Icon className="h-4 w-4" />
-                <span className="hidden sm:inline">{label}</span>
+                <Icon className="h-4 w-4 shrink-0" />
+                <span className="whitespace-nowrap">{label}</span>
               </button>
             ))}
           </div>
 
-          {/* Device frames — Live portfolio only */}
+          {/* Device frames — Live only, md+ only (mobile is always the phone) */}
           {view === "live" && (
-            <div className="flex items-center gap-1 rounded-lg bg-[var(--land-surface-raised)]/50 p-1">
-              {devices.map(({ mode, icon: Icon, label }) => (
-                <button
-                  key={mode}
-                  onClick={() => setDeviceMode(mode)}
-                  aria-pressed={deviceMode === mode}
-                  // Desktop/Tablet frames overflow a real phone screen, so on
-                  // <md only the Phone option is offered.
-                  className={`${segBtn(deviceMode === mode)}${mode !== "mobile" ? " max-md:hidden" : ""}`}
-                  title={label}
-                >
-                  <Icon className="h-4 w-4" />
-                  <span className="hidden sm:inline">{label}</span>
-                </button>
-              ))}
-            </div>
+            <>
+              {divider("hidden md:block")}
+              <div className="hidden shrink-0 items-center gap-1 rounded-lg bg-[var(--land-surface-raised)]/50 p-1 md:flex">
+                {devices.map(({ mode, icon: Icon, label }) => (
+                  <button
+                    key={mode}
+                    onClick={() => setDeviceMode(mode)}
+                    aria-pressed={deviceMode === mode}
+                    className={segBtn(deviceMode === mode)}
+                    title={label}
+                  >
+                    <Icon className="h-4 w-4" />
+                    <span className="hidden lg:inline">{label}</span>
+                  </button>
+                ))}
+              </div>
+            </>
           )}
 
           {/* Zoom / fit — CV (document) only */}
           {view === "cv" && (
-            <div className="flex items-center gap-1 rounded-lg bg-[var(--land-surface-raised)]/50 p-1">
-              <button
-                onClick={() => setCvZoom("fit")}
-                aria-pressed={cvZoom === "fit"}
-                className={segBtn(cvZoom === "fit")}
-                title={locale === "ar" ? "ملاءمة العرض" : "Fit width"}
-              >
-                <Maximize2 className="h-4 w-4" />
-                <span className="hidden sm:inline">{locale === "ar" ? "ملاءمة" : "Fit"}</span>
-              </button>
-              <button
-                onClick={() => adjustZoom(-0.25)}
-                className={segBtn(false)}
-                title={locale === "ar" ? "تصغير" : "Zoom out"}
-                aria-label={locale === "ar" ? "تصغير" : "Zoom out"}
-              >
-                <ZoomOut className="h-4 w-4" />
-              </button>
-              <span className="min-w-[3rem] px-1 text-center text-xs tabular-nums text-[var(--land-body)]">
-                {cvZoom === "fit"
-                  ? locale === "ar"
-                    ? "ملاءمة"
-                    : "Fit"
-                  : `${Math.round(cvZoom * 100)}%`}
-              </span>
-              <button
-                onClick={() => adjustZoom(0.25)}
-                className={segBtn(false)}
-                title={locale === "ar" ? "تكبير" : "Zoom in"}
-                aria-label={locale === "ar" ? "تكبير" : "Zoom in"}
-              >
-                <ZoomIn className="h-4 w-4" />
-              </button>
-              <button
-                onClick={() => setCvZoom(1)}
-                aria-pressed={cvZoom === 1}
-                className={segBtn(cvZoom === 1)}
-                title="100%"
-              >
-                <span className="text-xs">100%</span>
-              </button>
-            </div>
+            <>
+              {divider()}
+              <div className="flex shrink-0 items-center gap-1 rounded-lg bg-[var(--land-surface-raised)]/50 p-1">
+                <button
+                  onClick={() => setCvZoom("fit")}
+                  aria-pressed={cvZoom === "fit"}
+                  className={segBtn(cvZoom === "fit")}
+                  title={locale === "ar" ? "ملاءمة العرض" : "Fit width"}
+                >
+                  <Maximize2 className="h-4 w-4" />
+                  <span className="hidden sm:inline">{locale === "ar" ? "ملاءمة" : "Fit"}</span>
+                </button>
+                <button
+                  onClick={() => adjustZoom(-0.25)}
+                  className={segBtn(false)}
+                  title={locale === "ar" ? "تصغير" : "Zoom out"}
+                  aria-label={locale === "ar" ? "تصغير" : "Zoom out"}
+                >
+                  <ZoomOut className="h-4 w-4" />
+                </button>
+                <span className="min-w-[3rem] px-1 text-center text-xs tabular-nums text-[var(--land-body)]">
+                  {cvZoom === "fit"
+                    ? locale === "ar"
+                      ? "ملاءمة"
+                      : "Fit"
+                    : `${Math.round(cvZoom * 100)}%`}
+                </span>
+                <button
+                  onClick={() => adjustZoom(0.25)}
+                  className={segBtn(false)}
+                  title={locale === "ar" ? "تكبير" : "Zoom in"}
+                  aria-label={locale === "ar" ? "تكبير" : "Zoom in"}
+                >
+                  <ZoomIn className="h-4 w-4" />
+                </button>
+                <button
+                  onClick={() => setCvZoom(1)}
+                  aria-pressed={cvZoom === 1}
+                  className={segBtn(cvZoom === 1)}
+                  title="100%"
+                >
+                  <span className="text-xs">100%</span>
+                </button>
+              </div>
+            </>
           )}
+
+          {/* Fullscreen */}
+          {divider()}
+          <button
+            onClick={toggleFullscreen}
+            aria-pressed={isFullscreen}
+            className={`${segBtn(isFullscreen)} shrink-0`}
+            title={isFullscreen ? t("exitFullscreen") : t("fullscreen")}
+          >
+            {isFullscreen ? <Minimize className="h-4 w-4 shrink-0" /> : <Maximize className="h-4 w-4 shrink-0" />}
+            <span className="whitespace-nowrap">
+              {isFullscreen ? t("exitFullscreen") : t("fullscreen")}
+            </span>
+          </button>
         </div>
 
-        {HOSTING_ENABLED ? (
-          <Link
-            href={`/dashboard/${id}/publish`}
-            className="rounded-lg bg-[var(--land-accent)] px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[var(--land-accent-hover)]"
-          >
-            {tc("publish")}
-          </Link>
-        ) : canDownload ? (
-          <button
-            onClick={printCv}
-            className="flex items-center gap-2 rounded-lg bg-[var(--land-accent)] px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[var(--land-accent-hover)]"
-          >
-            <Download className="h-4 w-4" />
-            {downloadLabel}
-          </button>
-        ) : (
-          <Link
-            href={`/dashboard/${id}/publish`}
-            className="rounded-lg bg-[var(--land-accent)] px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[var(--land-accent-hover)]"
-          >
-            {getPdfLabel}
-          </Link>
-        )}
+        {/* Get PDF CTA — desktop only; mobile uses the bottom pill */}
+        <div className="hidden shrink-0 md:block">{renderCta("")}</div>
       </div>
 
       {/* Post-payment confirmation banner */}
@@ -289,23 +342,8 @@ export default function PreviewPage() {
           />
         )}
 
-        {/* Floating download button */}
-        {HOSTING_ENABLED ? (
-          <button onClick={printCv} className={pillClass}>
-            <Download className="h-4 w-4" />
-            Save PDF / Print
-          </button>
-        ) : canDownload ? (
-          <button onClick={printCv} className={pillClass}>
-            <Download className="h-4 w-4" />
-            {downloadLabel}
-          </button>
-        ) : (
-          <Link href={`/dashboard/${id}/publish`} className={pillClass}>
-            <Download className="h-4 w-4" />
-            {getPdfLabel}
-          </Link>
-        )}
+        {/* Mobile-only CTA pill (md+ uses the toolbar CTA) */}
+        {renderCta(pillClass)}
       </div>
     </div>
   );

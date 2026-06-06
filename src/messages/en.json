@@ -293,7 +293,11 @@
     "backToEdit": "Back to Edit",
     "cvView": "CV (PDF)",
     "liveView": "Live portfolio",
-    "viewToggleLabel": "Choose what to preview"
+    "viewToggleLabel": "Choose what to preview",
+    "cvPreview": "CV Preview",
+    "webPreview": "Web Preview",
+    "fullscreen": "Fullscreen",
+    "exitFullscreen": "Exit Fullscreen"
   },
   "publish": {
     "title": "Get Your PDF",

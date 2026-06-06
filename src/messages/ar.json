@@ -293,7 +293,11 @@
     "backToEdit": "العودة للتعديل",
     "cvView": "السيرة الذاتية (PDF)",
     "liveView": "البورتفوليو المباشر",
-    "viewToggleLabel": "اختر ما تريد معاينته"
+    "viewToggleLabel": "اختر ما تريد معاينته",
+    "cvPreview": "معاينة السيرة",
+    "webPreview": "معاينة الويب",
+    "fullscreen": "ملء الشاشة",
+    "exitFullscreen": "إنهاء ملء الشاشة"
   },
   "publish": {
     "title": "احصل على PDF",
