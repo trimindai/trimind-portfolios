@@ -1,7 +1,45 @@
 import { Link } from "@/i18n/navigation";
-import { TEMPLATES } from "@/lib/templates";
+import { TEMPLATES, isTemplateAvailableFor } from "@/lib/templates";
 import { PRICE_KWD } from "@/lib/pricing";
+import { ADMIN_EMAILS } from "@/lib/admin";
+import { currentUser } from "@clerk/nextjs/server";
 import Image from "next/image";
+
+const AR_TEMPLATE: Record<
+  string,
+  { name: string; description: string; targets: string[] }
+> = {
+  general: {
+    name: "عام",
+    description:
+      "ملف شخصي نظيف واحترافي يناسب أي مجال — الخيار المتعدد الاستخدامات. يعمل في مجالات الأعمال والماليات والعمليات والقانون والموارد البشرية وغيرها.",
+    targets: ["محلل مالي", "محاسب", "مدقق حسابات"],
+  },
+  engineer: {
+    name: "مهندس",
+    description:
+      "ملف شخصي يبرز المشاريع للمهندسين — كهربائي، ميكانيكي، مدني، صناعي، كيميائي، وبترولي.",
+    targets: ["مهندس كهربائي", "مهندس ميكانيكي", "مهندس مدني"],
+  },
+  creative: {
+    name: "إبداعي",
+    description:
+      "ملف شخصي للفنانين والمحترفين الإبداعيين — أعمالك في معرض تفاعلي ثلاثي الأبعاد.",
+    targets: ["مصور", "مصور فيديو", "مصمم واجهات وتجربة مستخدم"],
+  },
+  creator: {
+    name: "صانع محتوى",
+    description:
+      "ملف شخصي عالي الطاقة لصناع المحتوى والفنانين ورواة القصص الرقمية — إحصائيات، وعرض محتوى، وتعاونات مع العلامات التجارية.",
+    targets: ["صانع محتوى", "يوتيوبر", "مدوّن"],
+  },
+  developer: {
+    name: "مطوّر",
+    description:
+      "ملف شخصي مظلم للمطوّرين مع لوحة مفاتيح ثلاثية الأبعاد تفاعلية تعرض مهاراتك ومشاريعك.",
+    targets: ["مهندس برمجيات", "مطوّر متكامل", "مطوّر واجهات أمامية"],
+  },
+};
 
 const MOCKUP_IMAGES: Record<string, string> = {
   general: "/landing/mockup-corporate-2026a.jpg",
@@ -27,6 +65,17 @@ export default async function TemplatesPage({ params }: PageProps) {
   const { locale } = await params;
   const isAr = locale === "ar";
 
+  // Admin-only preview: work-in-progress templates are live for admins (so they
+  // can finish & test them) but show as "coming soon" to everyone else.
+  let isAdmin = false;
+  try {
+    const user = await currentUser();
+    const email = user?.primaryEmailAddress?.emailAddress;
+    isAdmin = !!email && ADMIN_EMAILS.includes(email);
+  } catch {
+    isAdmin = false;
+  }
+
   const priceLabel = isAr
     ? `${PRICE_KWD.toFixed(3)} دك`
     : `${PRICE_KWD.toFixed(3)} KD`;
@@ -44,6 +93,10 @@ export default async function TemplatesPage({ params }: PageProps) {
     usd: "~$16 USD",
     stickyOneTime: isAr ? "دفعة واحدة" : "One-time",
     available: isAr ? "متاح الآن" : "Available now",
+    adminPreview: isAr ? "معاينة المشرف" : "Admin preview",
+    adminPreviewHint: isAr
+      ? "مرئي لك وحدك حتى يكتمل — قيد الإنجاز."
+      : "Visible to you only until it's finished — work in progress.",
     soon: isAr ? "قريبًا" : "Coming soon",
     preview: isAr ? "معاينة مباشرة" : "Live preview",
     use: isAr ? "ابدأ الآن" : "Use this template",
@@ -128,8 +181,13 @@ export default async function TemplatesPage({ params }: PageProps) {
       <main className="px-6 pb-24">
         {/* Featured: available templates */}
         <div className="mx-auto grid max-w-7xl gap-6 sm:grid-cols-2 lg:grid-cols-2">
-          {TEMPLATES.filter((tpl) => tpl.available).map((tpl) => {
+          {TEMPLATES.filter((tpl) => isTemplateAvailableFor(tpl, { isAdmin })).map((tpl) => {
+            const isAdminPreview = tpl.adminPreview && !tpl.available;
             const mockup = MOCKUP_IMAGES[tpl.id];
+            const ar = isAr ? AR_TEMPLATE[tpl.id] : undefined;
+            const tplName = ar?.name ?? tpl.name;
+            const tplDesc = ar?.description ?? tpl.description;
+            const tplTargets = ar?.targets ?? tpl.targetProfessions;
             return (
             <article
               key={tpl.id}
@@ -140,7 +198,7 @@ export default async function TemplatesPage({ params }: PageProps) {
                 {mockup ? (
                   <Image
                     src={mockup}
-                    alt={`${tpl.name} template preview`}
+                    alt={`${tplName} template preview`}
                     width={1280}
                     height={900}
                     sizes="(min-width: 1024px) 50vw, (min-width: 640px) 50vw, 100vw"
@@ -170,8 +228,14 @@ export default async function TemplatesPage({ params }: PageProps) {
                     ))}
                 </div>
                 <div className="absolute top-3 end-3">
-                  <span className="text-[10px] uppercase tracking-wider font-semibold rounded-full px-2 py-1 bg-[var(--land-bg)]/80 text-[var(--land-accent)] backdrop-blur-sm">
-                    {t.available}
+                  <span
+                    className={`text-[10px] uppercase tracking-wider font-semibold rounded-full px-2 py-1 backdrop-blur-sm ${
+                      isAdminPreview
+                        ? "bg-[var(--land-bg)]/80 text-[var(--land-bright)] ring-1 ring-[var(--land-accent)]"
+                        : "bg-[var(--land-bg)]/80 text-[var(--land-accent)]"
+                    }`}
+                  >
+                    {isAdminPreview ? t.adminPreview : t.available}
                   </span>
                 </div>
                 {tpl.demoUrl && (
@@ -184,17 +248,22 @@ export default async function TemplatesPage({ params }: PageProps) {
               </div>
 
               <div className="p-5 flex flex-col grow">
-                <h2 className="text-lg font-semibold">{tpl.name}</h2>
+                <h2 className="text-lg font-semibold">{tplName}</h2>
                 <p className="mt-1.5 text-sm text-[var(--land-body)] line-clamp-2">
-                  {tpl.description}
+                  {tplDesc}
                 </p>
+                {isAdminPreview && (
+                  <p className="mt-2 text-xs text-[var(--land-accent)]">
+                    {t.adminPreviewHint}
+                  </p>
+                )}
                 <div className="mt-3">
                   <p className="text-[11px] uppercase tracking-wider text-[var(--land-muted)]">
                     {t.targets}
                   </p>
                   <p className="mt-0.5 text-xs text-[var(--land-bright)]">
-                    {tpl.targetProfessions.slice(0, 3).join(" · ")}
-                    {tpl.targetProfessions.length > 3 ? " …" : ""}
+                    {tplTargets.slice(0, 3).join(" · ")}
+                    {tplTargets.length > 3 ? " …" : ""}
                   </p>
                 </div>
                 <div className="mt-auto pt-4 flex gap-2">
@@ -236,7 +305,12 @@ export default async function TemplatesPage({ params }: PageProps) {
             </p>
           </div>
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {TEMPLATES.filter((tpl) => !tpl.available).map((tpl) => (
+            {TEMPLATES.filter((tpl) => !isTemplateAvailableFor(tpl, { isAdmin })).map((tpl) => {
+              const ar = isAr ? AR_TEMPLATE[tpl.id] : undefined;
+              const tplName = ar?.name ?? tpl.name;
+              const tplDesc = ar?.description ?? tpl.description;
+              const tplTargets = ar?.targets ?? tpl.targetProfessions;
+              return (
               <article
                 key={tpl.id}
                 className="rounded-xl border border-[var(--land-border)]/50 bg-[var(--land-surface)] overflow-hidden flex flex-col opacity-60"
@@ -269,22 +343,23 @@ export default async function TemplatesPage({ params }: PageProps) {
                 </div>
 
                 <div className="p-4 flex flex-col grow">
-                  <h3 className="text-base font-semibold">{tpl.name}</h3>
+                  <h3 className="text-base font-semibold">{tplName}</h3>
                   <p className="mt-1 text-xs text-[var(--land-body)] line-clamp-2">
-                    {tpl.description}
+                    {tplDesc}
                   </p>
                   <div className="mt-3">
                     <p className="text-[10px] uppercase tracking-wider text-[var(--land-muted)]">
                       {t.targets}
                     </p>
                     <p className="mt-0.5 text-xs text-[var(--land-body)]">
-                      {tpl.targetProfessions.slice(0, 2).join(" · ")}
-                      {tpl.targetProfessions.length > 2 ? " …" : ""}
+                      {tplTargets.slice(0, 2).join(" · ")}
+                      {tplTargets.length > 2 ? " …" : ""}
                     </p>
                   </div>
                 </div>
               </article>
-            ))}
+              );
+            })}
           </div>
         </div>
 
