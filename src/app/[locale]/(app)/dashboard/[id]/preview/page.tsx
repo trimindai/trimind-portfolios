@@ -6,7 +6,7 @@ import { api } from "@convex/_generated/api";
 import { Id } from "@convex/_generated/dataModel";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
-import { useState, useMemo, useRef } from "react";
+import { useState, useMemo, useRef, useEffect } from "react";
 import { Monitor, Tablet, Smartphone, ArrowLeft, Download, CheckCircle2, FileText, Globe, ZoomIn, ZoomOut, Maximize2 } from "lucide-react";
 import { useUser } from "@clerk/nextjs";
 import PreviewFrame from "@/components/preview/PreviewFrame";
@@ -40,6 +40,17 @@ export default function PreviewPage() {
   // Which artifact to preview. The printed PDF is always the ATS CV, so any
   // print action switches to the CV view first (see printCv below).
   const [view, setView] = useState<PreviewView>("cv");
+
+  // On phone-width screens the wide Desktop/Tablet frames overflow, so the
+  // live view always falls back to the full-bleed Phone variant there.
+  useEffect(() => {
+    const sync = () => {
+      if (window.innerWidth < 768) setDeviceMode("mobile");
+    };
+    sync();
+    window.addEventListener("resize", sync);
+    return () => window.removeEventListener("resize", sync);
+  }, []);
 
   // Always print the ATS CV (carries the QR), regardless of the current view.
   const printCv = () => {
@@ -171,7 +182,9 @@ export default function PreviewPage() {
                   key={mode}
                   onClick={() => setDeviceMode(mode)}
                   aria-pressed={deviceMode === mode}
-                  className={segBtn(deviceMode === mode)}
+                  // Desktop/Tablet frames overflow a real phone screen, so on
+                  // <md only the Phone option is offered.
+                  className={`${segBtn(deviceMode === mode)}${mode !== "mobile" ? " max-md:hidden" : ""}`}
                   title={label}
                 >
                   <Icon className="h-4 w-4" />

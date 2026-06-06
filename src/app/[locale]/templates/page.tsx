@@ -40,7 +40,7 @@ export default async function TemplatesPage({ params }: PageProps) {
     available: isAr ? "متاح الآن" : "Available now",
     soon: isAr ? "قريبًا" : "Coming soon",
     preview: isAr ? "معاينة مباشرة" : "Live preview",
-    use: isAr ? `ابدأ الآن — ${priceLabel}` : `Use this template — ${priceLabel}`,
+    use: isAr ? "ابدأ الآن" : "Use this template",
     useNav: isAr ? "ابدأ الآن" : "Get started",
     targets: isAr ? "مناسب لـ" : "For",
     backHome: isAr ? "العودة للرئيسية" : "Back to home",

@@ -2,6 +2,22 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Keyboard focus rings — shown only for keyboard/AT users (:focus-visible),
+   so mouse clicks stay clean. Emerald accent, works in LTR and RTL. */
+@layer base {
+  a:focus-visible,
+  button:focus-visible,
+  input:focus-visible,
+  textarea:focus-visible,
+  select:focus-visible,
+  summary:focus-visible,
+  [tabindex]:focus-visible {
+    outline: 2px solid var(--land-accent, #059669);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+}
+
 @layer base {
   :root {
     --background: oklch(1 0 0);

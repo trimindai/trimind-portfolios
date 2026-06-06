@@ -222,21 +222,24 @@ const PreviewFrame = forwardRef<PreviewFrameHandle, PreviewFrameProps>(
       return (
         <div
           ref={scrollRef}
-          className="flex h-full w-full flex-col items-center gap-3 overflow-auto bg-[var(--land-surface-raised)]/40 p-6"
+          className="flex h-full w-full flex-col items-center gap-3 overflow-auto bg-[var(--land-surface-raised)]/40 p-6 max-md:gap-2 max-md:p-0"
         >
+          {/* md+: realistic phone bezel. On a real phone (<md) the bezel would
+              overflow the viewport ("phone inside a phone"), so we drop the
+              frame/notch and let the portfolio fill the width edge-to-edge. */}
           <div
-            className="relative shrink-0 rounded-[2.6rem] border-[11px] border-neutral-900 bg-neutral-900 shadow-2xl shadow-black/40"
+            className="relative shrink-0 rounded-[2.6rem] border-[11px] border-neutral-900 bg-neutral-900 shadow-2xl shadow-black/40 max-md:!w-full max-md:rounded-none max-md:border-0 max-md:bg-transparent max-md:shadow-none"
             style={{ width: liveW + 22 }}
           >
-            <div className="absolute left-1/2 top-2 z-10 h-1.5 w-20 -translate-x-1/2 rounded-full bg-neutral-700" />
+            <div className="absolute left-1/2 top-2 z-10 h-1.5 w-20 -translate-x-1/2 rounded-full bg-neutral-700 max-md:hidden" />
             <div
-              className="overflow-hidden rounded-[1.9rem] bg-white"
+              className="overflow-hidden rounded-[1.9rem] bg-white max-md:!h-[calc(100dvh-140px)] max-md:!w-full max-md:rounded-none"
               style={{ width: liveW, height: "min(844px, calc(100vh - 220px))" }}
             >
               {frameIframe}
             </div>
           </div>
-          <p className="text-center text-xs text-[var(--land-muted)]">
+          <p className="px-4 text-center text-xs text-[var(--land-muted)] max-md:pb-2">
             {liveUrlLabel
               ? `What people see when they scan your CV's QR code → ${liveUrlLabel}`
               : "What people see when they scan your CV's QR code"}
