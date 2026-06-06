@@ -236,12 +236,12 @@ function SignInForm() {
           </form>
 
           <div className="mt-4 text-center">
-            <a
-              href="https://accounts.portfolio-trimind.com/sign-in"
+            <Link
+              href="/forgot-password"
               className="text-xs text-[var(--land-muted)] hover:text-[var(--land-bright)]"
             >
               {t.forgot}
-            </a>
+            </Link>
           </div>
 
           <p className="mt-6 text-center text-sm text-[var(--land-body)]">
