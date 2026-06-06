@@ -6,6 +6,9 @@ import { routing } from "@/i18n/routing";
 import { Geist, Noto_Kufi_Arabic } from "next/font/google";
 import { cn } from "@/lib/utils";
 import { Providers } from "../providers";
+import { GoogleAnalytics } from "@next/third-parties/google";
+
+const GA_ID = process.env.NEXT_PUBLIC_GA_ID;
 
 const geist = Geist({ subsets: ["latin"], variable: "--font-sans" });
 const notoKufi = Noto_Kufi_Arabic({
@@ -95,7 +98,7 @@ export default async function LocaleLayout({
   return (
     <html lang={locale} dir={isRTL ? "rtl" : "ltr"} suppressHydrationWarning>
       <body className="antialiased">
-        <Providers>
+        <Providers locale={locale}>
           <NextIntlClientProvider messages={messages}>
             {/* Failsafe: if JS is disabled, scroll-reveal content must stay visible. */}
             <noscript>
@@ -112,6 +115,9 @@ export default async function LocaleLayout({
             </div>
           </NextIntlClientProvider>
         </Providers>
+        {/* GA4 — loads on every locale route (/en and /ar). Renders only when
+            NEXT_PUBLIC_GA_ID is set, so non-prod/preview builds stay clean. */}
+        {GA_ID ? <GoogleAnalytics gaId={GA_ID} /> : null}
       </body>
     </html>
   );
