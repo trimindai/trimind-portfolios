@@ -42,8 +42,18 @@ const DEMO_URLS: Record<string, string | undefined> = {
 
 export type Template = TemplateManifest & {
   demoUrl?: string;
+  // Public availability — live for all users.
   available: boolean;
+  // Work-in-progress template: usable by admins for finishing & QA, shown as
+  // "coming soon" to everyone else. When it's ready for all users, move its id
+  // into AVAILABLE_IDS and remove it from ADMIN_PREVIEW_IDS.
+  adminPreview: boolean;
 };
+
+// Templates live for every visitor.
+const AVAILABLE_IDS = new Set(["general", "engineer", "creative", "creator"]);
+// Templates only admins can see/use while they're still being built.
+const ADMIN_PREVIEW_IDS = new Set(["developer"]);
 
 export const TEMPLATES: Template[] = (
   [
@@ -56,14 +66,18 @@ export const TEMPLATES: Template[] = (
 ).map((m) => ({
   ...m,
   demoUrl: DEMO_URLS[m.id],
-  // Live templates — others are coming soon.
-  available:
-    m.id === "general" ||
-    m.id === "engineer" ||
-    m.id === "creative" ||
-    m.id === "developer" ||
-    m.id === "creator",
+  available: AVAILABLE_IDS.has(m.id),
+  adminPreview: ADMIN_PREVIEW_IDS.has(m.id),
 }));
+
+// Effective availability for a given viewer. Admins additionally see templates
+// that are still in admin-preview, so they can finish and test them live.
+export function isTemplateAvailableFor(
+  tpl: Template,
+  opts?: { isAdmin?: boolean },
+): boolean {
+  return tpl.available || (!!opts?.isAdmin && tpl.adminPreview);
+}
 
 export function getTemplate(id: string): Template | undefined {
   const rid = resolveTemplateId(id);
