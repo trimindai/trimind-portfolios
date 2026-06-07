@@ -27,9 +27,11 @@
 - ✅ Task 1.4 — Arabic **Developer** demo `public/demo/developer/index-ar.html` — `cf69155`
   - NOTE: real developer demo persona is **Maya Okafor «مايا أوكافور» — Full-Stack Engineer (Lisbon)**, NOT "Yusuf Al-Hajri" (stale plan note). Translated the real content; JS (3D/WebGL keycap system) byte-identical; vercel.json rewrite already existed; English index.html left untouched (carries another session's og:image edits). Spec-reviewed ✅ (390px render, no overflow, 0 new console errors).
 
+- ✅ Task 1.5 — Arabic **Creator game** `public/demo/creator/index-ar.html` + `scripts/creator-game-check-ar.mjs` — `bf5ee61`
+  - Persona ريمي فانس (RV kept). `ar()` digit helper applied at display boundaries only; match logic keyed on machine `pid` (unchanged). Dynamic Playwright playthrough PASSED: win reached, overflowPx 0 @390px, 0 console errors, dir=rtl. Spec-reviewed ✅. **PART 1 COMPLETE.**
+
 **RESUME HERE (in order):**
-1. **Task 1.5** — Arabic Creator game `public/demo/creator/index-ar.html` (translate JS strings, keep mechanic/SVG/sound, RTL-audit, adapt the `scripts/creator-game-check.mjs` verify).
-2. **Task 2.7** (Engineer projects EN+AR) → **2.1** (guest builder) → **2.8** (home form) → **2.2** (PDF/QR demos) → **2.5** (avatar) → **2.6** (resume btn) → **Part 3 polish** → **Part 5 verify**.
+1. **Task 2.7** (Engineer projects listing EN+AR static pages + vercel rewrites) → **2.1** (guest builder) → **2.8** (home form) → **2.2** (PDF/QR demos) → **2.5** (avatar) → **2.6** (resume btn) → **Part 3 polish** → **Part 5 verify**.
 
 **Method note for static-mirror demo tasks (1.4/1.5/2.7-demo):** spec-review includes the render/RTL/overflow/console/JS-integrity verification, so it covers the code-quality dimension — no separate code-quality reviewer needed for pure-translation mirrors. Tasks with real TS/React logic (2.1, 2.8, 2.2, 2.5, 2.6) get the full two-stage review.
 
