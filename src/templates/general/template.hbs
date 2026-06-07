@@ -288,6 +288,14 @@ a { text-decoration: none; color: inherit; }
     position: relative;
 }
 .hero-portrait-ph svg { width: 80px; height: 80px; color: var(--text-dim); opacity: 0.25; }
+.avatar-initials {
+    width: 100%; height: 100%;
+    display: flex; align-items: center; justify-content: center;
+    background: linear-gradient(135deg, var(--gold-warm), var(--gold));
+    color: #fff; font-weight: 700; letter-spacing: 0.04em;
+    font-size: clamp(3.5rem, 12vw, 6rem); line-height: 1;
+    text-transform: uppercase; user-select: none;
+}
 .hero-portrait-tag {
     position: absolute; bottom: 14px; left: 14px; right: 14px;
     text-align: center; font-size: 0.65rem; color: var(--text-dim);
@@ -1137,11 +1145,9 @@ footer a:hover { border-color: var(--gold-warm); }
                     {{#if basics.photoUrl}}
                     <img src="{{basics.photoUrl}}" alt="{{basics.fullName}}" style="width:100%;height:100%;object-fit:cover;">
                     {{else}}
-                    <div class="hero-portrait-ph">
-                        <svg fill="none" viewBox="0 0 24 24" stroke-width="0.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z"/></svg>
-                    </div>
+                    <div class="avatar-initials" aria-label="{{basics.fullName}}">{{initials basics.fullName}}</div>
                     {{/if}}
-                    <div class="hero-portrait-tag">{{#if basics.photoUrl}}{{basics.fullName}}{{else}}Professional Photo{{/if}}</div>
+                    <div class="hero-portrait-tag">{{basics.fullName}}</div>
                 </div>
             </div>
         </div>

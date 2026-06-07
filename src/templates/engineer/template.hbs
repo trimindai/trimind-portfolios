@@ -125,6 +125,12 @@ a:focus-visible, button:focus-visible {
   width: 120px; height: 120px; border-radius: 50%; object-fit: cover;
   border: 3px solid var(--border); margin-top: 24px;
 }
+.avatar-initials {
+  display: flex; align-items: center; justify-content: center;
+  background: linear-gradient(135deg, var(--accent), color-mix(in srgb, var(--accent) 70%, #000));
+  color: #fff; font-weight: 700; font-size: 2.6rem; letter-spacing: 0.04em;
+  line-height: 1; text-transform: uppercase; user-select: none;
+}
 .hero-right {}
 .hero-bio {
   font-size: 1.05rem; color: var(--text-secondary); line-height: 1.8;
@@ -476,6 +482,8 @@ a:focus-visible, button:focus-visible {
       {{/if}}
       {{#if basics.photoUrl}}
       <img class="hero-photo" src="{{basics.photoUrl}}" alt="{{basics.fullName}}">
+      {{else}}
+      <div class="hero-photo avatar-initials" aria-label="{{basics.fullName}}">{{initials basics.fullName}}</div>
       {{/if}}
     </div>
     <div class="hero-right rv rv-d1">

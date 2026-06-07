@@ -80,6 +80,8 @@ export function CustomizeStep({ data, onChange }: CustomizeStepProps) {
       <PhotoUpload
         value={data.basics?.photoUrl || ""}
         onChange={(url) => onChange({ basics: { ...data.basics, photoUrl: url } })}
+        name={data.basics?.fullName}
+        accentColor={data.customization?.accentColor}
       />
 
       {/* Colors */}
