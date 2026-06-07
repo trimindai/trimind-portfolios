@@ -199,63 +199,43 @@ export default async function LandingPage({
         <div className="relative z-10 mx-auto w-full max-w-7xl px-6 pt-28 pb-16 lg:pt-0">
           <div className="flex flex-col lg:grid lg:grid-cols-[1fr_1.2fr] items-center gap-12 lg:gap-20">
             <div className="land-stagger">
-              <p className="text-xs font-medium tracking-[0.2em] uppercase text-[var(--land-accent)]">
-                {isRTL
-                  ? "أنشئ سيرتك الذاتية وبورتفوليوك"
-                  : "Build your CV & portfolio"}
+              <p className="inline-flex items-center gap-1.5 text-xs font-semibold tracking-[0.15em] uppercase text-emerald-600 bg-emerald-50 rounded-full px-3 py-1">
+                <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                {isRTL ? "✨ جديد" : "✨ NEW"}
               </p>
               <h1
-                className="mt-4 font-extrabold leading-[1] tracking-tighter"
-                style={{ fontSize: "clamp(3rem, 6.5vw, 5.5rem)" }}
+                className="mt-5 font-extrabold leading-[1.05] tracking-tighter"
+                style={{ fontSize: "clamp(2.5rem, 6vw, 4.5rem)" }}
               >
                 {isRTL
-                  ? "سيرة ذاتية + بورتفوليو احترافي في دقائق"
-                  : "Professional CV + Portfolio in Minutes"}
+                  ? "الذكاء الاصطناعي يبني سيرتك الذاتية في ثوانٍ"
+                  : "AI Builds Your Entire CV in Seconds"}
               </h1>
-              <p className="mt-8 max-w-lg text-lg leading-relaxed text-[var(--land-body)]">
+              <p className="mt-6 max-w-lg text-lg leading-relaxed text-[var(--land-body)]">
                 {isRTL
-                  ? "اختر قالبًا، أدخل بياناتك، واحصل على سيرة ذاتية PDF احترافية في دقائق. بالعربي والإنجليزي."
-                  : "Pick a template, fill your info, and get a professional PDF portfolio in minutes. Arabic & English supported."}
+                  ? "اسمك + مسماك الوظيفي ← الذكاء الاصطناعي يكتب الملخص والخبرات والمهارات والإنجازات فورًا."
+                  : "Your name + job title → AI writes your summary, experience, skills & achievements instantly."}
+              </p>
+              <p className="mt-2 text-sm text-[var(--land-muted)]">
+                {isRTL ? "عربي وإنجليزي · الكويت والخليج" : "Arabic & English · Kuwait & Gulf"}
               </p>
               {/* Try-it form — no signup needed */}
               <TryItForm locale={locale} />
-              <a
-                href="#templates"
-                className="mt-4 inline-block text-sm text-[var(--land-body)] hover:text-[var(--land-accent)] transition-colors"
-              >
-                {isRTL ? "شاهد العروض المباشرة ←" : "View live demos →"}
-              </a>
-              <p className="mt-5 text-sm text-[var(--land-muted)]">
-                {isRTL ? (
-                  <>
-                    دفعة واحدة{" "}
-                    <span className="font-semibold text-[var(--land-accent)]">
-                      ٤.٩٠٠ دك
-                    </span>{" "}
-                    (~١٦ دولار). بدون اشتراك. بدون تجديد.
-                  </>
-                ) : (
-                  <>
-                    One-time payment of{" "}
-                    <span className="font-semibold text-[var(--land-accent)]">
-                      4.900 KD
-                    </span>{" "}
-                    (~$16 USD). No subscription. No renewals.
-                  </>
-                )}
-              </p>
-              {/* Trust signals */}
-              <ul className="mt-6 flex flex-wrap gap-x-5 gap-y-2 text-xs text-[var(--land-body)]">
-                {(isRTL
-                  ? ["بدون اشتراك", "دفع آمن (K-NET، Apple Pay)"]
-                  : ["No subscription", "Secure payment (K-NET, Apple Pay)"]
-                ).map((b) => (
-                  <li key={b} className="flex items-center gap-1.5">
-                    <Check className="h-4 w-4 text-[var(--land-accent)] shrink-0" />
-                    {b}
-                  </li>
+              {/* Social proof */}
+              <div className="mt-8 flex flex-wrap items-center gap-4 text-xs text-[var(--land-muted)]">
+                <span>{isRTL ? "١٣٠+ سيرة ذاتية" : "130+ CVs built"}</span>
+                <span className="h-3 w-px bg-[var(--land-border)]" />
+                <span>{isRTL ? "الكويت والخليج" : "Kuwait & Gulf"}</span>
+                <span className="h-3 w-px bg-[var(--land-border)]" />
+                <span>{isRTL ? "عربي مدعوم" : "Arabic supported"}</span>
+              </div>
+              <div className="mt-3 flex items-center gap-3">
+                {["Aisha", "Ahmed", "Sara"].map((n) => (
+                  <span key={n} className="inline-flex items-center gap-1 text-xs text-[var(--land-body)]">
+                    {n} <span className="text-amber-500">★★★★★</span>
+                  </span>
                 ))}
-              </ul>
+              </div>
             </div>
 
             <div className="land-visual w-full max-w-xl">
