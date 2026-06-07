@@ -24,7 +24,12 @@ export async function POST(req: NextRequest) {
     ? `\nUser's raw notes (use this as the primary source of truth for their profession and experience):\n${userDraft.trim()}\n`
     : "";
 
-  const prompt = `Write a professional CV summary for this person.
+  const prompt = `CRITICAL — READ THIS FIRST:
+The user's job title is: "${professionalTitle}"
+Use this EXACT profession everywhere. Do NOT substitute or change it.
+If it contains extra words, extract the core profession.
+
+Write a professional CV summary for this person.
 Return ONLY the summary text — no labels, no quotes, no explanation, no markdown.
 
 Rules:
@@ -33,7 +38,7 @@ Rules:
 - Mention 1-2 specific skills or achievements if available
 - End with the value they bring to employers
 - Professional tone, active voice
-- Always write complete sentences. Never end mid-sentence.
+- Always write complete sentences — never cut off mid-sentence
 - Maximum 3 sentences. If you reach the token limit, finish the current sentence first.
 - If the user's raw notes mention a profession, use that exact profession — do not substitute a similar one (e.g. if they say 'computer engineer' do not write 'civil engineer')
 - Do NOT use: "results-driven", "passionate", "dynamic", "seasoned"
@@ -52,7 +57,7 @@ Education: ${highestEducation ?? "not provided"}`;
 
   try {
     const res = await fetch(
-      "https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent",
+      "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent",
       {
         method: "POST",
         headers: {
@@ -61,7 +66,7 @@ Education: ${highestEducation ?? "not provided"}`;
         },
         body: JSON.stringify({
           contents: [{ parts: [{ text: prompt }] }],
-          generationConfig: { maxOutputTokens: 300, temperature: 0.7 },
+          generationConfig: { maxOutputTokens: 400, temperature: 0.7 },
         }),
       }
     );

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { TextField } from "../fields/TextField";
 import { TextareaField } from "../fields/TextareaField";
 import { DynamicList } from "../fields/DynamicList";
@@ -11,23 +11,79 @@ interface BasicsStepProps {
   [key: string]: any;
 }
 
+const PROGRESS_STEPS = [
+  "Writing your summary",
+  "Building your experience",
+  "Adding your skills",
+  "Creating achievements",
+  "Finishing up",
+];
+
+const FULL_CV_LIMIT = 3;
+const SUMMARY_LIMIT = 5;
+
 export function BasicsStep({ data, onChange }: BasicsStepProps) {
   const basics = data.basics || {};
   const metrics = data.metrics || [];
   const [showOptional, setShowOptional] = useState(false);
+
+  // Summary AI state
   const [aiGenerating, setAiGenerating] = useState(false);
   const [aiSuggestion, setAiSuggestion] = useState("");
   const [aiError, setAiError] = useState("");
-  const [aiUses, setAiUses] = useState(0);
-  const AI_LIMIT = 5;
+  const [summaryUses, setSummaryUses] = useState(0);
 
+  // Full CV AI state
   const [fillGenerating, setFillGenerating] = useState(false);
   const [fillError, setFillError] = useState("");
   const [fillDone, setFillDone] = useState(false);
+  const [fillResult, setFillResult] = useState<any>(null);
+  const [fullCvUses, setFullCvUses] = useState(0);
+
+  // Progress animation state
+  const [progress, setProgress] = useState(0);
+  const [currentStep, setCurrentStep] = useState(0);
+  const progressInterval = useRef<ReturnType<typeof setInterval> | null>(null);
+  const stepInterval = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  // Cleanup intervals on unmount
+  useEffect(() => {
+    return () => {
+      if (progressInterval.current) clearInterval(progressInterval.current);
+      if (stepInterval.current) clearInterval(stepInterval.current);
+    };
+  }, []);
+
+  function startProgress() {
+    setProgress(0);
+    setCurrentStep(0);
+    progressInterval.current = setInterval(() => {
+      setProgress((p) => (p < 90 ? p + 1 : p));
+    }, 100);
+    stepInterval.current = setInterval(() => {
+      setCurrentStep((s) => (s < PROGRESS_STEPS.length - 1 ? s + 1 : s));
+    }, 1500);
+  }
+
+  function stopProgress() {
+    if (progressInterval.current) {
+      clearInterval(progressInterval.current);
+      progressInterval.current = null;
+    }
+    if (stepInterval.current) {
+      clearInterval(stepInterval.current);
+      stepInterval.current = null;
+    }
+    setProgress(100);
+    setCurrentStep(PROGRESS_STEPS.length - 1);
+  }
 
   async function generateFullCv() {
     setFillGenerating(true);
     setFillError("");
+    setFillDone(false);
+    setFillResult(null);
+    startProgress();
     try {
       const res = await fetch("/api/generate-full-cv", {
         method: "POST",
@@ -42,17 +98,24 @@ export function BasicsStep({ data, onChange }: BasicsStepProps) {
       const result = await res.json();
       if (!res.ok) throw new Error(result.error || "Failed to generate");
       const cv = result.cv;
+      stopProgress();
       onChange({
         basics: { ...basics, ...cv.basics, fullName: basics.fullName, title: basics.title, email: basics.email || cv.basics?.email },
         experience: cv.experience,
         skills: cv.skills,
+        projects: cv.projects,
         education: cv.education,
         certifications: cv.certifications,
         languages: cv.languages,
+        continuousDevelopment: cv.continuousDevelopment,
+        professionalAffiliations: cv.professionalAffiliations,
         metrics: cv.metrics,
       });
+      setFillResult(cv);
       setFillDone(true);
+      setFullCvUses((n) => n + 1);
     } catch (e: any) {
+      stopProgress();
       setFillError(e.message || "Something went wrong");
     } finally {
       setFillGenerating(false);
@@ -83,7 +146,7 @@ export function BasicsStep({ data, onChange }: BasicsStepProps) {
       const result = await res.json();
       if (!res.ok) throw new Error(result.error || "Failed to generate");
       setAiSuggestion(result.summary);
-      setAiUses((n) => n + 1);
+      setSummaryUses((n) => n + 1);
     } catch (e: any) {
       setAiError(e.message || "Something went wrong");
     } finally {
@@ -99,6 +162,8 @@ export function BasicsStep({ data, onChange }: BasicsStepProps) {
   const updateBasics = (field: string, value: string) => {
     onChange({ basics: { ...basics, [field]: value } });
   };
+
+  const canShowAi = (basics.fullName?.length > 2 && basics.title?.length > 2);
 
   return (
     <div className="space-y-6">
@@ -116,42 +181,135 @@ export function BasicsStep({ data, onChange }: BasicsStepProps) {
         <TextField label="Email" value={basics.email} onChange={(v) => updateBasics("email", v)} required type="email" placeholder="email@example.com" />
       </div>
 
-      {/* AI Summary Generator — shown after name + title are filled */}
-      {(basics.fullName?.length > 2 && basics.title?.length > 2) && (
+      {/* AI Section — only visible when name + title are filled */}
+      {canShowAi && (
         <div className="space-y-3">
-          {!aiSuggestion && (
+          {/* Progress UI during generation */}
+          {fillGenerating && (
+            <div className="rounded-xl border border-emerald-600/30 bg-emerald-600/5 p-5 space-y-4">
+              <div className="space-y-2">
+                {PROGRESS_STEPS.map((step, i) => (
+                  <div key={step} className="flex items-center gap-2.5">
+                    {i < currentStep ? (
+                      <svg className="h-4 w-4 text-emerald-600 shrink-0" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M2 6l3 3 5-5" /></svg>
+                    ) : i === currentStep ? (
+                      <span className="h-4 w-4 shrink-0 flex items-center justify-center">
+                        <span className="h-3 w-3 animate-spin rounded-full border-2 border-emerald-600 border-t-transparent" />
+                      </span>
+                    ) : (
+                      <span className="h-4 w-4 shrink-0 rounded-full border border-[var(--land-border)]" />
+                    )}
+                    <span className={`text-sm ${i <= currentStep ? "text-[var(--land-bright)]" : "text-[var(--land-muted)]"}`}>
+                      {step}
+                    </span>
+                  </div>
+                ))}
+              </div>
+              <div className="w-full h-1.5 bg-[var(--land-border)] rounded-full overflow-hidden">
+                <div
+                  className="h-full bg-emerald-600 rounded-full transition-all duration-100 ease-linear"
+                  style={{ width: `${progress}%` }}
+                />
+              </div>
+              <p className="text-xs text-[var(--land-muted)] text-center">{progress}% complete</p>
+            </div>
+          )}
+
+          {/* Success state with real counts */}
+          {fillDone && !fillGenerating && fillResult && (
+            <div className="rounded-xl border border-emerald-600/30 bg-emerald-600/5 p-5 space-y-3">
+              <p className="text-sm font-medium text-emerald-600 flex items-center gap-1.5">
+                <svg className="h-4 w-4" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M2 6l3 3 5-5" /></svg>
+                CV filled! Review each step and edit as needed.
+              </p>
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                {fillResult.experience?.length > 0 && (
+                  <div className="text-center p-2 rounded-lg bg-[var(--land-surface)]/50">
+                    <p className="text-lg font-semibold text-[var(--land-bright)]">{fillResult.experience.length}</p>
+                    <p className="text-[10px] text-[var(--land-muted)] uppercase tracking-wider">Experience</p>
+                  </div>
+                )}
+                {fillResult.skills?.length > 0 && (
+                  <div className="text-center p-2 rounded-lg bg-[var(--land-surface)]/50">
+                    <p className="text-lg font-semibold text-[var(--land-bright)]">{fillResult.skills.reduce((a: number, s: any) => a + (s.items?.length || 0), 0)}</p>
+                    <p className="text-[10px] text-[var(--land-muted)] uppercase tracking-wider">Skills</p>
+                  </div>
+                )}
+                {fillResult.education?.length > 0 && (
+                  <div className="text-center p-2 rounded-lg bg-[var(--land-surface)]/50">
+                    <p className="text-lg font-semibold text-[var(--land-bright)]">{fillResult.education.length}</p>
+                    <p className="text-[10px] text-[var(--land-muted)] uppercase tracking-wider">Education</p>
+                  </div>
+                )}
+                {fillResult.certifications?.length > 0 && (
+                  <div className="text-center p-2 rounded-lg bg-[var(--land-surface)]/50">
+                    <p className="text-lg font-semibold text-[var(--land-bright)]">{fillResult.certifications.length}</p>
+                    <p className="text-[10px] text-[var(--land-muted)] uppercase tracking-wider">Certifications</p>
+                  </div>
+                )}
+              </div>
+              {fullCvUses < FULL_CV_LIMIT && (
+                <button
+                  type="button"
+                  onClick={() => { setFillDone(false); generateFullCv(); }}
+                  disabled={fillGenerating}
+                  className="text-xs text-emerald-600/70 hover:text-emerald-600 underline underline-offset-2"
+                >
+                  Regenerate everything ({fullCvUses}/{FULL_CV_LIMIT} used)
+                </button>
+              )}
+            </div>
+          )}
+
+          {/* Primary button: Fill entire CV */}
+          {!fillDone && !fillGenerating && fullCvUses < FULL_CV_LIMIT && (
             <button
               type="button"
-              onClick={generateSummary}
-              disabled={aiGenerating || aiUses >= AI_LIMIT}
-              className="w-full flex items-center justify-between rounded-xl border border-[var(--land-accent)]/20 bg-[var(--land-accent)]/5 px-4 py-3.5 text-start transition-colors hover:bg-[var(--land-accent)]/10 disabled:opacity-40 disabled:cursor-not-allowed"
+              onClick={generateFullCv}
+              className="bg-emerald-600 hover:bg-emerald-700 text-white w-full rounded-xl py-4 font-semibold text-sm transition-colors flex items-center justify-center gap-2"
             >
-              <div>
-                <span className="text-sm font-medium text-[var(--land-accent)] flex items-center gap-1.5">
-                  {aiGenerating ? (
-                    <>
-                      <span className="h-3.5 w-3.5 animate-spin rounded-full border-2 border-[var(--land-accent)] border-t-transparent" />
-                      Writing your summary...
-                    </>
-                  ) : aiUses >= AI_LIMIT ? (
-                    <>Regenerate ({aiUses}/{AI_LIMIT} used)</>
-                  ) : aiUses > 0 ? (
-                    <>Regenerate summary</>
-                  ) : (
-                    <>
-                      <svg className="h-4 w-4" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M8 2v4M6 4h4M3 8l2 6 3-4 3 4 2-6" /></svg>
-                      Generate my CV summary
-                    </>
-                  )}
-                </span>
-                <span className="text-xs text-[var(--land-muted)] mt-0.5 block">Uses your name and title to write a professional summary</span>
-              </div>
+              <svg className="h-4 w-4" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M8 2v4M6 4h4M3 8l2 6 3-4 3 4 2-6" /></svg>
+              {fullCvUses > 0 ? `Regenerate entire CV (${fullCvUses}/${FULL_CV_LIMIT})` : "Fill my entire CV with AI"}
             </button>
           )}
 
+          {fillError && <p className="text-xs text-red-500">{fillError}</p>}
+
+          {/* Separator */}
+          {!fillGenerating && (
+            <div className="flex items-center gap-3 py-1">
+              <div className="flex-1 h-px bg-[var(--land-border)]" />
+              <span className="text-xs text-[var(--land-muted)]">&mdash; or just the summary &mdash;</span>
+              <div className="flex-1 h-px bg-[var(--land-border)]" />
+            </div>
+          )}
+
+          {/* Secondary button: Summary only */}
+          {!aiSuggestion && !fillGenerating && summaryUses < SUMMARY_LIMIT && (
+            <button
+              type="button"
+              onClick={generateSummary}
+              disabled={aiGenerating}
+              className="border-2 border-emerald-600 text-emerald-600 hover:bg-emerald-50 w-full rounded-xl py-3 font-semibold text-sm transition-colors flex items-center justify-center gap-2 disabled:opacity-40 disabled:cursor-not-allowed"
+            >
+              {aiGenerating ? (
+                <>
+                  <span className="h-3.5 w-3.5 animate-spin rounded-full border-2 border-emerald-600 border-t-transparent" />
+                  Writing your summary...
+                </>
+              ) : (
+                <>
+                  <svg className="h-4 w-4" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M8 2v4M6 4h4M3 8l2 6 3-4 3 4 2-6" /></svg>
+                  {summaryUses > 0 ? `Regenerate summary (${summaryUses}/${SUMMARY_LIMIT})` : "Generate my CV summary"}
+                </>
+              )}
+            </button>
+          )}
+
+          {/* AI Suggestion card */}
           {aiSuggestion && (
-            <div className="rounded-xl border border-[var(--land-accent)]/30 bg-[var(--land-accent)]/5 p-4">
-              <p className="text-xs font-medium text-[var(--land-accent)] mb-1 flex items-center gap-1.5">
+            <div className="rounded-xl border border-emerald-600/30 bg-emerald-600/5 p-4">
+              <p className="text-xs font-medium text-emerald-600 mb-1 flex items-center gap-1.5">
                 <svg className="h-3.5 w-3.5" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M8 2v4M6 4h4M3 8l2 6 3-4 3 4 2-6" /></svg>
                 AI Suggested
               </p>
@@ -161,18 +319,20 @@ export function BasicsStep({ data, onChange }: BasicsStepProps) {
                 <button
                   type="button"
                   onClick={acceptSuggestion}
-                  className="inline-flex items-center gap-1 rounded-lg bg-[var(--land-accent)] px-3 py-1.5 text-xs font-medium text-white hover:bg-[var(--land-accent-hover)] transition-colors"
+                  className="inline-flex items-center gap-1 rounded-lg bg-emerald-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-emerald-700 transition-colors"
                 >
                   Use this &rarr;
                 </button>
-                <button
-                  type="button"
-                  onClick={generateSummary}
-                  disabled={aiGenerating || aiUses >= AI_LIMIT}
-                  className="inline-flex items-center gap-1 rounded-lg border border-[var(--land-border)] px-3 py-1.5 text-xs text-[var(--land-body)] hover:bg-[var(--land-surface-raised)] transition-colors disabled:opacity-40"
-                >
-                  {aiGenerating ? "..." : "Try again ↺"}
-                </button>
+                {summaryUses < SUMMARY_LIMIT && (
+                  <button
+                    type="button"
+                    onClick={generateSummary}
+                    disabled={aiGenerating}
+                    className="inline-flex items-center gap-1 rounded-lg border border-[var(--land-border)] px-3 py-1.5 text-xs text-[var(--land-body)] hover:bg-[var(--land-surface-raised)] transition-colors disabled:opacity-40"
+                  >
+                    {aiGenerating ? "..." : "Try again"}
+                  </button>
+                )}
                 <button
                   type="button"
                   onClick={() => setAiSuggestion("")}
@@ -186,60 +346,12 @@ export function BasicsStep({ data, onChange }: BasicsStepProps) {
 
           {aiError && <p className="text-xs text-red-500">{aiError}</p>}
 
-          {basics.summary && !aiSuggestion && (
+          {basics.summary && !aiSuggestion && !fillGenerating && (
             <div className="rounded-lg border border-[var(--land-border)]/50 bg-[var(--land-surface)]/30 px-4 py-2.5">
               <p className="text-[10px] uppercase tracking-wider text-[var(--land-muted)] mb-1">Your CV Summary</p>
               <p className="text-xs text-[var(--land-body)] line-clamp-2">{basics.summary}</p>
             </div>
           )}
-
-          {/* Fill entire CV with AI */}
-          {!fillDone && (
-            <button
-              type="button"
-              onClick={generateFullCv}
-              disabled={fillGenerating}
-              className="w-full flex items-center justify-between rounded-xl border border-emerald-600/30 bg-emerald-600/5 px-4 py-3.5 text-start transition-colors hover:bg-emerald-600/10 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              <div>
-                <span className="text-sm font-medium text-emerald-600 flex items-center gap-1.5">
-                  {fillGenerating ? (
-                    <>
-                      <span className="h-3.5 w-3.5 animate-spin rounded-full border-2 border-emerald-600 border-t-transparent" />
-                      Filling your CV...
-                    </>
-                  ) : (
-                    <>
-                      <svg className="h-4 w-4" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M8 2v4M6 4h4M3 8l2 6 3-4 3 4 2-6" /></svg>
-                      Fill my entire CV with AI
-                    </>
-                  )}
-                </span>
-                <span className="text-xs text-[var(--land-muted)] mt-0.5 block">
-                  Generates experience, skills, education &amp; more in one click
-                </span>
-              </div>
-            </button>
-          )}
-
-          {fillDone && (
-            <div className="rounded-xl border border-emerald-600/30 bg-emerald-600/5 px-4 py-3">
-              <p className="text-sm font-medium text-emerald-600 flex items-center gap-1.5">
-                <svg className="h-4 w-4" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M2 6l3 3 5-5" /></svg>
-                CV filled! Review each step and edit as needed.
-              </p>
-              <button
-                type="button"
-                onClick={() => { setFillDone(false); generateFullCv(); }}
-                disabled={fillGenerating}
-                className="mt-2 text-xs text-emerald-600/70 hover:text-emerald-600 underline underline-offset-2"
-              >
-                Regenerate everything
-              </button>
-            </div>
-          )}
-
-          {fillError && <p className="text-xs text-red-500">{fillError}</p>}
         </div>
       )}
 

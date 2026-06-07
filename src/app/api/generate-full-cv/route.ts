@@ -23,77 +23,84 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  const userNotesSection = userNotes?.trim()
-    ? `\nAdditional context from the user (use as primary source of truth):\n${userNotes.trim()}\n`
-    : "";
+  const prompt = `CRITICAL — READ THIS FIRST:
+The user's job title is: "${professionalTitle}"
+Use this EXACT profession everywhere. Do NOT substitute or change it.
+If it contains extra words, extract the core profession.
 
-  const prompt = `You are a professional CV writer for the Gulf job market (Kuwait, Saudi Arabia, UAE).
-Generate a COMPLETE structured CV for this person as JSON.
+You are a professional CV writer for the Gulf job market (Kuwait, Saudi Arabia, UAE).
+Generate a complete, realistic CV profile. Return ONLY valid JSON.
 
-CRITICAL RULES:
-- Return ONLY valid JSON — no markdown, no backticks, no explanation
-- All text in English unless the name suggests Arabic (then note bilingual)
-- Use realistic, professional content appropriate for the Gulf market
-- If the user's notes mention a specific profession, use that EXACT profession
-- Do NOT use cliches: "results-driven", "passionate", "dynamic", "seasoned"
-- Generate 2-3 experience entries, 3-4 skill categories, 1-2 education entries
-- All dates as years (e.g. "2019", "2022")
-- Keep summary to 2-3 complete sentences
-${userNotesSection}
+Rules:
+- Use ONLY information inferable from name and title
+- Do NOT invent specific company names — use [Company Name] placeholders
+- Use [X] placeholders for specific numbers the user will replace
+- Gulf market context — Kuwait companies, Gulf work culture
+- If name appears Arabic, assume bilingual Arabic/English
+- Professional tone, complete sentences throughout
+- Experience: 2-3 entries, bullet points with action verbs and [X] placeholders
+- Skills: realistic and specific to the exact job title
+- Always write complete sentences — never cut off mid-sentence
+
 Person:
 Name: ${fullName}
 Title: ${professionalTitle}
 Location: ${location ?? "Kuwait"}
+${userNotes ? "Additional context: " + userNotes : ""}
 
 Return this EXACT JSON structure:
 {
-  "basics": {
-    "fullName": "${fullName}",
-    "title": "${professionalTitle}",
-    "subtitle": "one-line tagline",
-    "bio": "2-3 sentence professional summary",
-    "summary": "same as bio (copy it)",
-    "location": "${location ?? "Kuwait"}",
-    "email": "professional@email.com"
-  },
+  "professionalSummary": "2-3 sentence professional summary",
   "experience": [
     {
-      "title": "job title",
-      "company": "company name",
-      "startDate": "2020",
-      "endDate": "Present",
-      "description": "brief role description",
-      "highlights": ["achievement 1 with numbers", "achievement 2 with numbers"]
+      "jobTitle": "exact job title",
+      "company": "[Company Name]",
+      "location": "City, Country",
+      "startYear": "2019",
+      "endYear": "2023",
+      "isCurrent": false,
+      "description": "• Action verb + accomplishment with [X] placeholder\\n• Another bullet point"
+    }
+  ],
+  "achievements": [
+    {
+      "title": "achievement title",
+      "situation": "context",
+      "result": "measurable outcome",
+      "isFeatured": true
     }
   ],
   "skills": [
-    { "category": "Technical Skills", "items": ["skill1", "skill2", "skill3"] },
-    { "category": "Soft Skills", "items": ["skill1", "skill2"] }
+    { "category": "Technical Skills", "skills": ["skill1", "skill2"] },
+    { "category": "Soft Skills", "skills": ["skill1", "skill2"] }
   ],
   "education": [
     {
       "degree": "degree name",
-      "institution": "university name",
-      "year": "2016",
-      "description": ""
+      "institution": "university",
+      "endYear": "2018",
+      "achievements": ""
     }
   ],
   "certifications": [
     { "name": "cert name", "issuer": "issuer", "year": "2022" }
   ],
   "languages": [
-    { "name": "Arabic", "level": "Native" },
-    { "name": "English", "level": "Fluent" }
+    { "language": "Arabic", "level": "Native" },
+    { "language": "English", "level": "Fluent" }
   ],
-  "metrics": [
-    { "value": "8+", "label": "Years Experience" },
-    { "value": "20+", "label": "Projects Delivered" }
+  "courses": [
+    { "name": "course name", "provider": "provider", "year": "2023" }
+  ],
+  "endorsements": [],
+  "affiliations": [
+    { "name": "organization", "role": "Member" }
   ]
 }`;
 
   try {
     const res = await fetch(
-      "https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent",
+      "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent",
       {
         method: "POST",
         headers: {
@@ -118,12 +125,15 @@ Return this EXACT JSON structure:
     }
 
     const data = await res.json();
-    const text = data?.candidates?.[0]?.content?.parts?.[0]?.text?.trim();
+    let text = data?.candidates?.[0]?.content?.parts?.[0]?.text?.trim();
 
     if (!text) {
       console.error("Empty Gemini response:", JSON.stringify(data));
       return NextResponse.json({ error: "Empty response" }, { status: 500 });
     }
+
+    // Strip markdown fences as safety net
+    text = text.replace(/^```(?:json)?\s*\n?/i, "").replace(/\n?```\s*$/i, "");
 
     let cv: any;
     try {
@@ -133,11 +143,67 @@ Return this EXACT JSON structure:
       return NextResponse.json({ error: "AI returned invalid format" }, { status: 500 });
     }
 
-    if (!cv.basics?.fullName || !cv.basics?.title) {
-      return NextResponse.json({ error: "AI returned incomplete data" }, { status: 500 });
-    }
+    // MAP Gemini fields to Convex schema fields
+    const existingBasics = {
+      fullName,
+      title: professionalTitle,
+      email: body.email || "professional@email.com",
+    };
 
-    return NextResponse.json({ cv });
+    const mapped = {
+      basics: {
+        ...existingBasics,
+        bio: cv.professionalSummary,
+        summary: cv.professionalSummary,
+        subtitle: `${professionalTitle} in ${location ?? "Kuwait"}`,
+      },
+      experience: (cv.experience || []).map((e: any) => ({
+        title: e.jobTitle,
+        company: e.company,
+        startDate: e.startYear,
+        endDate: e.isCurrent ? "Present" : (e.endYear || ""),
+        description: e.description,
+        highlights: e.description?.split("\n").filter((l: string) => l.startsWith("•")).map((l: string) => l.replace(/^•\s*/, "")) || [],
+      })),
+      skills: (cv.skills || []).map((s: any) => ({ category: s.category, items: s.skills || s.items || [] })),
+      projects: (cv.achievements || []).map((a: any) => ({
+        title: a.title,
+        description: a.situation || a.description || "",
+        technologies: [],
+        metrics: a.result ? [{ value: a.result, label: "Result" }] : [],
+        isFeatured: a.isFeatured ?? false,
+      })),
+      education: (cv.education || []).map((e: any) => ({
+        degree: e.degree,
+        institution: e.institution,
+        year: e.endYear || e.year || "",
+        description: e.achievements || "",
+      })),
+      certifications: (cv.certifications || []).map((c: any) => ({
+        name: c.name,
+        issuer: c.issuer,
+        year: c.year || "",
+      })),
+      languages: (cv.languages || []).map((l: any) => ({
+        name: l.language || l.name,
+        level: l.level,
+      })),
+      continuousDevelopment: (cv.courses || []).map((c: any) => ({
+        name: c.name,
+        provider: c.provider || "",
+        year: c.year || "",
+      })),
+      professionalAffiliations: (cv.affiliations || []).map((a: any) => ({
+        name: a.name || a.organization || "",
+        role: a.role || "",
+      })),
+      metrics: [
+        { value: String(cv.experience?.length || 0) + "+", label: "Years Experience" },
+        { value: String((cv.skills || []).flatMap((s: any) => s.skills || []).length), label: "Skills" },
+      ],
+    };
+
+    return NextResponse.json({ cv: mapped });
   } catch (e: any) {
     console.error("Gemini fetch error:", e.message);
     return NextResponse.json({ error: "Connection error" }, { status: 500 });
