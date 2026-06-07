@@ -651,7 +651,19 @@ a { text-decoration: none; color: inherit; }
 .endorsement-author {
     border-top: 1px solid var(--border);
     padding-top: 14px;
+    display: flex; align-items: center; gap: 12px;
 }
+.endorsement-avatar {
+    flex-shrink: 0;
+    width: 42px; height: 42px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    background: linear-gradient(135deg, var(--gold-warm), var(--gold));
+    color: #fff; font-weight: 700; letter-spacing: 0.02em;
+    font-size: 0.82rem; line-height: 1;
+    text-transform: uppercase; user-select: none;
+}
+.endorsement-author-meta { min-width: 0; }
 .endorsement-name {
     font-size: 0.82rem; font-weight: 600; color: var(--navy);
 }
@@ -971,7 +983,11 @@ footer a:hover { border-color: var(--gold-warm); }
     .endorsement-text { font-size: 7.5pt; line-height: 1.5; margin-bottom: 8px; }
     .endorsement-name { font-size: 7pt; }
     .endorsement-role { font-size: 6.5pt; }
-    .endorsement-author { padding-top: 6px; }
+    .endorsement-author { padding-top: 6px; gap: 7px; }
+    .endorsement-avatar {
+        width: 22px; height: 22px; font-size: 6.5pt;
+        -webkit-print-color-adjust: exact; print-color-adjust: exact;
+    }
 
     /* Contact section */
     .contact {
@@ -1447,8 +1463,11 @@ footer a:hover { border-color: var(--gold-warm); }
                 <div class="endorsement-quote-mark">&ldquo;</div>
                 <p class="endorsement-text">{{this.quote}}</p>
                 <div class="endorsement-author">
-                    <div class="endorsement-name">{{this.name}}</div>
-                    <div class="endorsement-role">{{this.title}}{{#if this.company}}, {{this.company}}{{/if}}</div>
+                    <div class="endorsement-avatar" aria-label="{{this.name}}">{{initials this.name}}</div>
+                    <div class="endorsement-author-meta">
+                        <div class="endorsement-name">{{this.name}}</div>
+                        <div class="endorsement-role">{{this.title}}{{#if this.company}}, {{this.company}}{{/if}}</div>
+                    </div>
                 </div>
             </div>
             {{/each}}
