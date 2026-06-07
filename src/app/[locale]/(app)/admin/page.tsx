@@ -7,10 +7,11 @@ import { Id } from "@convex/_generated/dataModel";
 import { useState, useMemo, useEffect, Component, type ReactNode } from "react";
 import { Link } from "@/i18n/navigation";
 import { ADMIN_EMAILS } from "@/lib/admin";
+import { useSearchParams, useRouter } from "next/navigation";
 
 const TEST_EMAILS = ["test@trimindai.com", "trimindai@trimindai.com"];
 
-type Tab = "users" | "portfolios" | "payments";
+type Tab = "overview" | "users" | "portfolios" | "payments" | "funnel" | "settings";
 
 function relativeTime(ms: number): string {
   const diff = Date.now() - ms;
@@ -56,8 +57,18 @@ export default function AdminPage() {
 
 function AdminPageInner() {
   const { user, isLoaded } = useUser();
-  const [activeTab, setActiveTab] = useState<Tab>("users");
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const activeTab = (searchParams.get("tab") as Tab) || "overview";
+  const setActiveTab = (tab: Tab) => {
+    const params = new URLSearchParams(searchParams.toString());
+    params.set("tab", tab);
+    router.push(`?${params.toString()}`, { scroll: false });
+  };
+
   const [hideTestAccounts, setHideTestAccounts] = useState(true);
+  const [reconciling, setReconciling] = useState(false);
+  const [reconcileResult, setReconcileResult] = useState<any>(null);
 
   const email = user?.primaryEmailAddress?.emailAddress;
   const isAdmin = !!email && ADMIN_EMAILS.includes(email);
@@ -66,6 +77,20 @@ function AdminPageInner() {
   const users = useQuery(api.admin.getAllUsers, isAdmin ? {} : "skip");
   const portfolios = useQuery(api.admin.getAllPortfolios, isAdmin ? {} : "skip");
   const payments = useQuery(api.admin.getAllPayments, isAdmin ? {} : "skip");
+
+  async function reconcileAll() {
+    setReconciling(true);
+    setReconcileResult(null);
+    try {
+      const res = await fetch("/api/admin/reconcile", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({}) });
+      const data = await res.json();
+      setReconcileResult(data);
+    } catch (e: any) {
+      setReconcileResult({ error: e.message });
+    } finally {
+      setReconciling(false);
+    }
+  }
 
   if (!isLoaded) {
     return (
@@ -96,9 +121,12 @@ function AdminPageInner() {
   const pendingPaymentsCount = stats?.pendingPayments ?? 0;
 
   const tabs: { id: Tab; label: string; count?: number }[] = [
+    { id: "overview", label: "Overview" },
     { id: "users", label: "Users", count: totalUsers },
     { id: "portfolios", label: "Portfolios", count: stats?.totalPortfolios },
     { id: "payments", label: "Payments", count: pendingPaymentsCount > 0 ? pendingPaymentsCount : undefined },
+    { id: "funnel", label: "Funnel" },
+    { id: "settings", label: "Settings" },
   ];
 
   // Build wizard funnel data
@@ -138,109 +166,7 @@ function AdminPageInner() {
             <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Admin Dashboard</h1>
             <p className="text-gray-500 text-sm mt-1">Manage users, portfolios, and payments</p>
           </div>
-          <label className="flex items-center gap-2 text-xs text-gray-500 cursor-pointer">
-            <input
-              type="checkbox"
-              checked={hideTestAccounts}
-              onChange={(e) => setHideTestAccounts(e.target.checked)}
-              className="rounded border-gray-300 text-emerald-600 focus:ring-emerald-500"
-            />
-            Hide test accounts
-          </label>
         </div>
-
-        {/* Stats Cards — 6 cards in 2x3 grid */}
-        {stats ? (
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4 mb-6">
-            {/* Card 1: Revenue */}
-            <div className="bg-white rounded-xl border border-gray-200 p-4">
-              <p className="text-2xl font-bold text-emerald-700">{stats.totalRevenue.toFixed(3)} KD</p>
-              <p className="text-gray-500 text-sm">Revenue</p>
-              <p className="text-xs text-amber-600 mt-0.5">{stats.pendingRevenue.toFixed(3)} KD pending</p>
-            </div>
-            {/* Card 2: Conversion */}
-            <div className="bg-white rounded-xl border border-gray-200 p-4">
-              <p className="text-2xl font-bold text-emerald-700">{stats.conversionRate}%</p>
-              <p className="text-gray-500 text-sm">Conversion</p>
-              <p className="text-xs text-gray-400 mt-0.5">signup → paid</p>
-            </div>
-            {/* Card 3: Users */}
-            <div className="bg-white rounded-xl border border-gray-200 p-4">
-              <p className="text-2xl font-bold text-gray-900">{stats.totalUsers}</p>
-              <p className="text-gray-500 text-sm">Users</p>
-              <p className="text-xs text-gray-400 mt-0.5">{stats.newUsersThisWeek} new this week</p>
-            </div>
-            {/* Card 4: Portfolios */}
-            <div className="bg-white rounded-xl border border-gray-200 p-4">
-              <p className="text-2xl font-bold text-gray-900">{stats.totalPortfolios}</p>
-              <p className="text-gray-500 text-sm">Portfolios</p>
-              <p className="text-xs text-gray-400 mt-0.5">{stats.publishedCount} live · {stats.abandonedPortfolios} abandoned</p>
-            </div>
-            {/* Card 5: Payments */}
-            <div className="bg-white rounded-xl border border-gray-200 p-4">
-              <p className="text-2xl font-bold text-gray-900">{stats.completedPayments}</p>
-              <p className="text-gray-500 text-sm">Payments</p>
-              <p className="text-xs text-gray-400 mt-0.5">{stats.completedPayments} paid / {stats.pendingPayments} pending / {stats.failedPayments} failed</p>
-            </div>
-            {/* Card 6: Avg/User */}
-            <div className="bg-white rounded-xl border border-gray-200 p-4">
-              <div className="flex items-center gap-2">
-                <p className="text-2xl font-bold text-gray-900">{stats.avgPortfoliosPerUser}</p>
-                {stats.avgPortfoliosPerUser > 5 && (
-                  <span className="px-2 py-0.5 rounded-full text-[10px] font-medium bg-red-100 text-red-700">High — possible test data</span>
-                )}
-              </div>
-              <p className="text-gray-500 text-sm">Avg/User</p>
-            </div>
-          </div>
-        ) : (
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4 mb-6">
-            {[1, 2, 3, 4, 5, 6].map((i) => (
-              <div key={i} className="bg-white rounded-xl border border-gray-200 p-4 animate-pulse">
-                <div className="h-7 w-16 bg-gray-100 rounded mb-2" />
-                <div className="h-4 w-20 bg-gray-100 rounded" />
-              </div>
-            ))}
-          </div>
-        )}
-
-        {/* Wizard Funnel */}
-        {funnelData && (
-          <div className="bg-white rounded-xl border border-gray-200 p-5 mb-6">
-            <h2 className="text-sm font-semibold text-gray-900 mb-4">Wizard Funnel</h2>
-            <div className="space-y-2">
-              {funnelData.map((d, i) => (
-                <div key={i} className="flex items-center gap-3">
-                  <span className="text-xs text-gray-500 w-24 shrink-0 text-right">{d.label}</span>
-                  <div className="flex-1 h-6 bg-gray-100 rounded-md overflow-hidden">
-                    <div
-                      className={`h-full rounded-md transition-all ${i === 9 ? "bg-emerald-500" : i === 8 ? "bg-amber-400" : "bg-gray-300"}`}
-                      style={{ width: `${(d.count / maxFunnelCount) * 100}%` }}
-                    />
-                  </div>
-                  <span className="text-xs font-medium text-gray-700 w-8">{d.count}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* Pending payments alert */}
-        {pendingPaymentsCount > 0 && stats && (
-          <button
-            onClick={() => setActiveTab("payments")}
-            className="w-full flex items-center justify-between gap-3 bg-amber-50 border border-amber-200 rounded-xl px-4 py-3 mb-6 hover:bg-amber-100 transition-colors text-left"
-          >
-            <div className="flex items-center gap-3">
-              <span className="flex h-8 w-8 items-center justify-center rounded-full bg-amber-100 text-amber-600 font-bold text-sm">{pendingPaymentsCount}</span>
-              <div>
-                <p className="text-sm font-medium text-amber-800">{pendingPaymentsCount} pending — {stats.pendingRevenue.toFixed(3)} KD potential recovery</p>
-                <p className="text-xs text-amber-600">Review stuck payments now</p>
-              </div>
-            </div>
-            <span className="text-amber-600 text-sm font-medium">View &rarr;</span>
-          </button>
-        )}
 
         {/* Tabs */}
         <div className="flex gap-2 mb-6 overflow-x-auto">
@@ -265,13 +191,335 @@ function AdminPageInner() {
         </div>
 
         {/* Tab Content */}
+        {activeTab === "overview" && (
+          <>
+            <QuickActions
+              onReconcile={reconcileAll}
+              reconciling={reconciling}
+              hideTestAccounts={hideTestAccounts}
+              setHideTestAccounts={setHideTestAccounts}
+              users={users ?? []}
+              portfolios={portfolios ?? []}
+              payments={payments ?? []}
+            />
+
+            {/* Stats Cards */}
+            {stats ? (
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4 mb-6">
+                <div className="bg-white rounded-xl border border-gray-200 p-4">
+                  <p className="text-2xl font-bold text-emerald-700">{stats.totalRevenue.toFixed(3)} KD</p>
+                  <p className="text-gray-500 text-sm">Revenue</p>
+                  <p className="text-xs text-amber-600 mt-0.5">{stats.pendingRevenue.toFixed(3)} KD pending</p>
+                </div>
+                <div className="bg-white rounded-xl border border-gray-200 p-4">
+                  <p className="text-2xl font-bold text-emerald-700">{stats.conversionRate}%</p>
+                  <p className="text-gray-500 text-sm">Conversion</p>
+                  <p className="text-xs text-gray-400 mt-0.5">signup &rarr; paid</p>
+                </div>
+                <div className="bg-white rounded-xl border border-gray-200 p-4">
+                  <p className="text-2xl font-bold text-gray-900">{stats.totalUsers}</p>
+                  <p className="text-gray-500 text-sm">Users</p>
+                  <p className="text-xs text-gray-400 mt-0.5">{stats.newUsersThisWeek} new this week</p>
+                </div>
+                <div className="bg-white rounded-xl border border-gray-200 p-4">
+                  <p className="text-2xl font-bold text-gray-900">{stats.totalPortfolios}</p>
+                  <p className="text-gray-500 text-sm">Portfolios</p>
+                  <p className="text-xs text-gray-400 mt-0.5">{stats.publishedCount} live &middot; {stats.abandonedPortfolios} abandoned</p>
+                </div>
+                <div className="bg-white rounded-xl border border-gray-200 p-4">
+                  <p className="text-2xl font-bold text-gray-900">{stats.completedPayments}</p>
+                  <p className="text-gray-500 text-sm">Payments</p>
+                  <p className="text-xs text-gray-400 mt-0.5">{stats.completedPayments} paid / {stats.pendingPayments} pending / {stats.failedPayments} failed</p>
+                </div>
+                <div className="bg-white rounded-xl border border-gray-200 p-4">
+                  <div className="flex items-center gap-2">
+                    <p className="text-2xl font-bold text-gray-900">{stats.avgPortfoliosPerUser}</p>
+                    {stats.avgPortfoliosPerUser > 5 && (
+                      <span className="px-2 py-0.5 rounded-full text-[10px] font-medium bg-red-100 text-red-700">High — possible test data</span>
+                    )}
+                  </div>
+                  <p className="text-gray-500 text-sm">Avg/User</p>
+                </div>
+              </div>
+            ) : (
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4 mb-6">
+                {[1, 2, 3, 4, 5, 6].map((i) => (
+                  <div key={i} className="bg-white rounded-xl border border-gray-200 p-4 animate-pulse">
+                    <div className="h-7 w-16 bg-gray-100 rounded mb-2" />
+                    <div className="h-4 w-20 bg-gray-100 rounded" />
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {/* Wizard Funnel */}
+            {funnelData && (
+              <div className="bg-white rounded-xl border border-gray-200 p-5 mb-6">
+                <h2 className="text-sm font-semibold text-gray-900 mb-4">Wizard Funnel</h2>
+                <div className="space-y-2">
+                  {funnelData.map((d, i) => (
+                    <div key={i} className="flex items-center gap-3">
+                      <span className="text-xs text-gray-500 w-24 shrink-0 text-right">{d.label}</span>
+                      <div className="flex-1 h-6 bg-gray-100 rounded-md overflow-hidden">
+                        <div
+                          className={`h-full rounded-md transition-all ${i === 9 ? "bg-emerald-500" : i === 8 ? "bg-amber-400" : "bg-gray-300"}`}
+                          style={{ width: `${(d.count / maxFunnelCount) * 100}%` }}
+                        />
+                      </div>
+                      <span className="text-xs font-medium text-gray-700 w-8">{d.count}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Revenue Chart */}
+            {stats && <RevenueChart revenueByDay={(stats as any).revenueByDay ?? {}} />}
+
+            {/* Duplicates Warning */}
+            <DuplicatesWarning portfolios={portfolios ?? []} users={users ?? []} />
+
+            {/* Pending payments alert */}
+            {pendingPaymentsCount > 0 && stats && (
+              <button
+                onClick={() => setActiveTab("payments")}
+                className="w-full flex items-center justify-between gap-3 bg-amber-50 border border-amber-200 rounded-xl px-4 py-3 mb-6 hover:bg-amber-100 transition-colors text-left"
+              >
+                <div className="flex items-center gap-3">
+                  <span className="flex h-8 w-8 items-center justify-center rounded-full bg-amber-100 text-amber-600 font-bold text-sm">{pendingPaymentsCount}</span>
+                  <div>
+                    <p className="text-sm font-medium text-amber-800">{pendingPaymentsCount} pending — {stats.pendingRevenue.toFixed(3)} KD potential recovery</p>
+                    <p className="text-xs text-amber-600">Review stuck payments now</p>
+                  </div>
+                </div>
+                <span className="text-amber-600 text-sm font-medium">View &rarr;</span>
+              </button>
+            )}
+
+            {/* Reconcile result */}
+            {reconcileResult && (
+              <div className={`mb-4 rounded-xl border px-4 py-3 text-sm ${reconcileResult.error ? "border-red-200 bg-red-50 text-red-800" : "border-emerald-200 bg-emerald-50 text-emerald-800"}`}>
+                {reconcileResult.error ? (
+                  <p>Error: {reconcileResult.error}</p>
+                ) : (
+                  <div className="flex items-center justify-between">
+                    <p>
+                      <span className="font-semibold">{reconcileResult.summary.recovered}</span> recovered,{" "}
+                      <span className="font-semibold">{reconcileResult.summary.failed}</span> failed,{" "}
+                      <span className="font-semibold">{reconcileResult.summary.stillPending}</span> still pending
+                      {reconcileResult.summary.errors > 0 && <>, <span className="font-semibold text-red-600">{reconcileResult.summary.errors}</span> errors</>}
+                    </p>
+                    <button onClick={() => setReconcileResult(null)} className="text-xs text-emerald-600 hover:underline">Dismiss</button>
+                  </div>
+                )}
+              </div>
+            )}
+          </>
+        )}
+
         {activeTab === "users" && (realUsers.length > 0 ? <UsersTab users={realUsers} /> : <EmptyState label="No users found" />)}
         {activeTab === "portfolios" && (portfolios && users ? <PortfoliosTab portfolios={portfolios} users={users} /> : <EmptyState label="Loading..." />)}
-        {activeTab === "payments" && (payments && users ? <PaymentsTab payments={payments} users={users} portfolios={portfolios ?? []} /> : <EmptyState label="Loading..." />)}
+        {activeTab === "payments" && (payments && users ? <PaymentsTab payments={payments} users={users} portfolios={portfolios ?? []} reconcileAll={reconcileAll} reconciling={reconciling} reconcileResult={reconcileResult} setReconcileResult={setReconcileResult} /> : <EmptyState label="Loading..." />)}
+
+        {activeTab === "funnel" && funnelData && (
+          <div className="bg-white rounded-xl border border-gray-200 p-5">
+            <h2 className="text-lg font-semibold text-gray-900 mb-6">Wizard Funnel — Full View</h2>
+            <div className="space-y-3">
+              {funnelData.map((d, i) => (
+                <div key={i} className="flex items-center gap-3">
+                  <span className="text-sm text-gray-600 w-28 shrink-0 text-right">{d.label}</span>
+                  <div className="flex-1 h-8 bg-gray-100 rounded-md overflow-hidden">
+                    <div className={`h-full rounded-md ${i === 9 ? "bg-emerald-500" : i === 8 ? "bg-amber-400" : "bg-gray-300"}`} style={{ width: `${(d.count / maxFunnelCount) * 100}%` }} />
+                  </div>
+                  <span className="text-sm font-semibold text-gray-700 w-10">{d.count}</span>
+                  {i > 0 && funnelData[i - 1].count > 0 && (
+                    <span className="text-xs text-red-500 w-12">-{Math.round((1 - d.count / funnelData[i - 1].count) * 100)}%</span>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {activeTab === "settings" && (
+          <div className="bg-white rounded-xl border border-gray-200 p-6 max-w-md">
+            <h2 className="text-lg font-semibold text-gray-900 mb-4">Settings</h2>
+            <label className="flex items-center gap-3 cursor-pointer">
+              <input type="checkbox" checked={hideTestAccounts} onChange={(e) => setHideTestAccounts(e.target.checked)} className="rounded border-gray-300 text-emerald-600 focus:ring-emerald-500" />
+              <div>
+                <p className="text-sm font-medium text-gray-900">Hide test accounts</p>
+                <p className="text-xs text-gray-500">Excludes test@trimindai.com and trimindai@trimindai.com from stats and lists</p>
+              </div>
+            </label>
+          </div>
+        )}
       </main>
     </div>
   );
 }
+
+// ─── Quick Actions ─────────────────────────────────────────────────────────
+
+function QuickActions({ onReconcile, reconciling, hideTestAccounts, setHideTestAccounts, users, portfolios, payments }: any) {
+  const [csvDropdown, setCsvDropdown] = useState(false);
+
+  function downloadCSV(type: "users" | "portfolios" | "payments") {
+    let csv = "";
+    if (type === "payments") {
+      csv = "name,email,amount,status,date,payment_ref,portfolio_id\n";
+      csv += payments.map((p: any) => {
+        const u = users.find((u: any) => u._id === p.userId);
+        return `"${u?.name || ""}","${u?.email || ""}",${p.amount},${p.status},${new Date(p.createdAt).toISOString()},${p.myfatoorahInvoiceId || ""},${p.portfolioId}`;
+      }).join("\n");
+    } else if (type === "users") {
+      csv = "name,email,join_date,portfolio_count,last_active\n";
+      csv += users.map((u: any) => {
+        const count = portfolios.filter((p: any) => p.userId === u._id).length;
+        const lastP = portfolios.filter((p: any) => p.userId === u._id).sort((a: any, b: any) => b.lastEditedAt - a.lastEditedAt)[0];
+        return `"${u.name || ""}","${u.email}",${new Date(u.createdAt).toISOString()},${count},${lastP ? new Date(lastP.lastEditedAt).toISOString() : ""}`;
+      }).join("\n");
+    } else {
+      csv = "name,email,template,status,step,last_active,slug\n";
+      csv += portfolios.map((p: any) => {
+        const u = users.find((u: any) => u._id === p.userId);
+        return `"${p.basics?.fullName || ""}","${u?.email || ""}",${p.templateId},${p.status},${p.lastCompletedStep ?? 0},${new Date(p.lastEditedAt).toISOString()},${p.slug || ""}`;
+      }).join("\n");
+    }
+    const blob = new Blob([csv], { type: "text/csv" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `portfolio-pro-${type}-${new Date().toISOString().slice(0, 10)}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+    setCsvDropdown(false);
+  }
+
+  function sendAbandonedReminder() {
+    const cutoff = Date.now() - 48 * 60 * 60 * 1000;
+    const abandoned = portfolios.filter((p: any) => p.status === "draft" && p.lastEditedAt < cutoff);
+    const emails = [...new Set(abandoned.map((p: any) => users.find((u: any) => u._id === p.userId)?.email).filter(Boolean))] as string[];
+    if (emails.length === 0) { alert("No abandoned users to remind."); return; }
+    window.open(`mailto:?bcc=${emails.join(",")}&subject=${encodeURIComponent("Your Portfolio Pro draft is waiting")}&body=${encodeURIComponent("Hi! Your professional portfolio is almost ready. Come back to finish it: https://portfolio-trimind.com/en/dashboard")}`);
+  }
+
+  return (
+    <div className="flex flex-wrap items-center gap-2 mb-6 p-3 bg-white rounded-xl border border-gray-200">
+      <button onClick={onReconcile} disabled={reconciling} className="px-3 py-1.5 rounded-lg text-xs font-medium bg-amber-50 text-amber-700 hover:bg-amber-100 disabled:opacity-50">
+        {reconciling ? "Checking..." : "Re-check pending"}
+      </button>
+      <div className="relative">
+        <button onClick={() => setCsvDropdown(!csvDropdown)} className="px-3 py-1.5 rounded-lg text-xs font-medium bg-gray-100 text-gray-700 hover:bg-gray-200">
+          Export CSV &#9662;
+        </button>
+        {csvDropdown && (
+          <div className="absolute top-full left-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg z-10 py-1 min-w-[120px]">
+            <button onClick={() => downloadCSV("users")} className="block w-full text-left px-3 py-1.5 text-xs text-gray-700 hover:bg-gray-50">Users</button>
+            <button onClick={() => downloadCSV("portfolios")} className="block w-full text-left px-3 py-1.5 text-xs text-gray-700 hover:bg-gray-50">Portfolios</button>
+            <button onClick={() => downloadCSV("payments")} className="block w-full text-left px-3 py-1.5 text-xs text-gray-700 hover:bg-gray-50">Payments</button>
+          </div>
+        )}
+      </div>
+      <button onClick={sendAbandonedReminder} className="px-3 py-1.5 rounded-lg text-xs font-medium bg-gray-100 text-gray-700 hover:bg-gray-200">
+        Remind abandoned
+      </button>
+      <label className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs text-gray-600 bg-gray-50 cursor-pointer ml-auto">
+        <input type="checkbox" checked={hideTestAccounts} onChange={(e) => setHideTestAccounts(e.target.checked)} className="rounded border-gray-300 text-emerald-600 focus:ring-emerald-500 h-3 w-3" />
+        Hide tests
+      </label>
+    </div>
+  );
+}
+
+// ─── Revenue Chart ─────────────────────────────────────────────────────────
+
+function RevenueChart({ revenueByDay }: { revenueByDay: Record<string, number> }) {
+  const days: { date: string; amount: number }[] = [];
+  const now = new Date();
+  for (let i = 29; i >= 0; i--) {
+    const d = new Date(now);
+    d.setDate(d.getDate() - i);
+    const key = d.toISOString().split("T")[0];
+    days.push({ date: key, amount: revenueByDay[key] || 0 });
+  }
+  const maxAmount = Math.max(...days.map(d => d.amount), 0.001);
+
+  return (
+    <div className="bg-white rounded-xl border border-gray-200 p-5 mb-6">
+      <h2 className="text-sm font-semibold text-gray-900 mb-1">Revenue (last 30 days)</h2>
+      <p className="text-xs text-gray-400 mb-4">Confirmed only — excludes pending</p>
+      <div className="flex items-end gap-[2px] h-32">
+        {days.map((d) => (
+          <div key={d.date} className="flex-1 flex flex-col items-center justify-end h-full group relative">
+            <div
+              className="w-full bg-emerald-400 rounded-t-sm min-h-[2px] transition-all hover:bg-emerald-500"
+              style={{ height: `${Math.max((d.amount / maxAmount) * 100, 2)}%` }}
+            />
+            <div className="absolute -top-8 left-1/2 -translate-x-1/2 hidden group-hover:block bg-gray-900 text-white text-[10px] px-2 py-1 rounded whitespace-nowrap">
+              {d.date.slice(5)}: {d.amount.toFixed(3)} KD
+            </div>
+          </div>
+        ))}
+      </div>
+      <div className="flex justify-between mt-2 text-[10px] text-gray-400">
+        <span>{days[0]?.date.slice(5)}</span>
+        <span>{days[days.length - 1]?.date.slice(5)}</span>
+      </div>
+    </div>
+  );
+}
+
+// ─── Duplicates Warning ────────────────────────────────────────────────────
+
+function DuplicatesWarning({ portfolios, users }: { portfolios: any[]; users: any[] }) {
+  const duplicates = useMemo(() => {
+    const byUser: Record<string, any[]> = {};
+    portfolios.forEach(p => {
+      if (p.userId) {
+        if (!byUser[p.userId]) byUser[p.userId] = [];
+        byUser[p.userId].push(p);
+      }
+    });
+    return Object.entries(byUser)
+      .filter(([_, ps]) => {
+        if (ps.length < 2) return false;
+        const days = ps.map(p => new Date(p.createdAt).toDateString());
+        return days.length !== new Set(days).size;
+      })
+      .map(([userId, ps]) => ({
+        user: users.find(u => u._id === userId),
+        portfolios: ps,
+      }))
+      .filter(d => d.user);
+  }, [portfolios, users]);
+
+  if (duplicates.length === 0) return null;
+
+  return (
+    <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 mb-6">
+      <h3 className="text-sm font-semibold text-amber-800 mb-2">Duplicate portfolios detected</h3>
+      <div className="space-y-2">
+        {duplicates.map((d, i) => (
+          <div key={i} className="flex items-center justify-between text-xs">
+            <span className="text-amber-700">{d.user.name || d.user.email} — {d.portfolios.length} portfolios ({d.portfolios.filter((p: any) => p.status === "draft").length} drafts)</span>
+            <button
+              onClick={() => {
+                const ref = d.portfolios.find((p: any) => p.paymentId)?.paymentId;
+                if (ref) { navigator.clipboard.writeText(ref); alert(`Copied: ${ref}`); }
+                else alert("No payment ref found for this user's portfolios.");
+              }}
+              className="px-2 py-1 rounded text-[10px] font-medium bg-amber-100 text-amber-700 hover:bg-amber-200"
+            >
+              Copy payment ref
+            </button>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// ─── Empty State ───────────────────────────────────────────────────────────
 
 function EmptyState({ label }: { label: string }) {
   return (
@@ -454,6 +702,7 @@ function PortfoliosTab({ portfolios, users }: { portfolios: any[]; users: any[] 
   const [searchInput, setSearchInput] = useState("");
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
+  const [sortBy, setSortBy] = useState<"newest" | "oldest" | "active" | "step">("newest");
   const [page, setPage] = useState(1);
   const LIMIT = 20;
 
@@ -474,11 +723,26 @@ function PortfoliosTab({ portfolios, users }: { portfolios: any[]; users: any[] 
     if (statusFilter === "abandoned") {
       const cutoff = Date.now() - 48 * 60 * 60 * 1000;
       result = result.filter((p) => p.status === "draft" && p.lastEditedAt < cutoff);
+    } else if (statusFilter === "pending_payment") {
+      result = result.filter((p) => p.status === "draft");
+    } else if (statusFilter === "has_url") {
+      result = result.filter((p) => !!p.slug);
     } else if (statusFilter !== "all") {
       result = result.filter((p) => p.status === statusFilter);
     }
-    return result;
-  }, [portfolios, search, statusFilter, userMap]);
+
+    // Sort
+    const sorted = [...result].sort((a, b) => {
+      switch (sortBy) {
+        case "oldest": return a.createdAt - b.createdAt;
+        case "active": return b.lastEditedAt - a.lastEditedAt;
+        case "step": return (b.lastCompletedStep ?? 0) - (a.lastCompletedStep ?? 0);
+        default: return b.createdAt - a.createdAt;
+      }
+    });
+
+    return sorted;
+  }, [portfolios, search, statusFilter, sortBy, userMap]);
 
   const totalPages = Math.max(1, Math.ceil(filtered.length / LIMIT));
   const paged = filtered.slice((page - 1) * LIMIT, page * LIMIT);
@@ -493,6 +757,14 @@ function PortfoliosTab({ portfolios, users }: { portfolios: any[]; users: any[] 
           <option value="paid">Paid</option>
           <option value="published">Published</option>
           <option value="abandoned">Abandoned (&gt;48h)</option>
+          <option value="pending_payment">Pending payment</option>
+          <option value="has_url">Has live URL</option>
+        </select>
+        <select value={sortBy} onChange={(e) => setSortBy(e.target.value as any)} className="px-4 py-2.5 border border-gray-200 rounded-xl text-sm bg-white text-gray-900">
+          <option value="newest">Newest first</option>
+          <option value="oldest">Oldest first</option>
+          <option value="active">Last active</option>
+          <option value="step">By step reached</option>
         </select>
       </div>
 
@@ -604,7 +876,7 @@ function PortfolioActions({ p, confirmDelete, setConfirmDelete, markPaid, delete
 
 // ─── Payments Tab ───────────────────────────────────────────────────────────
 
-function PaymentsTab({ payments, users, portfolios }: { payments: any[]; users: any[]; portfolios: any[] }) {
+function PaymentsTab({ payments, users, portfolios, reconcileAll, reconciling, reconcileResult, setReconcileResult }: { payments: any[]; users: any[]; portfolios: any[]; reconcileAll: () => void; reconciling: boolean; reconcileResult: any; setReconcileResult: (v: any) => void }) {
   const userMap = new Map(users.map((u) => [u._id, u]));
   const portfolioMap = new Map(portfolios.map((p) => [p._id, p]));
   const [searchInput, setSearchInput] = useState("");
@@ -612,23 +884,7 @@ function PaymentsTab({ payments, users, portfolios }: { payments: any[]; users: 
   const [statusFilter, setStatusFilter] = useState("all");
   const [page, setPage] = useState(1);
   const LIMIT = 20;
-  const [reconciling, setReconciling] = useState(false);
   const [recheckingId, setRecheckingId] = useState<string | null>(null);
-  const [reconcileResult, setReconcileResult] = useState<any>(null);
-
-  async function reconcileAll() {
-    setReconciling(true);
-    setReconcileResult(null);
-    try {
-      const res = await fetch("/api/admin/reconcile", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({}) });
-      const data = await res.json();
-      setReconcileResult(data);
-    } catch (e: any) {
-      setReconcileResult({ error: e.message });
-    } finally {
-      setReconciling(false);
-    }
-  }
 
   async function recheckOne(paymentDocId: string) {
     setRecheckingId(paymentDocId);
@@ -785,10 +1041,11 @@ function StatusBadge({ status }: { status: string }) {
   const styles: Record<string, string> = {
     published: "bg-emerald-50 text-emerald-700",
     completed: "bg-emerald-50 text-emerald-700",
-    paid: "bg-amber-50 text-amber-700",
+    paid: "bg-emerald-50 text-emerald-700",
     pending: "bg-amber-50 text-amber-700",
     draft: "bg-gray-100 text-gray-600",
     failed: "bg-red-50 text-red-700",
+    expired: "bg-red-50 text-red-700",
   };
   return <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${styles[status] || styles.draft}`}>{status}</span>;
 }
