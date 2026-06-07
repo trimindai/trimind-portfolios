@@ -61,11 +61,11 @@ export function TryItForm({ locale }: { locale: string }) {
             onClick={handleStart}
             className="w-full rounded-xl bg-emerald-600 py-3.5 text-sm font-bold text-white hover:bg-emerald-700 transition-colors active:scale-[0.98] shadow-sm shadow-emerald-600/20"
           >
-            {isRTL ? "✨ ابنِ سيرتي بالذكاء الاصطناعي ←" : "✨ Build My CV with AI →"}
+            {isRTL ? "احصل على سيرتي الاحترافية ←" : "Get My Professional CV →"}
           </button>
         </div>
         <p className="mt-3 text-xs text-[var(--land-muted)] text-center">
-          {isRTL ? "بدون بطاقة · ادفع 4.9 د.ك فقط لما ملف PDF جاهز" : "No card needed · Pay 4.9 KD only when your PDF is ready"}
+          {isRTL ? "مجاني للبناء · ادفع 4.9 د.ك فقط لما تعجبك النتيجة" : "Free to build · Pay 4.9 KD only when you love it"}
         </p>
         <p className="mt-2 text-xs text-center">
           <Link href="/sign-in" className="text-[var(--land-body)] hover:text-[var(--land-accent)] transition-colors">

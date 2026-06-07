@@ -199,22 +199,22 @@ export default async function LandingPage({
         <div className="relative z-10 mx-auto w-full max-w-7xl px-6 pt-28 pb-16 lg:pt-0">
           <div className="flex flex-col lg:grid lg:grid-cols-[1fr_1.2fr] items-center gap-12 lg:gap-20">
             <div className="land-stagger">
-              <p className="inline-flex items-center gap-1.5 text-xs font-semibold tracking-[0.15em] uppercase text-emerald-600 bg-emerald-50 rounded-full px-3 py-1">
-                <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                {isRTL ? "✨ بالذكاء الاصطناعي" : "✨ AI-Powered"}
-              </p>
               <h1
-                className="mt-5 font-extrabold leading-[1.05] tracking-tighter"
+                className="font-extrabold leading-[1.05] tracking-tighter"
                 style={{ fontSize: "clamp(2.5rem, 6vw, 4.5rem)" }}
               >
                 {isRTL
-                  ? "الذكاء الاصطناعي يبني سيرتك الذاتية في ثوانٍ"
-                  : "AI Builds Your Entire CV in Seconds"}
+                  ? "سيرتك الذاتية الاحترافية، جاهزة في دقائق"
+                  : "Your Professional CV, Ready in Minutes"}
               </h1>
-              <p className="mt-6 max-w-lg text-lg leading-relaxed text-[var(--land-body)]">
+              <p className="mt-2 inline-flex items-center gap-1.5 text-xs font-medium text-emerald-600 bg-emerald-50 rounded-full px-3 py-1">
+                <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                {isRTL ? "✨ بمساعدة الذكاء الاصطناعي · سريع واحترافي" : "✨ AI-assisted · Fast & professional"}
+              </p>
+              <p className="mt-5 max-w-lg text-lg leading-relaxed text-[var(--land-body)]">
                 {isRTL
-                  ? "اسمك + مسماك الوظيفي ← الذكاء الاصطناعي يكتب الملخص والخبرات والمهارات والإنجازات فورًا."
-                  : "Your name + job title → AI writes your summary, experience, skills & achievements instantly."}
+                  ? "تميّز أمام مسؤولي التوظيف بسيرة ذاتية مصقولة وبورتفوليو حيّ. يستخدمه أكثر من ١٣٠ محترفًا في الكويت والخليج."
+                  : "Stand out to recruiters with a polished CV and live portfolio. Used by 130+ professionals across Kuwait and the Gulf."}
               </p>
               <p className="mt-4 text-xs text-gray-400 text-center sm:text-start">
                 {isRTL ? "١٣٠+ سيرة ذاتية · 🇰🇼 الكويت والخليج · عربي مدعوم" : "130+ CVs built · 🇰🇼 Kuwait & Gulf · Arabic supported"}
@@ -301,6 +301,29 @@ export default async function LandingPage({
         </div>
       </section>
 
+      {/* ── How it works ──────────────────── */}
+      <section className="py-16 px-6 border-b border-[var(--land-border)]/50">
+        <div className="mx-auto max-w-3xl">
+          <h2 className="text-2xl font-bold text-center text-[var(--land-bright)] mb-10">
+            {isRTL ? "كيف يعمل؟" : "How it works"}
+          </h2>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+            {[
+              { step: "1", time: isRTL ? "٣٠ ثانية" : "30 seconds", en: "Fill your name and job title", ar: "أدخل اسمك ومسماك الوظيفي" },
+              { step: "2", time: isRTL ? "فوري" : "Instant", en: "AI drafts your CV instantly", ar: "الذكاء الاصطناعي يكتب مسودة سيرتك فورًا" },
+              { step: "3", time: isRTL ? "دقائق" : "Minutes", en: "Review, customize, and download", ar: "راجع، خصّص، وحمّل" },
+            ].map((s) => (
+              <div key={s.step} className="text-center">
+                <div className="mx-auto mb-3 flex h-10 w-10 items-center justify-center rounded-full bg-[var(--land-accent)] text-sm font-bold text-white">
+                  {s.step}
+                </div>
+                <p className="text-sm font-medium text-[var(--land-bright)]">{isRTL ? s.ar : s.en}</p>
+                <p className="mt-1 text-xs text-[var(--land-muted)]">{s.time}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
 
       {/* ── Template showcase ──────────────────── */}
       <section id="templates" className="scroll-mt-20 pt-16 sm:pt-32 pb-16 sm:pb-24 px-6">
