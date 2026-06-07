@@ -37,8 +37,12 @@
 - ✅ **[HIGH] Engineer AR demo persona re-mirrored** — `public/demo/engineer/index-ar.html` regenerated to **Abdulrahman Alkandari / مهندس كهربائي** (electrical), zero stale Omar-Sabah remnants, JS byte-identical, Projects links → `/ar/demo/engineer/projects` — `909ecf0`. Spec-reviewed ✅.
 - **[MED] EN engineer main-nav repoint still deferred** — `public/demo/engineer/index.html` nav "Projects" + hero button still point at `…/projects/smart-irrigation.html` instead of the new `/demo/engineer/projects` listing. Blocked: index.html carries another session's uncommitted og:image edits (can't cleanly stage one hunk). Repoint once that session commits, or coordinate.
 
+- ✅ **Task 2.1 — Guest builder** (no-auth `/try/[templateId]` + localStorage guest mode + post-signup restore) — `18e4679` + refactor `9dbaa4e`. Added public route `src/app/[locale]/(app)/try/[templateId]/page.tsx`, `guest`/`onPublish` props on `BuilderForm` (additive — auth path provably unchanged, hooks unconditional, guest never calls Convex), `dashboard/new` `?fromGuest=1` restore (basics via create() + richer fields via update() with server-owned keys stripped). DRY'd strip-keys into exported `PORTFOLIO_UPDATE_STRIP_KEYS`. tsc exit 0. Spec ✅ + code-quality APPROVED. Note: homepage form + demo CTAs NOT yet pointed at `/try` — that's Task 2.8.
+  - Minor nits left as-noted (not blocking): guest update uses a denylist not allowlist (non-fatal patch on unknown key); guest banner copy is inline EN/AR not in next-intl catalog; `contentAr` stripped on seed (guest builder has no AR content yet).
+
 **RESUME HERE (in order):**
-1. **Task 2.1** (guest builder — real React/TS, FULL two-stage review) → **2.8** (home form) → **2.2** (PDF/QR demos) → **2.5** (avatar) → **2.6** (resume btn) → **Part 3 polish** → **Part 5 verify**.
+1. **Task 2.8** (homepage TryItForm: stop forcing `?template=corporate` — route to `/[locale]/templates?prefill=1` or a `/try/<id>` selector; prefill name/title persists) → **2.2** (PDF/QR on demos) → **2.5** (gradient initials avatar) → **2.6** (engineer Resume button scroll) → **Part 3 polish** → **Part 5 verify**.
+  - 2.8 can now wire the homepage form (and optionally demo CTAs) at the new `/try/<id>` route from 2.1. Note: `TryItForm.tsx` and demo `index.html` files — check `git status` first; demo files are dirty with other sessions' work (don't entangle); `TryItForm.tsx` was clean as of 2.1.
 
 **Method note for static-mirror demo tasks (1.4/1.5/2.7-demo):** spec-review includes the render/RTL/overflow/console/JS-integrity verification, so it covers the code-quality dimension — no separate code-quality reviewer needed for pure-translation mirrors. Tasks with real TS/React logic (2.1, 2.8, 2.2, 2.5, 2.6) get the full two-stage review.
 
