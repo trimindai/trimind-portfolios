@@ -301,6 +301,42 @@ export default async function LandingPage({
         </div>
       </section>
 
+      {/* ── Sarah demo preview — strongest proof of quality ── */}
+      <section className="py-12 sm:py-16 px-6 bg-[var(--land-surface-raised)]/30">
+        <div className="mx-auto max-w-4xl text-center">
+          <p className="text-xs font-medium tracking-widest uppercase text-[var(--land-accent)] mb-3">
+            {isRTL ? "نتيجة حقيقية" : "Real result"}
+          </p>
+          <h2 className="text-xl sm:text-2xl font-bold text-[var(--land-bright)] mb-6">
+            {isRTL ? "هذا ما يحصل عليه عملاؤنا" : "This is what our users get"}
+          </h2>
+          <a
+            href="/demo/corporate"
+            target="_blank"
+            rel="noopener"
+            className="group block rounded-xl border border-[var(--land-border)] overflow-hidden shadow-sm hover:shadow-md transition-shadow"
+          >
+            <Image
+              src="/landing/mockup-corporate-2026a.jpg"
+              alt={isRTL ? "سيرة ذاتية احترافية — عرض مباشر" : "Professional CV — live demo"}
+              width={1200}
+              height={800}
+              sizes="(min-width: 768px) 896px, 100vw"
+              className="w-full h-auto"
+              quality={90}
+            />
+            <div className="flex items-center justify-between px-4 py-3 bg-white border-t border-[var(--land-border)]">
+              <span className="text-sm text-[var(--land-body)]">
+                {isRTL ? "سارة الرشيدي — محللة مالية" : "Sarah Al-Rashidi — Financial Analyst"}
+              </span>
+              <span className="text-xs font-medium text-[var(--land-accent)] group-hover:underline">
+                {isRTL ? "شاهد العرض المباشر ←" : "View live demo →"}
+              </span>
+            </div>
+          </a>
+        </div>
+      </section>
+
       {/* ── How it works ──────────────────── */}
       <section className="py-16 px-6 border-b border-[var(--land-border)]/50">
         <div className="mx-auto max-w-3xl">
