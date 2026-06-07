@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useRef } from "react";
 import { TextField } from "../fields/TextField";
 import { TextareaField } from "../fields/TextareaField";
 import { DynamicList } from "../fields/DynamicList";
@@ -12,6 +13,14 @@ interface ExperienceStepProps {
 
 export function ExperienceStep({ data, onChange }: ExperienceStepProps) {
   const experience = data.experience || [];
+  const seeded = useRef(false);
+
+  useEffect(() => {
+    if (!seeded.current && experience.length === 0) {
+      seeded.current = true;
+      onChange({ experience: [{ title: "", company: "", startDate: "", endDate: "", description: "", highlights: [] }] });
+    }
+  }, []);
 
   return (
     <div className="space-y-6">

@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useRef } from "react";
 import { TextField } from "../fields/TextField";
 import { DynamicList } from "../fields/DynamicList";
 
@@ -10,6 +11,14 @@ interface EducationStepProps {
 
 export function EducationStep({ data, onChange }: EducationStepProps) {
   const education = data.education || [];
+  const seeded = useRef(false);
+
+  useEffect(() => {
+    if (!seeded.current && education.length === 0) {
+      seeded.current = true;
+      onChange({ education: [{ degree: "", institution: "", year: "", description: "" }] });
+    }
+  }, []);
 
   return (
     <div className="space-y-8">

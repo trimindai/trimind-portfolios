@@ -80,6 +80,18 @@ export default function PreviewPage() {
     }
   };
 
+  const [showSuccess, setShowSuccess] = useState(false);
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const key = `portfolio_success_shown_${id}`;
+    if (!localStorage.getItem(key)) {
+      localStorage.setItem(key, "1");
+      setShowSuccess(true);
+      const timer = setTimeout(() => setShowSuccess(false), 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [id]);
+
   const portfolioData = useMemo(() => {
     if (!portfolio) return null;
     return toPortfolioData(portfolio, locale);
@@ -90,7 +102,9 @@ export default function PreviewPage() {
       <div className="flex h-screen items-center justify-center bg-[var(--land-bg)]">
         <div className="flex flex-col items-center gap-3">
           <div className="h-8 w-8 animate-spin rounded-full border-2 border-[var(--land-accent)] border-t-transparent" />
-          <span className="text-sm text-[var(--land-body)]">{tc("loading")}</span>
+          <span className="text-sm text-[var(--land-body)]">
+            {locale === "ar" ? "جارٍ بناء بورتفوليوك…" : "Building your portfolio…"}
+          </span>
         </div>
       </div>
     );
@@ -330,8 +344,18 @@ export default function PreviewPage() {
         </div>
       )}
 
+      {/* Success toast */}
+      {showSuccess && (
+        <div className="absolute top-16 left-4 right-4 z-50 mx-auto max-w-md animate-[fadeIn_300ms_ease-out] rounded-xl border border-[var(--land-accent)]/30 bg-[var(--land-accent)]/10 px-4 py-3 text-center text-sm text-[var(--land-bright)] backdrop-blur-sm">
+          {locale === "ar"
+            ? "بورتفوليوك جاهز! حمّل PDF لمشاركته."
+            : "Your portfolio is ready! Download the PDF to share it."}
+          <button onClick={() => setShowSuccess(false)} className="ml-3 text-[var(--land-muted)] hover:text-[var(--land-bright)]">&times;</button>
+        </div>
+      )}
+
       {/* Preview area */}
-      <div className="flex-1 overflow-hidden relative">
+      <div className="flex-1 overflow-hidden relative pb-20 md:pb-0">
         {portfolioData && (
           <PreviewFrame
             ref={previewRef}

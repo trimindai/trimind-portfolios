@@ -214,6 +214,16 @@ export function BuilderForm({ portfolioId, initialData, guest, onPublish }: Buil
   );
 
   const progress = useMemo(() => computeProgress(formData, steps), [formData, steps]);
+  const stepProgress = steps.length > 1 ? Math.round(((currentStep + 1) / steps.length) * 100) : 100;
+
+  const [pricingCollapsed, setPricingCollapsed] = useState(() => {
+    if (typeof window === "undefined") return false;
+    return window.localStorage.getItem("pricing_banner_collapsed") === "1";
+  });
+  const dismissPricing = () => {
+    setPricingCollapsed(true);
+    try { window.localStorage.setItem("pricing_banner_collapsed", "1"); } catch {}
+  };
 
   const handleChange = useCallback((updates: any) => {
     setFormData((prev: any) => {
@@ -277,25 +287,39 @@ export function BuilderForm({ portfolioId, initialData, guest, onPublish }: Buil
     <div>
       {/* Pricing context + progress bar */}
       {showDraftChrome && (
-        <div className="mb-6 flex items-center gap-3 rounded-xl border border-[var(--land-accent)]/20 bg-[var(--land-accent)]/5 px-4 py-3">
-          <span className="text-[var(--land-accent)] text-lg">&#9998;</span>
-          <div className="flex-1">
-            <p className="text-sm text-[var(--land-bright)]">
-              {isRTL
-                ? "أنت تبني مسودة مجانية. ادفع 4.900 د.ك فقط عند تجهيز PDF الاحترافي."
-                : "You're building a free draft. Pay 4.900 KD only when your professional PDF is ready."}
-            </p>
+        currentStep > 0 && pricingCollapsed ? (
+          <div className="mb-4 flex justify-end">
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-[var(--land-accent)]/20 bg-[var(--land-accent)]/5 px-3 py-1.5 text-xs font-medium text-[var(--land-accent)]">
+              {isRTL ? "4.9 د.ك عند الجهوزية ✓" : "4.9 KD when ready ✓"}
+              <span className="text-[var(--land-muted)]">{stepProgress}%</span>
+            </span>
           </div>
-          <div className="flex items-center gap-2 shrink-0">
-            <div className="w-20 sm:w-24 h-2 rounded-full bg-[var(--land-border)]/50 overflow-hidden">
-              <div
-                className="h-full bg-[var(--land-accent)] rounded-full transition-all duration-500"
-                style={{ width: `${progress}%` }}
-              />
+        ) : (
+          <div className="mb-6 flex items-center gap-3 rounded-xl border border-[var(--land-accent)]/20 bg-[var(--land-accent)]/5 px-4 py-3">
+            <span className="text-[var(--land-accent)] text-lg">&#9998;</span>
+            <div className="flex-1">
+              <p className="text-sm text-[var(--land-bright)]">
+                {isRTL
+                  ? "أنت تبني مسودة مجانية. ادفع 4.900 د.ك فقط عند تجهيز PDF الاحترافي."
+                  : "You're building a free draft. Pay 4.900 KD only when your professional PDF is ready."}
+              </p>
             </div>
-            <span className="text-xs font-medium text-[var(--land-accent)]">{progress}%</span>
+            <div className="flex items-center gap-2 shrink-0">
+              <div className="w-20 sm:w-24 h-2 rounded-full bg-[var(--land-border)]/50 overflow-hidden">
+                <div
+                  className="h-full bg-[var(--land-accent)] rounded-full transition-all duration-500"
+                  style={{ width: `${stepProgress}%` }}
+                />
+              </div>
+              <span className="text-xs font-medium text-[var(--land-accent)]">{stepProgress}%</span>
+            </div>
+            {currentStep > 0 && (
+              <button onClick={dismissPricing} className="text-[var(--land-muted)] hover:text-[var(--land-bright)] text-sm ml-1" aria-label="Collapse">
+                &times;
+              </button>
+            )}
           </div>
-        </div>
+        )
       )}
 
       {/* "Good enough" nudge — shown after basics + experience/projects filled */}
@@ -432,11 +456,11 @@ export function BuilderForm({ portfolioId, initialData, guest, onPublish }: Buil
               window.location.href = `/${locale}/dashboard`;
             }}
             className="inline-flex min-h-[44px] items-center justify-center gap-1.5 rounded-lg border border-[var(--land-border)] px-3 py-2.5 text-xs text-[var(--land-muted)] hover:text-[var(--land-bright)] hover:bg-[var(--land-surface-raised)] transition-colors"
-            title={guest ? (isRTL ? "خروج" : "Exit") : (isRTL ? "حفظ وخروج" : "Save & Exit")}
+            title={guest ? (isRTL ? "خروج" : "Exit") : (isRTL ? "حفظ وخروج" : "Save & exit")}
           >
             <span>&times;</span>
-            <span className="hidden sm:inline">
-              {guest ? (isRTL ? "خروج" : "Exit") : (isRTL ? "حفظ وخروج" : "Save & Exit")}
+            <span>
+              {guest ? (isRTL ? "خروج" : "Exit") : (isRTL ? "حفظ" : "Exit")}
             </span>
           </button>
         </div>

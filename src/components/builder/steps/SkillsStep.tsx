@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useRef } from "react";
 import { TextField } from "../fields/TextField";
 import { DynamicList } from "../fields/DynamicList";
 
@@ -11,6 +12,17 @@ interface SkillsStepProps {
 export function SkillsStep({ data, onChange }: SkillsStepProps) {
   const skills = data.skills || [];
   const certifications = data.certifications || [];
+  const seeded = useRef(false);
+
+  useEffect(() => {
+    if (!seeded.current && skills.length === 0 && certifications.length === 0) {
+      seeded.current = true;
+      onChange({
+        skills: [{ category: "", items: [] }],
+        certifications: [{ name: "", issuer: "", year: "" }],
+      });
+    }
+  }, []);
 
   return (
     <div className="space-y-8">

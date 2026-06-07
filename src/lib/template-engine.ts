@@ -151,6 +151,11 @@ Handlebars.registerHelper("json", function (context: any) {
   return new Handlebars.SafeString(JSON.stringify(context || {}));
 });
 
+Handlebars.registerHelper("titleCase", function (name: string) {
+  if (!name) return "";
+  return String(name).trim().split(/\s+/).map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(" ");
+});
+
 Handlebars.registerHelper("initials", function (name: string) {
   if (!name) return "";
   const parts = String(name).trim().split(/\s+/).filter(Boolean);

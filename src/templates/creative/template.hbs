@@ -3,19 +3,19 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>{{basics.fullName}} — {{basics.title}}</title>
+<title>{{titleCase basics.fullName}} — {{basics.title}}</title>
 <meta name="description" content="{{basics.title}}{{#if basics.location}} based in {{basics.location}}{{/if}}.{{#if basics.subtitle}} {{basics.subtitle}}{{/if}}">
 <meta name="theme-color" content="{{safeColor customization.bgColor "#1b1b1b"}}">
 <link rel="canonical" href="{{portfolioUrl}}">
 {{{faviconLink basics.fullName customization.accentColor customization.bgColor}}}
 <meta property="og:type" content="profile">
-<meta property="og:site_name" content="{{basics.fullName}}">
+<meta property="og:site_name" content="{{titleCase basics.fullName}}">
 <meta property="og:url" content="{{portfolioUrl}}">
-<meta property="og:title" content="{{basics.fullName}} | {{basics.title}}">
+<meta property="og:title" content="{{titleCase basics.fullName}} | {{basics.title}}">
 <meta property="og:description" content="{{#if basics.subtitle}}{{basics.subtitle}}{{else}}{{basics.title}}{{#if basics.location}} based in {{basics.location}}{{/if}}{{/if}}">
 {{#if basics.photoUrl}}<meta property="og:image" content="{{safeUrl basics.photoUrl}}">{{else}}{{#if projects.[0].coverUrl}}<meta property="og:image" content="{{safeUrl projects.[0].coverUrl}}">{{/if}}{{/if}}
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="{{basics.fullName}} | {{basics.title}}">
+<meta name="twitter:title" content="{{titleCase basics.fullName}} | {{basics.title}}">
 <meta name="twitter:description" content="{{#if basics.subtitle}}{{basics.subtitle}}{{else}}{{basics.title}}{{/if}}">
 {{#if basics.photoUrl}}<meta name="twitter:image" content="{{safeUrl basics.photoUrl}}">{{else}}{{#if projects.[0].coverUrl}}<meta name="twitter:image" content="{{safeUrl projects.[0].coverUrl}}">{{/if}}{{/if}}
 {{{personJsonLd basics portfolioUrl}}}
@@ -361,7 +361,7 @@ a { color: inherit; text-decoration: none; }
 
 <!-- Navbar -->
 <header class="nav">
-  <a href="#top" class="nav-brand">{{basics.fullName}}</a>
+  <a href="#top" class="nav-brand">{{titleCase basics.fullName}}</a>
   <button class="nav-toggle" id="navToggle" aria-label="Open menu" aria-expanded="false" aria-controls="navLinks"><span></span><span></span><span></span></button>
   <nav class="nav-links" id="navLinks">
     {{#if projects}}<a href="#" class="nav-link" data-open-gallery><span class="bk">[</span> Gallery <span class="bk">]</span></a>{{/if}}
@@ -377,18 +377,18 @@ a { color: inherit; text-decoration: none; }
   <div class="hero-left">
     {{#if basics.photoUrl}}
     <div class="hero-portrait">
-      <img src="{{safeUrl basics.photoUrl}}" alt="{{basics.fullName}}" width="200" height="240" loading="eager" decoding="async">
+      <img src="{{safeUrl basics.photoUrl}}" alt="{{titleCase basics.fullName}}" width="200" height="240" loading="eager" decoding="async">
       <span class="corner c-tl"></span><span class="corner c-tr"></span>
       <span class="corner c-bl"></span><span class="corner c-br"></span>
     </div>
     {{else}}
     <div class="hero-portrait">
-      <div class="avatar-initials" aria-label="{{basics.fullName}}">{{initials basics.fullName}}</div>
+      <div class="avatar-initials" aria-label="{{titleCase basics.fullName}}">{{initials basics.fullName}}</div>
       <span class="corner c-tl"></span><span class="corner c-tr"></span>
       <span class="corner c-bl"></span><span class="corner c-br"></span>
     </div>
     {{/if}}
-    <h1 class="hero-name">{{basics.fullName}}</h1>
+    <h1 class="hero-name">{{titleCase basics.fullName}}</h1>
     {{#if basics.subtitle}}<p class="hero-tag">{{basics.subtitle}}</p>{{else}}<p class="hero-tag">{{basics.title}}</p>{{/if}}
     {{#if basics.location}}<p class="hero-loc">{{basics.location}}{{#if basics.nationality}} &middot; {{basics.nationality}}{{/if}}</p>{{/if}}
     {{#if basics.bio}}<p class="hero-bio">{{basics.bio}}</p>{{else}}{{#if basics.valueProposition}}<p class="hero-bio">{{basics.valueProposition}}</p>{{/if}}{{/if}}
@@ -549,7 +549,7 @@ a { color: inherit; text-decoration: none; }
 </section>
 
 <footer class="footer">
-  &copy; {{basics.fullName}} &mdash; <a href="{{portfolioUrl}}">{{portfolioUrl}}</a>
+  &copy; {{titleCase basics.fullName}} &mdash; <a href="{{portfolioUrl}}">{{portfolioUrl}}</a>
 </footer>
 
 {{#if projects}}

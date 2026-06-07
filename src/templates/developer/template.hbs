@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>{{basics.fullName}}{{#if basics.title}} — {{basics.title}}{{/if}}</title>
+<title>{{titleCase basics.fullName}}{{#if basics.title}} — {{basics.title}}{{/if}}</title>
 <meta name="description" content="{{#if basics.valueProposition}}{{basics.valueProposition}}{{else if basics.bio}}{{basics.bio}}{{else}}{{basics.title}}{{/if}}">
 {{faviconLink basics.fullName customization.primaryColor customization.bgColor}}
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -425,7 +425,7 @@ html[dir="rtl"] .tl-item::before{left:auto;right:0}
   <div class="wrap">
     <div class="grid">
       <div class="hello blur-in">{{#if isRTL}}مرحبًا، أنا{{else}}Hi, I'm{{/if}}</div>
-      <h1 class="blur-in" data-delay="80">{{basics.fullName}}</h1>
+      <h1 class="blur-in" data-delay="80">{{titleCase basics.fullName}}</h1>
       <div class="role blur-in" data-delay="160">{{#if basics.title}}{{basics.title}}{{/if}}{{#if basics.subtitle}} · {{basics.subtitle}}{{/if}}</div>
       {{#if basics.valueProposition}}<p class="pitch blur-in" data-delay="220">{{basics.valueProposition}}</p>{{else if basics.bio}}<p class="pitch blur-in" data-delay="220">{{basics.bio}}</p>{{/if}}
       <div class="cta blur-in" data-delay="300">
@@ -654,7 +654,7 @@ html[dir="rtl"] .tl-item::before{left:auto;right:0}
 {{!-- ░░ FOOTER ░░ --}}
 <footer>
   <div class="wrap">
-    <div class="meta">© <span id="year"></span> {{basics.fullName}}{{#if basics.title}} — {{basics.title}}{{/if}}</div>
+    <div class="meta">© <span id="year"></span> {{titleCase basics.fullName}}{{#if basics.title}} — {{basics.title}}{{/if}}</div>
     <div class="socials">
       {{#if basics.github}}<a href="{{safeUrl basics.github}}" target="_blank" rel="noopener" aria-label="GitHub"><i class="fa-brands fa-github"></i></a>{{/if}}
       {{#if basics.linkedin}}<a href="{{safeUrl basics.linkedin}}" target="_blank" rel="noopener" aria-label="LinkedIn"><i class="fa-brands fa-linkedin-in"></i></a>{{/if}}

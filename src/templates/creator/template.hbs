@@ -3,10 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>{{basics.fullName}} — {{basics.title}}</title>
+<title>{{titleCase basics.fullName}} — {{basics.title}}</title>
 <meta name="description" content="{{basics.title}}{{#if basics.location}} based in {{basics.location}}{{/if}}.{{#if basics.subtitle}} {{basics.subtitle}}{{/if}}">
 <meta name="theme-color" content="#F1EDDC">
-<meta property="og:title" content="{{basics.fullName}} — {{basics.title}}">
+<meta property="og:title" content="{{titleCase basics.fullName}} — {{basics.title}}">
 <meta property="og:description" content="{{#if basics.subtitle}}{{basics.subtitle}}{{else}}{{basics.title}}{{/if}}">
 <meta property="og:type" content="profile">
 {{#if basics.photoUrl}}<meta property="og:image" content="{{safeUrl basics.photoUrl}}">{{/if}}
@@ -244,7 +244,7 @@ img{max-width:100%;display:block}
 <!-- nav -->
 <header class="nav">
   <div class="nav-in">
-    <a class="brand" href="#top"><span class="mono">{{initials basics.fullName}}</span><span class="nm">{{basics.fullName}}</span></a>
+    <a class="brand" href="#top"><span class="mono">{{initials basics.fullName}}</span><span class="nm">{{titleCase basics.fullName}}</span></a>
     <nav class="nav-links" id="navLinks">
       {{#if projects}}<a href="#work">Work</a>{{/if}}
       {{#if certifications}}<a href="#awards">Awards</a>{{/if}}
@@ -263,9 +263,9 @@ img{max-width:100%;display:block}
 
   <!-- hero -->
   <section class="hero">
-    {{#if basics.photoUrl}}<img class="hero-photo" src="{{safeUrl basics.photoUrl}}" alt="{{basics.fullName}}">{{else}}<div class="hero-photo avatar-initials" aria-label="{{basics.fullName}}">{{initials basics.fullName}}</div>{{/if}}
+    {{#if basics.photoUrl}}<img class="hero-photo" src="{{safeUrl basics.photoUrl}}" alt="{{titleCase basics.fullName}}">{{else}}<div class="hero-photo avatar-initials" aria-label="{{titleCase basics.fullName}}">{{initials basics.fullName}}</div>{{/if}}
     <span class="eyebrow">{{basics.title}}</span>
-    <h1>{{basics.fullName}}</h1>
+    <h1>{{titleCase basics.fullName}}</h1>
     {{#if basics.subtitle}}<p class="role">{{basics.subtitle}}</p>{{/if}}
     {{#if basics.valueProposition}}<p class="tag">{{basics.valueProposition}}</p>{{else if basics.bio}}<p class="tag">{{basics.bio}}</p>{{/if}}
     <div class="meta">
@@ -436,7 +436,7 @@ img{max-width:100%;display:block}
 </main>
 
 <footer class="site-footer">
-  &copy; {{basics.fullName}} &mdash; <a href="https://portfolio-trimind.com" target="_blank" rel="noopener">Built with TriMind</a>
+  &copy; {{titleCase basics.fullName}} &mdash; <a href="https://portfolio-trimind.com" target="_blank" rel="noopener">Built with TriMind</a>
 </footer>
 
 <script>

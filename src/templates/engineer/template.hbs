@@ -3,10 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>{{basics.fullName}} — {{basics.title}}</title>
+<title>{{titleCase basics.fullName}} — {{basics.title}}</title>
 <meta name="description" content="{{basics.title}}{{#if basics.location}} based in {{basics.location}}{{/if}}.{{#if basics.subtitle}} {{basics.subtitle}}{{/if}}">
 <meta name="theme-color" content="#ffffff">
-<meta property="og:title" content="{{basics.fullName}} | {{basics.title}}">
+<meta property="og:title" content="{{titleCase basics.fullName}} | {{basics.title}}">
 <meta property="og:description" content="{{#if basics.subtitle}}{{basics.subtitle}}{{else}}{{basics.title}}{{#if basics.location}} based in {{basics.location}}{{/if}}{{/if}}">
 <meta property="og:type" content="website">
 {{#if basics.photoUrl}}<meta property="og:image" content="{{basics.photoUrl}}">{{/if}}
@@ -446,7 +446,7 @@ a:focus-visible, button:focus-visible {
 <!-- ═══ HEADER ═══ -->
 <header class="header">
   <div class="header-inner">
-    <a href="#about" class="header-brand">{{basics.fullName}}</a>
+    <a href="#about" class="header-brand">{{titleCase basics.fullName}}</a>
     <nav class="header-nav">
       <a href="#about">Home</a>
       {{#if projects}}<a href="#projects">Projects</a>{{/if}}
@@ -481,9 +481,9 @@ a:focus-visible, button:focus-visible {
       <div class="hero-discipline">{{basics.title}}</div>
       {{/if}}
       {{#if basics.photoUrl}}
-      <img class="hero-photo" src="{{basics.photoUrl}}" alt="{{basics.fullName}}">
+      <img class="hero-photo" src="{{basics.photoUrl}}" alt="{{titleCase basics.fullName}}">
       {{else}}
-      <div class="hero-photo avatar-initials" aria-label="{{basics.fullName}}">{{initials basics.fullName}}</div>
+      <div class="hero-photo avatar-initials" aria-label="{{titleCase basics.fullName}}">{{initials basics.fullName}}</div>
       {{/if}}
     </div>
     <div class="hero-right rv rv-d1">
@@ -703,7 +703,7 @@ a:focus-visible, button:focus-visible {
     </div>
   </div>
   <div class="footer-bottom">
-    <span>&copy; {{basics.fullName}}{{#if basics.title}} — {{basics.title}}{{/if}}</span>
+    <span>&copy; {{titleCase basics.fullName}}{{#if basics.title}} — {{basics.title}}{{/if}}</span>
     <div class="footer-qr">
       {{#if qrDataUrl}}<img src="{{qrDataUrl}}" alt="QR">{{/if}}
     </div>

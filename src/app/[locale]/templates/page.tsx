@@ -291,30 +291,30 @@ export default async function TemplatesPage({ params, searchParams }: PageProps)
                   </p>
                 </div>
                 <div className="mt-auto pt-4 flex gap-2">
-                  {tpl.demoUrl ? (
-                    <a
-                      href={tpl.demoUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex-1 text-center rounded-lg border border-[var(--land-border)] px-3 py-2 text-sm hover:bg-[var(--land-surface-raised)] transition-colors"
-                    >
-                      {t.preview}
-                    </a>
-                  ) : (
-                    <span className="flex-1 text-center rounded-lg border border-[var(--land-border)] px-3 py-2 text-sm text-[var(--land-muted)] cursor-not-allowed">
-                      {t.preview}
-                    </span>
-                  )}
                   <Link
                     href={
                       signedIn
                         ? `/dashboard/new?template=${tpl.id}`
                         : `/try/${tpl.id}`
                     }
-                    className="flex-1 text-center rounded-lg bg-[var(--land-accent)] px-3 py-2 text-sm font-medium text-white hover:bg-[var(--land-accent-hover)] transition-colors"
+                    className="flex-1 text-center rounded-lg bg-[var(--land-accent)] px-3 py-2.5 text-sm font-semibold text-white hover:bg-[var(--land-accent-hover)] transition-colors"
                   >
                     {t.use}
                   </Link>
+                  {tpl.demoUrl ? (
+                    <a
+                      href={tpl.demoUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex-1 text-center rounded-lg px-3 py-2.5 text-sm text-[var(--land-body)] hover:text-[var(--land-bright)] transition-colors"
+                    >
+                      {t.preview} &rarr;
+                    </a>
+                  ) : (
+                    <span className="flex-1 text-center rounded-lg px-3 py-2.5 text-sm text-[var(--land-muted)] cursor-not-allowed">
+                      {t.preview}
+                    </span>
+                  )}
                 </div>
               </div>
             </article>

@@ -3,10 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>{{basics.fullName}} — {{basics.title}}</title>
+<title>{{titleCase basics.fullName}} — {{basics.title}}</title>
 <meta name="description" content="{{basics.title}}{{#if basics.location}} based in {{basics.location}}{{/if}}.{{#if basics.subtitle}} {{basics.subtitle}}{{/if}}">
 <meta name="theme-color" content="#F8FAFC">
-<meta property="og:title" content="{{basics.fullName}} | {{basics.title}}">
+<meta property="og:title" content="{{titleCase basics.fullName}} | {{basics.title}}">
 <meta property="og:description" content="{{#if basics.subtitle}}{{basics.subtitle}}{{else}}{{basics.title}}{{#if basics.location}} based in {{basics.location}}{{/if}}{{/if}}">
 <meta property="og:type" content="website">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -1092,7 +1092,7 @@ footer a:hover { border-color: var(--gold-warm); }
 
 <!-- Nav -->
 <nav class="nav" id="nav">
-    <a href="#" class="nav-brand">{{basics.fullName}} <span>Portfolio</span></a>
+    <a href="#" class="nav-brand">{{titleCase basics.fullName}} <span>Portfolio</span></a>
     <div class="nav-links">
         {{#if experience}}<a href="#career">Experience</a>{{/if}}
         {{#if projects}}<a href="#impact">Impact</a>{{/if}}
@@ -1114,7 +1114,7 @@ footer a:hover { border-color: var(--gold-warm); }
                     {{#if basics.location}}{{basics.location}}{{/if}}{{#if basics.nationality}} &middot; {{basics.nationality}}{{/if}}
                 </div>
 
-                <h1 class="hero-name rv rv-d1">{{basics.fullName}}</h1>
+                <h1 class="hero-name rv rv-d1">{{titleCase basics.fullName}}</h1>
                 <p class="hero-title rv rv-d1">{{basics.title}}</p>
 
                 <div class="hero-contact rv rv-d2">
@@ -1165,11 +1165,11 @@ footer a:hover { border-color: var(--gold-warm); }
             <div class="hero-portrait-wrap rv rv-d2">
                 <div class="hero-portrait">
                     {{#if basics.photoUrl}}
-                    <img src="{{basics.photoUrl}}" alt="{{basics.fullName}}" style="width:100%;height:100%;object-fit:cover;">
+                    <img src="{{basics.photoUrl}}" alt="{{titleCase basics.fullName}}" style="width:100%;height:100%;object-fit:cover;">
                     {{else}}
-                    <div class="avatar-initials" aria-label="{{basics.fullName}}">{{initials basics.fullName}}</div>
+                    <div class="avatar-initials" aria-label="{{titleCase basics.fullName}}">{{initials basics.fullName}}</div>
                     {{/if}}
-                    <div class="hero-portrait-tag">{{basics.fullName}}</div>
+                    <div class="hero-portrait-tag">{{titleCase basics.fullName}}</div>
                 </div>
             </div>
         </div>
