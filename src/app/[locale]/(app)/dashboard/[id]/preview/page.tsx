@@ -357,14 +357,45 @@ export default function PreviewPage() {
       {/* Preview area */}
       <div className="flex-1 overflow-hidden relative pb-20 md:pb-0">
         {portfolioData && (
-          <PreviewFrame
-            ref={previewRef}
-            portfolioData={portfolioData}
-            deviceMode={view === "cv" ? "desktop" : deviceMode}
-            view={view}
-            cvZoom={cvZoom}
-            liveUrlLabel={liveUrlLabel}
-          />
+          <div className={!canDownload ? "blur-sm pointer-events-none select-none" : ""}>
+            <PreviewFrame
+              ref={previewRef}
+              portfolioData={portfolioData}
+              deviceMode={view === "cv" ? "desktop" : deviceMode}
+              view={view}
+              cvZoom={cvZoom}
+              liveUrlLabel={liveUrlLabel}
+            />
+          </div>
+        )}
+
+        {/* Pay-to-view overlay for unpaid users */}
+        {!canDownload && portfolioData && (
+          <div className="absolute inset-0 z-40 flex items-center justify-center bg-[var(--land-bg)]/60 backdrop-blur-[2px]">
+            <div className="text-center px-6 max-w-sm">
+              <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-[var(--land-accent)]/10">
+                <Download className="h-6 w-6 text-[var(--land-accent)]" />
+              </div>
+              <h3 className="text-lg font-bold text-[var(--land-bright)]">
+                {locale === "ar" ? "ادفع لترى سيرتك الذاتية" : "Pay to see your CV"}
+              </h3>
+              <p className="mt-2 text-sm text-[var(--land-body)]">
+                {locale === "ar"
+                  ? "ادفع 4.900 د.ك لمرة واحدة لتحميل وعرض PDF الاحترافي"
+                  : "One-time payment of 4.900 KD to view and download your professional PDF"}
+              </p>
+              <Link
+                href={`/dashboard/${id}/publish`}
+                className="mt-4 inline-flex items-center gap-2 rounded-xl bg-[var(--land-accent)] px-6 py-3 text-sm font-semibold text-white hover:bg-[var(--land-accent-hover)] transition-colors"
+              >
+                <Download className="h-4 w-4" />
+                {getPdfLabel}
+              </Link>
+              <p className="mt-3 text-xs text-[var(--land-muted)]">
+                {locale === "ar" ? "K-NET · Apple Pay · Visa" : "K-NET · Apple Pay · Visa"}
+              </p>
+            </div>
+          </div>
         )}
 
         {/* Mobile-only CTA pill (md+ uses the toolbar CTA) */}
