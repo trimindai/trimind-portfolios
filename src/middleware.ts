@@ -5,6 +5,10 @@ import { NextRequest } from "next/server";
 
 const intlMiddleware = createIntlMiddleware(routing);
 
+// Only dashboard + admin require auth. The guest builder at /:locale/try(.*) is
+// intentionally PUBLIC (unauthenticated visitors build a localStorage-backed
+// preview; auth is enforced only at Publish/Download). It is NOT in this matcher
+// and NOT in isStaticRoute below, so intl middleware runs for it as normal.
 const isProtectedRoute = createRouteMatcher([
   "/:locale/dashboard(.*)",
   "/:locale/admin(.*)",

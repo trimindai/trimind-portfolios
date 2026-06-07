@@ -132,20 +132,52 @@ function computeProgress(data: any, steps: Step[]): number {
   return total > 0 ? Math.round((filled / total) * 100) : 0;
 }
 
+// localStorage key for the guest (unauthenticated) builder draft. Holds a richer
+// blob than the landing-page "portfolio-draft" handoff (which is name/title only).
+export const GUEST_STORAGE_KEY = "portfolio_preview_data";
+
 interface BuilderFormProps {
-  portfolioId: Id<"portfolios">;
+  // Required in the authenticated path; unused (and absent) in guest mode.
+  portfolioId?: Id<"portfolios">;
   initialData: any;
+  // When true: never touch Convex. State is seeded from / persisted to
+  // localStorage["portfolio_preview_data"]; Publish/Download are routed by the
+  // host page (see onPublish) to the sign-up flow. Authenticated path is wholly
+  // unaffected when this is falsy/undefined.
+  guest?: boolean;
+  // Guest-only: called when the user reaches the final step / hits Publish.
+  // Host page redirects to sign-up with a post-signup restore URL.
+  onPublish?: () => void;
 }
 
-export function BuilderForm({ portfolioId, initialData }: BuilderFormProps) {
+export function BuilderForm({ portfolioId, initialData, guest, onPublish }: BuilderFormProps) {
   const params = useParams();
   const locale = (params.locale as string) || "en";
   const isRTL = locale === "ar";
   const tSteps = useTranslations("builder.steps");
   const tNav = useTranslations("builder.nav");
   const [currentStep, setCurrentStep] = useState(0);
-  const [formData, setFormData] = useState(initialData);
+  // Guest mode: seed from localStorage (parse safely), falling back to initialData.
+  const [formData, setFormData] = useState<any>(() => {
+    if (guest && typeof window !== "undefined") {
+      try {
+        const saved = window.localStorage.getItem(GUEST_STORAGE_KEY);
+        if (saved) {
+          const parsed = JSON.parse(saved);
+          if (parsed && typeof parsed === "object") {
+            // Always trust the route's templateId so the step-set matches the URL.
+            return { ...initialData, ...parsed, templateId: initialData.templateId };
+          }
+        }
+      } catch {
+        // Corrupt/blocked storage — fall back to the empty/default shape.
+      }
+    }
+    return initialData;
+  });
   const [saving, setSaving] = useState(false);
+  // Hook order must be stable: always call useMutation. It's simply never
+  // invoked in guest mode (save() is guarded by !guest).
   const updatePortfolio = useMutation(api.portfolios.update);
 
   // Keep focused inputs visible above the mobile keyboard (no-op on desktop).
@@ -159,10 +191,23 @@ export function BuilderForm({ portfolioId, initialData }: BuilderFormProps) {
   const progress = useMemo(() => computeProgress(formData, steps), [formData, steps]);
 
   const handleChange = useCallback((updates: any) => {
-    setFormData((prev: any) => ({ ...prev, ...updates }));
-  }, []);
+    setFormData((prev: any) => {
+      const next = { ...prev, ...updates };
+      // Guest mode: persist every change to localStorage (no Convex).
+      if (guest && typeof window !== "undefined") {
+        try {
+          window.localStorage.setItem(GUEST_STORAGE_KEY, JSON.stringify(next));
+        } catch {
+          // Storage full/blocked — keep editing in-memory; nothing else to do.
+        }
+      }
+      return next;
+    });
+  }, [guest]);
 
   const save = async () => {
+    // Guest mode never persists to Convex; localStorage is updated on each change.
+    if (guest || !portfolioId) return;
     setSaving(true);
     try {
       const STRIP_KEYS = new Set(["_id", "_creationTime", "status", "slug", "generatedHtml", "generatedProjectPages", "paymentId", "publishedAt", "createdAt", "lastEditedAt", "userId", "templateId", "name", "locale", "contentAr"]);
@@ -199,10 +244,14 @@ export function BuilderForm({ portfolioId, initialData }: BuilderFormProps) {
     (formData.experience?.length > 0 || formData.projects?.length > 0)
   );
 
+  // In guest mode the draft pricing/progress chrome should always show (there's
+  // no Convex "status" field); authenticated path keeps its status === "draft" gate.
+  const showDraftChrome = guest || formData.status === "draft";
+
   return (
     <div>
       {/* Pricing context + progress bar */}
-      {formData.status === "draft" && (
+      {showDraftChrome && (
         <div className="mb-6 flex items-center gap-3 rounded-xl border border-[var(--land-accent)]/20 bg-[var(--land-accent)]/5 px-4 py-3">
           <span className="text-[var(--land-accent)] text-lg">&#9998;</span>
           <div className="flex-1">
@@ -225,7 +274,7 @@ export function BuilderForm({ portfolioId, initialData }: BuilderFormProps) {
       )}
 
       {/* "Good enough" nudge — shown after basics + experience/projects filled */}
-      {hasBasicsAndExperience && currentStep >= 2 && currentStep < steps.length - 1 && formData.status === "draft" && (
+      {hasBasicsAndExperience && currentStep >= 2 && currentStep < steps.length - 1 && showDraftChrome && (
         <div className="mb-4 flex items-center gap-3 rounded-xl border border-[var(--land-border)]/50 bg-[var(--land-surface)]/40 px-4 py-2.5">
           <span className="text-[var(--land-accent)]">&#10003;</span>
           <p className="text-xs text-[var(--land-body)] flex-1">
@@ -234,7 +283,11 @@ export function BuilderForm({ portfolioId, initialData }: BuilderFormProps) {
               : "Your portfolio is ready for a basic PDF. Keep going to make it stronger."}
           </p>
           <button
-            onClick={async () => { await save(); window.location.href = `/${locale}/dashboard/${portfolioId}/preview`; }}
+            onClick={async () => {
+              if (guest) { onPublish?.(); return; }
+              await save();
+              window.location.href = `/${locale}/dashboard/${portfolioId}/preview`;
+            }}
             className="text-xs text-[var(--land-accent)] hover:text-[var(--land-accent-hover)] font-medium shrink-0"
           >
             {isRTL ? "معاينة الآن" : "Preview now"} &rarr;
@@ -329,7 +382,9 @@ export function BuilderForm({ portfolioId, initialData }: BuilderFormProps) {
             <svg className="w-3 h-3 text-[var(--land-accent)]" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M2 6l3 3 5-5" />
             </svg>
-            {tNav("autoSaved")}
+            {guest
+              ? (isRTL ? "محفوظ على جهازك" : "Saved on this device")
+              : tNav("autoSaved")}
           </>
         )}
       </div>
@@ -346,12 +401,18 @@ export function BuilderForm({ portfolioId, initialData }: BuilderFormProps) {
             <span aria-hidden className="rtl:rotate-180">&larr;</span>
           </button>
           <button
-            onClick={async () => { await save(); window.location.href = `/${locale}/dashboard`; }}
+            onClick={async () => {
+              if (guest) { window.location.href = `/${locale}`; return; }
+              await save();
+              window.location.href = `/${locale}/dashboard`;
+            }}
             className="inline-flex min-h-[44px] items-center justify-center gap-1.5 rounded-lg border border-[var(--land-border)] px-3 py-2.5 text-xs text-[var(--land-muted)] hover:text-[var(--land-bright)] hover:bg-[var(--land-surface-raised)] transition-colors"
-            title={isRTL ? "حفظ وخروج" : "Save & Exit"}
+            title={guest ? (isRTL ? "خروج" : "Exit") : (isRTL ? "حفظ وخروج" : "Save & Exit")}
           >
             <span>&times;</span>
-            <span className="hidden sm:inline">{isRTL ? "حفظ وخروج" : "Save & Exit"}</span>
+            <span className="hidden sm:inline">
+              {guest ? (isRTL ? "خروج" : "Exit") : (isRTL ? "حفظ وخروج" : "Save & Exit")}
+            </span>
           </button>
         </div>
         <div className="flex items-center gap-2">
@@ -369,6 +430,14 @@ export function BuilderForm({ portfolioId, initialData }: BuilderFormProps) {
               className="inline-flex min-h-[44px] items-center justify-center gap-1.5 rounded-lg bg-[var(--land-accent)] px-5 sm:px-6 py-2.5 text-sm font-medium text-white hover:bg-[var(--land-accent-hover)] transition-colors active:scale-[0.98]"
             >
               <span>{tNav("next")}</span>
+              <span aria-hidden className="rtl:rotate-180">&rarr;</span>
+            </button>
+          ) : guest ? (
+            <button
+              onClick={() => onPublish?.()}
+              className="inline-flex min-h-[44px] items-center justify-center gap-1.5 rounded-lg bg-[var(--land-accent)] px-5 sm:px-6 py-2.5 text-sm font-semibold text-white hover:bg-[var(--land-accent-hover)] transition-colors active:scale-[0.98]"
+            >
+              <span>{isRTL ? "سجّل لنشر ملفك" : "Sign up to publish"}</span>
               <span aria-hidden className="rtl:rotate-180">&rarr;</span>
             </button>
           ) : (
