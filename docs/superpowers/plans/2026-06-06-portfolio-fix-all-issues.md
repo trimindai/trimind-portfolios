@@ -65,11 +65,22 @@ The EN demo `public/demo/<id>/index.html` files (corporate, creative, creator, d
 
 **📊 Part 3 status:** DONE 3.1/3.3/3.4/3.5/3.6/3.7/3.9/3.10/3.12. N/A 3.2. SKIP 3.8. Verify-only 3.13 (`/ar` titles via generateMetadata) + 3.14 (AR email placeholder) → fold into Part 5. DEFERRED 3.15 (brand «بورتفوليو برو» — page.tsx dirty), 3.11 (LinkedIn on engineer demo — EN demo batch). **All executable-now clean Part-3 work is complete.**
 
-**RESUME HERE (in order):**
-1. **Part 5 verify — `scripts/portfolio-fix-verify.mjs` (NEW/clean).** Codify QA acceptance checks. ⚠️ EXECUTION CONSTRAINT: no-deploy rule + CPU-limited VPS (no sustained `npm run dev`). So: (a) WRITE the comprehensive script (clean artifact, valuable). (b) RUN the SAFE subset one-shot: the static demo route checks (`/demo/*` + `/ar/demo/*` + `/demo/engineer/projects`) via a brief rewrite-aware local static server over `public/` honoring `vercel.json` (the pattern used in scripts/creator-game-check-ar.mjs / the 2.7 verify) — assert 200, `dir==="rtl"` + Arabic on AR, 3 project cards, no overflow, 0 console errors; tear the server down immediately. (c) For checks needing the full Next app (auth, /ar/templates SSR, guest /try, real CV+QR) — codify them in the script but mark as "run post-deploy"; document in the report which passed locally vs which need a deployed/running app. Fold in verify-only 3.13/3.14 (curl/Playwright the `<title>`/`<html lang>` on `/ar/*` once a server is available; locally at least assert on the static demo `<title>`s + AR labels). Commit the script.
-2. **DEFERRED BATCHES (blocked on other sessions' dirty files — do when unblocked or user coordinates):**
-   - **EN demo static-file batch**: 2.2b (PDF/QR button + `scripts/build-demo-cv-assets` with CORRECT live personas + `qr.png`/`sample-cv.*`) + initials avatar in EN demos + Part-3 demo chrome (nav hover/footers/tel/em-dash/brand/LinkedIn 3.11) + engineer EN `index.html` nav repoint to `/demo/engineer/projects`. Blocked: `public/demo/*/index.html` dirty.
-   - **3.15 brand localization** «بورتفوليو برو» — blocked: `src/app/[locale]/page.tsx` dirty.
+- ✅ **Part 5 — Acceptance verification script** — `2839879`. `scripts/portfolio-fix-verify.mjs` (NEW): rewrite-aware local static server (parses all 16 `vercel.json` rewrites) + Playwright. **Ran green: 73 passed / 0 failed / 9 skipped (app checks).** Validated EN+AR demos (200, rtl, lang=ar, Arabic titles/labels, 0 console errors, no 390px overflow), engineer projects (3 cards EN+AR, links resolve), creator-game smoke. Folded in 3.13/3.14 (AR `<title>` localized). 9 app checks codified + guarded by `RUN_APP_CHECKS=1 BASE_URL=…` for post-deploy. No regressions in any prior-work assertion.
+
+---
+
+## ✅ MILESTONE — ALL EXECUTABLE-NOW CLEAN WORK COMPLETE (loop ended 2026-06-07)
+
+**24 commits, local-only, NOT pushed** (no-deploy rule honored). Every prior session's uncommitted/foreign work left untouched (staged only own files, explicit paths, never `git add -A`). Part 5 script confirms all static deliverables green (73/0/9).
+
+**DONE & verified this milestone:** Part 1 (5 AR RTL demos + Creator game) + engineer-AR re-mirror; 2.1 guest builder; 2.5 initials avatar; 2.7 engineer projects; 2.8 homepage→template-choice+guest; 2.2a real CV+QR (verified working); 2.3/2.4 (prior); Part 3 clean (3.1/3.3/3.4/3.5/3.7/3.10) ; 1.2/1.3 (prior). 2.6 N/A (rebuild handles it); 3.2 N/A (data-limited); 3.8 skip; 3.6/3.9/3.12 done.
+
+**⛔ REMAINING — BLOCKED ON USER (loop stopped here; cannot progress autonomously):**
+1. **EN demo static-file batch** — blocked: `public/demo/*/index.html` carry ANOTHER session's uncommitted og:image edits; interactive `git add -p` unavailable → can't stage my hunk without committing their work. Once they commit (or user says ok to commit their og edits / coordinate), apply: 2.2b (build-demo-cv-assets w/ CORRECT live personas → qr.png + sample-cv; Download-CV button + QR block), initials avatar in EN demos, Part-3 demo chrome (nav hover/footers/tel/em-dash/3.15 brand/3.11 LinkedIn), engineer EN `index.html` nav repoint → `/demo/engineer/projects`.
+2. **3.15 brand** «بورتفوليو برو» — blocked: `src/app/[locale]/page.tsx` dirty (same other session).
+3. **App-level acceptance checks (9)** — need a deploy: `RUN_APP_CHECKS=1 BASE_URL=https://<preview> node scripts/portfolio-fix-verify.mjs` after the user deploys. Covers auth/captcha/forgot-password, /ar/templates SSR, guest /try flow, real CV+QR print, password toggle.
+
+**To resume:** once the other session commits its dirty files OR the user approves committing them, re-run `/loop` (or `/gsd:execute-phase`) pointing here — the deferred batch becomes unblocked clean work. Until then there is no autonomous clean work left.
 3. **Task 2.2** (PDF/QR) — `scripts/build-demo-cv-assets.mjs` + generated assets (clean) + AR demos + real builder/preview "Download CV" wiring to `/api/generate-cv`; EN demo button → defer to batch.
 4. **Part 3 polish** (clean-file items first; demo-EN items → batch) → **Part 5 verify** (`scripts/portfolio-fix-verify.mjs`).
 5. **EN demo static-file batch** (deferred): apply PDF/QR button + initials avatar + resume `#resume` + nav repoint + Part-3 nav-hover/footers/tel/brand to each EN `public/demo/<id>/index.html` once unblocked.
