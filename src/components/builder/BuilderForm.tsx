@@ -282,9 +282,22 @@ export function BuilderForm({ portfolioId, initialData, guest, onPublish }: Buil
   // In guest mode the draft pricing/progress chrome should always show (there's
   // no Convex "status" field); authenticated path keeps its status === "draft" gate.
   const showDraftChrome = guest || formData.status === "draft";
+  const showPaidChrome = !guest && (formData.status === "paid" || formData.status === "published");
 
   return (
     <div>
+      {/* Paid confirmation banner */}
+      {showPaidChrome && (
+        <div className="mb-6 flex items-center gap-3 rounded-xl border border-emerald-600/20 bg-emerald-600/5 px-4 py-3">
+          <span className="text-emerald-500 text-lg">&#10003;</span>
+          <p className="text-sm text-[var(--land-bright)]">
+            {isRTL
+              ? "✓ دفعت بالفعل — عدّل بحرية وأعد التحميل في أي وقت."
+              : "✓ You've already paid — edit freely and re-download anytime."}
+          </p>
+        </div>
+      )}
+
       {/* Pricing context + progress bar */}
       {showDraftChrome && (
         currentStep > 0 && pricingCollapsed ? (

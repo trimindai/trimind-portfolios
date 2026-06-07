@@ -10,6 +10,14 @@ import { Id } from "@convex/_generated/dataModel";
 import { HOSTING_ENABLED } from "@/lib/flags";
 import { useTranslations } from "next-intl";
 
+const TEMPLATE_COLORS: Record<string, { primary: string; accent: string }> = {
+  general: { primary: "#0F172A", accent: "#A16207" },
+  engineer: { primary: "#0F172A", accent: "#059669" },
+  creative: { primary: "#1a1a2e", accent: "#e94560" },
+  creator: { primary: "#1C1917", accent: "#F59E0B" },
+  developer: { primary: "#0d1117", accent: "#58a6ff" },
+};
+
 const STATUS_CONFIG = {
   draft: {
     label: { en: "Draft", ar: "مسودة" },
@@ -152,8 +160,19 @@ export default function DashboardPage() {
             return (
               <div
                 key={portfolio._id}
-                className="rounded-xl border border-[var(--land-border)] bg-[var(--land-surface)]/50 p-5"
+                className="rounded-xl border border-[var(--land-border)] bg-[var(--land-surface)]/50 overflow-hidden"
               >
+                {/* Template color bar */}
+                {(() => {
+                  const colors = TEMPLATE_COLORS[portfolio.templateId as string] || TEMPLATE_COLORS.general;
+                  return (
+                    <div
+                      className="h-12 w-full"
+                      style={{ background: `linear-gradient(135deg, ${colors.primary} 0%, ${colors.accent} 100%)` }}
+                    />
+                  );
+                })()}
+                <div className="p-5">
                 <div className="flex items-start justify-between mb-1">
                   <h3 className="font-semibold text-[var(--land-bright)] truncate">
                     {portfolio.basics.fullName || portfolio.name}
@@ -178,11 +197,17 @@ export default function DashboardPage() {
                   </p>
                 )}
 
-                <div className="flex items-center gap-3 text-xs text-[var(--land-muted)] mb-4">
+                <div className="flex items-center gap-3 flex-wrap text-xs text-[var(--land-muted)] mb-4">
                   <span>
                     {isRTL ? "آخر تعديل" : "Last edited"}:{" "}
                     {new Date(portfolio.lastEditedAt).toLocaleDateString()}
                   </span>
+                  {portfolio.createdAt && (
+                    <span>
+                      {isRTL ? "أنشئ" : "Created"}:{" "}
+                      {new Date(portfolio.createdAt).toLocaleDateString()}
+                    </span>
+                  )}
                   {portfolio.status === "published" && (portfolio as any).viewCount > 0 && (
                     <span className="flex items-center gap-1">
                       <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -207,6 +232,14 @@ export default function DashboardPage() {
                   >
                     {t("common.preview")}
                   </Link>
+                  {(portfolio.status === "paid" || portfolio.status === "published") && (
+                    <Link
+                      href={`/dashboard/${portfolio._id}/preview`}
+                      className="flex-1 text-center rounded-lg bg-[var(--land-accent)] px-3 py-1.5 text-sm font-medium text-white hover:bg-[var(--land-accent-hover)] transition-colors"
+                    >
+                      {isRTL ? "حمّل PDF" : "Download PDF"}
+                    </Link>
+                  )}
                   {portfolio.status !== "published" && (
                     <Link
                       href={`/dashboard/${portfolio._id}/publish`}
@@ -258,6 +291,7 @@ export default function DashboardPage() {
                       &times;
                     </button>
                   )}
+                </div>
                 </div>
               </div>
             );

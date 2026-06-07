@@ -60,6 +60,16 @@ export default function DashboardLayout({
             </Link>
             <div className="flex items-center gap-3 sm:gap-4">
               <AdminLink />
+              <Link
+                href="/dashboard"
+                className={`text-sm font-medium transition-colors ${
+                  pathname === `/${locale}/dashboard`
+                    ? "text-[var(--land-accent)]"
+                    : "text-[var(--land-body)] hover:text-[var(--land-bright)]"
+                }`}
+              >
+                {isRTL ? "ملفاتي" : "My Portfolios"}
+              </Link>
               <span className="hidden sm:inline text-sm text-[var(--land-body)]">
                 {user?.fullName || user?.primaryEmailAddress?.emailAddress}
               </span>
