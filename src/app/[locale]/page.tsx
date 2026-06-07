@@ -165,12 +165,13 @@ export default async function LandingPage({
               >
                 EN
               </Link>
+              <span className="flex items-center text-gray-300">|</span>
               <Link
                 href="/"
                 locale="ar"
                 className={`px-3 py-1 font-medium transition-colors ${locale === "ar" ? "bg-emerald-600 text-white" : "text-gray-500 hover:text-gray-900"}`}
               >
-                عر
+                عربي
               </Link>
             </div>
             <NavbarAuth locale={locale} />
