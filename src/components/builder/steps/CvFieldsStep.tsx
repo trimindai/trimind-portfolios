@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { TextField } from "../fields/TextField";
 import { TextareaField } from "../fields/TextareaField";
@@ -20,9 +21,54 @@ const LEVEL_KEYS: Record<string, string> = {
   Basic: "levelBasic",
 };
 
+function calculateTotalYears(experience: any[]): string {
+  if (!experience?.length) return "not provided";
+  const now = new Date().getFullYear();
+  const earliest = experience.reduce((min, e) => {
+    const year = parseInt(e.startDate);
+    return year && year < min ? year : min;
+  }, now);
+  const years = now - earliest;
+  return years > 0 ? `${years}` : "not provided";
+}
+
 export function CvFieldsStep({ data, onChange }: CvFieldsStepProps) {
   const t = useTranslations("builder.cvFields");
   const basics = data.basics || {};
+  const [generating, setGenerating] = useState(false);
+  const [aiError, setAiError] = useState("");
+
+  async function generateSummary() {
+    setGenerating(true);
+    setAiError("");
+    try {
+      const context = {
+        fullName: basics.fullName ?? "",
+        professionalTitle: basics.title ?? "",
+        location: basics.location ?? "Kuwait",
+        totalYearsExperience: calculateTotalYears(data.experience),
+        mostRecentRole: data.experience?.[0]?.title ?? "",
+        mostRecentCompany: data.experience?.[0]?.company ?? "",
+        topSkills: data.skills?.flatMap((cat: any) => cat.items ?? []).slice(0, 5).join(", ") ?? "",
+        notableAchievement: data.experience?.[0]?.highlights?.[0] ?? "",
+        highestEducation: data.education?.[0]?.degree
+          ? `${data.education[0].degree} at ${data.education[0].institution}`
+          : "",
+      };
+      const res = await fetch("/api/generate-summary", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(context),
+      });
+      const result = await res.json();
+      if (!res.ok) throw new Error(result.error || "Failed to generate");
+      onChange({ basics: { ...basics, summary: result.summary } });
+    } catch (e: any) {
+      setAiError(e.message || "Something went wrong");
+    } finally {
+      setGenerating(false);
+    }
+  }
 
   // GCC defaults: pre-fill Arabic + English the first time this step is opened
   // and no languages exist yet. Stored on the top-level `languages` field — the
@@ -51,14 +97,40 @@ export function CvFieldsStep({ data, onChange }: CvFieldsStepProps) {
       </div>
 
       {/* Professional Summary */}
-      <TextareaField
-        label={t("summaryLabel")}
-        value={basics.summary || ""}
-        onChange={(v) => updateBasics("summary", v)}
-        placeholder={t("summaryPlaceholder")}
-        hint={t("summaryHint")}
-        rows={4}
-      />
+      <div>
+        <TextareaField
+          label={t("summaryLabel")}
+          value={basics.summary || ""}
+          onChange={(v) => updateBasics("summary", v)}
+          placeholder={t("summaryPlaceholder")}
+          hint={t("summaryHint")}
+          rows={4}
+        />
+        <div className="mt-2 flex items-center gap-3">
+          <button
+            type="button"
+            onClick={generateSummary}
+            disabled={generating || !basics.fullName || !basics.title}
+            className="inline-flex items-center gap-1.5 rounded-lg border border-[var(--land-accent)]/30 bg-[var(--land-accent)]/5 px-3 py-1.5 text-xs font-medium text-[var(--land-accent)] hover:bg-[var(--land-accent)]/10 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+          >
+            {generating ? (
+              <>
+                <span className="h-3 w-3 animate-spin rounded-full border border-[var(--land-accent)] border-t-transparent" />
+                Writing...
+              </>
+            ) : (
+              <>
+                <svg className="h-3.5 w-3.5" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M8 2v4M6 4h4M3 8l2 6 3-4 3 4 2-6" />
+                </svg>
+                Write my summary
+              </>
+            )}
+          </button>
+          {aiError && <span className="text-xs text-red-500">{aiError}</span>}
+          {!basics.fullName && <span className="text-xs text-[var(--land-muted)]">Fill Basic Info first</span>}
+        </div>
+      </div>
 
       {/* Languages */}
       <div>
