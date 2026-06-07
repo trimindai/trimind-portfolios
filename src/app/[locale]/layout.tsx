@@ -37,18 +37,18 @@ export async function generateMetadata({
   return {
     metadataBase: new URL(SITE_URL),
     title: isAr
-      ? "بورتفوليو برو — أنشئ سيرتك وبورتفوليوك الاحترافي"
-      : "Portfolio Pro — Build Your Professional Portfolio",
+      ? "بورتفوليو برو — سيرة ذاتية وبورتفوليو احترافي"
+      : "Portfolio Pro — Professional CV & Portfolio",
     description: isAr
-      ? "أنشئ سيرة ذاتية وبورتفوليو احترافي في دقائق. اختر قالبًا، أضف بياناتك، واحصل على ملف PDF. يدعم العربية والإنجليزية."
-      : "Create a professional CV + portfolio in minutes. Pick a template, fill your info, get your PDF. Arabic & English supported.",
+      ? "ابنِ سيرتك الذاتية وبورتفوليوك الاحترافي مجانًا. ادفع ٤.٩ دك فقط عندما يعجبك. عربي وإنجليزي. الكويت والخليج."
+      : "Build your professional CV and portfolio free. Pay 4.9 KD only when you love it. Arabic & English. Kuwait & Gulf.",
     openGraph: {
       title: isAr
-        ? "بورتفوليو برو — سيرة وبورتفوليو احترافي في دقائق"
-        : "Portfolio Pro — Professional CV + Portfolio in Minutes",
+        ? "بورتفوليو برو — سيرة ذاتية وبورتفوليو احترافي"
+        : "Portfolio Pro — Professional CV & Portfolio",
       description: isAr
-        ? "اختر قالبًا، أضف بياناتك، واحصل على بورتفوليو PDF احترافي. العربية والإنجليزية. دفعة واحدة."
-        : "Pick a template, fill your info, get a professional PDF portfolio. Arabic & English. One-time payment.",
+        ? "ابنِ سيرتك الذاتية وبورتفوليوك الاحترافي مجانًا. ادفع ٤.٩ دك فقط عندما يعجبك. عربي وإنجليزي. الكويت والخليج."
+        : "Build your professional CV and portfolio free. Pay 4.9 KD only when you love it. Arabic & English. Kuwait & Gulf.",
       url: `${SITE_URL}/${locale}`,
       siteName: "Portfolio Pro",
       type: "website",

@@ -134,7 +134,7 @@ export function HowItWorks({ isRTL }: { isRTL: boolean }) {
             href="/templates"
             className="inline-block rounded-lg bg-[var(--land-accent)] px-8 py-4 text-base font-semibold text-white transition-colors hover:bg-[var(--land-accent-hover)] active:scale-[0.98] shadow-sm"
           >
-            {isRTL ? "ابدأ البناء — ٤.٩٠٠ دك" : "Start Building — 4.900 KD"}
+            {isRTL ? "ابدأ البناء — مجاني" : "Start Building — It's Free"}
           </Link>
           <p className="mt-3 text-xs text-[var(--land-muted)]">
             {isRTL

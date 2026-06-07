@@ -1,9 +1,8 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { ScrollReveal } from "@/components/landing/ScrollReveal";
-import { HowItWorks } from "@/components/landing/HowItWorks";
 import { Testimonials } from "@/components/landing/Testimonials";
-import { Palette, Languages, FileDown, Globe, Plus, Eye, Check } from "lucide-react";
+import { Palette, Languages, FileDown, Globe, Plus, Eye } from "lucide-react";
 import Image from "next/image";
 import { HOSTING_ENABLED } from "@/lib/flags";
 import { AdminLink } from "@/components/AdminLink";
@@ -223,6 +222,7 @@ export default async function LandingPage({
               <TryItForm locale={locale} />
               {/* Animated CV preview — mobile only (desktop shows mockup images) */}
               <div className="lg:hidden">
+                <p className="text-xs text-emerald-600 font-medium mb-2 text-center">&#10024; Watch AI build a CV live</p>
                 <CvPreviewCard />
               </div>
             </div>
@@ -502,25 +502,22 @@ export default async function LandingPage({
               </div>
             </ScrollReveal>
 
-            {/* Request a template */}
+            {/* More templates coming soon */}
             <ScrollReveal delay={400}>
               <div className="flex h-full flex-col items-center justify-center rounded-xl border border-dashed border-[var(--land-border)] bg-[var(--land-surface)]/40 p-8 text-center">
                 <span className="flex h-12 w-12 items-center justify-center rounded-full border border-[var(--land-border)] text-[var(--land-muted)]">
                   <Plus className="h-6 w-6" />
                 </span>
-                <h3 className="mt-4 text-lg font-semibold">
-                  {isRTL ? "تحتاج مهنة أخرى؟" : "Need a different profession?"}
-                </h3>
-                <p className="mt-2 text-sm text-[var(--land-body)]">
+                <p className="mt-4 text-sm text-[var(--land-body)]">
                   {isRTL
-                    ? "أخبرنا بما تحتاجه — نضيف قوالب متخصصة بناءً على الطلب."
-                    : "Tell us what you need — we add profession-specific templates based on demand."}
+                    ? "قوالب جديدة قريبًا — طبي، قانوني، تعليمي، والمزيد."
+                    : "More templates coming soon — Medical, Legal, Education, and more."}
                 </p>
                 <a
-                  href="mailto:support@portfolio-trimind.com?subject=Template%20request"
+                  href="mailto:support@portfolio-trimind.com?subject=Template%20waitlist"
                   className="mt-4 text-sm font-medium text-[var(--land-accent)] hover:underline"
                 >
-                  {isRTL ? "اطلب قالبًا ←" : "Request a template →"}
+                  {isRTL ? "انضم لقائمة الانتظار ←" : "Join the waitlist →"}
                 </a>
               </div>
             </ScrollReveal>
@@ -528,8 +525,7 @@ export default async function LandingPage({
         </div>
       </section>
 
-      {/* ── How it works ───────────────────────── */}
-      <HowItWorks isRTL={isRTL} />
+      {/* ── (How-it-works component removed — kept inline AI version above) ── */}
 
       {/* ── Features (2x2 grid) ────────────────── */}
       <section className="py-16 sm:py-28 px-6">
@@ -639,9 +635,6 @@ export default async function LandingPage({
           </ScrollReveal>
         </div>
       </section>
-
-      {/* ── Testimonials (built, hidden until real) ── */}
-      <Testimonials isRTL={isRTL} />
 
       {/* ── Pricing ────────────────────────────── */}
       <ScrollReveal>
@@ -776,6 +769,9 @@ export default async function LandingPage({
         </section>
       </ScrollReveal>
 
+      {/* ── Testimonials ──────────────────── */}
+      <Testimonials isRTL={isRTL} />
+
       {/* ── FAQ ─────────────────────────────────── */}
       <ScrollReveal>
         <section className="py-20 px-6">
@@ -844,10 +840,10 @@ export default async function LandingPage({
                 href="/templates"
                 className="inline-block rounded-lg shadow-sm bg-[var(--land-accent)] px-10 py-4 text-lg font-semibold text-white transition-colors hover:bg-[var(--land-accent-hover)] active:scale-[0.98]"
               >
-                {isRTL ? "ابدأ البناء — ٤.٩٠٠ دك" : "Start Building — 4.900 KD"}
+                {isRTL ? "ابدأ البناء — مجاني" : "Start Building — It's Free"}
               </Link>
               <p className="mt-3 text-xs text-[var(--land-muted)]">
-                {isRTL ? "دفعة واحدة · بدون اشتراك" : "One-time payment · No subscription"}
+                {isRTL ? "ابنِ مجانًا · ادفع فقط عند النشر" : "Build free · Pay only when you publish"}
               </p>
             </div>
           </div>
@@ -942,6 +938,16 @@ export default async function LandingPage({
                   className="hover:text-[var(--land-bright)] transition-colors"
                 >
                   WhatsApp
+                </a>
+              </li>
+              <li>
+                <a
+                  href="https://instagram.com/trimindartificiall"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-[var(--land-bright)] transition-colors"
+                >
+                  Instagram
                 </a>
               </li>
               <li>
