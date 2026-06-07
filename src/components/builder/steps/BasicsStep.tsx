@@ -21,6 +21,44 @@ export function BasicsStep({ data, onChange }: BasicsStepProps) {
   const [aiUses, setAiUses] = useState(0);
   const AI_LIMIT = 5;
 
+  const [fillGenerating, setFillGenerating] = useState(false);
+  const [fillError, setFillError] = useState("");
+  const [fillDone, setFillDone] = useState(false);
+
+  async function generateFullCv() {
+    setFillGenerating(true);
+    setFillError("");
+    try {
+      const res = await fetch("/api/generate-full-cv", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          fullName: basics.fullName ?? "",
+          professionalTitle: basics.title ?? "",
+          location: basics.location ?? "Kuwait",
+          userNotes: basics.bio ?? "",
+        }),
+      });
+      const result = await res.json();
+      if (!res.ok) throw new Error(result.error || "Failed to generate");
+      const cv = result.cv;
+      onChange({
+        basics: { ...basics, ...cv.basics, fullName: basics.fullName, title: basics.title, email: basics.email || cv.basics?.email },
+        experience: cv.experience,
+        skills: cv.skills,
+        education: cv.education,
+        certifications: cv.certifications,
+        languages: cv.languages,
+        metrics: cv.metrics,
+      });
+      setFillDone(true);
+    } catch (e: any) {
+      setFillError(e.message || "Something went wrong");
+    } finally {
+      setFillGenerating(false);
+    }
+  }
+
   async function generateSummary() {
     setAiGenerating(true);
     setAiError("");
@@ -154,6 +192,54 @@ export function BasicsStep({ data, onChange }: BasicsStepProps) {
               <p className="text-xs text-[var(--land-body)] line-clamp-2">{basics.summary}</p>
             </div>
           )}
+
+          {/* Fill entire CV with AI */}
+          {!fillDone && (
+            <button
+              type="button"
+              onClick={generateFullCv}
+              disabled={fillGenerating}
+              className="w-full flex items-center justify-between rounded-xl border border-emerald-600/30 bg-emerald-600/5 px-4 py-3.5 text-start transition-colors hover:bg-emerald-600/10 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              <div>
+                <span className="text-sm font-medium text-emerald-600 flex items-center gap-1.5">
+                  {fillGenerating ? (
+                    <>
+                      <span className="h-3.5 w-3.5 animate-spin rounded-full border-2 border-emerald-600 border-t-transparent" />
+                      Filling your CV...
+                    </>
+                  ) : (
+                    <>
+                      <svg className="h-4 w-4" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M8 2v4M6 4h4M3 8l2 6 3-4 3 4 2-6" /></svg>
+                      Fill my entire CV with AI
+                    </>
+                  )}
+                </span>
+                <span className="text-xs text-[var(--land-muted)] mt-0.5 block">
+                  Generates experience, skills, education &amp; more in one click
+                </span>
+              </div>
+            </button>
+          )}
+
+          {fillDone && (
+            <div className="rounded-xl border border-emerald-600/30 bg-emerald-600/5 px-4 py-3">
+              <p className="text-sm font-medium text-emerald-600 flex items-center gap-1.5">
+                <svg className="h-4 w-4" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M2 6l3 3 5-5" /></svg>
+                CV filled! Review each step and edit as needed.
+              </p>
+              <button
+                type="button"
+                onClick={() => { setFillDone(false); generateFullCv(); }}
+                disabled={fillGenerating}
+                className="mt-2 text-xs text-emerald-600/70 hover:text-emerald-600 underline underline-offset-2"
+              >
+                Regenerate everything
+              </button>
+            </div>
+          )}
+
+          {fillError && <p className="text-xs text-red-500">{fillError}</p>}
         </div>
       )}
 
