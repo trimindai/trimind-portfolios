@@ -311,6 +311,7 @@ export const update = mutation({
     ),
     customization: customizationValidator,
     contentAr: v.optional(v.string()),
+    lastCompletedStep: v.optional(v.number()),
   },
   handler: async (ctx, { id, ...fields }) => {
     // Auth + ownership: caller must own this portfolio (admins can edit any).

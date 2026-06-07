@@ -281,6 +281,7 @@ export default defineSchema({
       )
     ),
     viewCount: v.optional(v.number()),
+    lastCompletedStep: v.optional(v.number()),
     paymentId: v.optional(v.string()),
     publishedAt: v.optional(v.number()),
     lastEditedAt: v.number(),

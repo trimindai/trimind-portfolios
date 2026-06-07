@@ -12,6 +12,16 @@ const TEST_EMAILS = ["test@trimindai.com", "trimindai@trimindai.com"];
 
 type Tab = "users" | "portfolios" | "payments";
 
+function relativeTime(ms: number): string {
+  const diff = Date.now() - ms;
+  const mins = Math.floor(diff / 60000);
+  if (mins < 60) return `${mins}m ago`;
+  const hours = Math.floor(mins / 60);
+  if (hours < 24) return `${hours}h ago`;
+  const days = Math.floor(hours / 24);
+  return `${days}d ago`;
+}
+
 class AdminErrorBoundary extends Component<
   { children: ReactNode },
   { error: Error | null }
@@ -91,6 +101,21 @@ function AdminPageInner() {
     { id: "payments", label: "Payments", count: pendingPaymentsCount > 0 ? pendingPaymentsCount : undefined },
   ];
 
+  // Build wizard funnel data
+  const FUNNEL_LABELS = ["Basic Info", "Experience", "Achievements", "Skills", "Education", "CV Details", "Endorsements", "Customize", "Preview", "Paid"];
+  const funnelData = stats
+    ? FUNNEL_LABELS.map((label, i) => {
+        if (i === 9) return { label, count: stats.completedPayments };
+        if (i === 8) return { label, count: stats.paidReachedPreview };
+        let count = 0;
+        for (const [step, c] of Object.entries(stats.funnelSteps)) {
+          if (Number(step) >= i) count += (c as number);
+        }
+        return { label, count };
+      })
+    : null;
+  const maxFunnelCount = funnelData ? Math.max(...funnelData.map((d) => d.count), 1) : 1;
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
@@ -124,18 +149,53 @@ function AdminPageInner() {
           </label>
         </div>
 
-        {/* Stats Cards */}
+        {/* Stats Cards — 6 cards in 2x3 grid */}
         {stats ? (
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4 mb-6">
-            <StatCard value={`${stats.totalRevenue.toFixed(3)} KD`} label="Revenue" color="emerald" />
-            <StatCard value={`${stats.conversionRate}%`} label="Conversion" sub="signup → paid" color="emerald" />
-            <StatCard value={totalUsers} label="Users" color="gray" />
-            <StatCard value={stats.totalPortfolios} label="Portfolios" sub={`${stats.publishedCount} live`} color="gray" />
-            <StatCard value={stats.completedPayments} label="Payments" color="gray" />
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4 mb-6">
+            {/* Card 1: Revenue */}
+            <div className="bg-white rounded-xl border border-gray-200 p-4">
+              <p className="text-2xl font-bold text-emerald-700">{stats.totalRevenue.toFixed(3)} KD</p>
+              <p className="text-gray-500 text-sm">Revenue</p>
+              <p className="text-xs text-amber-600 mt-0.5">{stats.pendingRevenue.toFixed(3)} KD pending</p>
+            </div>
+            {/* Card 2: Conversion */}
+            <div className="bg-white rounded-xl border border-gray-200 p-4">
+              <p className="text-2xl font-bold text-emerald-700">{stats.conversionRate}%</p>
+              <p className="text-gray-500 text-sm">Conversion</p>
+              <p className="text-xs text-gray-400 mt-0.5">signup → paid</p>
+            </div>
+            {/* Card 3: Users */}
+            <div className="bg-white rounded-xl border border-gray-200 p-4">
+              <p className="text-2xl font-bold text-gray-900">{stats.totalUsers}</p>
+              <p className="text-gray-500 text-sm">Users</p>
+              <p className="text-xs text-gray-400 mt-0.5">{stats.newUsersThisWeek} new this week</p>
+            </div>
+            {/* Card 4: Portfolios */}
+            <div className="bg-white rounded-xl border border-gray-200 p-4">
+              <p className="text-2xl font-bold text-gray-900">{stats.totalPortfolios}</p>
+              <p className="text-gray-500 text-sm">Portfolios</p>
+              <p className="text-xs text-gray-400 mt-0.5">{stats.publishedCount} live · {stats.abandonedPortfolios} abandoned</p>
+            </div>
+            {/* Card 5: Payments */}
+            <div className="bg-white rounded-xl border border-gray-200 p-4">
+              <p className="text-2xl font-bold text-gray-900">{stats.completedPayments}</p>
+              <p className="text-gray-500 text-sm">Payments</p>
+              <p className="text-xs text-gray-400 mt-0.5">{stats.completedPayments} paid / {stats.pendingPayments} pending / {stats.failedPayments} failed</p>
+            </div>
+            {/* Card 6: Avg/User */}
+            <div className="bg-white rounded-xl border border-gray-200 p-4">
+              <div className="flex items-center gap-2">
+                <p className="text-2xl font-bold text-gray-900">{stats.avgPortfoliosPerUser}</p>
+                {stats.avgPortfoliosPerUser > 5 && (
+                  <span className="px-2 py-0.5 rounded-full text-[10px] font-medium bg-red-100 text-red-700">High — possible test data</span>
+                )}
+              </div>
+              <p className="text-gray-500 text-sm">Avg/User</p>
+            </div>
           </div>
         ) : (
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4 mb-6">
-            {[1, 2, 3, 4, 5].map((i) => (
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4 mb-6">
+            {[1, 2, 3, 4, 5, 6].map((i) => (
               <div key={i} className="bg-white rounded-xl border border-gray-200 p-4 animate-pulse">
                 <div className="h-7 w-16 bg-gray-100 rounded mb-2" />
                 <div className="h-4 w-20 bg-gray-100 rounded" />
@@ -144,8 +204,29 @@ function AdminPageInner() {
           </div>
         )}
 
+        {/* Wizard Funnel */}
+        {funnelData && (
+          <div className="bg-white rounded-xl border border-gray-200 p-5 mb-6">
+            <h2 className="text-sm font-semibold text-gray-900 mb-4">Wizard Funnel</h2>
+            <div className="space-y-2">
+              {funnelData.map((d, i) => (
+                <div key={i} className="flex items-center gap-3">
+                  <span className="text-xs text-gray-500 w-24 shrink-0 text-right">{d.label}</span>
+                  <div className="flex-1 h-6 bg-gray-100 rounded-md overflow-hidden">
+                    <div
+                      className={`h-full rounded-md transition-all ${i === 9 ? "bg-emerald-500" : i === 8 ? "bg-amber-400" : "bg-gray-300"}`}
+                      style={{ width: `${(d.count / maxFunnelCount) * 100}%` }}
+                    />
+                  </div>
+                  <span className="text-xs font-medium text-gray-700 w-8">{d.count}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
         {/* Pending payments alert */}
-        {pendingPaymentsCount > 0 && (
+        {pendingPaymentsCount > 0 && stats && (
           <button
             onClick={() => setActiveTab("payments")}
             className="w-full flex items-center justify-between gap-3 bg-amber-50 border border-amber-200 rounded-xl px-4 py-3 mb-6 hover:bg-amber-100 transition-colors text-left"
@@ -153,8 +234,8 @@ function AdminPageInner() {
             <div className="flex items-center gap-3">
               <span className="flex h-8 w-8 items-center justify-center rounded-full bg-amber-100 text-amber-600 font-bold text-sm">{pendingPaymentsCount}</span>
               <div>
-                <p className="text-sm font-medium text-amber-800">Pending payments</p>
-                <p className="text-xs text-amber-600">Potential stuck revenue — review now</p>
+                <p className="text-sm font-medium text-amber-800">{pendingPaymentsCount} pending — {stats.pendingRevenue.toFixed(3)} KD potential recovery</p>
+                <p className="text-xs text-amber-600">Review stuck payments now</p>
               </div>
             </div>
             <span className="text-amber-600 text-sm font-medium">View &rarr;</span>
@@ -188,17 +269,6 @@ function AdminPageInner() {
         {activeTab === "portfolios" && (portfolios && users ? <PortfoliosTab portfolios={portfolios} users={users} /> : <EmptyState label="Loading..." />)}
         {activeTab === "payments" && (payments && users ? <PaymentsTab payments={payments} users={users} portfolios={portfolios ?? []} /> : <EmptyState label="Loading..." />)}
       </main>
-    </div>
-  );
-}
-
-function StatCard({ value, label, sub, color }: { value: string | number; label: string; sub?: string; color: "emerald" | "gray" }) {
-  const textColor = color === "emerald" ? "text-emerald-700" : "text-gray-900";
-  return (
-    <div className="bg-white rounded-xl border border-gray-200 p-4">
-      <p className={`text-2xl font-bold ${textColor}`}>{value}</p>
-      <p className="text-gray-500 text-sm">{label}</p>
-      {sub && <p className="text-xs text-gray-400 mt-0.5">{sub}</p>}
     </div>
   );
 }
@@ -356,6 +426,16 @@ function UsersTab({ users }: { users: any[] }) {
               {userPortfolios.length === 0 && userPayments.length === 0 && (
                 <p className="text-gray-400 text-sm text-center py-6">No activity yet</p>
               )}
+
+              {/* Action buttons */}
+              <div className="mt-6 border-t border-gray-200 pt-4 space-y-2">
+                <a
+                  href={`mailto:${selectedUser.email}?subject=${encodeURIComponent("Your Portfolio Pro draft is waiting")}&body=${encodeURIComponent("Hi! Your professional portfolio is almost ready. Come back to finish it: https://portfolio-trimind.com/en/dashboard")}`}
+                  className="w-full flex items-center justify-center gap-2 rounded-lg border border-gray-200 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
+                >
+                  Send reminder email
+                </a>
+              </div>
             </div>
           </div>
         </div>
@@ -391,7 +471,12 @@ function PortfoliosTab({ portfolios, users }: { portfolios: any[]; users: any[] 
         return p.basics?.fullName?.toLowerCase().includes(q) || p.name?.toLowerCase().includes(q) || owner?.email?.toLowerCase().includes(q);
       });
     }
-    if (statusFilter !== "all") result = result.filter((p) => p.status === statusFilter);
+    if (statusFilter === "abandoned") {
+      const cutoff = Date.now() - 48 * 60 * 60 * 1000;
+      result = result.filter((p) => p.status === "draft" && p.lastEditedAt < cutoff);
+    } else if (statusFilter !== "all") {
+      result = result.filter((p) => p.status === statusFilter);
+    }
     return result;
   }, [portfolios, search, statusFilter, userMap]);
 
@@ -407,6 +492,7 @@ function PortfoliosTab({ portfolios, users }: { portfolios: any[]; users: any[] 
           <option value="draft">Draft</option>
           <option value="paid">Paid</option>
           <option value="published">Published</option>
+          <option value="abandoned">Abandoned (&gt;48h)</option>
         </select>
       </div>
 
@@ -418,7 +504,8 @@ function PortfoliosTab({ portfolios, users }: { portfolios: any[]; users: any[] 
               <th className="text-left py-3 px-4 text-xs font-medium text-gray-500 uppercase tracking-wider">Portfolio</th>
               <th className="text-left py-3 px-4 text-xs font-medium text-gray-500 uppercase tracking-wider">Owner</th>
               <th className="text-left py-3 px-4 text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-              <th className="text-left py-3 px-4 text-xs font-medium text-gray-500 uppercase tracking-wider">Edited</th>
+              <th className="text-left py-3 px-4 text-xs font-medium text-gray-500 uppercase tracking-wider">Progress</th>
+              <th className="text-left py-3 px-4 text-xs font-medium text-gray-500 uppercase tracking-wider">Last Active</th>
               <th className="text-left py-3 px-4 text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
             </tr>
           </thead>
@@ -428,19 +515,31 @@ function PortfoliosTab({ portfolios, users }: { portfolios: any[]; users: any[] 
               return (
                 <tr key={p._id} className="border-t border-gray-50 hover:bg-gray-50 transition-colors">
                   <td className="py-3 px-4">
-                    <p className="text-sm font-medium text-gray-900">{p.basics?.fullName || p.name || "Untitled"}</p>
-                    {p.slug && <p className="text-xs text-gray-400 font-mono">/p/{p.slug}</p>}
+                    <div className="flex items-center gap-2">
+                      <div>
+                        <p className="text-sm font-medium text-gray-900">{p.basics?.fullName || p.name || "Untitled"}</p>
+                        {p.slug && <p className="text-xs text-gray-400 font-mono">/p/{p.slug}</p>}
+                      </div>
+                      {p.templateId && (
+                        <span className="px-1.5 py-0.5 rounded text-[10px] font-medium bg-gray-100 text-gray-500 capitalize">{p.templateId}</span>
+                      )}
+                    </div>
                   </td>
                   <td className="py-3 px-4 text-sm text-gray-500">{owner?.email || "—"}</td>
                   <td className="py-3 px-4"><StatusBadge status={p.status} /></td>
-                  <td className="py-3 px-4 text-sm text-gray-400">{new Date(p.lastEditedAt).toLocaleDateString()}</td>
+                  <td className="py-3 px-4">
+                    {p.lastCompletedStep != null && (
+                      <span className="text-xs text-gray-500">Step {p.lastCompletedStep} of 8</span>
+                    )}
+                  </td>
+                  <td className="py-3 px-4 text-sm text-gray-400">{relativeTime(p.lastEditedAt)}</td>
                   <td className="py-3 px-4">
                     <PortfolioActions p={p} confirmDelete={confirmDelete} setConfirmDelete={setConfirmDelete} markPaid={markPaid} deletePortfolio={deletePortfolio} />
                   </td>
                 </tr>
               );
             })}
-            {paged.length === 0 && <tr><td colSpan={5} className="px-4 py-8 text-center text-gray-400 text-sm">No portfolios found</td></tr>}
+            {paged.length === 0 && <tr><td colSpan={6} className="px-4 py-8 text-center text-gray-400 text-sm">No portfolios found</td></tr>}
           </tbody>
         </table>
         <Pagination page={page} totalPages={totalPages} setPage={setPage} />
@@ -454,13 +553,23 @@ function PortfoliosTab({ portfolios, users }: { portfolios: any[]; users: any[] 
             <div key={p._id} className="bg-white rounded-xl border border-gray-200 p-4">
               <div className="flex items-start justify-between mb-2">
                 <div>
-                  <p className="text-sm font-medium text-gray-900">{p.basics?.fullName || p.name || "Untitled"}</p>
+                  <div className="flex items-center gap-2">
+                    <p className="text-sm font-medium text-gray-900">{p.basics?.fullName || p.name || "Untitled"}</p>
+                    {p.templateId && (
+                      <span className="px-1.5 py-0.5 rounded text-[10px] font-medium bg-gray-100 text-gray-500 capitalize">{p.templateId}</span>
+                    )}
+                  </div>
                   <p className="text-xs text-gray-400">{owner?.email || "—"}</p>
                 </div>
                 <StatusBadge status={p.status} />
               </div>
               <div className="flex items-center justify-between text-xs text-gray-400 mb-3">
-                <span>{new Date(p.lastEditedAt).toLocaleDateString()}</span>
+                <div className="flex items-center gap-2">
+                  <span>{relativeTime(p.lastEditedAt)}</span>
+                  {p.lastCompletedStep != null && (
+                    <span className="px-1.5 py-0.5 rounded bg-gray-100 text-gray-500 text-[10px] font-medium">Step {p.lastCompletedStep}/8</span>
+                  )}
+                </div>
                 {p.slug && <span className="font-mono">/p/{p.slug}</span>}
               </div>
               <PortfolioActions p={p} confirmDelete={confirmDelete} setConfirmDelete={setConfirmDelete} markPaid={markPaid} deletePortfolio={deletePortfolio} />

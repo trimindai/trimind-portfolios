@@ -57,6 +57,24 @@ export const getStats = query({
       signupsByDay[day] = (signupsByDay[day] || 0) + 1;
     });
 
+    const sevenDaysAgo = Date.now() - 7 * 24 * 60 * 60 * 1000;
+    const fortyEightHoursAgo = Date.now() - 48 * 60 * 60 * 1000;
+    const newUsersThisWeek = users.filter((u) => u.createdAt > sevenDaysAgo).length;
+    const abandonedPortfolios = draftPortfolios.filter(
+      (p) => p.lastEditedAt < fortyEightHoursAgo
+    ).length;
+    const pendingRevenue = pendingPayments.length * 4.9;
+    const avgPortfoliosPerUser = users.length > 0
+      ? +(portfolios.length / users.length).toFixed(1)
+      : 0;
+
+    const funnelSteps: Record<number, number> = {};
+    for (const p of portfolios) {
+      const step = (p as any).lastCompletedStep ?? 0;
+      funnelSteps[step] = (funnelSteps[step] || 0) + 1;
+    }
+    const paidReachedPreview = paidPortfolios.length + publishedPortfolios.length;
+
     return {
       totalUsers: users.length,
       totalPortfolios: portfolios.length,
@@ -70,6 +88,12 @@ export const getStats = query({
       conversionRate: users.length > 0 ? Math.round((completedPayments.length / users.length) * 100) : 0,
       revenueByDay,
       signupsByDay,
+      newUsersThisWeek,
+      abandonedPortfolios,
+      pendingRevenue,
+      avgPortfoliosPerUser,
+      funnelSteps,
+      paidReachedPreview,
     };
   },
 });

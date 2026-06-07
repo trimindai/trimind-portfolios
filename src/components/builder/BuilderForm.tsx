@@ -255,9 +255,13 @@ export function BuilderForm({ portfolioId, initialData, guest, onPublish }: Buil
   };
 
   const goNext = async () => {
+    const nextStep = currentStep + 1;
+    if (!guest && nextStep > (formData.lastCompletedStep ?? 0)) {
+      setFormData((prev: any) => ({ ...prev, lastCompletedStep: nextStep }));
+    }
     await save();
     if (currentStep < steps.length - 1) {
-      setCurrentStep(currentStep + 1);
+      setCurrentStep(nextStep);
     }
   };
 
