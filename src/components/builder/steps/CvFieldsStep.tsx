@@ -78,6 +78,7 @@ export function CvFieldsStep({ data, onChange }: CvFieldsStepProps) {
         highestEducation: data.education?.[0]?.degree
           ? `${data.education[0].degree} at ${data.education[0].institution}`
           : "",
+        userDraft: basics.summary ?? "",
       };
       const res = await fetch("/api/generate-summary", {
         method: "POST",

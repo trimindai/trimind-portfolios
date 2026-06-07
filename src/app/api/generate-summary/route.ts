@@ -14,11 +14,15 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
   }
 
-  const { fullName, professionalTitle, location, totalYearsExperience, mostRecentRole, mostRecentCompany, topSkills, notableAchievement, highestEducation } = body;
+  const { fullName, professionalTitle, location, totalYearsExperience, mostRecentRole, mostRecentCompany, topSkills, notableAchievement, highestEducation, userDraft } = body;
 
   if (!fullName || !professionalTitle) {
     return NextResponse.json({ error: "fullName and professionalTitle are required" }, { status: 400 });
   }
+
+  const userDraftSection = userDraft?.trim()
+    ? `\nUser's raw notes (use this as the primary source of truth for their profession and experience):\n${userDraft.trim()}\n`
+    : "";
 
   const prompt = `Write a professional CV summary for this person.
 Return ONLY the summary text — no labels, no quotes, no explanation, no markdown.
@@ -29,10 +33,13 @@ Rules:
 - Mention 1-2 specific skills or achievements if available
 - End with the value they bring to employers
 - Professional tone, active voice
+- Always write complete sentences. Never end mid-sentence.
+- Maximum 3 sentences. If you reach the token limit, finish the current sentence first.
+- If the user's raw notes mention a profession, use that exact profession — do not substitute a similar one (e.g. if they say 'computer engineer' do not write 'civil engineer')
 - Do NOT use: "results-driven", "passionate", "dynamic", "seasoned"
 - Context: Gulf job market (Kuwait / Saudi Arabia / UAE)
 - If name appears Arabic and title is in English, mention bilingual capability naturally
-
+${userDraftSection}
 Person data:
 Name: ${fullName}
 Title: ${professionalTitle}
@@ -54,7 +61,7 @@ Education: ${highestEducation ?? "not provided"}`;
         },
         body: JSON.stringify({
           contents: [{ parts: [{ text: prompt }] }],
-          generationConfig: { maxOutputTokens: 500, temperature: 0.7 },
+          generationConfig: { maxOutputTokens: 300, temperature: 0.7 },
         }),
       }
     );
