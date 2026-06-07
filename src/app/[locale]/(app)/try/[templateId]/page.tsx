@@ -1,6 +1,6 @@
 "use client";
 
-import { use, useCallback } from "react";
+import { use, useCallback, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { Link } from "@/i18n/navigation";
 import { BuilderForm } from "@/components/builder/BuilderForm";
@@ -39,12 +39,36 @@ export default function GuestBuilderPage({
     router.push(`/${locale}/sign-up?redirect_url=${encodeURIComponent(restore)}`);
   }, [locale, router]);
 
+  // Seed name/title from the homepage quick-start form (TryItForm writes
+  // localStorage["portfolio-draft"]). This is only a SEED: BuilderForm prefers
+  // an existing "portfolio_preview_data" blob over initialData, so a returning
+  // guest's real edits still win. We do NOT delete "portfolio-draft" here — the
+  // authed dashboard/new flow still consumes it.
+  const [draftSeed] = useState<{ fullName?: string; title?: string }>(() => {
+    if (typeof window === "undefined") return {};
+    try {
+      const raw = window.localStorage.getItem("portfolio-draft");
+      if (!raw) return {};
+      const parsed = JSON.parse(raw) as { fullName?: string; title?: string };
+      return {
+        fullName: typeof parsed.fullName === "string" ? parsed.fullName : undefined,
+        title: typeof parsed.title === "string" ? parsed.title : undefined,
+      };
+    } catch {
+      return {};
+    }
+  });
+
   // Minimal empty-but-valid shape. templateId drives the step-set; customization
   // seeds the accent so the live preview/colours look intentional from step 1.
   const initialData = {
     templateId,
     status: "draft" as const,
-    basics: { fullName: "", title: "", email: "" },
+    basics: {
+      fullName: draftSeed.fullName ?? "",
+      title: draftSeed.title ?? "",
+      email: "",
+    },
     customization: {
       primaryColor: template?.colors?.primary,
       accentColor: template?.colors?.accent,

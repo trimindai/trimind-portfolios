@@ -26,7 +26,9 @@ export function TryItForm({ locale }: { locale: string }) {
       "portfolio-draft",
       JSON.stringify({ fullName: name.trim(), title: title.trim() })
     );
-    router.push(`/${locale}/dashboard/new?template=corporate`);
+    // Let the user pick a template (no forced template). The templates page
+    // restores the saved draft and routes guests to the no-auth guest builder.
+    router.push(`/${locale}/templates?prefill=1`);
   };
 
   return (

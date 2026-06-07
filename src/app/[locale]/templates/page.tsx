@@ -47,7 +47,10 @@ const MOCKUP_IMAGES: Record<string, string> = {
   creative: "/landing/mockup-creative-2026a.jpg",
 };
 
-type PageProps = { params: Promise<{ locale: string }> };
+type PageProps = {
+  params: Promise<{ locale: string }>;
+  searchParams: Promise<{ prefill?: string }>;
+};
 
 export async function generateMetadata({ params }: PageProps) {
   const { locale } = await params;
@@ -61,19 +64,25 @@ export async function generateMetadata({ params }: PageProps) {
   };
 }
 
-export default async function TemplatesPage({ params }: PageProps) {
+export default async function TemplatesPage({ params, searchParams }: PageProps) {
   const { locale } = await params;
+  const sp = await searchParams;
+  const prefill = sp?.prefill === "1";
   const isAr = locale === "ar";
 
   // Admin-only preview: work-in-progress templates are live for admins (so they
   // can finish & test them) but show as "coming soon" to everyone else.
+  // signedIn also decides the per-card CTA: guests go to the no-auth builder.
   let isAdmin = false;
+  let signedIn = false;
   try {
     const user = await currentUser();
+    signedIn = !!user;
     const email = user?.primaryEmailAddress?.emailAddress;
     isAdmin = !!email && ADMIN_EMAILS.includes(email);
   } catch {
     isAdmin = false;
+    signedIn = false;
   }
 
   const priceLabel = isAr
@@ -110,6 +119,9 @@ export default async function TemplatesPage({ params }: PageProps) {
     oneTime: isAr
       ? `دفعة واحدة · ${priceLabel} · بدون اشتراك`
       : `One-time payment · ${priceLabel} · No subscription`,
+    prefillBanner: isAr
+      ? "تم حفظ بياناتك — اختر قالبًا للمتابعة."
+      : "Your details are saved — pick a template to continue.",
     comingSoonTitle: isAr ? "قوالب قادمة قريبًا" : "More templates coming soon",
     notifyHint: isAr
       ? "نعمل على هذه القوالب — تابعنا للتحديثات."
@@ -179,6 +191,18 @@ export default async function TemplatesPage({ params }: PageProps) {
       </div>
 
       <main className="px-6 pb-24">
+        {prefill && (
+          <div className="mx-auto mb-8 max-w-7xl">
+            <div
+              className="flex items-center gap-2 rounded-xl border border-[var(--land-accent)]/30 bg-[var(--land-accent)]/10 px-5 py-3 text-sm text-[var(--land-bright)]"
+              role="status"
+            >
+              <span className="text-[var(--land-accent)]">✓</span>
+              {t.prefillBanner}
+            </div>
+          </div>
+        )}
+
         {/* Featured: available templates */}
         <div className="mx-auto grid max-w-7xl gap-6 sm:grid-cols-2 lg:grid-cols-2">
           {TEMPLATES.filter((tpl) => isTemplateAvailableFor(tpl, { isAdmin })).map((tpl) => {
@@ -282,7 +306,11 @@ export default async function TemplatesPage({ params }: PageProps) {
                     </span>
                   )}
                   <Link
-                    href={`/dashboard/new?template=${tpl.id}`}
+                    href={
+                      signedIn
+                        ? `/dashboard/new?template=${tpl.id}`
+                        : `/try/${tpl.id}`
+                    }
                     className="flex-1 text-center rounded-lg bg-[var(--land-accent)] px-3 py-2 text-sm font-medium text-white hover:bg-[var(--land-accent-hover)] transition-colors"
                   >
                     {t.use}
