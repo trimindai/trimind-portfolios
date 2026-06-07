@@ -5,7 +5,7 @@ import { useState, useEffect } from "react";
 const DEMO_LINES = [
   { label: "Name", text: "Sarah Al-Rashidi" },
   { label: "Title", text: "Financial Analyst" },
-  { label: "Company", text: "National Bank of Kuwait" },
+  { label: "Company", text: "BB Bank" },
   { label: "Summary", text: "Detail-oriented financial analyst with 6+ years of experience in corporate banking, risk assessment, and portfolio management across the Gulf region." },
 ];
 
