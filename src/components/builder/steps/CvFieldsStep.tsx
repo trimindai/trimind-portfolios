@@ -23,24 +23,48 @@ const LEVEL_KEYS: Record<string, string> = {
 
 function calculateTotalYears(experience: any[]): string {
   if (!experience?.length) return "not provided";
-  const now = new Date().getFullYear();
-  const earliest = experience.reduce((min, e) => {
-    const year = parseInt(e.startDate);
-    return year && year < min ? year : min;
-  }, now);
-  const years = now - earliest;
-  return years > 0 ? `${years}` : "not provided";
+  const now = new Date();
+  const nowYear = now.getFullYear();
+  const nowMonth = now.getMonth() + 1;
+  let totalMonths = 0;
+
+  for (const e of experience) {
+    if (!e.startDate) continue;
+    const startYear = parseInt(e.startDate);
+    if (!startYear || isNaN(startYear)) continue;
+    const startMonth = e.startDate.includes("-") ? parseInt(e.startDate.split("-")[1]) || 1 : 1;
+
+    let endYear: number;
+    let endMonth: number;
+    if (!e.endDate || e.endDate.toLowerCase() === "present" || e.endDate.toLowerCase() === "current") {
+      endYear = nowYear;
+      endMonth = nowMonth;
+    } else {
+      endYear = parseInt(e.endDate);
+      if (!endYear || isNaN(endYear)) continue;
+      endMonth = e.endDate.includes("-") ? parseInt(e.endDate.split("-")[1]) || 12 : 12;
+    }
+
+    const months = (endYear - startYear) * 12 + (endMonth - startMonth);
+    if (months > 0) totalMonths += months;
+  }
+
+  if (totalMonths <= 0) return "not provided";
+  const years = Math.round(totalMonths / 12);
+  return years <= 1 ? "1 year" : `${years} years`;
 }
 
 export function CvFieldsStep({ data, onChange }: CvFieldsStepProps) {
   const t = useTranslations("builder.cvFields");
   const basics = data.basics || {};
   const [generating, setGenerating] = useState(false);
+  const [aiSuggestion, setAiSuggestion] = useState("");
   const [aiError, setAiError] = useState("");
 
   async function generateSummary() {
     setGenerating(true);
     setAiError("");
+    setAiSuggestion("");
     try {
       const context = {
         fullName: basics.fullName ?? "",
@@ -62,12 +86,17 @@ export function CvFieldsStep({ data, onChange }: CvFieldsStepProps) {
       });
       const result = await res.json();
       if (!res.ok) throw new Error(result.error || "Failed to generate");
-      onChange({ basics: { ...basics, summary: result.summary } });
+      setAiSuggestion(result.summary);
     } catch (e: any) {
       setAiError(e.message || "Something went wrong");
     } finally {
       setGenerating(false);
     }
+  }
+
+  function acceptSuggestion() {
+    onChange({ basics: { ...basics, summary: aiSuggestion } });
+    setAiSuggestion("");
   }
 
   // GCC defaults: pre-fill Arabic + English the first time this step is opened
@@ -106,30 +135,68 @@ export function CvFieldsStep({ data, onChange }: CvFieldsStepProps) {
           hint={t("summaryHint")}
           rows={4}
         />
-        <div className="mt-2 flex items-center gap-3">
+        {!aiSuggestion && (
           <button
             type="button"
             onClick={generateSummary}
             disabled={generating || !basics.fullName || !basics.title}
-            className="inline-flex items-center gap-1.5 rounded-lg border border-[var(--land-accent)]/30 bg-[var(--land-accent)]/5 px-3 py-1.5 text-xs font-medium text-[var(--land-accent)] hover:bg-[var(--land-accent)]/10 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+            className="mt-3 w-full flex items-center justify-between rounded-xl border border-[var(--land-accent)]/20 bg-[var(--land-accent)]/5 px-4 py-3 text-start transition-colors hover:bg-[var(--land-accent)]/10 disabled:opacity-40 disabled:cursor-not-allowed"
           >
-            {generating ? (
-              <>
-                <span className="h-3 w-3 animate-spin rounded-full border border-[var(--land-accent)] border-t-transparent" />
-                Writing...
-              </>
-            ) : (
-              <>
-                <svg className="h-3.5 w-3.5" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M8 2v4M6 4h4M3 8l2 6 3-4 3 4 2-6" />
-                </svg>
-                Write my summary
-              </>
-            )}
+            <div>
+              <span className="text-sm font-medium text-[var(--land-accent)] flex items-center gap-1.5">
+                {generating ? (
+                  <>
+                    <span className="h-3.5 w-3.5 animate-spin rounded-full border-2 border-[var(--land-accent)] border-t-transparent" />
+                    Writing...
+                  </>
+                ) : (
+                  <>
+                    <svg className="h-4 w-4" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M8 2v4M6 4h4M3 8l2 6 3-4 3 4 2-6" /></svg>
+                    Write with AI
+                  </>
+                )}
+              </span>
+              <span className="text-xs text-[var(--land-muted)] mt-0.5 block">Uses your name, experience &amp; skills</span>
+            </div>
+            {!basics.fullName && <span className="text-[10px] text-[var(--land-muted)]">Fill Basic Info first</span>}
           </button>
-          {aiError && <span className="text-xs text-red-500">{aiError}</span>}
-          {!basics.fullName && <span className="text-xs text-[var(--land-muted)]">Fill Basic Info first</span>}
-        </div>
+        )}
+
+        {aiSuggestion && (
+          <div className="mt-3 rounded-xl border border-[var(--land-accent)]/30 bg-[var(--land-accent)]/5 p-4">
+            <p className="text-xs font-medium text-[var(--land-accent)] mb-2 flex items-center gap-1.5">
+              <svg className="h-3.5 w-3.5" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M8 2v4M6 4h4M3 8l2 6 3-4 3 4 2-6" /></svg>
+              AI Suggested
+            </p>
+            <p className="text-sm text-[var(--land-bright)] leading-relaxed mb-3">{aiSuggestion}</p>
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={acceptSuggestion}
+                className="inline-flex items-center gap-1 rounded-lg bg-[var(--land-accent)] px-3 py-1.5 text-xs font-medium text-white hover:bg-[var(--land-accent-hover)] transition-colors"
+              >
+                Use this &rarr;
+              </button>
+              <button
+                type="button"
+                onClick={generateSummary}
+                disabled={generating}
+                className="inline-flex items-center gap-1 rounded-lg border border-[var(--land-border)] px-3 py-1.5 text-xs text-[var(--land-body)] hover:bg-[var(--land-surface-raised)] transition-colors disabled:opacity-40"
+              >
+                {generating ? "..." : "Try again ↺"}
+              </button>
+              <button
+                type="button"
+                onClick={() => setAiSuggestion("")}
+                className="text-xs text-[var(--land-muted)] hover:text-[var(--land-bright)] ml-auto"
+              >
+                Dismiss
+              </button>
+            </div>
+          </div>
+        )}
+
+        {aiError && <p className="mt-2 text-xs text-red-500">{aiError}</p>}
       </div>
 
       {/* Languages */}
