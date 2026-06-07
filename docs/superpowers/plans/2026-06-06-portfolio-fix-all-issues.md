@@ -24,11 +24,14 @@
 - ✅ Task 1.4 — Arabic **General** demo `public/demo/corporate/index-ar.html` — `fcec579`
 - ✅ Task 1.4 — Arabic **Creative** demo `public/demo/creative/index-ar.html` — `42af801`
   - NOTE: real creative demo persona is **Dalal Al-Kandari "My Eye Brain"** (46 artworks), NOT "Nora Al-Kandari". Translated the real content; route.ts DEMO_DATA differs from the live static file — expected.
+- ✅ Task 1.4 — Arabic **Developer** demo `public/demo/developer/index-ar.html` — `cf69155`
+  - NOTE: real developer demo persona is **Maya Okafor «مايا أوكافور» — Full-Stack Engineer (Lisbon)**, NOT "Yusuf Al-Hajri" (stale plan note). Translated the real content; JS (3D/WebGL keycap system) byte-identical; vercel.json rewrite already existed; English index.html left untouched (carries another session's og:image edits). Spec-reviewed ✅ (390px render, no overflow, 0 new console errors).
 
 **RESUME HERE (in order):**
-1. **Task 1.4 — Arabic Developer demo** → create `public/demo/developer/index-ar.html` (persona **Yusuf Al-Hajri → يوسف الهاجري**, Full-Stack Developer → مطوّر متكامل). Same method as the others: `cp` then targeted Edits only (lang/dir, Noto Kufi font, hreflang, translate visible text, localize `/demo`+`/en` links to `/ar`, Arabic-Indic numerals, DO NOT touch 3D/WebGL JS). Commit `feat(demo): Arabic RTL Developer demo page`, stage ONLY the new file.
-2. **Task 1.5** — Arabic Creator game `public/demo/creator/index-ar.html` (translate JS strings, keep mechanic/SVG/sound, RTL-audit, adapt the `scripts/creator-game-check.mjs` verify).
-3. **Task 2.7** (Engineer projects EN+AR) → **2.1** (guest builder) → **2.8** (home form) → **2.2** (PDF/QR demos) → **2.5** (avatar) → **2.6** (resume btn) → **Part 3 polish** → **Part 5 verify**.
+1. **Task 1.5** — Arabic Creator game `public/demo/creator/index-ar.html` (translate JS strings, keep mechanic/SVG/sound, RTL-audit, adapt the `scripts/creator-game-check.mjs` verify).
+2. **Task 2.7** (Engineer projects EN+AR) → **2.1** (guest builder) → **2.8** (home form) → **2.2** (PDF/QR demos) → **2.5** (avatar) → **2.6** (resume btn) → **Part 3 polish** → **Part 5 verify**.
+
+**Method note for static-mirror demo tasks (1.4/1.5/2.7-demo):** spec-review includes the render/RTL/overflow/console/JS-integrity verification, so it covers the code-quality dimension — no separate code-quality reviewer needed for pure-translation mirrors. Tasks with real TS/React logic (2.1, 2.8, 2.2, 2.5, 2.6) get the full two-stage review.
 
 **Method reminders for the next operator:** fresh subagent per task (implementer → verify diff → next); for files that already carry other sessions' uncommitted changes, stage ONLY your own file via explicit `git add <path>` (never `git add -A`); verify each with `npx tsc --noEmit` (code) or `wc -l` parity + RTL/CJK node check (demos); don't push/deploy; don't run sustained-CPU watchers (VPS auto-reboots). Done/verify-only items: 1.1 (sign-up already fixed), 3.9 (auto-login), 3.12 (theme — folded into 1.3).
 
