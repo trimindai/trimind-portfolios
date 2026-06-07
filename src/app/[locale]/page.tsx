@@ -9,6 +9,7 @@ import { HOSTING_ENABLED } from "@/lib/flags";
 import { AdminLink } from "@/components/AdminLink";
 import { TryItForm } from "@/components/landing/TryItForm";
 import { UseTemplateButton } from "@/components/landing/UseTemplateButton";
+import { NavbarAuth } from "@/components/landing/NavbarAuth";
 
 export default async function LandingPage({
   params,
@@ -163,18 +164,7 @@ export default async function LandingPage({
             >
               {otherLabel}
             </Link>
-            <Link
-              href="/sign-in"
-              className="hidden sm:inline text-sm text-[var(--land-body)] hover:text-[var(--land-bright)] transition-colors"
-            >
-              {tc("signIn")}
-            </Link>
-            <Link
-              href="/templates"
-              className="rounded-lg bg-[var(--land-accent)] px-4 py-2 text-sm font-medium text-white hover:bg-[var(--land-accent-hover)] transition-colors"
-            >
-              {tc("getStarted")}
-            </Link>
+            <NavbarAuth locale={locale} />
           </div>
         </div>
       </nav>
