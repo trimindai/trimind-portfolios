@@ -1,0 +1,1213 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>مايا أوكافور — مهندسة برمجيات متكاملة (Full-Stack)</title>
+<meta name="description" content="أبني منتجات ويب سريعة وتفاعلية — من الأنظمة اللحظية إلى الواجهات ثلاثية الأبعاد — وأهتم بأدق تفاصيل الإتقان التي تجعل البرمجيات تنبض بالحياة.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2064%2064%22%3E%3Crect%20width%3D%2264%22%20height%3D%2264%22%20rx%3D%2210%22%20fill%3D%22%23020617%22%2F%3E%3Ctext%20x%3D%2232%22%20y%3D%2234%22%20font-family%3D%22Archivo%20Black%2CArial%2Csans-serif%22%20font-size%3D%2228%22%20font-weight%3D%22800%22%20letter-spacing%3D%22-1%22%20fill%3D%22%237C5CFF%22%20text-anchor%3D%22middle%22%20dominant-baseline%3D%22central%22%3EMO%3C%2Ftext%3E%3C%2Fsvg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Inter:wght@100;200;300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&family=Noto+Kufi+Arabic:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/demo/developer/vendor/fa/all.min.css">
+<link rel="alternate" hreflang="en" href="https://portfolio-trimind.com/demo/developer">
+<link rel="alternate" hreflang="ar" href="https://portfolio-trimind.com/ar/demo/developer">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"Person","name":"مايا أوكافور","jobTitle":"مهندسة برمجيات متكاملة","description":"تقنية إبداعية","url":"https://portfolio-trimind.com/ar/demo/developer","email":"maya@okafor.dev","address":{"@type":"PostalAddress","addressLocality":"لشبونة، البرتغال"},"sameAs":["https://www.instagram.com/","https://www.linkedin.com/in/example","https://github.com/","https://okafor.dev"]}</script>
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+/* Font Awesome is self-hosted via /vendor/fa/all.min.css (CSP-safe) — it defines
+   the "Font Awesome 6 Brands/Free" @font-faces used by both the DOM icons and the
+   3D keycap logos drawn to canvas. */
+
+/* ═══════════════════════════════════════════════════════════════
+   DEVELOPER — "Spacebar"
+   A space-dark developer portfolio: a real 3D keyboard floating in a
+   star-field, thin gradient display type, blur-in reveals, a timeline
+   of experience, screenshot project cards with a modal, an elastic
+   cursor, and buttery smooth scroll.
+   Design language adapted from Naresh Khatri's open-source 3D
+   portfolio (free to use — credited in the footer).
+   ═══════════════════════════════════════════════════════════════ */
+:root{
+  --bg:#020617;
+  --bg-2:#0b1222;
+  --card:rgba(15,23,42,0.55);
+  --card-hover:rgba(20,30,55,0.72);
+  --fg:#f8fafc;
+  --muted:#94a3b8;
+  --muted-2:#64748b;
+  --border:rgba(148,163,184,0.14);
+  --border-strong:rgba(148,163,184,0.28);
+  --brand:#7c5cff;
+  --accent:#38bdf8;
+  --brand-glow:color-mix(in srgb, var(--brand) 40%, transparent);
+  --accent-glow:color-mix(in srgb, var(--accent) 38%, transparent);
+  --radius:16px;
+  --max:1180px;
+  --font-display:"Archivo Black","Noto Kufi Arabic","Inter",sans-serif;
+  --font-sans:"Noto Kufi Arabic","Inter",system-ui,sans-serif;
+  --font-mono:"JetBrains Mono",ui-monospace,monospace;
+}
+
+html{scroll-behavior:smooth}
+body{
+  font-family:'Noto Kufi Arabic','Inter',sans-serif;
+  background:var(--bg);
+  color:var(--fg);
+  line-height:1.6;
+  overflow-x:hidden;
+  -webkit-font-smoothing:antialiased;
+  text-rendering:optimizeLegibility;
+}
+/* Deep-space gradient + vignette painted under the 3D scene */
+body::before{
+  content:"";position:fixed;inset:0;z-index:-3;pointer-events:none;
+  background:
+    radial-gradient(1200px 800px at 78% 6%, color-mix(in srgb,var(--brand) 14%,transparent), transparent 60%),
+    radial-gradient(900px 700px at 8% 92%, color-mix(in srgb,var(--accent) 12%,transparent), transparent 60%),
+    linear-gradient(180deg,var(--bg) 0%, var(--bg-2) 50%, var(--bg) 100%);
+}
+a{color:inherit;text-decoration:none}
+img{display:block;max-width:100%}
+::selection{background:var(--brand);color:#fff}
+
+/* ── star-field + 3D scene layers ───────────────────────────── */
+#stars{position:fixed;inset:0;z-index:-2;pointer-events:none}
+#scene{
+  position:fixed;inset:0;z-index:-1;pointer-events:none;
+  opacity:0;transition:opacity 1s ease;
+  animation:sceneIn 1.2s ease 4.5s forwards; /* CSS fallback: reveal even if JS never flags ready */
+}
+#scene.ready{opacity:1;animation:none}
+@keyframes sceneIn{from{opacity:0}to{opacity:1}}
+#scene canvas{display:block;width:100%!important;height:100%!important}
+/* let the keyboard be interactive only while the skills section is active */
+body[data-active="skills"] #scene{pointer-events:auto}
+/* floating keycap tooltip (hover label over the 3D keyboard) */
+#kbd-tip{position:fixed;z-index:95;pointer-events:none;transform:translate(-50%,-100%);
+  font-family:var(--font-mono);font-size:.72rem;letter-spacing:.03em;padding:5px 10px;border-radius:9px;
+  background:color-mix(in srgb,var(--bg) 82%,transparent);border:1px solid var(--border-strong);
+  color:var(--fg);opacity:0;transition:opacity .15s ease;white-space:nowrap;box-shadow:0 8px 24px rgba(0,0,0,.45)}
+#kbd-tip.on{opacity:1}
+
+/* ── scroll progress ────────────────────────────────────────── */
+#progress{
+  position:fixed;top:0;left:0;height:2px;width:0;z-index:90;
+  background:linear-gradient(90deg,var(--brand),var(--accent));
+  box-shadow:0 0 12px var(--brand-glow);
+}
+
+/* ── elastic cursor (desktop only) ──────────────────────────── */
+#cursor,#cursor-dot{position:fixed;top:0;left:0;z-index:100;pointer-events:none;will-change:transform}
+#cursor{
+  width:34px;height:34px;margin:-17px 0 0 -17px;border-radius:50%;
+  border:1.5px solid color-mix(in srgb,var(--fg) 65%,transparent);
+  mix-blend-mode:difference;transition:width .25s,height .25s,opacity .25s,background .25s;
+}
+#cursor-dot{width:5px;height:5px;margin:-2.5px 0 0 -2.5px;border-radius:50%;background:var(--fg);mix-blend-mode:difference}
+#cursor.hover{width:56px;height:56px;margin:-28px 0 0 -28px;background:color-mix(in srgb,var(--fg) 12%,transparent)}
+@media (hover:none),(pointer:coarse){#cursor,#cursor-dot{display:none}}
+
+/* ── preloader ──────────────────────────────────────────────── */
+#preloader{
+  position:fixed;inset:0;z-index:200;background:var(--bg);
+  display:flex;align-items:center;justify-content:center;flex-direction:column;gap:18px;
+  transition:transform .9s cubic-bezier(.76,0,.24,1);
+}
+#preloader.done{transform:translateY(-101%)}
+#preloader .word{font-family:var(--font-display);font-size:clamp(1.4rem,4vw,2.4rem);opacity:.9;display:flex;align-items:center;gap:.5rem}
+#preloader .word::before{content:"";width:10px;height:10px;border-radius:50%;background:var(--brand);box-shadow:0 0 16px var(--brand)}
+#preloader .pct{font-family:var(--font-mono);color:var(--muted);font-size:.95rem;letter-spacing:.1em}
+#preloader .bar{width:min(240px,60vw);height:2px;background:var(--border);overflow:hidden;border-radius:2px}
+#preloader .bar > i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--brand),var(--accent))}
+
+/* ── nav ────────────────────────────────────────────────────── */
+nav{
+  position:fixed;left:50%;transform:translateX(-50%);bottom:22px;z-index:80;
+  display:flex;align-items:center;gap:4px;padding:6px;
+  background:color-mix(in srgb,var(--bg) 70%,transparent);
+  border:1px solid var(--border);border-radius:999px;backdrop-filter:blur(14px);
+  box-shadow:0 10px 40px rgba(0,0,0,.45);
+}
+nav a{font-size:.8rem;color:var(--muted);padding:8px 14px;border-radius:999px;transition:color .2s,background .2s;white-space:nowrap}
+nav a:hover{color:var(--fg)}
+nav a.active{color:var(--fg);background:color-mix(in srgb,var(--brand) 22%,transparent)}
+@media(max-width:640px){nav a span{display:none}nav a{padding:10px 12px}nav a i{font-size:1rem}}
+
+/* ── layout ─────────────────────────────────────────────────── */
+.wrap{max-width:var(--max);margin:0 auto;padding:0 24px}
+section{position:relative;z-index:1}
+.sec-head{margin-bottom:48px}
+.sec-head .eyebrow{font-family:var(--font-mono);color:var(--brand);font-size:.8rem;letter-spacing:.18em;text-transform:uppercase;display:flex;align-items:center;gap:10px}
+.sec-head .eyebrow::before{content:"";width:28px;height:1px;background:var(--brand)}
+.sec-head h2{font-family:var(--font-display);font-size:clamp(2rem,6vw,3.6rem);line-height:1.02;margin-top:14px;letter-spacing:-.01em}
+.sec-head p{color:var(--muted);margin-top:12px;max-width:46ch}
+
+/* ── reveal primitives ──────────────────────────────────────── */
+.blur-in{opacity:0;filter:blur(10px);transform:translateY(8px);transition:opacity .9s ease,filter .9s ease,transform .9s ease}
+.blur-in.in{opacity:1;filter:blur(0);transform:none}
+.box-reveal{opacity:0;transform:translateY(60px);transition:opacity .6s ease,transform .6s cubic-bezier(.22,1,.36,1)}
+.box-reveal.in{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){
+  .blur-in,.box-reveal{opacity:1;filter:none;transform:none;transition:none}
+  #scene{display:none}
+}
+
+/* ── hero ───────────────────────────────────────────────────── */
+#hero{min-height:100svh;display:flex;align-items:center;padding:120px 0 80px}
+#hero .grid{display:grid;grid-template-columns:minmax(0,1fr);gap:8px}
+@media(min-width:900px){#hero .grid{max-width:440px}} /* keep text in the left column; keyboard owns the right (two-column hero, like the source) */
+#hero .hello{font-family:var(--font-mono);color:var(--accent);font-size:.95rem;letter-spacing:.08em;margin-bottom:18px}
+#hero h1{
+  font-family:var(--font-display);font-weight:400;
+  font-size:clamp(2.6rem,11vw,8rem);line-height:.92;letter-spacing:-.02em;margin-left:-.04em;
+  background:linear-gradient(180deg,#fff 0%, #cdd6e6 45%, var(--muted-2) 100%);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+}
+#hero .role{font-family:var(--font-display);font-size:clamp(1.1rem,3.4vw,1.9rem);color:var(--muted);margin-top:18px}
+#hero .pitch{max-width:54ch;color:var(--muted);margin-top:22px;font-size:1.05rem}
+#hero .cta{display:flex;flex-wrap:wrap;gap:12px;margin-top:34px}
+.btn{
+  display:inline-flex;align-items:center;gap:9px;font-size:.92rem;font-weight:500;
+  padding:12px 20px;border-radius:12px;border:1px solid var(--border-strong);
+  background:var(--card);transition:transform .2s,border-color .2s,background .2s,box-shadow .2s;
+}
+.btn:hover{transform:translateY(-2px);border-color:var(--brand);box-shadow:0 0 0 1px var(--brand-glow),0 10px 30px rgba(0,0,0,.4)}
+.btn.primary{background:var(--brand);border-color:transparent;color:#fff}
+.btn.primary:hover{box-shadow:0 10px 34px var(--brand-glow)}
+.btn.icon{padding:12px 14px}
+.scroll-cue{margin-top:60px;display:inline-flex;flex-direction:column;align-items:center;gap:6px;color:var(--muted-2);font-family:var(--font-mono);font-size:.72rem;letter-spacing:.2em}
+.scroll-cue .mouse{width:22px;height:34px;border:1.5px solid var(--muted-2);border-radius:12px;position:relative}
+.scroll-cue .mouse::after{content:"";position:absolute;left:50%;top:7px;width:3px;height:6px;background:var(--muted);border-radius:2px;transform:translateX(-50%);animation:wheel 1.5s infinite}
+@keyframes wheel{0%{opacity:0;transform:translate(-50%,0)}40%{opacity:1}100%{opacity:0;transform:translate(-50%,10px)}}
+
+/* ── skills / tech stack ────────────────────────────────────── */
+#skills{padding:80px 0 100px;min-height:90svh}
+.kbd-hint{font-family:var(--font-mono);color:var(--muted-2);font-size:.85rem}
+.skill-grid{display:flex;flex-wrap:wrap;gap:12px;margin-top:8px}
+.keycap{
+  position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;
+  width:96px;height:96px;border-radius:14px;cursor:default;
+  background:linear-gradient(180deg,var(--card-hover),var(--card));
+  border:1px solid var(--border-strong);
+  box-shadow:0 6px 0 rgba(0,0,0,.35),0 10px 24px rgba(0,0,0,.35),inset 0 1px 0 rgba(255,255,255,.06);
+  transition:transform .12s ease,box-shadow .12s ease,border-color .2s;
+}
+.keycap:hover{transform:translateY(2px);box-shadow:0 4px 0 rgba(0,0,0,.35),0 6px 16px rgba(0,0,0,.4),inset 0 1px 0 rgba(255,255,255,.06)}
+.keycap.pressed{transform:translateY(4px);box-shadow:0 2px 0 rgba(0,0,0,.35),0 3px 8px rgba(0,0,0,.4)}
+.keycap i{font-size:1.7rem}
+.keycap .abbr{font-family:var(--font-mono);font-size:1.1rem;font-weight:600}
+.keycap .label{font-size:.66rem;color:var(--muted);max-width:84px;text-align:center;line-height:1.15;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.keycap .cat{position:absolute;top:-9px;right:-6px;font-family:var(--font-mono);font-size:.55rem;padding:1px 6px;border-radius:999px;background:var(--bg-2);border:1px solid var(--border-strong);color:var(--muted)}
+.kc-0{color:#a78bfa}.kc-1{color:#38bdf8}.kc-2{color:#34d399}.kc-3{color:#f472b6}.kc-4{color:#fbbf24}.kc-5{color:#fb7185}
+@media(max-width:560px){.keycap{width:76px;height:76px}.keycap i{font-size:1.35rem}}
+
+/* ── experience timeline ────────────────────────────────────── */
+#experience{padding:90px 0}
+.timeline{position:relative;margin-left:6px}
+.timeline::before{content:"";position:absolute;left:7px;top:6px;bottom:6px;width:1px;background:linear-gradient(180deg,var(--brand),transparent)}
+.tl-item{position:relative;padding-left:38px;padding-bottom:38px}
+.tl-item:last-child{padding-bottom:0}
+.tl-item::before{content:"";position:absolute;left:0;top:6px;width:16px;height:16px;border-radius:50%;background:var(--bg);border:2px solid var(--brand);box-shadow:0 0 0 4px color-mix(in srgb,var(--brand) 14%,transparent)}
+.tl-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:24px;transition:border-color .25s,transform .25s,background .25s}
+.tl-card:hover{border-color:var(--border-strong);transform:translateY(-3px);background:var(--card-hover)}
+.tl-head{display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px;align-items:flex-start}
+.tl-card h3{font-size:1.2rem;font-weight:700;letter-spacing:-.01em}
+.tl-card .co{color:var(--brand);font-weight:500;margin-top:2px}
+.tl-date{font-family:var(--font-mono);font-size:.74rem;color:var(--muted);border:1px solid var(--border);border-radius:999px;padding:4px 12px;white-space:nowrap}
+.tl-card ul{margin:16px 0 0;padding-left:18px;color:var(--muted);display:flex;flex-direction:column;gap:8px}
+.tl-card ul li::marker{color:var(--brand)}
+.tl-card .desc{color:var(--muted);margin-top:12px}
+
+/* ── projects ───────────────────────────────────────────────── */
+#projects{padding:90px 0}
+.proj-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:22px}
+.proj{position:relative;border-radius:var(--radius);overflow:hidden;cursor:pointer;border:1px solid var(--border);aspect-ratio:3/2;background:var(--card)}
+.proj .ph{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-size:2.4rem;color:color-mix(in srgb,var(--fg) 22%,transparent);background:
+  radial-gradient(120% 120% at 20% 0%, color-mix(in srgb,var(--brand) 30%,transparent), transparent 55%),
+  radial-gradient(120% 120% at 100% 100%, color-mix(in srgb,var(--accent) 26%,transparent), transparent 55%),
+  var(--bg-2)}
+.proj img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform .5s ease}
+.proj:hover img{transform:scale(1.06)}
+.proj .cap{position:absolute;inset:auto 0 0 0;height:62%;display:flex;flex-direction:column;justify-content:flex-end;gap:8px;padding:20px;
+  background:linear-gradient(0deg,var(--bg) 8%, color-mix(in srgb,var(--bg) 82%,transparent) 45%, transparent)}
+.proj .cap h3{font-size:1.15rem;font-weight:700}
+.proj .cap .tag{align-self:flex-start;font-size:.68rem;font-family:var(--font-mono);background:var(--brand);color:#fff;border-radius:8px;padding:2px 9px}
+.proj .open{position:absolute;top:14px;right:14px;width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;background:color-mix(in srgb,var(--bg) 60%,transparent);border:1px solid var(--border-strong);opacity:0;transform:translateY(-6px);transition:opacity .25s,transform .25s}
+.proj:hover .open{opacity:1;transform:none}
+
+/* project modal */
+.modal{position:fixed;inset:0;z-index:150;display:none;align-items:center;justify-content:center;padding:24px}
+.modal.open{display:flex}
+.modal .scrim{position:absolute;inset:0;background:rgba(2,6,23,.78);backdrop-filter:blur(6px)}
+.modal .panel{position:relative;width:min(760px,100%);max-height:88svh;overflow:auto;background:var(--bg-2);border:1px solid var(--border-strong);border-radius:20px;padding:30px;animation:pop .35s cubic-bezier(.22,1,.36,1)}
+@keyframes pop{from{opacity:0;transform:translateY(20px) scale(.97)}to{opacity:1;transform:none}}
+.modal .close{position:absolute;top:16px;right:16px;width:38px;height:38px;border-radius:10px;border:1px solid var(--border);background:var(--card);display:flex;align-items:center;justify-content:center;cursor:pointer}
+.modal h3{font-family:var(--font-display);font-size:1.7rem;margin-bottom:6px}
+.modal .m-cat{color:var(--brand);font-family:var(--font-mono);font-size:.8rem;margin-bottom:18px}
+.modal .m-cover{width:100%;border-radius:14px;border:1px solid var(--border);margin-bottom:18px}
+.modal p{color:var(--muted);margin-bottom:14px}
+.modal .badges{display:flex;flex-wrap:wrap;gap:8px;margin:16px 0}
+.badge{font-family:var(--font-mono);font-size:.72rem;padding:4px 11px;border-radius:999px;border:1px solid var(--border-strong);color:var(--muted)}
+.modal .metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:12px;margin:16px 0}
+.modal .metrics .m{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px}
+.modal .metrics .m b{font-family:var(--font-display);font-size:1.5rem;display:block;color:var(--fg)}
+.modal .metrics .m span{font-size:.72rem;color:var(--muted)}
+.modal .m-imgs{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:16px 0}
+.modal .m-imgs img{border-radius:12px;border:1px solid var(--border)}
+.modal .dock{display:flex;flex-wrap:wrap;gap:10px;margin-top:20px;padding-top:20px;border-top:1px solid var(--border)}
+
+/* ── education / certifications ─────────────────────────────── */
+#extras{padding:40px 0 90px}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:28px}
+@media(max-width:760px){.two-col{grid-template-columns:1fr}}
+.mini{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:24px}
+.mini h3{font-family:var(--font-display);font-size:1.05rem;margin-bottom:16px;display:flex;align-items:center;gap:10px}
+.mini h3 i{color:var(--brand)}
+.mini .row{padding:12px 0;border-top:1px solid var(--border)}
+.mini .row:first-of-type{border-top:0}
+.mini .row b{display:block;font-weight:600}
+.mini .row span{color:var(--muted);font-size:.86rem}
+.mini .row .yr{float:right;font-family:var(--font-mono);font-size:.72rem;color:var(--muted-2)}
+
+/* ── contact ────────────────────────────────────────────────── */
+#contact{padding:90px 0 140px}
+.contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:start}
+@media(max-width:820px){.contact-grid{grid-template-columns:1fr}}
+.contact-card{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:30px}
+.field{margin-bottom:18px}
+.field label{display:block;font-size:.82rem;color:var(--muted);margin-bottom:8px;font-family:var(--font-mono)}
+.field input,.field textarea{
+  width:100%;background:var(--bg);border:1px solid var(--border-strong);border-radius:12px;
+  padding:13px 15px;color:var(--fg);font-family:var(--font-sans);font-size:.95rem;transition:border-color .2s,box-shadow .2s;
+}
+.field input:focus,.field textarea:focus{outline:none;border-color:var(--brand);box-shadow:0 0 0 3px var(--brand-glow)}
+.field textarea{min-height:130px;resize:vertical}
+.contact-list{display:flex;flex-direction:column;gap:14px}
+.contact-list a{display:flex;align-items:center;gap:14px;padding:16px;border:1px solid var(--border);border-radius:14px;background:var(--card);transition:border-color .2s,transform .2s,background .2s}
+.contact-list a:hover{border-color:var(--brand);transform:translateX(4px);background:var(--card-hover)}
+.contact-list a i{width:42px;height:42px;border-radius:11px;display:flex;align-items:center;justify-content:center;background:color-mix(in srgb,var(--brand) 16%,transparent);color:var(--brand);font-size:1.05rem;flex:none}
+.contact-list a b{display:block;font-size:.7rem;color:var(--muted);font-family:var(--font-mono);text-transform:uppercase;letter-spacing:.08em}
+
+/* ── footer ─────────────────────────────────────────────────── */
+footer{border-top:1px solid var(--border);padding:40px 0;position:relative;z-index:1}
+footer .wrap{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:18px}
+footer .socials{display:flex;gap:10px}
+footer .socials a{width:40px;height:40px;border-radius:11px;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--muted);transition:color .2s,border-color .2s,transform .2s}
+footer .socials a:hover{color:var(--fg);border-color:var(--brand);transform:translateY(-2px)}
+footer .meta{color:var(--muted-2);font-size:.8rem}
+footer .credit{color:var(--muted-2);font-size:.72rem;font-family:var(--font-mono)}
+footer .credit a{color:var(--muted);text-decoration:underline;text-underline-offset:2px}
+
+/* RTL tweaks */
+html[dir="rtl"] .tl-item{padding-left:0;padding-right:38px}
+html[dir="rtl"] .timeline::before{left:auto;right:7px}
+html[dir="rtl"] .tl-item::before{left:auto;right:0}
+</style>
+    <meta property="og:image" content="https://portfolio-trimind.com/og-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:image" content="https://portfolio-trimind.com/og-image.png" />
+</head>
+<body>
+
+<div id="preloader" aria-hidden="true">
+  <div class="word"><span>جارٍ التحميل</span></div>
+  <div class="bar"><i></i></div>
+  <div class="pct">0%</div>
+</div>
+
+<div id="cursor"></div><div id="cursor-dot"></div>
+
+<canvas id="stars"></canvas>
+<div id="scene" aria-hidden="true"></div>
+<div id="kbd-tip" aria-hidden="true"></div>
+<div id="progress"></div>
+
+<nav aria-label="التنقل بين الأقسام">
+  <a href="#hero" data-sec="hero" class="active"><i class="fa-solid fa-house"></i> <span>الرئيسية</span></a>
+  <a href="#skills" data-sec="skills"><i class="fa-solid fa-keyboard"></i> <span>التقنيات</span></a>
+  <a href="#experience" data-sec="experience"><i class="fa-solid fa-briefcase"></i> <span>الخبرة</span></a>
+  <a href="#projects" data-sec="projects"><i class="fa-solid fa-cube"></i> <span>المشاريع</span></a>
+  <a href="#contact" data-sec="contact"><i class="fa-solid fa-paper-plane"></i> <span>تواصل</span></a>
+</nav>
+
+<section id="hero">
+  <div class="wrap">
+    <div class="grid">
+      <div class="hello blur-in">مرحبًا، أنا</div>
+      <h1 class="blur-in" data-delay="80">مايا أوكافور</h1>
+      <div class="role blur-in" data-delay="160">مهندسة برمجيات متكاملة · تقنية إبداعية</div>
+      <p class="pitch blur-in" data-delay="220">أبني منتجات ويب سريعة وتفاعلية — من الأنظمة اللحظية إلى الواجهات ثلاثية الأبعاد — وأهتم بأدق تفاصيل الإتقان التي تجعل البرمجيات تنبض بالحياة.</p>
+      <div class="cta blur-in" data-delay="300">
+        <a class="btn primary" href="https://okafor.dev/resume.pdf" target="_blank" rel="noopener"><i class="fa-regular fa-file"></i> السيرة الذاتية</a>
+        <a class="btn" href="#contact"><i class="fa-solid fa-paper-plane"></i> تواصل معي</a>
+        <a class="btn icon" href="https://github.com/" target="_blank" rel="noopener" aria-label="GitHub"><i class="fa-brands fa-github"></i></a>
+        <a class="btn icon" href="https://www.linkedin.com/in/example" target="_blank" rel="noopener" aria-label="LinkedIn"><i class="fa-brands fa-linkedin-in"></i></a>
+        <a class="btn icon" href="https://www.instagram.com/" target="_blank" rel="noopener" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+        <a class="btn icon" href="https://okafor.dev" target="_blank" rel="noopener" aria-label="Website"><i class="fa-solid fa-globe"></i></a>
+      </div>
+      <div class="cta blur-in" data-delay="360" style="gap:28px;margin-top:30px">
+        <div><b style="font-family:var(--font-display);font-size:1.7rem">+٦</b><div style="color:var(--muted);font-size:.78rem">سنوات من الإطلاق</div></div><div><b style="font-family:var(--font-display);font-size:1.7rem">+٤٠</b><div style="color:var(--muted);font-size:.78rem">مشروعًا منجزًا</div></div><div><b style="font-family:var(--font-display);font-size:1.7rem">١٫٢M</b><div style="color:var(--muted);font-size:.78rem">مستخدم تم الوصول إليهم</div></div>
+      </div>
+      <div class="scroll-cue blur-in" data-delay="440"><span class="mouse"></span>اسحب للأسفل</div>
+    </div>
+  </div>
+</section>
+
+<section id="skills">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="eyebrow">التقنيات</div>
+      <h2>حزمة التقنيات</h2>
+      <p class="kbd-hint">(تلميح: اضغط أي مفتاح — لوحة المفاتيح ثلاثية الأبعاد العائمة تفاعلية)</p>
+    </div>
+    <div class="skill-grid">
+      <div class="keycap" data-key tabindex="0">
+        <span class="cat">الواجهة الأمامية</span>
+        <i class="fab fa-react kc-0"></i>
+        <span class="label">React</span>
+      </div>
+      <div class="keycap" data-key tabindex="0">
+        <span class="cat">الواجهة الأمامية</span>
+        <span class="abbr kc-0">Next</span>
+        <span class="label">Next.js</span>
+      </div>
+      <div class="keycap" data-key tabindex="0">
+        <span class="cat">الواجهة الأمامية</span>
+        <span class="abbr kc-0">TS</span>
+        <span class="label">TypeScript</span>
+      </div>
+      <div class="keycap" data-key tabindex="0">
+        <span class="cat">الواجهة الأمامية</span>
+        <span class="abbr kc-0">TW</span>
+        <span class="label">Tailwind</span>
+      </div>
+      <div class="keycap" data-key tabindex="0">
+        <span class="cat">الواجهة الأمامية</span>
+        <span class="abbr kc-0">TJ</span>
+        <span class="label">Three.js</span>
+      </div>
+      <div class="keycap" data-key tabindex="0">
+        <span class="cat">الواجهة الخلفية</span>
+        <i class="fab fa-node-js kc-1"></i>
+        <span class="label">Node.js</span>
+      </div>
+      <div class="keycap" data-key tabindex="0">
+        <span class="cat">الواجهة الخلفية</span>
+        <i class="fab fa-python kc-1"></i>
+        <span class="label">Python</span>
+      </div>
+      <div class="keycap" data-key tabindex="0">
+        <span class="cat">الواجهة الخلفية</span>
+        <i class="fas fa-diagram-project kc-1"></i>
+        <span class="label">GraphQL</span>
+      </div>
+      <div class="keycap" data-key tabindex="0">
+        <span class="cat">الواجهة الخلفية</span>
+        <i class="fas fa-database kc-1"></i>
+        <span class="label">PostgreSQL</span>
+      </div>
+      <div class="keycap" data-key tabindex="0">
+        <span class="cat">الواجهة الخلفية</span>
+        <i class="fas fa-database kc-1"></i>
+        <span class="label">Redis</span>
+      </div>
+      <div class="keycap" data-key tabindex="0">
+        <span class="cat">السحابة / التشغيل</span>
+        <i class="fab fa-aws kc-2"></i>
+        <span class="label">AWS</span>
+      </div>
+      <div class="keycap" data-key tabindex="0">
+        <span class="cat">السحابة / التشغيل</span>
+        <i class="fab fa-docker kc-2"></i>
+        <span class="label">Docker</span>
+      </div>
+      <div class="keycap" data-key tabindex="0">
+        <span class="cat">السحابة / التشغيل</span>
+        <i class="fas fa-dharmachakra kc-2"></i>
+        <span class="label">Kubernetes</span>
+      </div>
+      <div class="keycap" data-key tabindex="0">
+        <span class="cat">السحابة / التشغيل</span>
+        <i class="fas fa-server kc-2"></i>
+        <span class="label">Terraform</span>
+      </div>
+      <div class="keycap" data-key tabindex="0">
+        <span class="cat">السحابة / التشغيل</span>
+        <span class="abbr kc-2">GA</span>
+        <span class="label">GitHub Actions</span>
+      </div>
+      <div class="keycap" data-key tabindex="0">
+        <span class="cat">الحرفية</span>
+        <i class="fab fa-figma kc-3"></i>
+        <span class="label">Figma</span>
+      </div>
+      <div class="keycap" data-key tabindex="0">
+        <span class="cat">الحرفية</span>
+        <span class="abbr kc-3">WebGL</span>
+        <span class="label">WebGL</span>
+      </div>
+      <div class="keycap" data-key tabindex="0">
+        <span class="cat">الحرفية</span>
+        <span class="abbr kc-3">Acce</span>
+        <span class="label">Accessibility</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="experience">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="eyebrow">الخبرة</div>
+      <h2>مسيرتي المهنية</h2>
+    </div>
+    <div class="timeline">
+      <div class="tl-item box-reveal">
+        <div class="tl-card">
+          <div class="tl-head">
+            <div>
+              <h3>مهندسة برمجيات متكاملة أولى</h3>
+              <div class="co">Nebula Labs</div>
+            </div>
+            <div class="tl-date">يناير ٢٠٢٤ — حتى الآن</div>
+          </div>
+          <div class="desc">مهندسة قيادية على منتج تعاون لحظي تستخدمه فرق التصميم.</div>
+          <ul>
+            <li>صمّمتُ خط معالجة مهام غير متزامن يعالج أكثر من ١٠٠٠ مهمة ذكاء اصطناعي يوميًا بضمان التسليم مرة واحدة على الأقل.</li><li>خفّضتُ زمن تحميل الصفحة عند الشريحة ٩٥ بنسبة ٤٧٪ عبر الانتقال إلى التصيير على الخادم بالبث وطبقة تخزين مؤقت على الحافة.</li><li>درّبتُ أربعة مهندسين وأدخلتُ التسليم القائم على الفرع الرئيسي مع بيئات معاينة.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="tl-item box-reveal">
+        <div class="tl-card">
+          <div class="tl-head">
+            <div>
+              <h3>مطوّرة برمجيات متكاملة</h3>
+              <div class="co">Orbit Studio</div>
+            </div>
+            <div class="tl-date">يونيو ٢٠٢١ — ديسمبر ٢٠٢٣</div>
+          </div>
+          <div class="desc">بنيتُ مواقع تسويقية تفاعلية وأدوات داخلية لوكالة.</div>
+          <ul>
+            <li>أطلقتُ أكثر من ٢٠ موقعًا للعملاء بمشاهد رئيسية بتقنية WebGL ودرجات Lighthouse تتجاوز ٩٥.</li><li>بنيتُ نظام إدارة محتوى بلا واجهة (Headless CMS) قلّص زمن نشر المحتوى من أيام إلى دقائق.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="tl-item box-reveal">
+        <div class="tl-card">
+          <div class="tl-head">
+            <div>
+              <h3>مهندسة واجهات أمامية</h3>
+              <div class="co">Pixel &amp; Co.</div>
+            </div>
+            <div class="tl-date">أغسطس ٢٠١٩ — مايو ٢٠٢١</div>
+          </div>
+          <div class="desc">أول تعيين هندسي في فريق منتج صغير.</div>
+          <ul>
+            <li>أسّستُ نظام التصميم ومكتبة المكوّنات من الصفر.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="projects">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="eyebrow">المشاريع</div>
+      <h2>أعمال مختارة</h2>
+      <p>انقر على أي مشروع للاطلاع على التفاصيل.</p>
+    </div>
+    <div class="proj-grid">
+      <div class="proj box-reveal" data-proj="0" role="button" tabindex="0" aria-label="Aurora">
+        <div class="ph">A</div>
+        <div class="open"><i class="fa-solid fa-arrow-up-right-from-square"></i></div>
+        <div class="cap">
+          <h3>Aurora</h3>
+          <span class="tag">تعاون لحظي</span>
+        </div>
+      </div>
+      <div class="proj box-reveal" data-proj="1" role="button" tabindex="0" aria-label="Stargazer">
+        <div class="ph">S</div>
+        <div class="open"><i class="fa-solid fa-arrow-up-right-from-square"></i></div>
+        <div class="cap">
+          <h3>Stargazer</h3>
+          <span class="tag">ثلاثي الأبعاد / WebGL</span>
+        </div>
+      </div>
+      <div class="proj box-reveal" data-proj="2" role="button" tabindex="0" aria-label="Switchboard">
+        <div class="ph">S</div>
+        <div class="open"><i class="fa-solid fa-arrow-up-right-from-square"></i></div>
+        <div class="cap">
+          <h3>Switchboard</h3>
+          <span class="tag">أداة للمطوّرين</span>
+        </div>
+      </div>
+      <div class="proj box-reveal" data-proj="3" role="button" tabindex="0" aria-label="Quietbox">
+        <div class="ph">Q</div>
+        <div class="open"><i class="fa-solid fa-arrow-up-right-from-square"></i></div>
+        <div class="cap">
+          <h3>Quietbox</h3>
+          <span class="tag">مشروع جانبي</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="modal" id="modal-0" role="dialog" aria-modal="true" aria-label="Aurora">
+  <div class="scrim" data-close></div>
+  <div class="panel">
+    <button class="close" data-close aria-label="Close"><i class="fa-solid fa-xmark"></i></button>
+    <h3>Aurora</h3>
+    <div class="m-cat">تعاون لحظي</div>
+
+    <p>لوحة جماعية تتشارك فيها الفرق الرسم والتعليق والعرض معًا. مزامنة للمؤشر بزمن أقل من ١٠٠ مللي ثانية عبر WebSockets مع دمج خالٍ من التعارضات.</p>
+    <div class="metrics">
+      <div class="m"><b>&lt;١٠٠ms</b><span>مزامنة المؤشر</span></div><div class="m"><b>٩٩٫٩٥٪</b><span>زمن التشغيل</span></div>
+    </div>
+    <div class="badges">
+      <span class="badge">Next.js</span><span class="badge">WebSockets</span><span class="badge">Postgres</span><span class="badge">Redis</span>
+    </div>
+    <div class="dock">
+      <a class="btn primary" href="https://okafor.dev" target="_blank" rel="noopener"><i class="fa-solid fa-arrow-up-right-from-square"></i> مباشر</a>
+      <a class="btn" href="https://github.com/" target="_blank" rel="noopener">الشيفرة المصدرية</a>
+    </div>
+  </div>
+</div>
+<div class="modal" id="modal-1" role="dialog" aria-modal="true" aria-label="Stargazer">
+  <div class="scrim" data-close></div>
+  <div class="panel">
+    <button class="close" data-close aria-label="Close"><i class="fa-solid fa-xmark"></i></button>
+    <h3>Stargazer</h3>
+    <div class="m-cat">ثلاثي الأبعاد / WebGL</div>
+
+    <p>خريطة نجوم تفاعلية ثلاثية الأبعاد تعرض أكثر من ١٠٠ ألف نقطة بمعدل ٦٠ إطارًا في الثانية داخل المتصفّح باستخدام الأشكال المُنسَخة (instanced geometry) ومُظلِّل مخصّص.</p>
+    <div class="metrics">
+      <div class="m"><b>+١٠٠ ألف</b><span>نقطة بمعدل ٦٠ إطار/ث</span></div>
+    </div>
+    <div class="badges">
+      <span class="badge">Three.js</span><span class="badge">TypeScript</span><span class="badge">GLSL</span>
+    </div>
+    <div class="dock">
+      <a class="btn primary" href="https://okafor.dev" target="_blank" rel="noopener"><i class="fa-solid fa-arrow-up-right-from-square"></i> مباشر</a>
+
+    </div>
+  </div>
+</div>
+<div class="modal" id="modal-2" role="dialog" aria-modal="true" aria-label="Switchboard">
+  <div class="scrim" data-close></div>
+  <div class="panel">
+    <button class="close" data-close aria-label="Close"><i class="fa-solid fa-xmark"></i></button>
+    <h3>Switchboard</h3>
+    <div class="m-cat">أداة للمطوّرين</div>
+
+    <p>لوحة تحكّم لرايات الميزات (feature flags) والإعدادات مع حزم SDK مُحدَّدة الأنواع وسجلات تدقيق وتراجعات فورية. تُستخدم داخليًا عبر عشرات الخدمات.</p>
+    <div class="badges">
+      <span class="badge">React</span><span class="badge">Node.js</span><span class="badge">GraphQL</span>
+    </div>
+    <div class="dock">
+
+      <a class="btn" href="https://okafor.dev" target="_blank" rel="noopener">اقرأ المزيد</a>
+    </div>
+  </div>
+</div>
+<div class="modal" id="modal-3" role="dialog" aria-modal="true" aria-label="Quietbox">
+  <div class="scrim" data-close></div>
+  <div class="panel">
+    <button class="close" data-close aria-label="Close"><i class="fa-solid fa-xmark"></i></button>
+    <h3>Quietbox</h3>
+    <div class="m-cat">مشروع جانبي</div>
+
+    <p>تطبيق كتابة خالٍ من التشتيت يعتمد المزامنة المحلية أولًا، مع بحث في النص الكامل ومؤقّت تركيز. مفتوح المصدر.</p>
+    <div class="badges">
+      <span class="badge">Svelte</span><span class="badge">SQLite</span><span class="badge">Rust</span>
+    </div>
+    <div class="dock">
+      <a class="btn primary" href="https://github.com/" target="_blank" rel="noopener"><i class="fa-solid fa-arrow-up-right-from-square"></i> مباشر</a>
+
+    </div>
+  </div>
+</div>
+
+<section id="extras">
+  <div class="wrap">
+    <div class="two-col">
+      <div class="mini box-reveal">
+        <h3><i class="fa-solid fa-graduation-cap"></i> التعليم</h3>
+        <div class="row"><span class="yr">٢٠١٩</span><b>بكالوريوس علوم الحاسوب</b><span>جامعة بورتو</span></div>
+      </div>
+      <div class="mini box-reveal">
+        <h3><i class="fa-solid fa-certificate"></i> الشهادات</h3>
+        <div class="row"><span class="yr">٢٠٢٣</span><b>AWS Solutions Architect – Associate</b><span>Amazon Web Services</span></div>
+        <div class="row"><span class="yr">٢٠٢٢</span><b>Professional Cloud Developer</b><span>Google Cloud</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="contact">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="eyebrow">تواصل</div>
+      <h2>لنعمل معًا</h2>
+    </div>
+    <div class="contact-grid">
+      <div class="contact-card box-reveal">
+        <form id="contact-form" novalidate>
+          <div class="field"><label for="cf-name">الاسم</label><input id="cf-name" name="name" required placeholder="اسمك"></div>
+          <div class="field"><label for="cf-email">البريد الإلكتروني</label><input id="cf-email" name="email" type="email" required placeholder="you@example.com"></div>
+          <div class="field"><label for="cf-msg">الرسالة</label><textarea id="cf-msg" name="message" required placeholder="حدّثني عن مشروعك..."></textarea></div>
+          <button class="btn primary" type="submit" style="width:100%;justify-content:center">إرسال الرسالة <i class="fa-solid fa-arrow-right"></i></button>
+        </form>
+      </div>
+      <div class="contact-list">
+        <a href="mailto:maya@okafor.dev"><i class="fa-solid fa-envelope"></i><div><b>البريد الإلكتروني</b>maya@okafor.dev</div></a>
+        <a href="https://www.linkedin.com/in/example" target="_blank" rel="noopener"><i class="fa-brands fa-linkedin-in"></i><div><b>LinkedIn</b>لنتواصل</div></a>
+        <a href="https://github.com/" target="_blank" rel="noopener"><i class="fa-brands fa-github"></i><div><b>GitHub</b>اطّلع على الشيفرة</div></a>
+        <a href="tel:+351 900 000 000"><i class="fa-solid fa-phone"></i><div><b>الهاتف</b>+351 900 000 000</div></a>
+        <a href="#" onclick="return false"><i class="fa-solid fa-location-dot"></i><div><b>الموقع</b>لشبونة، البرتغال</div></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="meta">© <span id="year"></span> مايا أوكافور · مهندسة برمجيات متكاملة</div>
+    <div class="socials">
+      <a href="https://github.com/" target="_blank" rel="noopener" aria-label="GitHub"><i class="fa-brands fa-github"></i></a>
+      <a href="https://www.linkedin.com/in/example" target="_blank" rel="noopener" aria-label="LinkedIn"><i class="fa-brands fa-linkedin-in"></i></a>
+      <a href="https://www.instagram.com/" target="_blank" rel="noopener" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+      <a href="mailto:maya@okafor.dev" aria-label="Email"><i class="fa-solid fa-envelope"></i></a>
+    </div>
+    <div class="credit">تصميم مستوحى من <a href="https://github.com/Naresh-Khatri/3d-portfolio" target="_blank" rel="noopener">Naresh Khatri's 3D Portfolio</a></div>
+  </div>
+</footer>
+
+<!-- The 3D keyboard now renders via the self-contained Three.js module at the end of <body>.
+     (The legacy Spline branch in the script below stays inert without this custom element.) -->
+
+<script>
+(function(){
+  "use strict";
+  var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion:reduce)").matches;
+  var splineUrl = "/assets/skills-keyboard.spline";
+
+  /* ── year ── */
+  var y = document.getElementById("year"); if(y){ y.textContent = new Date().getFullYear(); }
+
+  /* ── preloader: simulated progress, completes on window load ── */
+  var pre = document.getElementById("preloader");
+  var bar = pre && pre.querySelector(".bar > i");
+  var pct = pre && pre.querySelector(".pct");
+  var prog = 0, loaded = false;
+  function setProg(v){ prog = Math.min(100, v); if(bar){ bar.style.width = prog + "%"; } if(pct){ pct.textContent = Math.round(prog) + "%"; } }
+  var fake = setInterval(function(){ if(prog < 90){ setProg(prog + Math.random()*12); } }, 160);
+  function finishLoad(){
+    if(loaded){ return; }
+    loaded = true; clearInterval(fake); setProg(100);
+    setTimeout(function(){ if(pre){ pre.classList.add("done"); setTimeout(function(){ pre.style.display = "none"; }, 950); } document.body.classList.add("loaded"); }, 380);
+  }
+  window.addEventListener("load", function(){ setTimeout(finishLoad, 500); });
+  setTimeout(finishLoad, 6000); /* hard cap so a slow CDN never traps the page */
+
+  /* ── scroll progress bar ── */
+  var pbar = document.getElementById("progress");
+  function onScroll(){
+    var h = document.documentElement;
+    var max = (h.scrollHeight - h.clientHeight) || 1;
+    if(pbar){ pbar.style.width = ((h.scrollTop || document.body.scrollTop) / max * 100) + "%"; }
+  }
+  window.addEventListener("scroll", onScroll, {passive:true}); onScroll();
+
+  /* ── reveal-on-scroll (no external deps) ── */
+  if(("IntersectionObserver" in window) && !reduce){
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if(e.isIntersecting){
+          var d = parseInt(e.target.getAttribute("data-delay") || "0", 10);
+          setTimeout(function(){ e.target.classList.add("in"); }, d);
+          io.unobserve(e.target);
+        }
+      });
+    }, {threshold:0.12, rootMargin:"0px 0px -8% 0px"});
+    document.querySelectorAll(".blur-in,.box-reveal").forEach(function(el){ io.observe(el); });
+  } else {
+    document.querySelectorAll(".blur-in,.box-reveal").forEach(function(el){ el.classList.add("in"); });
+  }
+
+  /* ── scrollspy / active nav ── */
+  var navLinks = Array.prototype.slice.call(document.querySelectorAll("nav a"));
+  var secs = navLinks.map(function(a){ return document.getElementById(a.getAttribute("data-sec")); }).filter(Boolean);
+  if("IntersectionObserver" in window){
+    var spy = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if(e.isIntersecting){
+          var id = e.target.id;
+          document.body.setAttribute("data-active", id);
+          navLinks.forEach(function(a){ a.classList.toggle("active", a.getAttribute("data-sec") === id); });
+          if(window.__setKbdSection){ window.__setKbdSection(id); }
+        }
+      });
+    }, {threshold:0.4});
+    secs.forEach(function(s){ spy.observe(s); });
+  }
+
+  /* ── star-field ── */
+  var canvas = document.getElementById("stars");
+  if(canvas && !reduce){
+    var ctx = canvas.getContext("2d"), stars = [], W, H, dpr = Math.min(window.devicePixelRatio || 1, 2);
+    function resize(){
+      W = canvas.width = innerWidth * dpr; H = canvas.height = innerHeight * dpr;
+      canvas.style.width = innerWidth + "px"; canvas.style.height = innerHeight + "px";
+      var count = Math.min(220, Math.floor(innerWidth * innerHeight / 9000));
+      stars = [];
+      for(var i = 0; i < count; i++){ stars.push({ x:Math.random()*W, y:Math.random()*H, z:Math.random()*0.9+0.1, r:(Math.random()*1.3+0.3)*dpr, t:Math.random()*Math.PI*2 }); }
+    }
+    var mx = 0, my = 0;
+    window.addEventListener("mousemove", function(e){ mx = (e.clientX/innerWidth - 0.5); my = (e.clientY/innerHeight - 0.5); });
+    function draw(){
+      ctx.clearRect(0, 0, W, H);
+      for(var i = 0; i < stars.length; i++){
+        var s = stars[i]; s.t += 0.02;
+        var tw = 0.5 + Math.sin(s.t)*0.5;
+        var px = s.x + mx*40*s.z*dpr, py = s.y + my*40*s.z*dpr;
+        ctx.globalAlpha = 0.25 + tw*0.7*s.z;
+        ctx.fillStyle = (i % 9 === 0) ? "#a78bfa" : ((i % 7 === 0) ? "#38bdf8" : "#e2e8f0");
+        ctx.beginPath(); ctx.arc(px, py, s.r, 0, Math.PI*2); ctx.fill();
+      }
+      requestAnimationFrame(draw);
+    }
+    resize(); window.addEventListener("resize", resize); requestAnimationFrame(draw);
+  }
+
+  /* ── elastic cursor ── */
+  var cur = document.getElementById("cursor"), dot = document.getElementById("cursor-dot");
+  if(cur && dot && window.matchMedia("(hover:hover)").matches && !reduce){
+    var cx = innerWidth/2, cy = innerHeight/2, tx = cx, ty = cy, px = cx, py = cy;
+    document.addEventListener("mousemove", function(e){ tx = e.clientX; ty = e.clientY; dot.style.transform = "translate(" + tx + "px," + ty + "px)"; });
+    function ring(){
+      cx += (tx-cx)*0.18; cy += (ty-cy)*0.18;
+      var dx = tx-px, dy = ty-py; px = tx; py = ty;
+      var speed = Math.min(Math.sqrt(dx*dx + dy*dy), 80);
+      var ang = Math.atan2(cy-ty, cx-tx) * 180 / Math.PI;
+      var stretch = 1 + speed/170;
+      cur.style.transform = "translate(" + cx + "px," + cy + "px) rotate(" + ang + "deg) scale(" + stretch + "," + (1/stretch) + ")";
+      requestAnimationFrame(ring);
+    }
+    requestAnimationFrame(ring);
+    document.querySelectorAll("a,button,[role='button'],.keycap,.proj,input,textarea").forEach(function(el){
+      el.addEventListener("mouseenter", function(){ cur.classList.add("hover"); });
+      el.addEventListener("mouseleave", function(){ cur.classList.remove("hover"); });
+    });
+  }
+
+  /* ── keycap press feedback (mirror "press a key") ── */
+  document.querySelectorAll("[data-key]").forEach(function(k){
+    function press(){ k.classList.add("pressed"); setTimeout(function(){ k.classList.remove("pressed"); }, 150); }
+    k.addEventListener("mousedown", press);
+    k.addEventListener("keydown", function(e){ if(e.key === "Enter" || e.key === " "){ e.preventDefault(); press(); } });
+  });
+
+  /* ── project modal ── */
+  function openModal(i){ var m = document.getElementById("modal-" + i); if(m){ m.classList.add("open"); document.body.style.overflow = "hidden"; } }
+  function closeModals(){ document.querySelectorAll(".modal.open").forEach(function(m){ m.classList.remove("open"); }); document.body.style.overflow = ""; }
+  document.querySelectorAll("[data-proj]").forEach(function(p){
+    p.addEventListener("click", function(){ openModal(p.getAttribute("data-proj")); });
+    p.addEventListener("keydown", function(e){ if(e.key === "Enter" || e.key === " "){ e.preventDefault(); openModal(p.getAttribute("data-proj")); } });
+  });
+  document.querySelectorAll("[data-close]").forEach(function(c){ c.addEventListener("click", closeModals); });
+  document.addEventListener("keydown", function(e){ if(e.key === "Escape"){ closeModals(); } });
+
+  /* ── contact form → mailto compose (template has no backend) ── */
+  var form = document.getElementById("contact-form");
+  if(form){
+    form.addEventListener("submit", function(e){
+      e.preventDefault();
+      var to = "maya@okafor.dev";
+      var nm = encodeURIComponent(form.name.value || "");
+      var em = encodeURIComponent(form.email.value || "");
+      var msg = encodeURIComponent(form.message.value || "");
+      var subject = encodeURIComponent("Portfolio enquiry from " + (form.name.value || "a visitor"));
+      var body = "Name: " + nm + "%0D%0AEmail: " + em + "%0D%0A%0D%0A" + msg;
+      if(to){ window.location.href = "mailto:" + to + "?subject=" + subject + "&body=" + body; }
+    });
+  }
+
+  /* ── Lenis smooth scroll (progressive enhancement) ── */
+  if(!reduce){
+    var ls = document.createElement("script");
+    ls.src = "/demo/developer/vendor/lenis.min.js";
+    ls.onload = function(){
+      try{
+        if(!window.Lenis){ return; }
+        var lenis = new Lenis({ lerp:0.09, smoothWheel:true });
+        function raf(t){ lenis.raf(t); requestAnimationFrame(raf); }
+        requestAnimationFrame(raf);
+        document.querySelectorAll("a[href^='#']").forEach(function(a){
+          a.addEventListener("click", function(e){
+            var id = a.getAttribute("href");
+            if(id && id.length > 1 && id.charAt(0) === "#"){ var t = document.querySelector(id); if(t){ e.preventDefault(); lenis.scrollTo(t, {offset:-10}); } }
+          });
+        });
+      }catch(err){}
+    };
+    document.head.appendChild(ls);
+  }
+
+  /* ── mount the 3D keyboard + frame it per section (mirrors the source) ── */
+  // Keyboard poses in the scene's own units, per section, desktop + mobile.
+  var P = Math.PI;
+  var STATES = {
+    hero:       { d:{s:0.24, x:460, y:-55,  rx:0,    ry:0,     rz:0}, m:{s:0.36, x:0, y:-150, rx:0, ry:0, rz:0} },
+    skills:     { d:{s:0.26, x:0,   y:-30,  rx:0,    ry:P/12,  rz:0}, m:{s:0.30, x:0, y:-40,  rx:0, ry:P/12, rz:0} },
+    experience: { d:{s:0.22, x:0,   y:-40,  rx:P/12, ry:-P/4,  rz:0}, m:{s:0.28, x:0, y:-40,  rx:P/8, ry:-P/6, rz:0} },
+    projects:   { d:{s:0.19, x:0,   y:-40,  rx:P/16, ry:P/6,   rz:0}, m:{s:0.26, x:0, y:-40,  rx:P/10, ry:P/8, rz:0} },
+    extras:     { d:{s:0.20, x:-150,y:-40,  rx:0,    ry:P/8,   rz:0}, m:{s:0.26, x:0, y:-40,  rx:0, ry:P/8, rz:0} },
+    contact:    { d:{s:0.20, x:200, y:-40,  rx:0,    ry:-P/9,  rz:0}, m:{s:0.26, x:0, y:-40,  rx:0, ry:-P/9, rz:0} }
+  };
+  function poseFor(sec){ var st = STATES[sec] || STATES.hero; return (innerWidth < 768) ? st.m : st.d; }
+
+  function mountScene(){
+    if(reduce){ return; }
+    var host = document.getElementById("scene");
+    if(!host || window.__splineFailed){ return; }
+    if(!("customElements" in window)){ return; }
+    customElements.whenDefined("spline-viewer").then(function(){
+      var v = document.createElement("spline-viewer");
+      v.setAttribute("url", splineUrl);
+      v.setAttribute("loading-anim-type", "none");
+      v.setAttribute("events-target", "global"); /* lets physical keypresses drive the scene */
+      v.style.width = "100%"; v.style.height = "100%";
+      v.addEventListener("error", function(){ host.style.display = "none"; finishLoad(); });
+      host.appendChild(v);
+
+      var kbd = null, target = poseFor("hero"), tries = 0;
+      window.__setKbdSection = function(sec){ target = poseFor(sec); };
+
+      function applyPose(p, snap){
+        if(!kbd){ return; }
+        var t = snap ? 1 : 0.07;
+        kbd.scale.x = kbd.scale.y = kbd.scale.z = kbd.scale.x + (p.s - kbd.scale.x) * t;
+        kbd.position.x += (p.x - kbd.position.x) * t;
+        kbd.position.y += (p.y - kbd.position.y) * t;
+        kbd.rotation.x += (p.rx - kbd.rotation.x) * t;
+        kbd.rotation.y += (p.ry - kbd.rotation.y) * t;
+        kbd.rotation.z += (p.rz - kbd.rotation.z) * t;
+      }
+      function animate(){ applyPose(target, false); requestAnimationFrame(animate); }
+
+      // Poll for the runtime (sv._spline) AND the keyboard object — keep trying
+      // until the object resolves, otherwise it stays at the scene's (large,
+      // centered) default pose and covers the hero text.
+      var poll = setInterval(function(){
+        tries++;
+        var app = v._spline;
+        var ready = app && typeof app.findObjectByName === "function" && typeof app.getAllObjects === "function";
+        if(ready){ try{ kbd = app.findObjectByName("keyboard"); }catch(e){ kbd = null; } }
+        if((ready && kbd) || tries > 60){   // wait for the keyboard; ~18s ceiling
+          clearInterval(poll);
+          host.classList.add("ready");
+          finishLoad();
+          if(ready){
+            // Reveal the keycaps: the scene EXPORTS them hidden — mirror the source
+            // by switching on the desktop (or mobile) keycap objects, staggered.
+            try{
+              var capName = (innerWidth < 768) ? "keycap-mobile" : "keycap-desktop";
+              var caps = app.getAllObjects().filter(function(o){ return o && (o.name === capName || o.name === "keycap"); });
+              caps.forEach(function(c, idx){ setTimeout(function(){ try{ c.visible = true; }catch(e){} }, 250 + idx * 55); });
+            }catch(e){}
+          }
+          if(kbd){
+            var active = document.body.getAttribute("data-active") || "hero";
+            target = poseFor(active);
+            applyPose(target, true);   // snap to the section's pose immediately
+            requestAnimationFrame(animate);
+          }
+        }
+      }, 300);
+    });
+    /* if the custom element is never defined (blocked CDN), stop waiting on it */
+    setTimeout(function(){ if(!host.classList.contains("ready")){ finishLoad(); } }, 3500);
+  }
+  if(document.readyState !== "loading"){ mountScene(); }
+  else { document.addEventListener("DOMContentLoaded", mountScene); }
+})();
+</script>
+
+<!-- ── 3D split-ergo keyboard (Three.js, self-contained, CDN ESM) ───────────── -->
+<script type="importmap">
+{ "imports": {
+  "three": "/demo/developer/vendor/three.module.js",
+  "three/addons/": "/demo/developer/vendor/addons/"
+}}
+</script>
+<script type="module">
+/* ════════════════════════════════════════════════════════════════════════
+   Split-ergo 3D keyboard (Charybdis / Dactyl-Manuform style).
+   Two sculpted white halves: columnar-staggered COLOURFUL icon keycaps,
+   angled thumb clusters, and a glossy red trackball on the right half.
+   Floats in the star-field and re-frames per section. No build step.
+   ════════════════════════════════════════════════════════════════════════ */
+import * as THREE from 'three';
+import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.js';
+import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
+
+const reduce = matchMedia('(prefers-reduced-motion:reduce)').matches;
+const host = document.getElementById('scene');
+if (host && !reduce) boot(host);
+
+/* colourful tech-stack caps — brand colour + Font Awesome glyph (text fallback) */
+const SK = [
+  {l:'React',     c:'#149eca', g:'', f:'b'},
+  {l:'Next.js',   c:'#111418', t:'N',   fg:'#fff'},
+  {l:'TypeScript',c:'#3178c6', t:'TS'},
+  {l:'JavaScript',c:'#f7df1e', t:'JS',  fg:'#111'},
+  {l:'Tailwind',  c:'#38bdf8', t:'TW',  fg:'#06283b'},
+  {l:'Three.js',  c:'#111418', t:'3JS', fg:'#fff'},
+  {l:'Vue',       c:'#42b883', g:'', f:'b'},
+  {l:'Sass',      c:'#cd6799', g:'', f:'b'},
+  {l:'HTML5',     c:'#e34f26', g:'', f:'b'},
+  {l:'CSS3',      c:'#1572b6', g:'', f:'b'},
+  {l:'Vite',      c:'#646cff', t:'Vt'},
+  {l:'Figma',     c:'#a259ff', g:'', f:'b'},
+  {l:'Node.js',   c:'#5fa04e', g:'', f:'b'},
+  {l:'Python',    c:'#3776ab', g:'', f:'b'},
+  {l:'GraphQL',   c:'#e10098', t:'GQL'},
+  {l:'PostgreSQL',c:'#336791', t:'PG'},
+  {l:'Redis',     c:'#dc382d', t:'Rd'},
+  {l:'Docker',    c:'#2496ed', g:'', f:'b'},
+  {l:'AWS',       c:'#ff9900', g:'', f:'b', fg:'#111'},
+  {l:'Kubernetes',c:'#326ce5', t:'K8s'},
+  {l:'Terraform', c:'#7b42bc', t:'TF'},
+  {l:'Git',       c:'#f05032', g:'', f:'b'},
+  {l:'GitHub',    c:'#24292e', g:'', f:'b', fg:'#fff'},
+  {l:'WebGL',     c:'#990000', t:'GL', fg:'#fff'}
+];
+
+async function boot(host){
+  let renderer;
+  try { renderer = new THREE.WebGLRenderer({antialias:true, alpha:true, powerPreference:'high-performance'}); }
+  catch(e){ host.style.display = 'none'; return; }
+  const vw = () => host.clientWidth || innerWidth, vh = () => host.clientHeight || innerHeight;
+  renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 2));
+  renderer.setSize(vw(), vh());
+  renderer.setClearAlpha(0);
+  renderer.outputColorSpace = THREE.SRGBColorSpace;
+  renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure = 1.08;
+  renderer.shadowMap.enabled = true;
+  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+  host.appendChild(renderer.domElement);
+
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(34, vw()/vh(), 0.1, 100);
+  camera.position.set(0, 0.4, 15);
+  camera.lookAt(0, 0, 0);
+
+  const pmrem = new THREE.PMREMGenerator(renderer);
+  scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.035).texture;
+
+  const key = new THREE.DirectionalLight(0xffffff, 2.2);
+  key.position.set(6, 12, 9); key.castShadow = true;
+  key.shadow.mapSize.set(2048, 2048);
+  key.shadow.camera.near = 1; key.shadow.camera.far = 44;
+  Object.assign(key.shadow.camera, {left:-10, right:10, top:10, bottom:-10});
+  key.shadow.camera.updateProjectionMatrix();
+  key.shadow.bias = -0.0004; key.shadow.radius = 6;
+  scene.add(key);
+  const fill = new THREE.DirectionalLight(0x9fb4ff, 0.55); fill.position.set(-9, 3, 5);  scene.add(fill);
+  const rim  = new THREE.DirectionalLight(0x7c5cff, 0.9);  rim.position.set(-1, 4, -11);  scene.add(rim);
+  scene.add(new THREE.HemisphereLight(0xcdd9ff, 0x0a0f1e, 0.5));
+
+  /* fonts: render real glyphs where available, fall back to short labels */
+  let faReady = false;
+  try {
+    await Promise.race([
+      Promise.all([document.fonts.load('900 32px "Font Awesome 6 Free"'),
+                   document.fonts.load('400 32px "Font Awesome 6 Brands"')]),
+      new Promise(r => setTimeout(r, 1500))
+    ]);
+    faReady = document.fonts.check('400 32px "Font Awesome 6 Brands"');
+  } catch(e){}
+
+  const bodyMat  = new THREE.MeshStandardMaterial({color:0xe9ecf1, roughness:0.5,  metalness:0.0, envMapIntensity:0.95});
+  const plateMat = new THREE.MeshStandardMaterial({color:0xf4f6fa, roughness:0.42, metalness:0.0, envMapIntensity:1.05});
+  const capGeo  = new RoundedBoxGeometry(0.78, 0.46, 0.78, 3, 0.12);
+  const iconGeo = new THREE.PlaneGeometry(0.6, 0.6);
+  const caps = [];
+
+  function iconTex(d){
+    const s = 128, cv = document.createElement('canvas'); cv.width = cv.height = s;
+    const x = cv.getContext('2d'); x.clearRect(0, 0, s, s);
+    x.fillStyle = d.fg || '#ffffff'; x.textAlign = 'center'; x.textBaseline = 'middle';
+    if (d.g && faReady){
+      x.font = (d.f === 'b' ? '400' : '900') + ' 74px "' + (d.f === 'b' ? 'Font Awesome 6 Brands' : 'Font Awesome 6 Free') + '"';
+      x.fillText(d.g, s/2, s/2 + 4);
+    } else {
+      const t = d.t || d.l.replace(/[^A-Za-z0-9]/g, '').slice(0, 3);
+      x.font = '800 ' + (t.length > 2 ? 42 : 56) + 'px Inter, system-ui, sans-serif';
+      x.fillText(t, s/2, s/2 + 2);
+    }
+    const tex = new THREE.CanvasTexture(cv); tex.colorSpace = THREE.SRGBColorSpace; tex.anisotropy = 4;
+    return tex;
+  }
+  function makeCap(d){
+    const g = new THREE.Group();
+    const m = new THREE.Mesh(capGeo, new THREE.MeshStandardMaterial({color:new THREE.Color(d.c), roughness:0.32, metalness:0.0, envMapIntensity:0.7}));
+    m.castShadow = m.receiveShadow = true; g.add(m);
+    const im = new THREE.Mesh(iconGeo, new THREE.MeshBasicMaterial({map:iconTex(d), transparent:true, depthWrite:false}));
+    im.rotation.x = -Math.PI/2; im.position.y = 0.235; g.add(im);
+    g.userData = {label:d.l, press:0, baseY:0};
+    caps.push(g); return g;
+  }
+  function makeBlank(color){
+    const g = new THREE.Group();
+    const m = new THREE.Mesh(capGeo, new THREE.MeshStandardMaterial({color:new THREE.Color(color || 0x2b3242), roughness:0.5, metalness:0.0, envMapIntensity:0.5}));
+    m.castShadow = m.receiveShadow = true; g.add(m);
+    g.userData = {label:'', press:0, baseY:0};
+    caps.push(g); return g;
+  }
+
+  const KX = 0.94, RZ = 0.97;
+  const colZ = [0.46, 0.14, 0.0, 0.30];   // columnar stagger (depth): pinky → index
+  const colY = [0.0, 0.05, 0.09, 0.0];     // gentle height curve
+
+  function buildHalf(side, data, trackball){
+    const half = new THREE.Group();
+
+    const plate = new THREE.Mesh(new RoundedBoxGeometry(4.0, 0.5, 3.3, 4, 0.42), plateMat);
+    plate.position.set(0, -0.5, -0.1); plate.castShadow = plate.receiveShadow = true; half.add(plate);
+
+    const palm = new THREE.Mesh(new RoundedBoxGeometry(3.0, 0.85, 1.85, 4, 0.5), bodyMat);
+    palm.position.set(side*0.15, -0.6, 2.5); palm.rotation.x = 0.05;
+    palm.castShadow = palm.receiveShadow = true; half.add(palm);
+
+    const field = new THREE.Group();
+    for (let c = 0; c < 4; c++) for (let r = 0; r < 3; r++){
+      const d = data[c*3 + r];
+      const cap = d ? makeCap(d) : makeBlank();
+      cap.position.set(side * ((c - 1.5)*KX), colY[c], (r - 1)*RZ - colZ[c]);
+      cap.userData.baseY = cap.position.y;
+      field.add(cap);
+    }
+    field.rotation.z = -side * 0.13;        // fan / splay outward
+    field.position.set(0, 0.0, -0.4);
+    half.add(field);
+
+    const thumb = new THREE.Group();
+    for (let i = 0; i < 3; i++){
+      const cap = makeBlank(0x39414f);
+      const a = -0.30 + i*0.42;
+      cap.position.set(side*Math.cos(a)*0.98, -0.04 - i*0.03, Math.sin(a)*0.98);
+      cap.userData.baseY = cap.position.y;
+      cap.rotation.y = -side*a;
+      thumb.add(cap);
+    }
+    thumb.scale.setScalar(0.92);
+    thumb.position.set(side*1.05, 0.05, 1.7);
+    thumb.rotation.y = -side*0.5;
+    half.add(thumb);
+
+    if (trackball){
+      const ball = new THREE.Mesh(new THREE.SphereGeometry(0.6, 40, 40),
+        new THREE.MeshPhysicalMaterial({color:0x97121a, roughness:0.12, metalness:0.0, clearcoat:1, clearcoatRoughness:0.05, envMapIntensity:1.4}));
+      ball.position.set(side*0.5, 0.08, 1.62); ball.castShadow = true; half.add(ball);
+      const ring = new THREE.Mesh(new THREE.TorusGeometry(0.58, 0.1, 16, 44), bodyMat);
+      ring.rotation.x = Math.PI/2; ring.position.set(side*0.5, -0.22, 1.62); half.add(ring);
+    }
+
+    half.position.x = side * 2.55;
+    half.rotation.y = side * 0.1;
+    return half;
+  }
+
+  const keyboard = new THREE.Group();
+  keyboard.add(buildHalf(-1, SK.slice(0, 12), false));
+  keyboard.add(buildHalf( 1, SK.slice(12, 24), true));
+
+  /* soft fake contact shadow so it reads as "floating in the star-field" */
+  const shTex = (() => {
+    const s = 256, cv = document.createElement('canvas'); cv.width = cv.height = s;
+    const x = cv.getContext('2d'), g = x.createRadialGradient(s/2, s/2, 8, s/2, s/2, s/2);
+    g.addColorStop(0, 'rgba(0,0,0,0.45)'); g.addColorStop(1, 'rgba(0,0,0,0)');
+    x.fillStyle = g; x.fillRect(0, 0, s, s);
+    return new THREE.CanvasTexture(cv);
+  })();
+  const shadow = new THREE.Mesh(new THREE.PlaneGeometry(13, 8), new THREE.MeshBasicMaterial({map:shTex, transparent:true, depthWrite:false}));
+  shadow.rotation.x = -Math.PI/2; shadow.position.y = -1.35; keyboard.add(shadow);
+  scene.add(keyboard);
+
+  /* per-section framing — desktop (d) + mobile (m) */
+  const POSE = {
+    hero:      {d:{s:0.52,x:4.7, y:0.3, rx:0.70,ry:-0.42,rz:0},    m:{s:0.34,x:0,y:-3.9,rx:0.72,ry:0.0, rz:0}},
+    skills:    {d:{s:0.66,x:0.1, y:-0.1,rx:0.92,ry:0.0,  rz:0},    m:{s:0.46,x:0,y:-0.2,rx:0.95,ry:0.0, rz:0}},
+    experience:{d:{s:0.54,x:-3.3,y:0.2, rx:0.62,ry:0.5,  rz:-0.04},m:{s:0.42,x:0,y:-0.5,rx:0.70,ry:0.45,rz:0}},
+    projects:  {d:{s:0.50,x:3.3, y:0.2, rx:0.62,ry:-0.5, rz:0.04}, m:{s:0.40,x:0,y:-0.7,rx:0.70,ry:-0.45,rz:0}},
+    extras:    {d:{s:0.54,x:-3.3,y:0.2, rx:0.58,ry:0.45, rz:0},    m:{s:0.42,x:0,y:-0.5,rx:0.62,ry:0.4,rz:0}},
+    contact:   {d:{s:0.54,x:3.3, y:0.2, rx:0.58,ry:-0.42,rz:0},    m:{s:0.42,x:0,y:-0.6,rx:0.62,ry:-0.4,rz:0}}
+  };
+  const poseFor = s => { const p = POSE[s] || POSE.hero; return innerWidth < 768 ? p.m : p.d; };
+  let target = poseFor(document.body.getAttribute('data-active') || 'hero');
+  keyboard.scale.setScalar(target.s);
+  keyboard.position.set(target.x, target.y, 0);
+  keyboard.rotation.set(target.rx, target.ry, target.rz);
+  window.__setKbdSection = s => { target = poseFor(s); };
+
+  /* interaction: hover tooltip + press (pointer is active over #scene only in #skills) */
+  const ray = new THREE.Raycaster(), ptr = new THREE.Vector2(), tip = document.getElementById('kbd-tip');
+  let hovered = null;
+  const rootOf = o => { let p = o; while (p && caps.indexOf(p) < 0) p = p.parent; return p; };
+  renderer.domElement.addEventListener('pointermove', e => {
+    const r = renderer.domElement.getBoundingClientRect();
+    ptr.x = ((e.clientX - r.left)/r.width)*2 - 1; ptr.y = -((e.clientY - r.top)/r.height)*2 + 1;
+    ray.setFromCamera(ptr, camera);
+    const hit = ray.intersectObjects(caps, true)[0];
+    hovered = hit ? rootOf(hit.object) : null;
+    if (hovered && hovered.userData.label && tip){
+      tip.textContent = hovered.userData.label;
+      tip.style.left = e.clientX + 'px'; tip.style.top = (e.clientY - 16) + 'px'; tip.classList.add('on');
+    } else if (tip) tip.classList.remove('on');
+  });
+  renderer.domElement.addEventListener('pointerleave', () => { if (tip) tip.classList.remove('on'); hovered = null; });
+  renderer.domElement.addEventListener('pointerdown', () => { if (hovered) hovered.userData.press = 1; });
+  addEventListener('keydown', e => {
+    if (e.metaKey || e.ctrlKey || e.altKey) return;
+    const lit = caps.filter(c => c.userData.label);
+    if (lit.length) lit[(Math.random()*lit.length) | 0].userData.press = 1;
+  });
+
+  /* render loop — section lerp + cap-press decay (no vertical float by design) */
+  const clock = new THREE.Clock();
+  let revealed = false;
+  function tick(){
+    const dt = Math.min(clock.getDelta(), 0.05), el = clock.getElapsedTime(), t = Math.min(1, dt*5);
+    keyboard.scale.x += (target.s - keyboard.scale.x)*t; keyboard.scale.y = keyboard.scale.z = keyboard.scale.x;
+    keyboard.position.x += (target.x - keyboard.position.x)*t;
+    keyboard.position.y += (target.y - keyboard.position.y)*t;
+    keyboard.rotation.x += (target.rx - keyboard.rotation.x)*t;
+    keyboard.rotation.y += (target.ry + Math.sin(el*0.3)*0.03 - keyboard.rotation.y)*t;  // whisper of sway
+    keyboard.rotation.z += (target.rz - keyboard.rotation.z)*t;
+    for (const c of caps){
+      c.userData.press = c.userData.press > 0.001 ? c.userData.press * 0.86 : 0;
+      c.position.y = c.userData.baseY - c.userData.press*0.16;
+    }
+    renderer.render(scene, camera);
+    if (!revealed){ revealed = true; host.classList.add('ready'); }
+    requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+
+  addEventListener('resize', () => {
+    camera.aspect = vw()/vh(); camera.updateProjectionMatrix();
+    renderer.setSize(vw(), vh());
+    target = poseFor(document.body.getAttribute('data-active') || 'hero');
+  }, {passive:true});
+}
+</script>
+</body>
+</html>
