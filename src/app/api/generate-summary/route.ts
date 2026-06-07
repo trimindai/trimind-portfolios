@@ -54,7 +54,7 @@ Education: ${highestEducation ?? "not provided"}`;
         },
         body: JSON.stringify({
           contents: [{ parts: [{ text: prompt }] }],
-          generationConfig: { maxOutputTokens: 150, temperature: 0.7 },
+          generationConfig: { maxOutputTokens: 500, temperature: 0.7 },
         }),
       }
     );
