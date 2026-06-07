@@ -97,15 +97,24 @@ function injectOgTags(html: string, portfolio: { basics: { fullName: string; tit
   const description = portfolio.basics.bio?.slice(0, 160) || `${portfolio.basics.fullName}'s professional portfolio`;
   const url = `${SITE_URL}/p/${portfolio.slug}`;
 
+  // Absolute fallback OG image (the shared site card). Per-portfolio dynamic
+  // cards can be layered on later; an absolute URL here guarantees every /p/*
+  // page has a valid, crawlable preview image instead of none.
+  const ogImage = `${SITE_URL}/og-image.png`;
+
   const ogTags = `
     <meta property="og:title" content="${title.replace(/"/g, "&quot;")}" />
     <meta property="og:description" content="${description.replace(/"/g, "&quot;")}" />
     <meta property="og:url" content="${url}" />
     <meta property="og:type" content="profile" />
     <meta property="og:site_name" content="Portfolio Pro" />
-    <meta name="twitter:card" content="summary" />
+    <meta property="og:image" content="${ogImage}" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="${title.replace(/"/g, "&quot;")}" />
     <meta name="twitter:description" content="${description.replace(/"/g, "&quot;")}" />
+    <meta name="twitter:image" content="${ogImage}" />
     <meta name="description" content="${description.replace(/"/g, "&quot;")}" />
     <link rel="canonical" href="${url}" />`;
 

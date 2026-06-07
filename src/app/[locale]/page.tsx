@@ -8,6 +8,7 @@ import Image from "next/image";
 import { HOSTING_ENABLED } from "@/lib/flags";
 import { AdminLink } from "@/components/AdminLink";
 import { TryItForm } from "@/components/landing/TryItForm";
+import { UseTemplateButton } from "@/components/landing/UseTemplateButton";
 
 export default async function LandingPage({
   params,
@@ -395,12 +396,12 @@ export default async function LandingPage({
                     >
                       {isRTL ? "عرض مباشر ←" : "View live demo \u2192"}
                     </a>
-                    <Link
-                      href="/dashboard/new?template=corporate"
+                    <UseTemplateButton
+                      template="corporate"
+                      locale={locale}
+                      label={isRTL ? "استخدم هذا القالب" : "Use this template"}
                       className="rounded-lg border border-[var(--land-accent)]/50 px-4 py-2 text-sm font-medium text-[var(--land-accent)] transition-colors hover:bg-[var(--land-accent)]/10"
-                    >
-                      {isRTL ? "استخدم هذا القالب" : "Use this template"}
-                    </Link>
+                    />
                   </div>
                 </div>
               </div>
@@ -446,12 +447,12 @@ export default async function LandingPage({
                     >
                       {isRTL ? "عرض مباشر ←" : "View live demo \u2192"}
                     </a>
-                    <Link
-                      href="/dashboard/new?template=engineer"
+                    <UseTemplateButton
+                      template="engineer"
+                      locale={locale}
+                      label={isRTL ? "استخدم هذا القالب" : "Use this template"}
                       className="rounded-lg border border-[var(--land-accent)]/50 px-4 py-2 text-sm font-medium text-[var(--land-accent)] transition-colors hover:bg-[var(--land-accent)]/10"
-                    >
-                      {isRTL ? "استخدم هذا القالب" : "Use this template"}
-                    </Link>
+                    />
                   </div>
                 </div>
               </div>
@@ -498,12 +499,12 @@ export default async function LandingPage({
                     >
                       {isRTL ? "عرض مباشر ←" : "View live demo →"}
                     </a>
-                    <Link
-                      href="/dashboard/new?template=creative"
+                    <UseTemplateButton
+                      template="creative"
+                      locale={locale}
+                      label={isRTL ? "استخدم هذا القالب" : "Use this template"}
                       className="rounded-lg border border-[var(--land-accent)]/50 px-4 py-2 text-sm font-medium text-[var(--land-accent)] transition-colors hover:bg-[var(--land-accent)]/10"
-                    >
-                      {isRTL ? "استخدم هذا القالب" : "Use this template"}
-                    </Link>
+                    />
                   </div>
                 </div>
               </div>
@@ -739,8 +740,8 @@ export default async function LandingPage({
                 </Link>
                 <p className="mt-3 text-xs text-[var(--land-muted)]">
                   {isRTL
-                    ? "دفعة واحدة · ٤.٩٠٠ دك · بدون تجديد."
-                    : "One-time payment · 4.900 KD · No renewals."}
+                    ? "ابنِ وعاين مجانًا — ادفع ٤.٩٠٠ دك فقط عند النشر. دفعة واحدة، بدون تجديد."
+                    : "Build & preview for free — pay 4.900 KD only when you publish. One-time, no renewals."}
                 </p>
                 {/* Payment trust icons */}
                 <div className="mt-6 flex flex-wrap items-center gap-4">
@@ -887,10 +888,10 @@ export default async function LandingPage({
               </li>
               <li>
                 <Link
-                  href="/templates"
+                  href="/pricing"
                   className="hover:text-[var(--land-bright)] transition-colors"
                 >
-                  {isRTL ? "ابدأ" : "Get started"}
+                  {isRTL ? "الأسعار" : "Pricing"}
                 </Link>
               </li>
               <li>

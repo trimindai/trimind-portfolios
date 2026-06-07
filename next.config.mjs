@@ -28,7 +28,7 @@ const nextConfig = {
               "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.clerk.accounts.dev https://clerk.portfolio-trimind.com https://challenges.cloudflare.com",
               "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
               "font-src 'self' https://fonts.gstatic.com",
-              "img-src 'self' data: blob: https://*.clerk.com https://img.clerk.com https://clerk.portfolio-trimind.com",
+              "img-src 'self' data: blob: https://*.clerk.com https://img.clerk.com https://clerk.portfolio-trimind.com https://api.qrserver.com",
               "connect-src 'self' https://*.clerk.accounts.dev https://clerk.portfolio-trimind.com https://img.clerk.com https://api.myfatoorah.com https://challenges.cloudflare.com https://*.convex.cloud wss://*.convex.cloud",
               "worker-src 'self' blob:",
               "frame-src 'self' https://*.clerk.accounts.dev https://clerk.portfolio-trimind.com https://challenges.cloudflare.com https://demo.myfatoorah.com https://portal.myfatoorah.com",

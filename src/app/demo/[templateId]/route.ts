@@ -229,6 +229,11 @@ export async function GET(
     <meta property="og:type" content="profile" />
     <meta property="og:url" content="https://portfolio-trimind.com/demo/${templateId}" />
     <meta property="og:site_name" content="Portfolio Pro" />
+    <meta property="og:image" content="https://portfolio-trimind.com/og-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:image" content="https://portfolio-trimind.com/og-image.png" />
     <meta name="robots" content="index, follow" />
     <link rel="canonical" href="https://portfolio-trimind.com/demo/${templateId}" />
     <script type="application/ld+json">${JSON.stringify({

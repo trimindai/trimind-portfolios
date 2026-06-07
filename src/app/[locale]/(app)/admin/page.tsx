@@ -503,6 +503,38 @@ function PaymentsTab({ payments, users, portfolios }: { payments: any[]; users: 
   const [statusFilter, setStatusFilter] = useState("all");
   const [page, setPage] = useState(1);
   const LIMIT = 20;
+  const [reconciling, setReconciling] = useState(false);
+  const [recheckingId, setRecheckingId] = useState<string | null>(null);
+  const [reconcileResult, setReconcileResult] = useState<any>(null);
+
+  async function reconcileAll() {
+    setReconciling(true);
+    setReconcileResult(null);
+    try {
+      const res = await fetch("/api/admin/reconcile", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({}) });
+      const data = await res.json();
+      setReconcileResult(data);
+    } catch (e: any) {
+      setReconcileResult({ error: e.message });
+    } finally {
+      setReconciling(false);
+    }
+  }
+
+  async function recheckOne(paymentDocId: string) {
+    setRecheckingId(paymentDocId);
+    try {
+      const res = await fetch("/api/admin/reconcile", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ paymentDocId }) });
+      const data = await res.json();
+      setReconcileResult(data);
+    } catch (e: any) {
+      setReconcileResult({ error: e.message });
+    } finally {
+      setRecheckingId(null);
+    }
+  }
+
+  const pendingCount = payments.filter((p) => p.status === "pending").length;
 
   useEffect(() => {
     const timer = setTimeout(() => { setSearch(searchInput); setPage(1); }, 300);
@@ -527,6 +559,31 @@ function PaymentsTab({ payments, users, portfolios }: { payments: any[]; users: 
 
   return (
     <>
+      {pendingCount > 0 && (
+        <div className="mb-4 flex items-center justify-between gap-3 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3">
+          <p className="text-sm text-amber-800"><span className="font-semibold">{pendingCount}</span> pending payment{pendingCount !== 1 ? "s" : ""} — may include stuck revenue</p>
+          <button onClick={reconcileAll} disabled={reconciling} className="shrink-0 rounded-lg bg-amber-600 px-4 py-1.5 text-xs font-medium text-white hover:bg-amber-700 disabled:opacity-50 transition-colors">
+            {reconciling ? "Checking..." : "Re-check all"}
+          </button>
+        </div>
+      )}
+      {reconcileResult && (
+        <div className={`mb-4 rounded-xl border px-4 py-3 text-sm ${reconcileResult.error ? "border-red-200 bg-red-50 text-red-800" : "border-emerald-200 bg-emerald-50 text-emerald-800"}`}>
+          {reconcileResult.error ? (
+            <p>Error: {reconcileResult.error}</p>
+          ) : (
+            <div className="flex items-center justify-between">
+              <p>
+                <span className="font-semibold">{reconcileResult.summary.recovered}</span> recovered,{" "}
+                <span className="font-semibold">{reconcileResult.summary.failed}</span> failed,{" "}
+                <span className="font-semibold">{reconcileResult.summary.stillPending}</span> still pending
+                {reconcileResult.summary.errors > 0 && <>, <span className="font-semibold text-red-600">{reconcileResult.summary.errors}</span> errors</>}
+              </p>
+              <button onClick={() => setReconcileResult(null)} className="text-xs text-emerald-600 hover:underline">Dismiss</button>
+            </div>
+          )}
+        </div>
+      )}
       <div className="flex flex-col sm:flex-row gap-3 mb-4">
         <input type="text" placeholder="Search..." value={searchInput} onChange={(e) => setSearchInput(e.target.value)} className="flex-1 px-4 py-2.5 border border-gray-200 rounded-xl text-sm bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-emerald-500" />
         <select value={statusFilter} onChange={(e) => { setStatusFilter(e.target.value); setPage(1); }} className="px-4 py-2.5 border border-gray-200 rounded-xl text-sm bg-white text-gray-900">
@@ -547,6 +604,7 @@ function PaymentsTab({ payments, users, portfolios }: { payments: any[]; users: 
               <th className="text-left py-3 px-4 text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
               <th className="text-left py-3 px-4 text-xs font-medium text-gray-500 uppercase tracking-wider">Invoice</th>
               <th className="text-left py-3 px-4 text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+              <th className="py-3 px-4"></th>
             </tr>
           </thead>
           <tbody>
@@ -562,10 +620,17 @@ function PaymentsTab({ payments, users, portfolios }: { payments: any[]; users: 
                   <td className="py-3 px-4"><StatusBadge status={p.status} /></td>
                   <td className="py-3 px-4 text-xs font-mono text-gray-400">{p.myfatoorahInvoiceId ? p.myfatoorahInvoiceId.slice(0, 12) : "—"}</td>
                   <td className="py-3 px-4 text-sm text-gray-400">{new Date(p.createdAt).toLocaleDateString()}</td>
+                  <td className="py-3 px-4">
+                    {p.status === "pending" && (
+                      <button onClick={() => recheckOne(p._id)} disabled={recheckingId === p._id} className="text-xs text-amber-600 hover:text-amber-800 disabled:opacity-50 font-medium">
+                        {recheckingId === p._id ? "..." : "Re-check"}
+                      </button>
+                    )}
+                  </td>
                 </tr>
               );
             })}
-            {paged.length === 0 && <tr><td colSpan={5} className="px-4 py-8 text-center text-gray-400 text-sm">No payments found</td></tr>}
+            {paged.length === 0 && <tr><td colSpan={6} className="px-4 py-8 text-center text-gray-400 text-sm">No payments found</td></tr>}
           </tbody>
         </table>
         <Pagination page={page} totalPages={totalPages} setPage={setPage} />
@@ -586,7 +651,14 @@ function PaymentsTab({ payments, users, portfolios }: { payments: any[]; users: 
               </div>
               <div className="flex items-center justify-between text-xs text-gray-400">
                 <span>{new Date(p.createdAt).toLocaleDateString()}</span>
-                {p.myfatoorahInvoiceId && <span className="font-mono">{p.myfatoorahInvoiceId.slice(0, 12)}</span>}
+                <div className="flex items-center gap-3">
+                  {p.myfatoorahInvoiceId && <span className="font-mono">{p.myfatoorahInvoiceId.slice(0, 12)}</span>}
+                  {p.status === "pending" && (
+                    <button onClick={() => recheckOne(p._id)} disabled={recheckingId === p._id} className="text-xs text-amber-600 hover:text-amber-800 disabled:opacity-50 font-medium">
+                      {recheckingId === p._id ? "..." : "Re-check"}
+                    </button>
+                  )}
+                </div>
               </div>
             </div>
           );

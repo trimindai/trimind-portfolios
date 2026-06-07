@@ -21,7 +21,7 @@
  * goes dark and `/p/<slug>` shows a "coming soon" notice instead) — no
  * other code needs to change.
  */
-export const HOSTING_ENABLED = false;
+export const HOSTING_ENABLED = true;
 // force-rebuild 1780528173
 
 /**
