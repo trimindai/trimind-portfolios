@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Solar MPPT Battery Charger — Abdulrahman Alkandari</title>
+<meta name="description" content="A custom STM32 buck-converter charge controller with maximum-power-point tracking — ~30% more harvest than a cheap PWM unit.">
+<meta name="theme-color" content="#ffffff">
+<meta property="og:title" content="Solar MPPT Battery Charger | Abdulrahman Alkandari">
+<meta property="og:description" content="A custom STM32 buck-converter charge controller with maximum-power-point tracking — ~30% more harvest than a cheap PWM unit.">
+<meta property="og:type" content="article">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --font-head: 'Manrope', sans-serif;
+  --font-body: 'DM Sans', sans-serif;
+  --text: #18181b;
+  --text-secondary: #52525b;
+  --text-muted: #a1a1aa;
+  --bg: #ffffff;
+  --bg-warm: #f0fdfa;
+  --bg-card: #f0fdfa;
+  --border: #d1d5db;
+  --accent: #0f766e;
+  --accent-hover: #0d9488;
+  --accent-glow: rgba(15, 118, 110, 0.07);
+}
+
+html { scroll-behavior: smooth; font-size: 16px; }
+body {
+  font-family: var(--font-body);
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+}
+a { text-decoration: none; color: inherit; }
+img { max-width: 100%; display: block; }
+a:focus-visible, button:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+/* ═══ HEADER ═══ */
+.header {
+  position: sticky; top: 0; z-index: 1000;
+  background: rgba(255,255,255,0.95);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+}
+.header-inner {
+  max-width: 1200px; margin: 0 auto;
+  padding: 18px 40px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.header-brand {
+  font-family: var(--font-head); font-size: 1.05rem; font-weight: 600;
+  color: var(--text); letter-spacing: -0.02em;
+}
+.header-nav { display: flex; align-items: center; gap: 28px; }
+.header-nav a {
+  font-size: 0.85rem; font-weight: 500;
+  color: var(--text-secondary); transition: color 200ms;
+}
+.header-nav a:hover { color: var(--accent); }
+
+/* ═══ LAYOUT ═══ */
+.container { max-width: 1100px; margin: 0 auto; padding: 0 40px; }
+
+/* ═══ BREADCRUMB ═══ */
+.breadcrumb {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 0.78rem; color: var(--text-muted); font-weight: 500;
+  padding: 28px 0 0;
+}
+.breadcrumb a { transition: color 200ms; }
+.breadcrumb a:hover { color: var(--accent); }
+.breadcrumb span[aria-current] { color: var(--text-secondary); }
+.breadcrumb .sep { color: var(--border); }
+
+/* ═══ PROJECT HERO ═══ */
+.project-hero { padding: 24px 0 32px; }
+
+.back-link {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-size: 0.8rem; color: var(--text-muted); font-weight: 500;
+  margin-bottom: 32px; transition: color 200ms;
+}
+.back-link:hover { color: var(--accent); }
+.back-link svg { width: 14px; height: 14px; }
+
+.project-byline {
+  display: flex; flex-wrap: wrap; gap: 16px;
+  font-size: 0.75rem; font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase; letter-spacing: 0.08em;
+  margin-bottom: 20px;
+}
+.project-byline > span:not(:last-child)::after {
+  content: '\00b7'; margin-left: 16px; color: var(--border);
+}
+
+.project-title {
+  font-family: var(--font-head);
+  font-size: clamp(2.2rem, 5vw, 3.2rem); font-weight: 700;
+  line-height: 1.1; letter-spacing: -0.025em; color: var(--text);
+  margin-bottom: 20px;
+}
+
+.project-tagline {
+  font-size: 1.15rem; color: var(--text-secondary);
+  line-height: 1.6; max-width: 760px; font-weight: 400;
+}
+
+.project-cover {
+  margin-top: 48px;
+  width: 100%; aspect-ratio: 21 / 9;
+  border: 1px solid var(--border);
+}
+
+/* ═══ CONTENT BLOCKS ═══ */
+.project-content { padding: 32px 0 64px; }
+
+.block { margin: 36px 0; }
+.block-heading {
+  font-family: var(--font-head); font-size: 1.4rem; font-weight: 700;
+  letter-spacing: -0.02em; color: var(--text); margin-bottom: 14px;
+}
+.block-paragraph { max-width: 720px; }
+.block-paragraph p {
+  font-size: 1.02rem; line-height: 1.8; color: var(--text-secondary);
+}
+.block-paragraph p + p { margin-top: 14px; }
+
+.block-figure { margin: 0; }
+.block-figure .figure-visual {
+  width: 100%; aspect-ratio: 21 / 9; border: 1px solid var(--border);
+}
+.block-figure figcaption {
+  font-size: 0.78rem; color: var(--text-muted); font-weight: 500;
+  margin-top: 12px; text-transform: uppercase; letter-spacing: 0.06em;
+}
+
+.block-specs {
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  padding: 20px 0;
+}
+.block-specs-row {
+  display: grid; grid-template-columns: 1fr 2fr; gap: 24px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+}
+.block-specs-row:last-child { border-bottom: none; }
+.block-specs-label {
+  font-size: 0.78rem; color: var(--text-muted); font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.06em;
+}
+.block-specs-value {
+  font-size: 0.92rem; color: var(--text); font-weight: 500;
+}
+
+.block-challenge {
+  background: var(--bg-warm);
+  border: 1px solid var(--border);
+  padding: 28px 32px;
+  max-width: 760px;
+}
+.block-challenge-label {
+  font-size: 0.72rem; font-weight: 600; color: var(--accent);
+  text-transform: uppercase; letter-spacing: 0.1em;
+  margin-bottom: 6px;
+}
+.block-challenge p { font-size: 0.92rem; line-height: 1.7; color: var(--text-secondary); }
+.block-challenge p + .block-challenge-label { margin-top: 16px; }
+
+/* ═══ LINKS ═══ */
+.project-links {
+  display: flex; flex-wrap: wrap; gap: 12px;
+  padding: 32px 0;
+  border-top: 1px solid var(--border);
+}
+.project-link {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 10px 18px;
+  border: 1.5px solid var(--accent);
+  font-size: 0.82rem; font-weight: 600;
+  letter-spacing: 0.02em; color: var(--accent);
+  transition: all 200ms;
+}
+.project-link:hover { background: var(--accent); color: #fff; }
+.project-link svg { width: 14px; height: 14px; }
+
+/* ═══ FOOTER ═══ */
+.footer {
+  background: var(--bg-warm); border-top: 1px solid var(--border);
+  padding: 60px 40px 40px;
+}
+.footer-inner {
+  max-width: 1200px; margin: 0 auto;
+  display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 40px;
+}
+.footer-col h4 {
+  font-family: var(--font-head); font-size: 0.75rem; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 12px;
+  color: var(--text-muted);
+}
+.footer-col p, .footer-col a {
+  font-size: 0.9rem; color: var(--text-secondary); line-height: 1.8;
+}
+.footer-col a:hover { color: var(--accent); }
+.footer-bottom {
+  max-width: 1200px; margin: 40px auto 0; padding-top: 20px;
+  border-top: 1px solid var(--border);
+  font-size: 0.78rem; color: var(--text-muted);
+}
+
+/* ═══ PRINT ═══ */
+@media print {
+  @page { margin: 0.5in; size: A4; }
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    backdrop-filter: none !important;
+  }
+  html, body { background: #fff !important; font-size: 9pt; }
+  .header { position: static; background: #fff !important; }
+  .back-link, .project-links { display: none !important; }
+  .footer { background: #fff !important; }
+  .project-hero { padding: 16px 0 12px; }
+  .project-title { font-size: 20pt; }
+  .project-tagline { font-size: 10pt; }
+  .project-cover { margin-top: 16px; max-height: 4in; }
+  .block { margin: 18px 0; page-break-inside: avoid; break-inside: avoid; }
+  .block-paragraph p { font-size: 9pt; }
+  .block-specs-row { padding: 4px 0; }
+}
+
+/* ═══ RESPONSIVE ═══ */
+@media (max-width: 640px) {
+  .header-inner { padding: 14px 20px; }
+  .header-nav { display: none; }
+  .container { padding: 0 20px; }
+  .project-hero { padding: 16px 0 24px; }
+  .project-title { font-size: 1.8rem; }
+  .project-tagline { font-size: 1rem; }
+  .block-specs-row { grid-template-columns: 1fr; gap: 4px; padding: 12px 0; }
+  .block-challenge { padding: 20px 24px; }
+  .footer-inner { grid-template-columns: 1fr; gap: 24px; }
+}
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-inner">
+    <a href="../index.html" class="header-brand">Abdulrahman Alkandari</a>
+    <nav class="header-nav">
+      <a href="../index.html#about">Home</a>
+      <a href="/demo/engineer/projects">Projects</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <div class="container">
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <a href="../index.html">Home</a>
+      <span class="sep">/</span>
+      <a href="/demo/engineer/projects">Projects</a>
+      <span class="sep">/</span>
+      <span aria-current="page">Solar MPPT Battery Charger</span>
+    </nav>
+  </div>
+
+  <section class="project-hero">
+    <div class="container">
+      <a href="/demo/engineer/projects" class="back-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        All projects
+      </a>
+
+      <div class="project-byline">
+        <span>2024</span>
+        <span>Power Electronics</span>
+        <span>Personal Build</span>
+        <span>STM32 Firmware</span>
+        <span>2-layer PCB</span>
+      </div>
+
+      <h1 class="project-title">Solar MPPT Battery Charger</h1>
+      <p class="project-tagline">A custom buck-converter charge controller that hunts the panel's maximum-power point in real time &mdash; harvesting roughly 30% more energy than the cheap PWM unit it replaced.</p>
+
+      <svg class="project-cover" viewBox="0 0 840 360" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Solar MPPT charger cover">
+        <defs>
+          <linearGradient id="cov" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stop-color="#115e59"/>
+            <stop offset="1" stop-color="#0d9488"/>
+          </linearGradient>
+        </defs>
+        <rect width="840" height="360" fill="url(#cov)"/>
+        <g fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="3">
+          <circle cx="170" cy="120" r="44"/>
+          <g stroke="rgba(255,255,255,0.75)">
+            <line x1="170" y1="58" x2="170" y2="40"/><line x1="170" y1="200" x2="170" y2="182"/>
+            <line x1="108" y1="120" x2="90" y2="120"/><line x1="250" y1="120" x2="232" y2="120"/>
+            <line x1="126" y1="76" x2="113" y2="63"/><line x1="227" y1="177" x2="214" y2="164"/>
+            <line x1="214" y1="76" x2="227" y2="63"/><line x1="113" y1="177" x2="126" y2="164"/>
+          </g>
+          <rect x="360" y="80" width="160" height="120" rx="6" stroke="rgba(255,255,255,0.55)"/>
+          <path d="M360 116 h160 M360 152 h160" stroke="rgba(255,255,255,0.3)"/>
+          <rect x="630" y="96" width="120" height="92" rx="8" stroke="rgba(255,255,255,0.55)"/>
+          <rect x="660" y="78" width="20" height="18" stroke="rgba(255,255,255,0.55)"/>
+          <rect x="700" y="78" width="20" height="18" stroke="rgba(255,255,255,0.55)"/>
+          <polyline points="60,300 200,250 320,280 460,210 600,250 780,200" stroke="rgba(255,255,255,0.8)" stroke-width="3"/>
+        </g>
+      </svg>
+    </div>
+  </section>
+
+  <section class="project-content">
+    <div class="container">
+
+      <div class="block block-paragraph">
+        <p>Off-grid setups in Kuwait's harsh sun lose a surprising amount of available solar energy to cheap PWM controllers that simply clamp the panel to battery voltage. I wanted to see how much of that loss I could recover with a proper switching converter and a tracking algorithm I controlled end to end.</p>
+      </div>
+
+      <div class="block">
+        <h2 class="block-heading">Overview</h2>
+        <div class="block-paragraph">
+          <p>The result is a 12 V / 10 A synchronous buck charge controller built around an STM32F103. A current-sense amplifier and resistor divider feed the panel's voltage and current into the ADC; firmware runs a perturb-and-observe MPPT loop at 50 kHz PWM to keep the panel sitting on its power knee as irradiance and temperature drift through the day.</p>
+        </div>
+      </div>
+
+      <div class="block">
+        <figure class="block-figure">
+          <svg class="figure-visual" viewBox="0 0 840 360" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Block diagram">
+            <rect width="840" height="360" fill="#f0fdfa"/>
+            <g fill="none" stroke="#0f766e" stroke-width="2.5">
+              <rect x="40" y="150" width="130" height="60" rx="4"/>
+              <rect x="260" y="150" width="150" height="60" rx="4"/>
+              <rect x="500" y="150" width="150" height="60" rx="4"/>
+              <rect x="700" y="150" width="100" height="60" rx="4"/>
+              <rect x="335" y="60" width="120" height="50" rx="4"/>
+              <line x1="170" y1="180" x2="260" y2="180"/>
+              <line x1="410" y1="180" x2="500" y2="180"/>
+              <line x1="650" y1="180" x2="700" y2="180"/>
+              <line x1="395" y1="150" x2="395" y2="110"/>
+            </g>
+            <g fill="#0f766e" font-family="DM Sans, sans-serif" font-size="15" text-anchor="middle" font-weight="600">
+              <text x="105" y="185">PV Panel</text>
+              <text x="335" y="185">Buck Stage</text>
+              <text x="575" y="185">Battery</text>
+              <text x="750" y="185">Load</text>
+              <text x="395" y="90">STM32 MPPT</text>
+            </g>
+          </svg>
+          <figcaption>Signal chain: panel → synchronous buck → battery → load, with STM32 closing the MPPT loop</figcaption>
+        </figure>
+      </div>
+
+      <div class="block">
+        <h2 class="block-heading">Technical approach</h2>
+        <div class="block-paragraph">
+          <p>I laid out a 2-layer PCB in KiCad with a tight power loop, a low-side current shunt, and gate-drive for the high- and low-side MOSFETs. The firmware samples panel V and I every PWM cycle, computes power, and nudges the duty cycle toward higher power — backing off when efficiency drops. A small OLED reports live panel power, battery state, and harvested watt-hours.</p>
+        </div>
+      </div>
+
+      <div class="block block-specs">
+        <div class="block-specs-row">
+          <div class="block-specs-label">Topology</div>
+          <div class="block-specs-value">Synchronous buck, 50 kHz, 12 V / 10 A</div>
+        </div>
+        <div class="block-specs-row">
+          <div class="block-specs-label">Controller</div>
+          <div class="block-specs-value">STM32F103 · perturb-and-observe MPPT</div>
+        </div>
+        <div class="block-specs-row">
+          <div class="block-specs-label">Peak efficiency</div>
+          <div class="block-specs-value">94% at 80 W load</div>
+        </div>
+        <div class="block-specs-row">
+          <div class="block-specs-label">Energy gain</div>
+          <div class="block-specs-value">~30% vs. PWM controller (100 W panel, clear day)</div>
+        </div>
+      </div>
+
+      <div class="block block-challenge">
+        <div class="block-challenge-label">Challenge</div>
+        <p>Early prototypes oscillated around the power point and the high-side MOSFET ran hot — the gate drive was marginal and the MPPT step size was too aggressive.</p>
+        <div class="block-challenge-label">Solution</div>
+        <p>I added a bootstrap gate driver, shrank the power loop on the PCB, and made the MPPT step adaptive — large steps when far from the peak, fine steps near it. Switching losses dropped and tracking settled cleanly within two seconds of a cloud passing.</p>
+      </div>
+
+      <div class="block">
+        <h2 class="block-heading">Outcome</h2>
+        <div class="block-paragraph">
+          <p>Over a week of bench and rooftop logging, the controller recovered close to a third more daily energy than the PWM unit it replaced, held 94% peak efficiency, and tracked stably through fast irradiance swings. The project became my reference design for every power-electronics build since.</p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <section class="container">
+    <div class="project-links">
+      <span class="project-link" aria-disabled="true" title="Available on request" style="opacity:.55;cursor:not-allowed">
+        Design Files &amp; Schematics — available on request
+      </span>
+      <span class="project-link" aria-disabled="true" title="Available on request" style="opacity:.55;cursor:not-allowed">
+        Firmware Source — available on request
+      </span>
+    </div>
+  </section>
+</main>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-col">
+      <h4>Location</h4>
+      <p>Kuwait City, Kuwait</p>
+    </div>
+    <div class="footer-col">
+      <h4>Contact</h4>
+      <p><a href="mailto:aak22xq8@gmail.com">aak22xq8@gmail.com</a></p>
+      <p><a href="tel:+96555502344">+965 55502344</a></p>
+    </div>
+    <div class="footer-col">
+      <h4>Template</h4>
+      <p>Engineer Portfolio by <a href="https://portfolio-trimind.com" target="_blank">Portfolio Pro</a></p>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    &copy; Abdulrahman Alkandari &mdash; Electrical Engineer
+  </div>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Projects — Abdulrahman Alkandari</title>
+<meta name="description" content="Selected embedded-systems, power-electronics, and machine-learning projects by Abdulrahman Alkandari, Electrical Engineer.">
+<meta name="theme-color" content="#ffffff">
+<meta property="og:title" content="Projects | Abdulrahman Alkandari">
+<meta property="og:description" content="Selected embedded-systems, power-electronics, and machine-learning projects.">
+<meta property="og:type" content="website">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --font-head: 'Manrope', sans-serif;
+  --font-body: 'DM Sans', sans-serif;
+  --text: #18181b;
+  --text-secondary: #52525b;
+  --text-muted: #a1a1aa;
+  --bg: #ffffff;
+  --bg-warm: #f0fdfa;
+  --bg-card: #f0fdfa;
+  --border: #d1d5db;
+  --accent: #0f766e;
+  --accent-hover: #0d9488;
+  --accent-glow: rgba(15, 118, 110, 0.07);
+}
+
+html { scroll-behavior: smooth; font-size: 16px; }
+body {
+  font-family: var(--font-body);
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+}
+a { text-decoration: none; color: inherit; }
+img { max-width: 100%; display: block; }
+a:focus-visible, button:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+/* ═══ HEADER ═══ */
+.header {
+  position: sticky; top: 0; z-index: 1000;
+  background: rgba(255,255,255,0.95);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+}
+.header-inner {
+  max-width: 1200px; margin: 0 auto;
+  padding: 18px 40px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.header-brand {
+  font-family: var(--font-head); font-size: 1.05rem; font-weight: 600;
+  color: var(--text); letter-spacing: -0.02em;
+}
+.header-nav { display: flex; align-items: center; gap: 28px; }
+.header-nav a {
+  font-size: 0.85rem; font-weight: 500;
+  color: var(--text-secondary); transition: color 200ms;
+}
+.header-nav a:hover { color: var(--accent); }
+
+/* ═══ LAYOUT ═══ */
+.container { max-width: 1100px; margin: 0 auto; padding: 0 40px; }
+
+/* ═══ BREADCRUMB ═══ */
+.breadcrumb {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 0.78rem; color: var(--text-muted); font-weight: 500;
+  padding: 28px 0 0;
+}
+.breadcrumb a { transition: color 200ms; }
+.breadcrumb a:hover { color: var(--accent); }
+.breadcrumb span[aria-current] { color: var(--text-secondary); }
+.breadcrumb .sep { color: var(--border); }
+
+/* ═══ PAGE HERO ═══ */
+.page-hero { padding: 28px 0 12px; }
+.page-eyebrow {
+  font-size: 0.72rem; font-weight: 600; color: var(--accent);
+  text-transform: uppercase; letter-spacing: 0.1em;
+  margin-bottom: 14px;
+}
+.page-title {
+  font-family: var(--font-head);
+  font-size: clamp(2rem, 5vw, 3rem); font-weight: 700;
+  line-height: 1.1; letter-spacing: -0.025em; color: var(--text);
+  margin-bottom: 18px;
+}
+.page-intro {
+  font-size: 1.1rem; color: var(--text-secondary);
+  line-height: 1.6; max-width: 680px; font-weight: 400;
+}
+
+/* ═══ PROJECT GRID ═══ */
+.project-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 28px;
+  padding: 48px 0 72px;
+}
+.project-card {
+  display: flex; flex-direction: column;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  transition: border-color 220ms, transform 220ms;
+}
+.project-card:hover {
+  border-color: var(--accent);
+  transform: translateY(-3px);
+}
+.project-card:hover .card-arrow { transform: translateX(4px); color: var(--accent); }
+
+/* ═══ CARD VISUAL (CSS gradient / vector motif — no external images) ═══ */
+.card-visual {
+  position: relative;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  border-bottom: 1px solid var(--border);
+}
+.card-visual svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+.card-visual .tag {
+  position: absolute; top: 14px; left: 14px;
+  font-size: 0.66rem; font-weight: 700; letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent);
+  background: rgba(255,255,255,0.92);
+  border: 1px solid var(--border);
+  padding: 5px 10px;
+}
+
+/* ═══ CARD BODY ═══ */
+.card-body { padding: 22px 24px 24px; display: flex; flex-direction: column; flex: 1; }
+.card-meta {
+  font-size: 0.72rem; font-weight: 600; color: var(--text-muted);
+  text-transform: uppercase; letter-spacing: 0.08em;
+  margin-bottom: 10px;
+}
+.card-title {
+  font-family: var(--font-head); font-size: 1.25rem; font-weight: 700;
+  line-height: 1.25; letter-spacing: -0.02em; color: var(--text);
+  margin-bottom: 10px;
+}
+.card-blurb {
+  font-size: 0.92rem; color: var(--text-secondary); line-height: 1.65;
+  margin-bottom: 20px; flex: 1;
+}
+.card-cta {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-size: 0.8rem; font-weight: 600; color: var(--text);
+  letter-spacing: 0.02em;
+}
+.card-arrow {
+  width: 16px; height: 16px;
+  transition: transform 220ms, color 220ms;
+}
+
+/* ═══ FOOTER ═══ */
+.footer {
+  background: var(--bg-warm); border-top: 1px solid var(--border);
+  padding: 60px 40px 40px;
+}
+.footer-inner {
+  max-width: 1200px; margin: 0 auto;
+  display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 40px;
+}
+.footer-col h4 {
+  font-family: var(--font-head); font-size: 0.75rem; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 12px;
+  color: var(--text-muted);
+}
+.footer-col p, .footer-col a {
+  font-size: 0.9rem; color: var(--text-secondary); line-height: 1.8;
+}
+.footer-col a:hover { color: var(--accent); }
+.footer-bottom {
+  max-width: 1200px; margin: 40px auto 0; padding-top: 20px;
+  border-top: 1px solid var(--border);
+  font-size: 0.78rem; color: var(--text-muted);
+}
+
+/* ═══ RESPONSIVE ═══ */
+@media (max-width: 640px) {
+  .header-inner { padding: 14px 20px; }
+  .header-nav { display: none; }
+  .container { padding: 0 20px; }
+  .page-hero { padding: 20px 0 8px; }
+  .page-title { font-size: 1.8rem; }
+  .page-intro { font-size: 1rem; }
+  .project-grid { grid-template-columns: 1fr; gap: 20px; padding: 32px 0 56px; }
+  .footer-inner { grid-template-columns: 1fr; gap: 24px; }
+}
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-inner">
+    <a href="../index.html" class="header-brand">Abdulrahman Alkandari</a>
+    <nav class="header-nav">
+      <a href="../index.html#about">Home</a>
+      <a href="/demo/engineer/projects">Projects</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <div class="container">
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <a href="../index.html">Home</a>
+      <span class="sep">/</span>
+      <span aria-current="page">Projects</span>
+    </nav>
+
+    <section class="page-hero">
+      <div class="page-eyebrow">Selected Work</div>
+      <h1 class="page-title">Projects</h1>
+      <p class="page-intro">Embedded systems, power electronics, and on-device machine learning — each project built end to end, from PCB and firmware to the enclosure on the bench.</p>
+    </section>
+
+    <section class="project-grid">
+
+      <!-- Card 1 — Smart Irrigation -->
+      <a class="project-card" href="/demo/engineer/projects/smart-irrigation.html">
+        <div class="card-visual">
+          <svg viewBox="0 0 320 200" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Smart irrigation visual">
+            <defs>
+              <linearGradient id="g1" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0" stop-color="#0f766e"/>
+                <stop offset="1" stop-color="#0d9488"/>
+              </linearGradient>
+            </defs>
+            <rect width="320" height="200" fill="url(#g1)"/>
+            <g fill="none" stroke="rgba(255,255,255,0.55)" stroke-width="2">
+              <circle cx="160" cy="100" r="46"/>
+              <circle cx="160" cy="100" r="70" stroke="rgba(255,255,255,0.28)"/>
+              <path d="M160 100 q26 -34 0 -64 q-26 30 0 64Z" fill="rgba(255,255,255,0.22)" stroke="none"/>
+              <path d="M40 150 h240 M40 168 h240" stroke="rgba(255,255,255,0.22)"/>
+            </g>
+            <g fill="rgba(255,255,255,0.9)">
+              <circle cx="160" cy="100" r="5"/>
+            </g>
+          </svg>
+          <span class="tag">ML + Hardware</span>
+        </div>
+        <div class="card-body">
+          <div class="card-meta">2025 · Graduation Project</div>
+          <h2 class="card-title">Smart Irrigation System</h2>
+          <p class="card-blurb">A camera, a soil sensor, and a CNN — plants get the right amount of water without human guesswork. Dual-microcontroller design hitting ≥90% species accuracy.</p>
+          <span class="card-cta">View project
+            <svg class="card-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </span>
+        </div>
+      </a>
+
+      <!-- Card 2 — Solar MPPT Charger -->
+      <a class="project-card" href="/demo/engineer/projects/solar-mppt-charger.html">
+        <div class="card-visual">
+          <svg viewBox="0 0 320 200" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Solar MPPT charger visual">
+            <defs>
+              <linearGradient id="g2" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0" stop-color="#115e59"/>
+                <stop offset="1" stop-color="#0f766e"/>
+              </linearGradient>
+            </defs>
+            <rect width="320" height="200" fill="url(#g2)"/>
+            <g fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="2">
+              <circle cx="80" cy="62" r="22"/>
+              <g stroke="rgba(255,255,255,0.7)">
+                <line x1="80" y1="28" x2="80" y2="18"/><line x1="80" y1="106" x2="80" y2="96"/>
+                <line x1="46" y1="62" x2="36" y2="62"/><line x1="124" y1="62" x2="114" y2="62"/>
+                <line x1="56" y1="38" x2="49" y2="31"/><line x1="111" y1="93" x2="104" y2="86"/>
+                <line x1="104" y1="38" x2="111" y2="31"/><line x1="49" y1="93" x2="56" y2="86"/>
+              </g>
+              <path d="M150 60 h120 M150 88 h120 M150 116 h120" stroke="rgba(255,255,255,0.3)"/>
+              <rect x="150" y="44" width="120" height="96" rx="4" stroke="rgba(255,255,255,0.45)"/>
+              <polyline points="40,168 90,140 140,160 200,120 270,150" stroke="rgba(255,255,255,0.75)" stroke-width="2.5"/>
+            </g>
+          </svg>
+          <span class="tag">Power Electronics</span>
+        </div>
+        <div class="card-body">
+          <div class="card-meta">2024 · Personal Build</div>
+          <h2 class="card-title">Solar MPPT Battery Charger</h2>
+          <p class="card-blurb">A custom buck-converter charge controller with maximum-power-point tracking on an STM32 — squeezing ~30% more harvest from a 100 W panel than a cheap PWM unit.</p>
+          <span class="card-cta">View project
+            <svg class="card-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </span>
+        </div>
+      </a>
+
+      <!-- Card 3 — Gesture Prosthetic Hand -->
+      <a class="project-card" href="/demo/engineer/projects/gesture-prosthetic.html">
+        <div class="card-visual">
+          <svg viewBox="0 0 320 200" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Gesture prosthetic hand visual">
+            <defs>
+              <linearGradient id="g3" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0" stop-color="#0d9488"/>
+                <stop offset="1" stop-color="#0f766e"/>
+              </linearGradient>
+            </defs>
+            <rect width="320" height="200" fill="url(#g3)"/>
+            <g fill="none" stroke="rgba(255,255,255,0.55)" stroke-width="2.5" stroke-linecap="round">
+              <path d="M130 150 v-30"/>
+              <path d="M150 150 v-46"/>
+              <path d="M170 150 v-54"/>
+              <path d="M190 150 v-44"/>
+              <path d="M118 132 q-14 6 -16 22"/>
+              <path d="M118 150 h84 v18 h-84 Z" stroke="rgba(255,255,255,0.45)"/>
+            </g>
+            <g fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="2">
+              <polyline points="30,70 50,70 60,50 72,92 84,60 96,72 290,72"/>
+            </g>
+            <g fill="rgba(255,255,255,0.85)">
+              <circle cx="130" cy="118" r="3"/><circle cx="150" cy="102" r="3"/>
+              <circle cx="170" cy="94" r="3"/><circle cx="190" cy="104" r="3"/>
+            </g>
+          </svg>
+          <span class="tag">Bionics + EMG</span>
+        </div>
+        <div class="card-body">
+          <div class="card-meta">2024 · Maker Project</div>
+          <h2 class="card-title">Gesture-Controlled Prosthetic Hand</h2>
+          <p class="card-blurb">A 3D-printed myoelectric hand driven by forearm EMG signals and a tiny on-device classifier — five servo-actuated fingers reproducing six grips in under 200 ms.</p>
+          <span class="card-cta">View project
+            <svg class="card-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </span>
+        </div>
+      </a>
+
+    </section>
+  </div>
+</main>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-col">
+      <h4>Location</h4>
+      <p>Kuwait City, Kuwait</p>
+    </div>
+    <div class="footer-col">
+      <h4>Contact</h4>
+      <p><a href="mailto:aak22xq8@gmail.com">aak22xq8@gmail.com</a></p>
+      <p><a href="tel:+96555502344">+965 55502344</a></p>
+    </div>
+    <div class="footer-col">
+      <h4>Template</h4>
+      <p>Engineer Portfolio by <a href="https://portfolio-trimind.com" target="_blank">Portfolio Pro</a></p>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    &copy; Abdulrahman Alkandari &mdash; Electrical Engineer
+  </div>
+</footer>
+
+</body>
+</html>
