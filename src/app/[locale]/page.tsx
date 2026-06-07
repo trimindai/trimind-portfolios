@@ -10,6 +10,7 @@ import { AdminLink } from "@/components/AdminLink";
 import { TryItForm } from "@/components/landing/TryItForm";
 import { UseTemplateButton } from "@/components/landing/UseTemplateButton";
 import { NavbarAuth } from "@/components/landing/NavbarAuth";
+import { CvPreviewCard } from "@/components/landing/CvPreviewCard";
 
 export default async function LandingPage({
   params,
@@ -155,15 +156,24 @@ export default async function LandingPage({
           <Link href="/" className="text-lg font-bold tracking-tight hover:text-[var(--land-accent)] transition-colors">
             {tc("appName")}
           </Link>
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3">
             <AdminLink />
-            <Link
-              href="/"
-              locale={otherLocale}
-              className="text-sm font-medium text-[var(--land-body)] hover:text-[var(--land-bright)] border border-[var(--land-border)] rounded-full px-3 py-1 transition-colors hover:border-[var(--land-accent)]/50"
-            >
-              {otherLabel}
-            </Link>
+            <div className="flex rounded-lg border border-gray-200 overflow-hidden text-sm">
+              <Link
+                href="/"
+                locale="en"
+                className={`px-3 py-1 font-medium transition-colors ${locale === "en" ? "bg-emerald-600 text-white" : "text-gray-500 hover:text-gray-900"}`}
+              >
+                EN
+              </Link>
+              <Link
+                href="/"
+                locale="ar"
+                className={`px-3 py-1 font-medium transition-colors ${locale === "ar" ? "bg-emerald-600 text-white" : "text-gray-500 hover:text-gray-900"}`}
+              >
+                عر
+              </Link>
+            </div>
             <NavbarAuth locale={locale} />
           </div>
         </div>
@@ -191,7 +201,7 @@ export default async function LandingPage({
             <div className="land-stagger">
               <p className="inline-flex items-center gap-1.5 text-xs font-semibold tracking-[0.15em] uppercase text-emerald-600 bg-emerald-50 rounded-full px-3 py-1">
                 <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                {isRTL ? "✨ جديد" : "✨ NEW"}
+                {isRTL ? "✨ بالذكاء الاصطناعي" : "✨ AI-Powered"}
               </p>
               <h1
                 className="mt-5 font-extrabold leading-[1.05] tracking-tighter"
@@ -206,25 +216,14 @@ export default async function LandingPage({
                   ? "اسمك + مسماك الوظيفي ← الذكاء الاصطناعي يكتب الملخص والخبرات والمهارات والإنجازات فورًا."
                   : "Your name + job title → AI writes your summary, experience, skills & achievements instantly."}
               </p>
-              <p className="mt-2 text-sm text-[var(--land-muted)]">
-                {isRTL ? "عربي وإنجليزي · الكويت والخليج" : "Arabic & English · Kuwait & Gulf"}
+              <p className="mt-4 text-xs text-gray-400 text-center sm:text-start">
+                {isRTL ? "١٣٠+ سيرة ذاتية · 🇰🇼 الكويت والخليج · عربي مدعوم" : "130+ CVs built · 🇰🇼 Kuwait & Gulf · Arabic supported"}
               </p>
               {/* Try-it form — no signup needed */}
               <TryItForm locale={locale} />
-              {/* Social proof */}
-              <div className="mt-8 flex flex-wrap items-center gap-4 text-xs text-[var(--land-muted)]">
-                <span>{isRTL ? "١٣٠+ سيرة ذاتية" : "130+ CVs built"}</span>
-                <span className="h-3 w-px bg-[var(--land-border)]" />
-                <span>{isRTL ? "الكويت والخليج" : "Kuwait & Gulf"}</span>
-                <span className="h-3 w-px bg-[var(--land-border)]" />
-                <span>{isRTL ? "عربي مدعوم" : "Arabic supported"}</span>
-              </div>
-              <div className="mt-3 flex items-center gap-3">
-                {["Aisha", "Ahmed", "Sara"].map((n) => (
-                  <span key={n} className="inline-flex items-center gap-1 text-xs text-[var(--land-body)]">
-                    {n} <span className="text-amber-500">★★★★★</span>
-                  </span>
-                ))}
+              {/* Animated CV preview — mobile only (desktop shows mockup images) */}
+              <div className="lg:hidden">
+                <CvPreviewCard />
               </div>
             </div>
 

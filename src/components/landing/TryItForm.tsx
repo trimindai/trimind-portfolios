@@ -29,12 +29,12 @@ export function TryItForm({ locale }: { locale: string }) {
   };
 
   return (
-    <div className="mt-10 w-full max-w-md" dir={isRTL ? "rtl" : "ltr"}>
-      <div className="rounded-xl border border-[var(--land-border)] bg-white p-5 shadow-sm">
-        <p className="text-sm font-semibold text-[var(--land-bright)] mb-1">
+    <div className="mt-5 w-full max-w-md" dir={isRTL ? "rtl" : "ltr"}>
+      <div className="rounded-xl border border-[var(--land-border)] bg-white px-4 py-4 shadow-sm">
+        <p className="text-[11px] font-bold tracking-wider uppercase text-[var(--land-bright)] mb-2.5">
           {isRTL ? "جرّب الحين — مجانًا" : "TRY IT NOW — FREE"}
         </p>
-        <div className="space-y-3">
+        <div className="space-y-2.5">
           <div>
             <input
               type="text"
@@ -42,9 +42,9 @@ export function TryItForm({ locale }: { locale: string }) {
               onChange={(e) => { setName(e.target.value); if (error) setError(""); }}
               aria-invalid={!!error && !name.trim()}
               placeholder={isRTL ? "اسمك الكامل" : "Your full name"}
-              className="w-full rounded-lg border border-[var(--land-border)] bg-[var(--land-surface)] px-4 py-3 text-sm text-[var(--land-bright)] placeholder:text-[var(--land-muted)] focus:border-[var(--land-accent)] focus:ring-1 focus:ring-[var(--land-accent)] outline-none"
+              className="w-full rounded-lg border border-[var(--land-border)] bg-[var(--land-surface)] px-4 py-2.5 text-sm text-[var(--land-bright)] placeholder:text-[var(--land-muted)] focus:border-[var(--land-accent)] focus:ring-1 focus:ring-[var(--land-accent)] outline-none"
             />
-            <p className="mt-1 text-[10px] text-[var(--land-muted)]">{isRTL ? "يظهر في سيرتك الذاتية" : "Goes on your CV"}</p>
+            <p className="mt-0.5 text-[10px] text-[var(--land-muted)]">{isRTL ? "يظهر في سيرتك الذاتية" : "Goes on your CV"}</p>
           </div>
           <div>
             <input
@@ -52,10 +52,9 @@ export function TryItForm({ locale }: { locale: string }) {
               value={title}
               onChange={(e) => { setTitle(e.target.value); if (error) setError(""); }}
               aria-invalid={!!error && !title.trim()}
-              placeholder={isRTL ? "مسماك الوظيفي" : "Your job title"}
-              className="w-full rounded-lg border border-[var(--land-border)] bg-[var(--land-surface)] px-4 py-3 text-sm text-[var(--land-bright)] placeholder:text-[var(--land-muted)] focus:border-[var(--land-accent)] focus:ring-1 focus:ring-[var(--land-accent)] outline-none"
+              placeholder={isRTL ? "مثال: مهندس برمجيات، محلل مالي..." : "e.g. Software Engineer, Financial Analyst..."}
+              className="w-full rounded-lg border border-[var(--land-border)] bg-[var(--land-surface)] px-4 py-2.5 text-sm text-[var(--land-bright)] placeholder:text-[var(--land-muted)] focus:border-[var(--land-accent)] focus:ring-1 focus:ring-[var(--land-accent)] outline-none"
             />
-            <p className="mt-1 text-[10px] text-[var(--land-muted)]">{isRTL ? "مثال: محلل مالي في بنك الكويت الوطني" : "e.g. Financial Analyst at NBK"}</p>
           </div>
           {error && <p role="alert" className="text-xs text-red-600">{error}</p>}
           <button
