@@ -95,8 +95,15 @@ a { text-decoration: none; color: inherit; }
     color: var(--text-sub); font-size: 0.78rem; font-weight: 500;
     letter-spacing: 0.05em; text-transform: uppercase;
     transition: color 200ms; cursor: pointer;
+    position: relative;
+}
+.nav-links a::after {
+    content: ""; position: absolute; left: 0; right: 0; bottom: -4px; height: 1.5px;
+    background: var(--gold-warm); transform: scaleX(0); transform-origin: left;
+    transition: transform 200ms;
 }
 .nav-links a:hover { color: var(--navy); }
+.nav-links a:hover::after { transform: scaleX(1); }
 .nav-cta {
     color: var(--gold) !important;
     border: 1.5px solid var(--gold-border);

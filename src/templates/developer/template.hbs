@@ -109,7 +109,7 @@ nav{
   box-shadow:0 10px 40px rgba(0,0,0,.45);
 }
 nav a{font-size:.8rem;color:var(--muted);padding:8px 14px;border-radius:999px;transition:color .2s,background .2s;white-space:nowrap}
-nav a:hover{color:var(--fg)}
+nav a:hover{color:var(--accent);text-decoration:underline;text-underline-offset:4px}
 nav a.active{color:var(--fg);background:color-mix(in srgb,var(--brand) 22%,transparent)}
 @media(max-width:640px){nav a span{display:none}nav a{padding:10px 12px}nav a i{font-size:1rem}}
 
@@ -654,7 +654,7 @@ html[dir="rtl"] .tl-item::before{left:auto;right:0}
 {{!-- ░░ FOOTER ░░ --}}
 <footer>
   <div class="wrap">
-    <div class="meta">© <span id="year"></span> {{basics.fullName}}{{#if basics.title}} · {{basics.title}}{{/if}}</div>
+    <div class="meta">© <span id="year"></span> {{basics.fullName}}{{#if basics.title}} — {{basics.title}}{{/if}}</div>
     <div class="socials">
       {{#if basics.github}}<a href="{{safeUrl basics.github}}" target="_blank" rel="noopener" aria-label="GitHub"><i class="fa-brands fa-github"></i></a>{{/if}}
       {{#if basics.linkedin}}<a href="{{safeUrl basics.linkedin}}" target="_blank" rel="noopener" aria-label="LinkedIn"><i class="fa-brands fa-linkedin-in"></i></a>{{/if}}
