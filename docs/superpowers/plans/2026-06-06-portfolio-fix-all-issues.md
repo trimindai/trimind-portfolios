@@ -30,8 +30,16 @@
 - ✅ Task 1.5 — Arabic **Creator game** `public/demo/creator/index-ar.html` + `scripts/creator-game-check-ar.mjs` — `bf5ee61`
   - Persona ريمي فانس (RV kept). `ar()` digit helper applied at display boundaries only; match logic keyed on machine `pid` (unchanged). Dynamic Playwright playthrough PASSED: win reached, overflowPx 0 @390px, 0 console errors, dir=rtl. Spec-reviewed ✅. **PART 1 COMPLETE.**
 
+- ✅ Task 2.7 — Engineer **projects listing** (EN+AR) + 2 new project detail pages + vercel rewrites + AR nav repoint — `c6ffa3f`
+  - Persona reconciled to live reality: **Abdulrahman Alkandari — Electrical Engineer** (embedded/IoT/ML), NOT the plan's stale "Omar Al-Sabah / Oil & Gas". New projects: Solar MPPT Charger, Gesture-Controlled Prosthetic (+ existing Smart Irrigation = 3). Playwright via local server w/ rewrites: both `/demo/engineer/projects` & `/ar/demo/engineer/projects` → 200, 3 cards, all card links 200, RTL ok, overflow 0, 0 errors. Spec-reviewed ✅. Folds in polish item 3.6.
+
+**⚠️ NEW FOLLOW-UPS discovered this session (do these):**
+- **[HIGH] Engineer AR demo persona is STALE** — `public/demo/engineer/index-ar.html` hero still = «عمر الصباح / مهندس ميكانيكي / النفط والغاز» (Omar Al-Sabah, Mechanical, Oil&Gas), but the live EN `index.html` was rebuilt by another session into **Abdulrahman Alkandari / Electrical Engineer** (embedded/IoT). The AR mirror (committed 8bf4e0d) predates that rebuild → `/ar/demo/engineer` now shows the wrong person/discipline end-to-end. **Fix:** re-mirror `index-ar.html` from the CURRENT `index.html` (cp working-tree version → translate → RTL/Noto Kufi/hreflang), persona عبدالرحمن الكندري / مهندس كهربائي, nav Projects → `/ar/demo/engineer/projects`. Stage only `index-ar.html`. (Same method as 1.4. Note: EN index.html is dirty w/ another session's og edits — don't stage it; cp is fine.)
+- **[MED] EN engineer main-nav repoint deferred** — `public/demo/engineer/index.html` nav "Projects" + hero button still point at `…/projects/smart-irrigation.html` instead of the new `/demo/engineer/projects` listing. Blocked: index.html carries another session's uncommitted og:image edits (can't cleanly stage one hunk). Repoint once that session commits, or coordinate.
+
 **RESUME HERE (in order):**
-1. **Task 2.7** (Engineer projects listing EN+AR static pages + vercel rewrites) → **2.1** (guest builder) → **2.8** (home form) → **2.2** (PDF/QR demos) → **2.5** (avatar) → **2.6** (resume btn) → **Part 3 polish** → **Part 5 verify**.
+1. **[HIGH follow-up] Engineer AR re-mirror** (above) — quick, fixes a Part-1 correctness bug.
+2. **Task 2.1** (guest builder — real React/TS, FULL two-stage review) → **2.8** (home form) → **2.2** (PDF/QR demos) → **2.5** (avatar) → **2.6** (resume btn) → **Part 3 polish** → **Part 5 verify**.
 
 **Method note for static-mirror demo tasks (1.4/1.5/2.7-demo):** spec-review includes the render/RTL/overflow/console/JS-integrity verification, so it covers the code-quality dimension — no separate code-quality reviewer needed for pure-translation mirrors. Tasks with real TS/React logic (2.1, 2.8, 2.2, 2.5, 2.6) get the full two-stage review.
 
