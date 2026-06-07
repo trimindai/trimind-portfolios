@@ -5,30 +5,12 @@ import { api } from "@convex/_generated/api";
 import { useUser } from "@clerk/nextjs";
 import { useEffect, useState, useRef } from "react";
 import { useSearchParams, useParams } from "next/navigation";
-import { GUEST_STORAGE_KEY } from "@/components/builder/BuilderForm";
+import { GUEST_STORAGE_KEY, PORTFOLIO_UPDATE_STRIP_KEYS } from "@/components/builder/BuilderForm";
 
-// Keys that live on a Convex portfolio document but must NOT be forwarded to the
-// `update` mutation (they're owned by the server / set at create time, or are not
-// part of update's args). Used when seeding from a guest localStorage blob.
-const GUEST_UPDATE_STRIP_KEYS = new Set([
-  "_id",
-  "_creationTime",
-  "status",
-  "slug",
-  "generatedHtml",
-  "generatedProjectPages",
-  "paymentId",
-  "publishedAt",
-  "createdAt",
-  "lastEditedAt",
-  "userId",
-  "templateId",
-  "name",
-  "locale",
-  "contentAr",
-  // basics is sent via create() instead, so don't double-send it through update.
-  "basics",
-]);
+// Keys to drop when seeding a new portfolio from a guest localStorage blob.
+// Shares the canonical update strip-set (server-owned keys + contentAr) and adds
+// "basics", which is sent via create() instead of double-sent through update().
+const GUEST_UPDATE_STRIP_KEYS = new Set<string>([...PORTFOLIO_UPDATE_STRIP_KEYS, "basics"]);
 
 export default function NewPortfolioPage() {
   const { user, isLoaded } = useUser();

@@ -136,6 +136,31 @@ function computeProgress(data: any, steps: Step[]): number {
 // blob than the landing-page "portfolio-draft" handoff (which is name/title only).
 export const GUEST_STORAGE_KEY = "portfolio_preview_data";
 
+// Keys that may exist on a portfolio document but must NOT be forwarded to the
+// `update` mutation. Some are server-owned (set at create time or by the server:
+// _id, _creationTime, userId, status, templateId, name, locale, slug,
+// generatedHtml, generatedProjectPages, paymentId, publishedAt, createdAt,
+// lastEditedAt); contentAr is a valid update arg but is stripped because the
+// builder doesn't produce Arabic content yet. Single source of truth so the
+// guest seeding path (dashboard/new) can't drift from save().
+export const PORTFOLIO_UPDATE_STRIP_KEYS = [
+  "_id",
+  "_creationTime",
+  "status",
+  "slug",
+  "generatedHtml",
+  "generatedProjectPages",
+  "paymentId",
+  "publishedAt",
+  "createdAt",
+  "lastEditedAt",
+  "userId",
+  "templateId",
+  "name",
+  "locale",
+  "contentAr",
+] as const;
+
 interface BuilderFormProps {
   // Required in the authenticated path; unused (and absent) in guest mode.
   portfolioId?: Id<"portfolios">;
@@ -210,7 +235,7 @@ export function BuilderForm({ portfolioId, initialData, guest, onPublish }: Buil
     if (guest || !portfolioId) return;
     setSaving(true);
     try {
-      const STRIP_KEYS = new Set(["_id", "_creationTime", "status", "slug", "generatedHtml", "generatedProjectPages", "paymentId", "publishedAt", "createdAt", "lastEditedAt", "userId", "templateId", "name", "locale", "contentAr"]);
+      const STRIP_KEYS = new Set<string>(PORTFOLIO_UPDATE_STRIP_KEYS);
       const fields = Object.fromEntries(Object.entries(formData).filter(([k]) => !STRIP_KEYS.has(k)));
       await updatePortfolio({ id: portfolioId, ...fields });
     } catch (e) {
