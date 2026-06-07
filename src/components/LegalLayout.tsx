@@ -23,7 +23,7 @@ export function LegalLayout({
       <nav className="border-b border-[var(--land-border)] bg-[var(--land-bg)]/80 backdrop-blur-md">
         <div className="mx-auto flex max-w-5xl items-center justify-between px-6 py-4">
           <Link href="/" className="text-xl font-bold tracking-tight text-[var(--land-bright)]">
-            Portfolio Pro
+            {isAr ? "بورتفوليو برو" : "Portfolio Pro"}
           </Link>
           <Link
             href="/"

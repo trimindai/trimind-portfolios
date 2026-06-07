@@ -84,7 +84,7 @@ export default function GuestBuilderPage({
             href="/"
             className="text-xl font-bold text-[var(--land-bright)] tracking-tight hover:text-[var(--land-accent-hover)] transition-colors"
           >
-            Portfolio Pro
+            {isRTL ? "بورتفوليو برو" : "Portfolio Pro"}
           </Link>
           <Link
             href={`/sign-in?redirect_url=${encodeURIComponent(`/${locale}/dashboard`)}`}

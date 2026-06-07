@@ -965,7 +965,7 @@ export default async function LandingPage({
         </div>
         <div className="relative border-t border-[var(--land-border)] py-6 text-center text-xs text-[var(--land-muted)]">
           <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[var(--land-accent)] to-transparent opacity-20" />
-          &copy; {new Date().getFullYear()} Portfolio Pro by TriMind
+          &copy; {new Date().getFullYear()} {isRTL ? "بورتفوليو برو" : "Portfolio Pro"} by TriMind
         </div>
       </footer>
     </div>

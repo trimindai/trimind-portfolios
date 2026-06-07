@@ -133,7 +133,7 @@ export default async function TemplatesPage({ params, searchParams }: PageProps)
       <nav className="border-b border-[var(--land-border)]/50 bg-[var(--land-bg)]/80 backdrop-blur-md">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
           <Link href="/" className="text-xl font-bold tracking-tight">
-            Portfolio Pro
+            {isAr ? "بورتفوليو برو" : "Portfolio Pro"}
           </Link>
           <Link
             href="/dashboard/new"
