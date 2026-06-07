@@ -14,9 +14,49 @@ interface BasicsStepProps {
 export function BasicsStep({ data, onChange }: BasicsStepProps) {
   const basics = data.basics || {};
   const metrics = data.metrics || [];
-  // Mobile: collapse the optional fields so the step opens with just the 3
-  // required fields instead of ~12. Desktop (md+) always shows everything.
   const [showOptional, setShowOptional] = useState(false);
+  const [aiGenerating, setAiGenerating] = useState(false);
+  const [aiSuggestion, setAiSuggestion] = useState("");
+  const [aiError, setAiError] = useState("");
+  const [aiUses, setAiUses] = useState(0);
+  const AI_LIMIT = 5;
+
+  async function generateSummary() {
+    setAiGenerating(true);
+    setAiError("");
+    setAiSuggestion("");
+    try {
+      const res = await fetch("/api/generate-summary", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          fullName: basics.fullName ?? "",
+          professionalTitle: basics.title ?? "",
+          location: basics.location ?? "Kuwait",
+          totalYearsExperience: "not provided",
+          mostRecentRole: basics.title ?? "",
+          mostRecentCompany: "",
+          topSkills: "",
+          notableAchievement: "",
+          highestEducation: "",
+          userDraft: basics.summary ?? basics.bio ?? "",
+        }),
+      });
+      const result = await res.json();
+      if (!res.ok) throw new Error(result.error || "Failed to generate");
+      setAiSuggestion(result.summary);
+      setAiUses((n) => n + 1);
+    } catch (e: any) {
+      setAiError(e.message || "Something went wrong");
+    } finally {
+      setAiGenerating(false);
+    }
+  }
+
+  function acceptSuggestion() {
+    onChange({ basics: { ...basics, summary: aiSuggestion, bio: aiSuggestion } });
+    setAiSuggestion("");
+  }
 
   const updateBasics = (field: string, value: string) => {
     onChange({ basics: { ...basics, [field]: value } });
@@ -37,6 +77,85 @@ export function BasicsStep({ data, onChange }: BasicsStepProps) {
         </div>
         <TextField label="Email" value={basics.email} onChange={(v) => updateBasics("email", v)} required type="email" placeholder="email@example.com" />
       </div>
+
+      {/* AI Summary Generator — shown after name + title are filled */}
+      {(basics.fullName?.length > 2 && basics.title?.length > 2) && (
+        <div className="space-y-3">
+          {!aiSuggestion && (
+            <button
+              type="button"
+              onClick={generateSummary}
+              disabled={aiGenerating || aiUses >= AI_LIMIT}
+              className="w-full flex items-center justify-between rounded-xl border border-[var(--land-accent)]/20 bg-[var(--land-accent)]/5 px-4 py-3.5 text-start transition-colors hover:bg-[var(--land-accent)]/10 disabled:opacity-40 disabled:cursor-not-allowed"
+            >
+              <div>
+                <span className="text-sm font-medium text-[var(--land-accent)] flex items-center gap-1.5">
+                  {aiGenerating ? (
+                    <>
+                      <span className="h-3.5 w-3.5 animate-spin rounded-full border-2 border-[var(--land-accent)] border-t-transparent" />
+                      Writing your summary...
+                    </>
+                  ) : aiUses >= AI_LIMIT ? (
+                    <>Regenerate ({aiUses}/{AI_LIMIT} used)</>
+                  ) : aiUses > 0 ? (
+                    <>Regenerate summary</>
+                  ) : (
+                    <>
+                      <svg className="h-4 w-4" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M8 2v4M6 4h4M3 8l2 6 3-4 3 4 2-6" /></svg>
+                      Generate my CV summary
+                    </>
+                  )}
+                </span>
+                <span className="text-xs text-[var(--land-muted)] mt-0.5 block">Uses your name and title to write a professional summary</span>
+              </div>
+            </button>
+          )}
+
+          {aiSuggestion && (
+            <div className="rounded-xl border border-[var(--land-accent)]/30 bg-[var(--land-accent)]/5 p-4">
+              <p className="text-xs font-medium text-[var(--land-accent)] mb-1 flex items-center gap-1.5">
+                <svg className="h-3.5 w-3.5" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M8 2v4M6 4h4M3 8l2 6 3-4 3 4 2-6" /></svg>
+                AI Suggested
+              </p>
+              <p className="text-xs text-[var(--land-muted)] mb-2">Based on: {basics.fullName} &middot; {basics.title}</p>
+              <p className="text-sm text-[var(--land-bright)] leading-relaxed mb-3">{aiSuggestion}</p>
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={acceptSuggestion}
+                  className="inline-flex items-center gap-1 rounded-lg bg-[var(--land-accent)] px-3 py-1.5 text-xs font-medium text-white hover:bg-[var(--land-accent-hover)] transition-colors"
+                >
+                  Use this &rarr;
+                </button>
+                <button
+                  type="button"
+                  onClick={generateSummary}
+                  disabled={aiGenerating || aiUses >= AI_LIMIT}
+                  className="inline-flex items-center gap-1 rounded-lg border border-[var(--land-border)] px-3 py-1.5 text-xs text-[var(--land-body)] hover:bg-[var(--land-surface-raised)] transition-colors disabled:opacity-40"
+                >
+                  {aiGenerating ? "..." : "Try again ↺"}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setAiSuggestion("")}
+                  className="text-xs text-[var(--land-muted)] hover:text-[var(--land-bright)] ml-auto"
+                >
+                  Dismiss
+                </button>
+              </div>
+            </div>
+          )}
+
+          {aiError && <p className="text-xs text-red-500">{aiError}</p>}
+
+          {basics.summary && !aiSuggestion && (
+            <div className="rounded-lg border border-[var(--land-border)]/50 bg-[var(--land-surface)]/30 px-4 py-2.5">
+              <p className="text-[10px] uppercase tracking-wider text-[var(--land-muted)] mb-1">Your CV Summary</p>
+              <p className="text-xs text-[var(--land-body)] line-clamp-2">{basics.summary}</p>
+            </div>
+          )}
+        </div>
+      )}
 
       {/* OPTIONAL toggle — MOBILE ONLY. Desktop always shows the fields below. */}
       <button
