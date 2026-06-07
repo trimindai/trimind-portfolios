@@ -48,9 +48,10 @@ The EN demo `public/demo/<id>/index.html` files (corporate, creative, creator, d
 - **DEFER + BATCH:** every "add X to the EN `public/demo/<id>/index.html`" sub-item → collect into ONE tracked follow-up "EN demo static-file batch" to apply once the other session commits its og edits (or coordinate with the user). Note each deferred item in the plan as you hit it. Real users see the `.hbs` templates, so deferring the static EN demo chrome is low-impact.
 - Always `git status --short <file>` before editing; if dirty & not yours, route to the clean equivalent or defer.
 
+- ✅ **Task 2.6 — Engineer Resume button — RESOLVED-BY-REBUILD (verify-only, no change)**. Investigated: the current engineer demo (Abdulrahman) hero Resume is an INTENTIONALLY disabled `<span aria-disabled="true" title="Available on request" style="opacity:.55;cursor:not-allowed">` — a graceful no-op, not a dead button; the demo has no resume/credentials section to scroll to (only `#about`+`#skills`). The real `src/templates/engineer/template.hbs` Resume button is a conditional `{{#if basics.resumeUrl}}<a href=… target=_blank>` external link (works). AR demo inherited the same disabled state. The QA "Resume does nothing" flag was against the OLD Omar-Sabah demo, now superseded. **No code change required.**
+
 **RESUME HERE (in order):**
-1. **Task 2.6** (engineer Resume button → smooth-scroll to `#resume`) — real fix in `src/templates/engineer/template.hbs` (clean) + AR demo (clean); EN demo portion → defer to batch.
-2. **Task 2.5** (gradient initials avatar) — `src/templates/<id>/template.hbs` (clean) + builder/preview avatar; demo EN → defer to batch.
+1. **Task 2.5** (gradient initials avatar) — Handlebars `initials(fullName)` helper (register in `src/lib/template-engine.ts`) + replace the silhouette `{{else}}` branch in each `src/templates/<id>/template.hbs` hero photo block (all CLEAN) + builder/preview avatar component. Demo EN static files → defer to EN-demo batch; AR demos (clean/mine) can mirror.
 3. **Task 2.2** (PDF/QR) — `scripts/build-demo-cv-assets.mjs` + generated assets (clean) + AR demos + real builder/preview "Download CV" wiring to `/api/generate-cv`; EN demo button → defer to batch.
 4. **Part 3 polish** (clean-file items first; demo-EN items → batch) → **Part 5 verify** (`scripts/portfolio-fix-verify.mjs`).
 5. **EN demo static-file batch** (deferred): apply PDF/QR button + initials avatar + resume `#resume` + nav repoint + Part-3 nav-hover/footers/tel/brand to each EN `public/demo/<id>/index.html` once unblocked.
