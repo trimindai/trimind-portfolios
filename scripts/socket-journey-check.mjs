@@ -46,6 +46,13 @@ try {
       else pass(`[${tag}] education section removed`);
       if (secCount===5) pass(`[${tag}] exactly 5 sections`);
       else fail(`[${tag}] expected 5 sections, found ${secCount}`);
+      // T1.2: scroll reaches the bottom (not trapped)
+      await page.evaluate(()=>{ const h=document.documentElement; window.scrollTo(0,h.scrollHeight); });
+      await page.waitForTimeout(1200);
+      const reachedBottom = await page.evaluate(()=>{ const h=document.documentElement; return (h.scrollHeight - (window.scrollY + h.clientHeight)) < 80; });
+      if (reachedBottom) pass(`[${tag}] scroll reaches contact (not trapped)`);
+      else fail(`[${tag}] could not scroll to bottom`);
+      await page.evaluate(()=>window.scrollTo(0,0)); await page.waitForTimeout(400);
       if (errors.length) fail(`[${tag}] ${errors.length} console error(s): ${errors.slice(0,3).join(" | ")}`);
       else pass(`[${tag}] zero console errors`);
       try { await page.screenshot({path:`scripts/_sj-${tag}.png`,fullPage:false,timeout:8000,animations:"disabled"}); }

@@ -53,10 +53,11 @@
   --font-mono:"JetBrains Mono",ui-monospace,monospace;
 }
 
-html{scroll-behavior:smooth;background:#ccd1da}
+html{background:#ccd1da}
 body{
   font-family:'Noto Kufi Arabic','Inter',sans-serif;
   background:transparent;
+  scroll-behavior:smooth;
   color:var(--fg);
   line-height:1.6;
   overflow-x:hidden;
@@ -827,7 +828,8 @@ html[dir="rtl"] .tl-item::before{left:auto;right:0}
     ls.onload = function(){
       try{
         if(!window.Lenis){ return; }
-        var lenis = new Lenis({ lerp:0.09, smoothWheel:true });
+        var lenis = new Lenis({ duration:1.2, smoothWheel:true });
+        window.__lenis = lenis;
         function raf(t){ lenis.raf(t); requestAnimationFrame(raf); }
         requestAnimationFrame(raf);
         document.querySelectorAll("a[href^='#']").forEach(function(a){
