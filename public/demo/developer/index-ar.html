@@ -459,6 +459,11 @@ html[dir="rtl"] .tl-item::before{left:auto;right:0}
 #contact    .orb-socket{ left:50%;  top:60%; transform:translate(-50%,-50%); }
 /* contact bg is dark — add a rim so the socket reads */
 #contact .orb-socket{ box-shadow:inset 0 10px 16px rgba(0,0,0,.45), 0 0 0 1px rgba(238,244,252,.12), 0 16px 26px -10px rgba(0,0,0,.5); }
+
+/* ── mute button (AR: mirrored to left) ─────────────────────── */
+#mute{ position:fixed; left:16px; bottom:16px; z-index:30; width:42px; height:42px; border-radius:50%;
+  border:1px solid var(--border); background:var(--card); color:var(--fg); cursor:pointer; font-size:18px; }
+@media (max-width:768px){ #mute{ left:12px; bottom:12px; } }
 </style>
     <meta property="og:image" content="https://portfolio-trimind.com/og-image.png" />
     <meta property="og:image:width" content="1200" />
@@ -746,10 +751,27 @@ html[dir="rtl"] .tl-item::before{left:auto;right:0}
 </footer>
 </main>
 
+<button id="mute" aria-label="Toggle sound">🔊</button>
+
 <script>
 (function(){
   "use strict";
   var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion:reduce)").matches;
+
+  /* ── shared demo audio: unlock on first gesture, mute toggle persisted ── */
+  (function(){
+    var AC = window.AudioContext||window.webkitAudioContext; var actx=null;
+    window.__demoSound = (localStorage.getItem("demoMute")==="1") ? false : true;
+    function ctx(){ if(!actx&&AC){ actx=new AC(); } if(actx&&actx.state==="suspended"){ actx.resume(); } return actx; }
+    function unlock(){ var a=ctx(); if(a){ var b=a.createBuffer(1,1,22050); var s=a.createBufferSource(); s.buffer=b; s.connect(a.destination); s.start(0); } window.removeEventListener("pointerdown",unlock); window.removeEventListener("keydown",unlock); window.removeEventListener("touchstart",unlock); window.removeEventListener("wheel",unlock); }
+    ["pointerdown","keydown","touchstart","wheel"].forEach(function(ev){ window.addEventListener(ev,unlock,{passive:true}); });
+    /* marble-click for orb landings */
+    window.__orbLand = function(){ if(window.__demoSound===false) return; var a=ctx(); if(!a) return;
+      var o=a.createOscillator(), g=a.createGain(); o.type="triangle"; o.frequency.setValueAtTime(420,a.currentTime);
+      o.frequency.exponentialRampToValueAtTime(140,a.currentTime+0.08);
+      g.gain.setValueAtTime(0.0001,a.currentTime); g.gain.exponentialRampToValueAtTime(0.25,a.currentTime+0.005);
+      g.gain.exponentialRampToValueAtTime(0.0001,a.currentTime+0.13); o.connect(g); g.connect(a.destination); o.start(); o.stop(a.currentTime+0.14); };
+  })();
 
   /* ── year ── */
   var y = document.getElementById("year"); if(y){ y.textContent = new Date().getFullYear(); }
@@ -1120,6 +1142,11 @@ html[dir="rtl"] .tl-item::before{left:auto;right:0}
       stage.addEventListener("pointerleave", function(){ deck.style.transform = ""; });
     }
   })();
+
+  /* ── mute button wiring ── */
+  var muteBtn=document.getElementById("mute");
+  if(muteBtn){ muteBtn.textContent = window.__demoSound===false ? "🔇" : "🔊";
+    muteBtn.addEventListener("click",function(){ window.__demoSound=!window.__demoSound; localStorage.setItem("demoMute", window.__demoSound?"0":"1"); muteBtn.textContent= window.__demoSound?"🔊":"🔇"; }); }
 
   /* signature orb + keyboard journey (lazy 3D, progressive enhancement) */
   (function(){

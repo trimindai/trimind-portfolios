@@ -126,6 +126,12 @@ try {
         if (near) pass(`[${tag}] orb lands in each section's socket`);
         else fail(`[${tag}] orb off-socket: ${JSON.stringify(land.filter(l=>l.dx>=110||l.dy>=140))}`);
       }
+      // T3.3: mute toggles shared sound flag + orb landing hook present
+      const mute = await page.evaluate(()=>{ const b=document.getElementById("mute"); if(!b) return null; const before=window.__demoSound; b.click(); const after=window.__demoSound; b.click(); return {before,after}; });
+      if (mute && mute.before!==mute.after) pass(`[${tag}] mute button toggles sound`);
+      else fail(`[${tag}] mute button missing/not toggling`);
+      const hasLand = await page.evaluate(()=>typeof window.__orbLand==="function");
+      if (hasLand) pass(`[${tag}] orb landing sound hook present`); else fail(`[${tag}] __orbLand missing`);
       if (errors.length) fail(`[${tag}] ${errors.length} console error(s): ${errors.slice(0,3).join(" | ")}`);
       else pass(`[${tag}] zero console errors`);
       try { await page.screenshot({path:`scripts/_sj-${tag}.png`,fullPage:false,timeout:8000,animations:"disabled"}); }
