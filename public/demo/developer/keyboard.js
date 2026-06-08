@@ -352,6 +352,15 @@
      over everything — and kept in corners / pointer-events:none so the
      centre drag-to-rotate never gets intercepted. ---------- */
   var labelEl, labelName, labelTag, sndBtn, swBtn;
+  /* ---- section-gated chrome ----
+     The keyboard is one object that glides between sections. The tool
+     name/description label + the sound lab (SOUND/SWITCH pills + audible
+     switches) belong to the SKILLS section only. In every other section the
+     keyboard is a silent, label-free backdrop. Keycap logos always render. */
+  var LABEL_SECTION = "skills";
+  var labelEnabled = false;                 // true only while the labeled section is active
+  var userSoundOn = true;                   // the user's SOUND-pill preference (persisted)
+  try { userSoundOn = localStorage.getItem("demoMute") !== "1"; } catch (e) {}
   (function buildUI() {
     var PILL = "position:fixed;z-index:32;cursor:pointer;color:#cdd9e8;opacity:.85;" +
       "font-family:ui-monospace,'SF Mono',Menlo,Consolas,monospace;font-size:12px;font-weight:700;" +
@@ -368,19 +377,21 @@
     swBtn.style.cssText = PILL + "right:120px;bottom:16px;";
     swBtn.textContent = "SWITCH: " + PROFILES[profileIdx].name;
 
-    /* tool name + description label, UPPER-LEFT (display only) */
+    /* tool name + description label, LEFT side (display only). Dark ink on the
+       light workshop background: name in --fg (#222831), tag in Davy grey
+       --muted (#4b5056) — the keyboard case's own colour. */
     labelEl = document.createElement("div");
     labelEl.id = "kbd-label";
-    labelEl.style.cssText = "position:fixed;top:90px;left:24px;z-index:18;pointer-events:none;" +
-      "color:#eef1f5;max-width:34vw;text-align:left;opacity:0;transition:opacity .15s ease;";
+    labelEl.style.cssText = "position:fixed;top:118px;left:clamp(20px,5vw,72px);z-index:18;pointer-events:none;" +
+      "color:#222831;max-width:34vw;text-align:left;opacity:0;transition:opacity .18s ease;";
     labelName = document.createElement("div");
     labelName.className = "kbd-label-name";
     labelName.style.cssText = "font-family:var(--font-display),'Archivo Black',sans-serif;" +
-      "font-size:clamp(22px,2.6vw,40px);font-weight:900;line-height:.96;letter-spacing:-1px;color:#eef1f5;";
+      "font-size:clamp(22px,2.6vw,40px);font-weight:900;line-height:.96;letter-spacing:-1px;color:#222831;";
     labelTag = document.createElement("div");
     labelTag.className = "kbd-label-tag";
-    labelTag.style.cssText = "margin-top:9px;font-family:ui-monospace,'SF Mono',Menlo,Consolas,monospace;" +
-      "font-size:13px;font-style:italic;color:#a6bad0;opacity:.92;line-height:1.5;max-width:30ch;";
+    labelTag.style.cssText = "margin-top:10px;font-family:ui-monospace,'SF Mono',Menlo,Consolas,monospace;" +
+      "font-size:13px;font-style:italic;color:#4b5056;opacity:1;line-height:1.5;max-width:30ch;";
     labelEl.appendChild(labelName); labelEl.appendChild(labelTag);
 
     function add() {
@@ -391,21 +402,29 @@
     }
     if (document.body) add(); else document.addEventListener("DOMContentLoaded", add);
 
-    /* default label: show the first skill so the upper-left isn't empty on load */
+    /* start hidden: the lab + label only appear once the labeled section is
+       active (applyChrome drives this from the scroll position). */
+    sndBtn.style.display = "none";
+    swBtn.style.display = "none";
+    sndBtn.textContent = "SOUND: " + (userSoundOn ? "ON" : "OFF");
+
+    /* pre-populate the label text so the labeled section shows a value before
+       any hover — but leave it hidden until applyChrome enables it. */
     if (SKILLS.length) {
       labelName.textContent = SKILLS[0].label;
       labelTag.textContent = SKILLS[0].tag || "";
-      labelEl.style.opacity = "1";
     }
 
-    /* SOUND: toggle the shared global mute flag + persist (mirrors the old #mute) */
+    /* SOUND: toggle the user's preference + persist. Only audible while the
+       labeled section is active (window.__demoSound is section-gated). */
     sndBtn.addEventListener("pointerdown", function (e) { e.stopPropagation(); });
     sndBtn.addEventListener("click", function (e) {
       e.stopPropagation();
-      window.__demoSound = (window.__demoSound === false);
-      try { localStorage.setItem("demoMute", window.__demoSound ? "0" : "1"); } catch (er) {}
-      sndBtn.textContent = "SOUND: " + (window.__demoSound ? "ON" : "OFF");
-      if (window.__demoSound) { ac(); playUp(); }
+      userSoundOn = !userSoundOn;
+      try { localStorage.setItem("demoMute", userSoundOn ? "0" : "1"); } catch (er) {}
+      window.__demoSound = labelEnabled ? userSoundOn : false;
+      sndBtn.textContent = "SOUND: " + (userSoundOn ? "ON" : "OFF");
+      if (userSoundOn && labelEnabled) { ac(); playUp(); }
     });
     /* SWITCH: cycle the switch-sound profile + play a sample (forces sound on for the sample) */
     swBtn.addEventListener("pointerdown", function (e) { e.stopPropagation(); });
@@ -422,11 +441,28 @@
      fall back to the first skill so the upper-left always reads something */
   function setLabel(skill) {
     if (!labelEl) return;
+    /* the label only shows in the labeled section; everywhere else it stays
+       hidden no matter what is hovered */
+    if (!labelEnabled) { labelEl.style.opacity = "0"; return; }
     var s = skill || (SKILLS.length ? SKILLS[0] : null);
     if (!s) { labelEl.style.opacity = "0"; return; }
     labelName.textContent = s.label;
     labelTag.textContent = s.tag || "";
     labelEl.style.opacity = "1";
+  }
+
+  /* apply the per-section chrome: in the labeled (skills) section show the
+     label + sound lab and honour the user's sound preference; in every other
+     section hide them and mute. Called only when the active section changes. */
+  function applyChrome(sid) {
+    var on = (sid === LABEL_SECTION);
+    labelEnabled = on;
+    if (sndBtn) sndBtn.style.display = on ? "" : "none";
+    if (swBtn) swBtn.style.display = on ? "" : "none";
+    if (sndBtn) sndBtn.textContent = "SOUND: " + (userSoundOn ? "ON" : "OFF");
+    window.__demoSound = on ? userSoundOn : false;
+    if (on) setLabel(hovered ? hovered.userData.skill : null);
+    else if (labelEl) labelEl.style.opacity = "0";
   }
 
   /* ---------- interaction ---------- */
@@ -537,6 +573,7 @@
 
   /* ---- hardening (mirror orb.js): pause on hidden, first-frame signal, ctx-lost ---- */
   var paused = false, running = false, firstFrame = true;
+  var lastChromeSid = null;   /* last section we applied label/sound chrome for */
 
   function animate() {
     if (paused) { running = false; return; }
@@ -549,6 +586,8 @@
     var vpH = 2 * Math.tan((camera.fov * Math.PI / 180) / 2) * Math.abs(camera.position.z - board.position.z);
     vpW = vpH * camera.aspect;
     var sid = activeSectionId();
+    /* section-gated chrome: show label + sound lab only in the labeled section */
+    if (sid !== lastChromeSid) { lastChromeSid = sid; applyChrome(sid); }
     /* R4: on phone centre the keyboard (no side-float — narrow screen has no room) and
        push it downward so it reads as a backdrop below the hero text, not covering it. */
     var frac = isPhone ? 0 : (SECTION_FRAC[sid] || 0);

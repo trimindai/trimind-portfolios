@@ -129,15 +129,58 @@ try {
         else fail(`[${tag}] drag leaked into scroll (scrollDelta=${rot?rot.scrollDelta:'?'})`);
         await page.evaluate(()=>window.scrollTo(0,0)); await page.waitForTimeout(400);
       }
-      // F2: sound lab (SOUND pill) toggles the shared sound flag
-      const mute = await page.evaluate(()=>{ const b=document.getElementById("kbd-snd"); if(!b) return null; const before=window.__demoSound; b.click(); const after=window.__demoSound; b.click(); return {before,after}; });
-      if (mute && mute.before!==mute.after) pass(`[${tag}] SOUND pill toggles sound`);
-      else fail(`[${tag}] SOUND pill missing/not toggling`);
-      // F2: sound lab buttons + tool label exist in the DOM after load (desktop)
+      // F2: sound lab (SOUND pill) toggles the sound flag — only active in the
+      // skills section (label/sound are section-gated), so scroll there first
+      const mute = await page.evaluate(async()=>{
+        document.getElementById("skills").scrollIntoView({block:"center"}); await new Promise(r=>setTimeout(r,1200));
+        const b=document.getElementById("kbd-snd"); if(!b) return null;
+        const before=window.__demoSound; b.click(); const after=window.__demoSound; b.click(); return {before,after};
+      });
+      if (mute && mute.before!==mute.after) pass(`[${tag}] SOUND pill toggles sound (skills)`);
+      else fail(`[${tag}] SOUND pill missing/not toggling (${JSON.stringify(mute)})`);
+      // F2: section-gated chrome — label + sound lab live ONLY in skills, hidden
+      // + muted everywhere else; the skills label text is dark (legible on the
+      // light workshop background). (desktop)
       if (view.key==="desk"){
-        const ui = await page.evaluate(()=>({ snd:!!document.getElementById("kbd-snd"), sw:!!document.getElementById("kbd-sw"), label:!!document.getElementById("kbd-label") }));
-        if (ui.snd && ui.sw) pass(`[${tag}] sound lab pills present (SOUND+SWITCH)`); else fail(`[${tag}] sound lab pills missing (snd=${ui.snd} sw=${ui.sw})`);
-        if (ui.label) pass(`[${tag}] tool label present`); else fail(`[${tag}] tool label missing`);
+        const g = await page.evaluate(async()=>{
+          const disp=id=>{const e=document.getElementById(id);return e?getComputedStyle(e).display:"none";};
+          const op=id=>{const e=document.getElementById(id);return e?parseFloat(getComputedStyle(e).opacity):0;};
+          const nameColor=()=>{const e=document.querySelector("#kbd-label .kbd-label-name");return e?getComputedStyle(e).color:"";};
+          const at=async id=>{document.getElementById(id).scrollIntoView({block:"center"});await new Promise(r=>setTimeout(r,1200));};
+          await at("skills");
+          const skills={snd:disp("kbd-snd"),sw:disp("kbd-sw"),label:op("kbd-label"),color:nameColor(),sound:window.__demoSound};
+          await at("hero");
+          const hero={snd:disp("kbd-snd"),label:op("kbd-label"),sound:window.__demoSound};
+          await at("contact");
+          const contact={label:op("kbd-label"),sound:window.__demoSound};
+          return {skills,hero,contact};
+        });
+        if (g.skills.snd!=="none" && g.skills.sw!=="none") pass(`[${tag}] skills: sound lab pills visible (SOUND+SWITCH)`);
+        else fail(`[${tag}] skills pills not visible (snd=${g.skills.snd} sw=${g.skills.sw})`);
+        if (g.skills.label>0.5) pass(`[${tag}] skills: tool label visible`); else fail(`[${tag}] skills label not visible (op=${g.skills.label})`);
+        const dark=(()=>{const m=/(\d+)\D+(\d+)\D+(\d+)/.exec(g.skills.color);if(!m)return false;return (0.2126*+m[1]+0.7152*+m[2]+0.0722*+m[3])<120;})();
+        if (dark) pass(`[${tag}] skills: label text is dark (${g.skills.color})`); else fail(`[${tag}] skills label not dark (${g.skills.color})`);
+        if (g.hero.snd==="none" && g.hero.label<0.1) pass(`[${tag}] hero: label + sound lab hidden`); else fail(`[${tag}] hero chrome not hidden (snd=${g.hero.snd} label=${g.hero.label})`);
+        if (g.hero.sound===false) pass(`[${tag}] hero: sound muted`); else fail(`[${tag}] hero sound not muted (${g.hero.sound})`);
+        if (g.contact.label<0.1 && g.contact.sound===false) pass(`[${tag}] contact: label hidden + sound muted`); else fail(`[${tag}] contact chrome wrong (label=${g.contact.label} sound=${g.contact.sound})`);
+        // contact info is a horizontal strip UNDER the message box (not inside the card)
+        const cl = await page.evaluate(async()=>{
+          document.getElementById("contact").scrollIntoView({block:"center"}); await new Promise(r=>setTimeout(r,500));
+          const list=document.querySelector("#contact .contact-list");
+          const card=document.querySelector("#contact .contact-card");
+          if(!list||!card) return null;
+          const cs=getComputedStyle(list);
+          const horizontal=cs.display==="flex" && cs.flexDirection==="row";
+          const inside=!!list.closest(".contact-card");
+          const under=list.getBoundingClientRect().top >= card.getBoundingClientRect().bottom - 4;
+          const items=list.querySelectorAll("a").length;
+          return {horizontal,inside,under,items};
+        });
+        if (cl && cl.horizontal && !cl.inside) pass(`[${tag}] contact info horizontal + outside the message card`);
+        else fail(`[${tag}] contact info layout wrong (${JSON.stringify(cl)})`);
+        if (cl && cl.under) pass(`[${tag}] contact info sits under the message box`);
+        else fail(`[${tag}] contact info not under the box (${JSON.stringify(cl)})`);
+        await page.evaluate(()=>window.scrollTo(0,0)); await page.waitForTimeout(400);
       }
       if (errors.length) fail(`[${tag}] ${errors.length} console error(s): ${errors.slice(0,3).join(" | ")}`);
       else pass(`[${tag}] zero console errors`);

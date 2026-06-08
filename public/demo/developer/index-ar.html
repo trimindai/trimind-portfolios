@@ -395,13 +395,14 @@ section[data-reveal]{ will-change:opacity,transform; }
 .field input::placeholder,.field textarea::placeholder{color:rgba(238,241,245,.55)}
 .field input:focus,.field textarea:focus{outline:none;border-color:#a6bad0;box-shadow:0 0 0 3px rgba(166,186,208,.25)}
 .field textarea{min-height:130px;resize:vertical}
-.contact-list{display:flex;flex-direction:column;gap:10px}
-.contact-list a{display:flex;align-items:center;gap:14px;padding:12px 14px;border:1px solid rgba(255,255,255,.12);border-radius:14px;background:rgba(255,255,255,.05);color:var(--on-dark);transition:border-color .2s,transform .2s,background .2s}
-.contact-list a:hover{border-color:rgba(255,255,255,.28);transform:translateX(4px);background:rgba(255,255,255,.10)}
+/* contact info: a horizontal strip UNDER the message box, full content width */
+.contact-list{display:flex;flex-wrap:wrap;gap:12px;margin-top:34px;padding-top:30px;border-top:1px solid rgba(255,255,255,.12)}
+.contact-list a{flex:1 1 auto;min-width:0;display:flex;align-items:center;gap:14px;padding:14px 16px;border:1px solid rgba(255,255,255,.12);border-radius:14px;background:rgba(255,255,255,.05);color:var(--on-dark);transition:border-color .2s,transform .2s,background .2s}
+.contact-list a:hover{border-color:rgba(255,255,255,.28);transform:translateY(-3px);background:rgba(255,255,255,.10)}
 .contact-list a i{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;background:rgba(166,186,208,.18);color:#cdd9e8;font-size:.95rem;flex:none}
 .contact-list a b{display:block;font-size:.7rem;color:#a6bad0;font-family:var(--font-mono);text-transform:uppercase;letter-spacing:.08em}
-/* contact info inside the form card (RTL: right column) */
-.contact-card .contact-list{margin-top:22px;padding-top:22px;border-top:1px solid rgba(255,255,255,.10)}
+.contact-list a div{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+@media(max-width:560px){.contact-list a{flex:1 1 100%}}
 
 /* ── footer ─────────────────────────────────────────────────── */
 footer{border-top:1px solid var(--border);padding:40px 0;position:relative;z-index:1}
@@ -706,14 +707,15 @@ html[dir="rtl"] .tl-item::before{left:auto;right:0}
           <div class="field"><label for="cf-msg">الرسالة</label><textarea id="cf-msg" name="message" required placeholder="حدّثني عن مشروعك..."></textarea></div>
           <button class="btn primary" type="submit" style="width:100%;justify-content:center">إرسال الرسالة <i class="fa-solid fa-arrow-right"></i></button>
         </form>
-        <div class="contact-list">
-          <a href="mailto:maya@okafor.dev"><i class="fa-solid fa-envelope"></i><div><b>البريد الإلكتروني</b>maya@okafor.dev</div></a>
-          <a href="https://www.linkedin.com/in/example" target="_blank" rel="noopener"><i class="fa-brands fa-linkedin-in"></i><div><b>LinkedIn</b>لنتواصل</div></a>
-          <a href="https://github.com/" target="_blank" rel="noopener"><i class="fa-brands fa-github"></i><div><b>GitHub</b>اطّلع على الشيفرة</div></a>
-          <a href="tel:+351 900 000 000"><i class="fa-solid fa-phone"></i><div><b>الهاتف</b>+351 900 000 000</div></a>
-          <a><i class="fa-solid fa-location-dot"></i><div><b>الموقع</b>لشبونة، البرتغال</div></a>
-        </div>
       </div>
+    </div>
+    <!-- contact info: horizontal strip under the message box -->
+    <div class="contact-list box-reveal" data-delay="120">
+      <a href="mailto:maya@okafor.dev"><i class="fa-solid fa-envelope"></i><div><b>البريد الإلكتروني</b>maya@okafor.dev</div></a>
+      <a href="https://www.linkedin.com/in/example" target="_blank" rel="noopener"><i class="fa-brands fa-linkedin-in"></i><div><b>LinkedIn</b>لنتواصل</div></a>
+      <a href="https://github.com/" target="_blank" rel="noopener"><i class="fa-brands fa-github"></i><div><b>GitHub</b>اطّلع على الشيفرة</div></a>
+      <a href="tel:+351 900 000 000"><i class="fa-solid fa-phone"></i><div><b>الهاتف</b>+351 900 000 000</div></a>
+      <a><i class="fa-solid fa-location-dot"></i><div><b>الموقع</b>لشبونة، البرتغال</div></a>
     </div>
   </div>
 </section>
