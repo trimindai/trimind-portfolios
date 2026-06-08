@@ -48,7 +48,8 @@ try {
       else fail(`[${tag}] expected 5 sections, found ${secCount}`);
       if (errors.length) fail(`[${tag}] ${errors.length} console error(s): ${errors.slice(0,3).join(" | ")}`);
       else pass(`[${tag}] zero console errors`);
-      await page.screenshot({path:`scripts/_sj-${tag}.png`,fullPage:false});
+      try { await page.screenshot({path:`scripts/_sj-${tag}.png`,fullPage:false,timeout:8000,animations:"disabled"}); }
+      catch(e){ console.log(`note: screenshot skipped for ${tag} (${e.name})`); }
     });
   }
 } finally { await browser.close().catch(()=>{}); killServer(); }
