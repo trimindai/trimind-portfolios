@@ -51,7 +51,7 @@
     "pricing": {
       "title": "سعر بسيط",
       "subtitle": "دفعة واحدة. بدون اشتراكات.",
-      "price": "٥ د.ك",
+      "price": "٤٫٩٠٠ د.ك",
       "perPortfolio": "لكل بورتفوليو",
       "includes": [
         "سيرة ذاتية PDF جاهزة لأنظمة التوظيف (ATS)",
@@ -297,7 +297,9 @@
     "cvPreview": "معاينة السيرة",
     "webPreview": "معاينة الويب",
     "fullscreen": "ملء الشاشة",
-    "exitFullscreen": "إنهاء ملء الشاشة"
+    "exitFullscreen": "إنهاء ملء الشاشة",
+    "visitorsContext": "هكذا يراه الزوّار:",
+    "deviceGroupLabel": "عاين كيف يرى الزوّار بورتفوليوك"
   },
   "publish": {
     "title": "احصل على PDF",
@@ -308,7 +310,16 @@
     "takenTryAnother": "تم حجز هذا الاسم للتو. اختر اسمًا آخر بالأسفل.",
     "suggestionsLabel": "جرّب أحد هذه الأسماء:",
     "payAndPublish": "ادفع وانشر",
-    "price": "٥ د.ك",
+    "payAndDownload": "ادفع وحمّل PDF",
+    "price": "٤٫٩٠٠ د.ك",
+    "priceLabel": "المبلغ الإجمالي",
+    "priceAmount": "٤٫٩٠٠ د.ك",
+    "priceCaption": "دفعة واحدة. بدون اشتراك.",
+    "slugReadyHint": "أدخل اسمًا متاحًا بالأعلى للمتابعة.",
+    "trustSecure": "دفع آمن عبر MyFatoorah",
+    "trustMethods": "كي-نت · فيزا · ماستركارد · Apple Pay",
+    "trustEdit": "عدّل وحمّل مجددًا — مجانًا للأبد",
+    "downloadPdf": "حمّل PDF",
     "published": "بورتفوليو منشور!",
     "visitSite": "زيارة البورتفوليو",
     "copyUrl": "نسخ الرابط"

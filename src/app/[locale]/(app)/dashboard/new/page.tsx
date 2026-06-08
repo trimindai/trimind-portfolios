@@ -6,6 +6,7 @@ import { useUser } from "@clerk/nextjs";
 import { useEffect, useState, useRef } from "react";
 import { useSearchParams, useParams } from "next/navigation";
 import { GUEST_STORAGE_KEY, PORTFOLIO_UPDATE_STRIP_KEYS } from "@/components/builder/BuilderForm";
+import { track } from "@/lib/ga";
 
 // Keys to drop when seeding a new portfolio from a guest localStorage blob.
 // Shares the canonical update strip-set (server-owned keys + contentAr) and adds
@@ -89,6 +90,9 @@ export default function NewPortfolioPage() {
           name: "My Portfolio",
           basics,
         });
+
+        // GA4: a new portfolio (lead) was created — top of the acquisition funnel.
+        track("generate_lead");
 
         // Patch the rest of the guest content (experience, projects, skills, etc.)
         // through update(), which create() doesn't accept. Strip server-owned keys.

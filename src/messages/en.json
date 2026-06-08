@@ -51,7 +51,7 @@
     "pricing": {
       "title": "Simple Pricing",
       "subtitle": "One-time payment. No subscriptions.",
-      "price": "5 KWD",
+      "price": "4.900 KD",
       "perPortfolio": "per portfolio",
       "includes": [
         "ATS-ready CV PDF",
@@ -297,7 +297,9 @@
     "cvPreview": "CV Preview",
     "webPreview": "Web Preview",
     "fullscreen": "Fullscreen",
-    "exitFullscreen": "Exit Fullscreen"
+    "exitFullscreen": "Exit Fullscreen",
+    "visitorsContext": "How visitors see it:",
+    "deviceGroupLabel": "Preview how visitors see your portfolio"
   },
   "publish": {
     "title": "Get Your PDF",
@@ -308,7 +310,16 @@
     "takenTryAnother": "That name was just taken. Pick another below.",
     "suggestionsLabel": "Try one of these instead:",
     "payAndPublish": "Pay & Publish",
-    "price": "5 KWD",
+    "payAndDownload": "Pay & download PDF",
+    "price": "4.900 KD",
+    "priceLabel": "Total amount",
+    "priceAmount": "4.900 KD",
+    "priceCaption": "One-time payment. No subscription.",
+    "slugReadyHint": "Enter an available name above to continue.",
+    "trustSecure": "Secure payment via MyFatoorah",
+    "trustMethods": "K-NET · Visa · Mastercard · Apple Pay",
+    "trustEdit": "Edit & re-download — free forever",
+    "downloadPdf": "Download PDF",
     "published": "Your portfolio is live!",
     "visitSite": "Visit Your Portfolio",
     "copyUrl": "Copy URL"

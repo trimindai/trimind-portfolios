@@ -21,6 +21,7 @@ import { useUser } from "@clerk/nextjs";
 import { toPortfolioData } from "@/lib/portfolio-data";
 import { ADMIN_EMAILS } from "@/lib/admin";
 import { HOSTING_ENABLED } from "@/lib/flags";
+import { track, GA_CURRENCY, GA_VALUE } from "@/lib/ga";
 
 function slugify(name: string): string {
   return name
@@ -98,6 +99,19 @@ function HostingPublishPage() {
     }
   }, []);
 
+  // GA4: payment succeeded — the MyFatoorah callback returns here with
+  // ?success=1. Fire once per portfolio (sessionStorage guard) so a refresh
+  // doesn't double-count the conversion.
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const sp = new URLSearchParams(window.location.search);
+    if (sp.get("success") !== "1") return;
+    const key = `ga_purchase_${id}`;
+    if (sessionStorage.getItem(key)) return;
+    sessionStorage.setItem(key, "1");
+    track("purchase", { currency: GA_CURRENCY, value: GA_VALUE });
+  }, [id]);
+
   // Check if already published
   useEffect(() => {
     if (portfolio?.status === "published" && portfolio.slug) {
@@ -105,6 +119,26 @@ function HostingPublishPage() {
       setSlug(portfolio.slug);
     }
   }, [portfolio]);
+
+  // Pre-fill the mobile field from the user's Clerk profile so returning users
+  // don't retype it. Seeds once, and only if they haven't typed anything yet.
+  const [mobilePrefilled, setMobilePrefilled] = useState(false);
+  useEffect(() => {
+    if (mobilePrefilled || !clerkUser) return;
+    const fromProfile =
+      (clerkUser.unsafeMetadata?.phone as string | undefined) ||
+      clerkUser.primaryPhoneNumber?.phoneNumber ||
+      clerkUser.phoneNumbers?.[0]?.phoneNumber ||
+      "";
+    if (fromProfile) {
+      // Digits only; drop a leading Kuwait country code (965) so it isn't
+      // duplicated next to the fixed "+965" prefix shown beside the input.
+      let digits = fromProfile.replace(/\D/g, "");
+      if (digits.startsWith("965") && digits.length > 8) digits = digits.slice(3);
+      setMobile(digits.slice(0, 12));
+    }
+    setMobilePrefilled(true);
+  }, [clerkUser, mobilePrefilled]);
 
   // Slug availability check — uses isSlugTaken which inspects ALL
   // portfolios (drafts + published). getBySlug is for public viewing only
@@ -203,6 +237,8 @@ function HostingPublishPage() {
             if (!payData.paymentUrl) {
               throw new Error("Failed to start payment");
             }
+            // GA4: user is leaving for the payment gateway — top of the funnel.
+            track("begin_checkout", { currency: GA_CURRENCY, value: GA_VALUE });
             window.location.href = payData.paymentUrl;
             return;
           }
@@ -321,6 +357,16 @@ function HostingPublishPage() {
             </button>
           </div>
 
+          {/* Download PDF — paying also unlocks the print-ready PDF (carrying the
+              QR that points back at this live page), so offer it right here. */}
+          <Link
+            href={`/dashboard/${id}/preview?paid=1`}
+            className="mt-3 inline-flex w-full items-center justify-center gap-2 rounded-lg border border-[var(--land-border)] bg-[var(--land-surface-raised)] px-6 py-3 text-sm font-medium text-[var(--land-bright)] transition-colors hover:bg-[var(--land-border)]"
+          >
+            <Download className="h-4 w-4" />
+            {t("downloadPdf")}
+          </Link>
+
           {/* Back to dashboard */}
           <Link
             href="/dashboard"
@@ -350,6 +396,22 @@ function HostingPublishPage() {
         <div className="rounded-2xl border border-[var(--land-border)] bg-[var(--land-surface)] p-8">
           <h1 className="text-2xl font-bold text-[var(--land-bright)]">{t("title")}</h1>
           <p className="mt-2 text-sm text-[var(--land-body)]">{t("chooseSlug")}</p>
+
+          {/* Price — what the one-time payment costs. Shown only to draft,
+              non-admin users (the only ones who actually pay). */}
+          {portfolio.status === "draft" && !isAdmin && (
+            <div className="mt-6 rounded-xl border border-[var(--land-border)] bg-[var(--land-surface-raised)]/60 p-5 text-center">
+              <p className="text-xs uppercase tracking-wider text-[var(--land-muted)]">
+                {t("priceLabel")}
+              </p>
+              <p className="mt-1 text-3xl font-bold text-[var(--land-bright)]">
+                {t("priceAmount")}
+              </p>
+              <p className="mt-1.5 text-xs text-[var(--land-muted)]">
+                {t("priceCaption")}
+              </p>
+            </div>
+          )}
 
           {/* Slug input */}
           <div className="mt-6">
@@ -474,11 +536,63 @@ function HostingPublishPage() {
                   : "Publishing..."}
               </>
             ) : portfolio.status === "draft" && !isAdmin ? (
-              t("payAndPublish")
+              t("payAndDownload")
             ) : (
               tc("publish")
             )}
           </button>
+
+          {/* When the button is disabled only because the name isn't ready, say
+              so — a greyed-out button with no explanation reads as "broken". */}
+          {portfolio.status === "draft" &&
+            !isAdmin &&
+            !publishing &&
+            (!slugAvailable || slug.length < 2) && (
+              <p className="mt-2 text-center text-xs text-[var(--land-muted)]">
+                {t("slugReadyHint")}
+              </p>
+            )}
+
+          {/* Trust signals — only where a payment is actually due. */}
+          {portfolio.status === "draft" && !isAdmin && (
+            <div className="mt-5 space-y-2">
+              <div className="flex items-center justify-center gap-2 text-xs text-[var(--land-body)]">
+                <svg
+                  className="h-4 w-4 shrink-0 text-[var(--land-accent)]"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  strokeWidth={2}
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
+                  />
+                </svg>
+                {t("trustSecure")}
+              </div>
+              <p className="text-center text-xs text-[var(--land-muted)]">
+                {t("trustMethods")}
+              </p>
+              <div className="flex items-center justify-center gap-2 text-xs text-[var(--land-body)]">
+                <svg
+                  className="h-4 w-4 shrink-0 text-[var(--land-accent)]"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  strokeWidth={2}
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+                  />
+                </svg>
+                {t("trustEdit")}
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>

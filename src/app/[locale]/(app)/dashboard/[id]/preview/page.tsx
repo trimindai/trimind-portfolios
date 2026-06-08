@@ -248,7 +248,14 @@ export default function PreviewPage() {
           {view === "live" && (
             <>
               {divider("hidden md:block")}
-              <div className="hidden shrink-0 items-center gap-1 rounded-lg bg-[var(--land-surface-raised)]/50 p-1 md:flex">
+              <span className="hidden shrink-0 whitespace-nowrap text-xs text-[var(--land-muted)] lg:inline">
+                {t("visitorsContext")}
+              </span>
+              <div
+                className="hidden shrink-0 items-center gap-1 rounded-lg bg-[var(--land-surface-raised)]/50 p-1 md:flex"
+                role="group"
+                aria-label={t("deviceGroupLabel")}
+              >
                 {devices.map(({ mode, icon: Icon, label }) => (
                   <button
                     key={mode}

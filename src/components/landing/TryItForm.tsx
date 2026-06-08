@@ -65,7 +65,7 @@ export function TryItForm({ locale }: { locale: string }) {
           </button>
         </div>
         <p className="mt-3 text-xs text-[var(--land-muted)] text-center">
-          {isRTL ? "مجاني للبناء · ادفع 4.9 د.ك فقط لما تعجبك النتيجة" : "Free to build · Pay 4.9 KD only when you love it"}
+          {isRTL ? "مجاني للبناء · ادفع ٤٫٩ د.ك فقط لما تعجبك النتيجة" : "Free to build · Pay 4.9 KD only when you love it"}
         </p>
         <p className="mt-2 text-xs text-center">
           <Link href="/sign-in" className="text-[var(--land-body)] hover:text-[var(--land-accent)] transition-colors">
