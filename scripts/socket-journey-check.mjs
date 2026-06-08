@@ -112,6 +112,20 @@ try {
       const allOk = socks.every(s=>s.ok && s.w>60 && s.h>20);
       if (allOk) pass(`[${tag}] Davy socket in all 5 sections`);
       else fail(`[${tag}] missing/undersized socket: ${JSON.stringify(socks.filter(s=>!s.ok||s.w<=60||s.h<=20))}`);
+      // T3.2: the orb lands in each section's socket (desktop)
+      if (view.key==="desk"){
+        const land = await page.evaluate(async()=>{
+          const out=[]; const ids=["hero","skills","experience","projects","contact"];
+          for(const id of ids){ document.getElementById(id).scrollIntoView({block:"center"}); await new Promise(r=>setTimeout(r,1000));
+            const k=document.getElementById(id).querySelector(".orb-socket").getBoundingClientRect();
+            const o=window.__orbPos? window.__orbPos() : null;
+            out.push({id, dx:o?Math.round(Math.abs(o.x-(k.left+k.width/2))):999, dy:o?Math.round(Math.abs(o.y-(k.top+k.height*0.3))):999}); }
+          return out;
+        });
+        const near = land.every(l=>l.dx<110 && l.dy<140);
+        if (near) pass(`[${tag}] orb lands in each section's socket`);
+        else fail(`[${tag}] orb off-socket: ${JSON.stringify(land.filter(l=>l.dx>=110||l.dy>=140))}`);
+      }
       if (errors.length) fail(`[${tag}] ${errors.length} console error(s): ${errors.slice(0,3).join(" | ")}`);
       else pass(`[${tag}] zero console errors`);
       try { await page.screenshot({path:`scripts/_sj-${tag}.png`,fullPage:false,timeout:8000,animations:"disabled"}); }

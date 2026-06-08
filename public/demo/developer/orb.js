@@ -1,9 +1,9 @@
 /* ============================================================================
    orb.js — the signature persistent 3D orb.
-   ONE conserved object in a fixed full-screen canvas behind the DOM. It travels
-   and transforms through the sections as the page scrolls. Vanilla Three.js
-   (global THREE, vendored r128). Phase 1: solid orb only (travel + spring +
-   per-section colour/scale). Particles + dock land in later phases.
+   ONE conserved object in a fixed full-screen canvas behind the DOM. A small
+   trackball that FALLS into the current section's .orb-socket (gravity-biased
+   spring + bounce-settle + roll-spin), seating in each Davy cup as you scroll.
+   Vanilla Three.js (global THREE, vendored r128). Hero-load particle bloom kept.
    ============================================================================ */
 (function () {
   "use strict";
@@ -143,37 +143,26 @@
     scene.add(pts);
   })();
 
-  /* ---- section anchoring (runtime; keyframes are fractions, never px) ---- */
-  var SECTIONS = ["hero", "skills", "experience", "projects", "contact"];
-  /* per-section orb target: x/y are fractions of the half-viewport at the z=0 plane */
-  var KF = {
-    hero:       { x:  0.45, y:  0.02, scale: 1.30, color: 0x6d99ce, deep: 0x2f5588, opacity: 1.00 },
-    skills:     { x:  0.00, y: -0.18, scale: 0.55, color: 0x6d99ce, deep: 0x2f5588, opacity: 0.95 },
-    experience: { x: -0.60, y:  0.05, scale: 0.40, color: 0x6d99ce, deep: 0x35608f, opacity: 0.70 },
-    projects:   { x:  0.10, y:  0.00, scale: 0.72, color: 0x6d99ce, deep: 0x2f5588, opacity: 0.55 },
-    contact:    { x:  0.00, y:  0.02, scale: 0.86, color: 0x7fb0e6, deep: 0x4b7bbf, opacity: 1.00 }
-  };
-  /* RTL (Arabic): mirror the journey horizontally so the hero orb sits on the left */
-  var __rtl = (document.documentElement.getAttribute("dir") === "rtl") || (document.dir === "rtl");
-  if (__rtl) { for (var __k in KF) KF[__k].x = -KF[__k].x; }
-  var anchors = []; /* [{id, y}] sorted by scroll position */
-  var anchorY = {}; /* id -> centred-scroll value */
-  /* keyboard iframe + calibrated trackball position within it (for the dock handoff) */
-  var stackIframe = document.querySelector(".stack-frame");
-  var DOCK_FX = 0.50, DOCK_FY = 0.56, DOCK_TB = 0.18; /* trackball centre-x/centre-y/diameter as fractions of the iframe */
-  function measure() {
-    anchors = []; anchorY = {};
-    for (var i = 0; i < SECTIONS.length; i++) {
-      var el = document.getElementById(SECTIONS[i]);
-      if (!el) continue;
-      var rect = el.getBoundingClientRect();
-      var top = rect.top + window.scrollY;
-      var y = Math.max(0, top + el.offsetHeight / 2 - window.innerHeight / 2); /* scroll value where section is centred */
-      anchors.push({ id: SECTIONS[i], y: y });
-      anchorY[SECTIONS[i]] = y;
+  /* the orb targets the on-screen centre of the current section's .orb-socket */
+  var SECTION_IDS = ["hero","skills","experience","projects","contact"];
+  function currentSocket(){
+    var vh = window.innerHeight, best=null, bestD=1e9;
+    for (var i=0;i<SECTION_IDS.length;i++){
+      var s=document.getElementById(SECTION_IDS[i]); if(!s) continue;
+      var k=s.querySelector(".orb-socket"); if(!k) continue;
+      var sr=s.getBoundingClientRect();
+      var centreDist=Math.abs((sr.top+sr.height/2) - vh/2);
+      if(centreDist<bestD){ bestD=centreDist; best=k; }
     }
-    anchors.sort(function (a, b) { return a.y - b.y; });
+    return best;
   }
+  function socketTarget(el){
+    var r=el.getBoundingClientRect();
+    var px=r.left + r.width/2, py=r.top + r.height*0.30; /* sit slightly above cup centre so the ball seats in it */
+    return { fx:(px/window.innerWidth)*2-1, fy:-((py/window.innerHeight)*2-1) };
+  }
+  /* smaller orb that falls into each socket */
+  var ORB_SCALE = 0.5;
 
   /* ---- viewport <-> world mapping at the z=0 plane ---- */
   var vpH = 1, vpW = 1;
@@ -184,99 +173,60 @@
     camera.updateProjectionMatrix();
     vpH = 2 * Math.tan((camera.fov * Math.PI / 180) / 2) * CAM_Z;
     vpW = vpH * camera.aspect;
-    measure();
   }
   window.addEventListener("resize", resize);
-  if (window.ResizeObserver) {
-    var ro = new ResizeObserver(function () { measure(); });
-    ro.observe(document.body);
-  }
 
-  /* ---- interpolate the keyframe at the current scroll position ---- */
-  function lerp(a, b, t) { return a + (b - a) * t; }
-  function smooth(t) { return t * t * (3 - 2 * t); } /* smoothstep ease */
-  var cur = { x: KF.hero.x, y: KF.hero.y, scale: KF.hero.scale, opacity: KF.hero.opacity };
-  var curCore = new THREE.Color(KF.hero.color), curDeep = new THREE.Color(KF.hero.deep);
-  function targetAt(scrollY) {
-    if (anchors.length === 0) return KF.hero;
-    if (scrollY <= anchors[0].y) return KF[anchors[0].id];
-    if (scrollY >= anchors[anchors.length - 1].y) return KF[anchors[anchors.length - 1].id];
-    for (var i = 0; i < anchors.length - 1; i++) {
-      var a = anchors[i], b = anchors[i + 1];
-      if (scrollY >= a.y && scrollY <= b.y) {
-        var t = smooth((scrollY - a.y) / Math.max(1, b.y - a.y));
-        var ka = KF[a.id], kb = KF[b.id];
-        return {
-          x: lerp(ka.x, kb.x, t), y: lerp(ka.y, kb.y, t),
-          scale: lerp(ka.scale, kb.scale, t), opacity: lerp(ka.opacity, kb.opacity, t),
-          _a: ka, _b: kb, _t: t
-        };
-      }
-    }
-    return KF.hero;
-  }
+  /* ---- glass colour is now a constant (no per-section lerp) ---- */
+  function smooth(t) { return t * t * (3 - 2 * t); } /* smoothstep ease (bloom) */
+  uniforms.uCore.value.set(0x6d99ce);
+  uniforms.uDeep.value.set(0x2f5588);
+  var cur = { x: 0.45, y: 0.02, scale: ORB_SCALE };
 
   /* ---- spring (slight overshoot on settle) ---- */
   var vx = 0, vy = 0, vs = 0;
-  var K = 0.090, DAMP = 0.80;       /* responsive spring, slight overshoot on settle */
+  var K = 0.110, DAMP = 0.78;       /* responsive spring (per 1/60 substep), slight overshoot on settle */
   var paused = false, running = false, firstFrame = true, tAcc = 0;
-  var dockLifted = false;           /* is the canvas currently raised above the iframe? */
   var bloomActive = true, bloomClock = 0, BLOOM_DUR = 1.6;  /* hero load bloom */
   var lastNow = 0;                                          /* for frame-rate-independent timing */
-
-  /* how docked are we? a 0..1..0 bump peaking when the keyboard is centred */
-  function dockProgress(sy) {
-    if (anchorY.skills == null || !stackIframe) return 0;
-    var sk = anchorY.skills;
-    var prev = anchorY.hero != null ? anchorY.hero : sk - 800;
-    var next = anchorY.experience != null ? anchorY.experience : sk + 800;
-    var dp = (sy <= sk) ? (sy - prev) / Math.max(1, sk - prev)
-                        : 1 - (sy - sk) / Math.max(1, next - sk);
-    return smooth(Math.max(0, Math.min(1, dp)));
-  }
+  var landedId = null;                                      /* fires the landing detector once per section entry */
 
   function frame() {
     if (paused) { running = false; return; }
     requestAnimationFrame(frame);
     running = true;
     var now = (typeof performance !== "undefined" && performance.now) ? performance.now() : Date.now();
-    var dt = lastNow ? Math.min(0.05, (now - lastNow) / 1000) : 0.016; lastNow = now;
+    var rawDt = lastNow ? (now - lastNow) / 1000 : 0.016;       /* true elapsed (uncapped) — drives spring substep count */
+    var dt = Math.min(0.05, rawDt); lastNow = now;              /* capped dt for visuals (bloom/rotation/idle) */
     tAcc += dt;
-    var sy = window.scrollY || window.pageYOffset || 0;
-    var tgt = targetAt(sy);
-    var tx = tgt.x, ty = tgt.y, ts = tgt.scale, topac = tgt.opacity;
 
-    /* ---- DOCK: blend toward the keyboard's live trackball position + crossfade ---- */
-    var dp = dockProgress(sy);
-    if (dp > 0.001) {
-      var r = stackIframe.getBoundingClientRect();
-      var px = r.left + r.width * DOCK_FX;
-      var py = r.top + r.height * DOCK_FY;
-      var dfx = (px / window.innerWidth) * 2 - 1;
-      var dfy = -((py / window.innerHeight) * 2 - 1);
-      var dscale = (r.height * DOCK_TB * vpH) / (2 * window.innerHeight); /* match trackball apparent size */
-      tx = lerp(tx, dfx, dp); ty = lerp(ty, dfy, dp); ts = lerp(ts, dscale, dp);
-      var fade = 1 - smooth(Math.max(0, (dp - 0.72) / 0.28)); /* fade out as it overlaps the trackball */
-      topac = topac * fade;
+    /* ---- target = the current section socket's on-screen centre ---- */
+    var sock = currentSocket();
+    var tx = cur.x, ty = cur.y;
+    if (sock){ var t = socketTarget(sock); tx = t.fx; ty = t.fy; }
+    /* gravity-biased vertical fall, then spring damps into a bounce-settle.
+       integrated in FIXED 60fps substeps so behaviour is frame-rate independent
+       and settles in wall-clock time even when the GL loop runs at a low fps
+       (e.g. headless swiftshader). The spring constants are tuned at this 1/60 step. */
+    var GRAV = 0.020;
+    var steps = Math.min(120, Math.max(1, Math.round(rawDt * 60)));
+    for (var st = 0; st < steps; st++) {
+      if (ty < cur.y){ vy += (ty - cur.y) * K; }               /* moving up: normal spring */
+      else { vy += (ty - cur.y) * K + GRAV; }                  /* moving down: add gravity for a fall feel */
+      vy *= DAMP; cur.y += vy;
+      vx += (tx - cur.x) * K; vx *= DAMP; cur.x += vx;
+      cur.scale += (ORB_SCALE - cur.scale) * 0.15;
     }
-    /* raise the canvas above the iframe while docking so the orb is visible flying in */
-    var wantLift = dp > 0.002;
-    if (wantLift !== dockLifted) { dockLifted = wantLift; canvas.style.zIndex = wantLift ? "5" : "-1"; }
 
-    /* spring position + scale toward target (fractions) */
-    vx += (tx - cur.x) * K; vx *= DAMP; cur.x += vx;
-    vy += (ty - cur.y) * K; vy *= DAMP; cur.y += vy;
-    vs += (ts - cur.scale) * K; vs *= DAMP; cur.scale += vs;
-    cur.opacity += (topac - cur.opacity) * 0.12;
+    /* ---- landing detector: fires once per section entry when settled in its socket ---- */
+    var sId = sock ? (function(){ var sec=sock.closest("section"); return sec?sec.id:null; })() : null;
+    var settled = Math.abs(vx)<0.004 && Math.abs(vy)<0.004 && Math.abs(tx-cur.x)<0.02 && Math.abs(ty-cur.y)<0.02;
+    if (sId && sId!==landedId && settled){
+      landedId = sId;
+      cur.scale *= 0.86;                          /* contact squash; spring restores it */
+      if (window.__orbLand) window.__orbLand();   /* click sound, wired in Task 3.3 (guard if absent) */
+    }
 
-    /* eased colour toward the segment's target */
-    var coreT = tgt._b ? tgt._b.color : (tgt.color || KF.hero.color);
-    var deepT = tgt._b ? tgt._b.deep : (tgt.deep || KF.hero.deep);
-    curCore.lerp(new THREE.Color(coreT), 0.05);
-    curDeep.lerp(new THREE.Color(deepT), 0.05);
-    uniforms.uCore.value.copy(curCore);
-    uniforms.uDeep.value.copy(curDeep);
-    /* ---- particle windows: hero bloom (on load) + dock burst ---- */
+    /* ---- particle window: hero bloom on load only (dock burst removed) ---- */
     var morph = 1, ptsOpac = 0, disp = 0, solidMul = 1;
     if (bloomActive) {
       var bt = Math.min(1, bloomClock / BLOOM_DUR); bloomClock += dt;
@@ -285,17 +235,15 @@
       ptsOpac = 1 - smooth(Math.max(0, (bt - 0.80) / 0.20));  /* particles fade as the solid forms */
       solidMul = smooth(Math.max(0, (bt - 0.60) / 0.40));     /* solid fades in at the end */
       if (bt >= 1) bloomActive = false;
-    } else if (dp > 0.70) {
-      var bump = smooth((dp - 0.70) / 0.18) * (1 - smooth(Math.max(0, (dp - 0.90) / 0.10)));
-      ptsOpac = bump; disp = bump * 0.9; morph = 1;           /* particalize + scatter into the trackball */
     }
 
-    uniforms.uOpacity.value = cur.opacity * solidMul;
+    uniforms.uOpacity.value = solidMul;
     uniforms.uTime.value = tAcc;
 
-    /* map fraction -> world, place + scale + idle rotation */
+    /* map fraction -> world, place + scale + idle rotation + roll */
     orb.position.set(cur.x * vpW / 2, cur.y * vpH / 2, 0);
     orb.scale.setScalar(Math.max(0.001, cur.scale));
+    orb.rotation.z -= vx * 6.0;                   /* roll-spin proportional to horizontal motion */
     orb.rotation.y += dt * 0.10;
     orb.rotation.x = Math.sin(tAcc * 0.3) * 0.06; /* gentle breathe/tilt */
 
@@ -309,7 +257,6 @@
         pts.rotation.copy(orb.rotation);
         ptsU.uMorph.value = morph; ptsU.uDisp.value = disp;
         ptsU.uTime.value = tAcc; ptsU.uOpacity.value = ptsOpac;
-        ptsU.uColor.value.copy(curCore);
       }
     }
 
@@ -335,8 +282,9 @@
     document.documentElement.classList.remove("orb-live");
   }, false);
 
+  /* expose the orb's on-screen pixel position (for the harness) */
+  window.__orbPos = function(){ return { x:(cur.x*0.5+0.5)*window.innerWidth, y:(-cur.y*0.5+0.5)*window.innerHeight }; };
+
   resize();
   requestAnimationFrame(frame);
-  /* re-measure once fonts/images settle */
-  window.addEventListener("load", function () { setTimeout(measure, 300); });
 })();
