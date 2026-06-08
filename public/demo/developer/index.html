@@ -327,6 +327,18 @@ section{position:relative;z-index:1}
 .proj .cap .tag{align-self:flex-start;font-size:.68rem;font-family:var(--font-mono);background:var(--brand-ink);color:#fff;border-radius:8px;padding:2px 9px}
 .proj .open{position:absolute;top:14px;right:14px;width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;background:color-mix(in srgb,var(--bg) 60%,transparent);border:1px solid var(--border-strong);opacity:0;transform:translateY(-6px);transition:opacity .25s,transform .25s}
 .proj:hover .open{opacity:1;transform:none}
+/* polished covers: per-card duotone + dot texture + monogram, with 3D hover tilt + lift */
+.proj{transition:transform .3s cubic-bezier(.2,.7,.2,1),box-shadow .3s,border-color .25s;transform-style:preserve-3d;will-change:transform}
+.proj:hover{border-color:var(--brand-ink);box-shadow:0 16px 34px rgba(34,40,49,.16)}
+.proj .ph{font-size:3.3rem;font-weight:800;color:rgba(255,255,255,.92);letter-spacing:-.02em;
+  background:radial-gradient(circle at 1px 1px,rgba(255,255,255,.13) 1px,transparent 0) 0 0/22px 22px,linear-gradient(135deg,#6d99ce,#2f5588)}
+.proj:nth-child(2) .ph{background:radial-gradient(circle at 1px 1px,rgba(255,255,255,.11) 1px,transparent 0) 0 0/22px 22px,linear-gradient(135deg,#7fb0e6,#35608f)}
+.proj:nth-child(3) .ph{background:radial-gradient(circle at 1px 1px,rgba(255,255,255,.10) 1px,transparent 0) 0 0/22px 22px,linear-gradient(140deg,#5f6b7a,#2c3a4e)}
+.proj:nth-child(4) .ph{background:radial-gradient(circle at 1px 1px,rgba(255,255,255,.12) 1px,transparent 0) 0 0/22px 22px,linear-gradient(135deg,#a6bad0,#566472)}
+.proj .ph::after{content:"";position:absolute;inset:0;background:radial-gradient(130% 90% at 50% -10%,transparent 36%,rgba(18,24,34,.46) 100%)}
+.proj .cap{background:linear-gradient(0deg,rgba(18,24,34,.92) 6%,rgba(18,24,34,.5) 42%,transparent)}
+.proj .cap h3{color:#fff}
+.proj .cap .tag{background:rgba(255,255,255,.18);color:#fff}
 
 /* project modal */
 .modal{position:fixed;inset:0;z-index:150;display:none;align-items:center;justify-content:center;padding:24px}
@@ -363,7 +375,8 @@ section{position:relative;z-index:1}
 .mini .row .yr{float:right;font-family:var(--font-mono);font-size:.72rem;color:var(--muted-2)}
 
 /* ── contact (dark Davy surface, light text) ────────────────── */
-#contact{padding:90px 0 140px;background:var(--contact-bg);color:var(--on-dark)}
+/* translucent radial so the orb glows through the centre while the edges stay solid dark */
+#contact{padding:90px 0 140px;background:radial-gradient(78% 72% at 50% 40%,rgba(75,80,86,0.5) 0%,rgba(75,80,86,0.97) 70%);color:var(--on-dark)}
 #contact .sec-head .eyebrow{color:#a6bad0}
 #contact .sec-head .eyebrow::before{background:#a6bad0}
 #contact h2,#contact h3{color:var(--on-dark)}
@@ -1053,5 +1066,19 @@ html[dir="rtl"] .tl-item::before{left:auto;right:0}
 })();
 </script>
 
+<script>
+/* project-card 3D hover tilt (desktop, motion-allowed) */
+(function(){
+  if(window.matchMedia("(prefers-reduced-motion: reduce)").matches || !window.matchMedia("(hover:hover)").matches) return;
+  document.querySelectorAll(".proj").forEach(function(card){
+    card.addEventListener("pointermove", function(e){
+      var r=card.getBoundingClientRect();
+      var dx=(e.clientX-r.left)/r.width-0.5, dy=(e.clientY-r.top)/r.height-0.5;
+      card.style.transform="perspective(820px) rotateX("+(-dy*6.5).toFixed(2)+"deg) rotateY("+(dx*8.5).toFixed(2)+"deg) translateY(-5px)";
+    });
+    card.addEventListener("pointerleave", function(){ card.style.transform=""; });
+  });
+})();
+</script>
 </body>
 </html>
