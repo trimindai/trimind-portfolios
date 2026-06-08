@@ -148,6 +148,9 @@
     projects:   { x:  0.10, y:  0.00, scale: 0.72, color: 0x6d99ce, deep: 0x2f5588, opacity: 0.55 },
     contact:    { x:  0.00, y:  0.02, scale: 0.86, color: 0x7fb0e6, deep: 0x4b7bbf, opacity: 1.00 }
   };
+  /* RTL (Arabic): mirror the journey horizontally so the hero orb sits on the left */
+  var __rtl = (document.documentElement.getAttribute("dir") === "rtl") || (document.dir === "rtl");
+  if (__rtl) { for (var __k in KF) KF[__k].x = -KF[__k].x; }
   var anchors = []; /* [{id, y}] sorted by scroll position */
   var anchorY = {}; /* id -> centred-scroll value */
   /* keyboard iframe + calibrated trackball position within it (for the dock handoff) */
