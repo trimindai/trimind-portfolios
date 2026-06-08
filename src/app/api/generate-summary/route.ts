@@ -1,21 +1,26 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
+import { z } from "zod";
+import { enforceUserRateLimit } from "@/lib/ratelimit";
+import { parseJsonBody } from "@/lib/api-input";
 
-// In-memory rate limit. Single-instance only (Vercel cold starts reset it).
-// Mirrors /api/generate; for multi-instance back this with Convex/Redis (see
-// src/lib/ratelimit.ts). Tighter than the render routes because every call
-// hits Gemini — i.e. real money per request.
-const WINDOW_MS = 60_000;
-const MAX_PER_WINDOW = 10; // 10 AI summaries per minute per user
-const hits = new Map<string, number[]>();
-
-function rateLimit(key: string): boolean {
-  const now = Date.now();
-  const arr = (hits.get(key) || []).filter((t) => now - t < WINDOW_MS);
-  arr.push(now);
-  hits.set(key, arr);
-  return arr.length <= MAX_PER_WINDOW;
-}
+// Every field below is interpolated into the Gemini prompt, so each free-text
+// field is length-capped here to bound prompt size (cost) and injection blast
+// radius. Unknown keys are stripped by `parseJsonBody`.
+const SummarySchema = z.object({
+  fullName: z.string().trim().min(1, "fullName is required").max(200),
+  professionalTitle: z.string().trim().min(1, "professionalTitle is required").max(200),
+  location: z.string().max(200).optional(),
+  totalYearsExperience: z.union([z.string().max(50), z.number()]).optional(),
+  mostRecentRole: z.string().max(200).optional(),
+  mostRecentCompany: z.string().max(200).optional(),
+  topSkills: z
+    .union([z.string().max(1000), z.array(z.string().max(100)).max(50)])
+    .optional(),
+  notableAchievement: z.string().max(1000).optional(),
+  highestEducation: z.string().max(300).optional(),
+  userDraft: z.string().max(8000).optional(),
+});
 
 export async function POST(req: NextRequest) {
   // Auth: this endpoint spends Gemini budget, so it must never be public.
@@ -23,12 +28,12 @@ export async function POST(req: NextRequest) {
   if (!userId) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
-  if (!rateLimit(userId)) {
-    return NextResponse.json(
-      { error: "Rate limit exceeded. Try again in a minute." },
-      { status: 429 }
-    );
-  }
+
+  const limited = await enforceUserRateLimit(userId, "ai-summary", {
+    limit: 10,
+    windowMs: 60_000,
+  });
+  if (limited) return limited;
 
   const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey) {
@@ -36,18 +41,20 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "AI service not configured" }, { status: 500 });
   }
 
-  let body: any;
-  try {
-    body = await req.json();
-  } catch {
-    return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
-  }
-
-  const { fullName, professionalTitle, location, totalYearsExperience, mostRecentRole, mostRecentCompany, topSkills, notableAchievement, highestEducation, userDraft } = body;
-
-  if (!fullName || !professionalTitle) {
-    return NextResponse.json({ error: "fullName and professionalTitle are required" }, { status: 400 });
-  }
+  const parsed = await parseJsonBody(req, { schema: SummarySchema });
+  if (!parsed.ok) return parsed.response;
+  const {
+    fullName,
+    professionalTitle,
+    location,
+    totalYearsExperience,
+    mostRecentRole,
+    mostRecentCompany,
+    topSkills,
+    notableAchievement,
+    highestEducation,
+    userDraft,
+  } = parsed.data;
 
   const userDraftSection = userDraft?.trim()
     ? `\nUser's raw notes (use this as the primary source of truth for their profession and experience):\n${userDraft.trim()}\n`

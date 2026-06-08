@@ -1,76 +1,69 @@
 /**
- * API rate limiting — READY TO ENABLE (currently inert).
+ * Durable, multi-instance API rate limiting backed by Convex.
  *
- * Decision (2026-06-08): ship the limiter but do NOT add the dependency or wire
- * it into routes yet. Serverless needs a SHARED store — an in-memory counter is
- * per-instance on Vercel and so doesn't actually limit anything. To turn it on:
+ * Replaces the old per-instance in-memory counters (which reset on every Vercel
+ * cold start and were therefore not real limits). The counter lives in Convex
+ * (see `convex/rateLimit.ts`), so the window is shared across every serverless
+ * instance and survives cold starts.
  *
- *   1. npm i @upstash/ratelimit @upstash/redis
- *   2. Set UPSTASH_REDIS_REST_URL and UPSTASH_REDIS_REST_TOKEN in Vercel env
- *      (Upstash Redis is available on the Vercel Marketplace).
- *   3. Replace the INERT SHIM below with the ENABLE block beneath it.
- *   4. At the top of each sensitive route handler (e.g. myfatoorah/initiate,
- *      free-access) add:
- *          const limited = await enforceRateLimit(req, "myfatoorah-initiate");
- *          if (limited) return limited;
- *      It returns a 429 NextResponse to short-circuit, or null to proceed.
+ * Usage — at the top of a route handler, after Clerk auth:
  *
- * Until then this shim keeps the call-sites valid and always allows the request.
+ *   const limited = await enforceUserRateLimit(userId, "ai-summary", {
+ *     limit: 10,
+ *     windowMs: 60_000,
+ *   });
+ *   if (limited) return limited; // 429 short-circuit, else null → proceed
  */
-import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
+import { convexClient, serverSecret } from "@/lib/convex";
+import { api } from "@convex/_generated/api";
 
-// ── INERT SHIM (delete when enabling) ────────────────────────────────────────
-export async function enforceRateLimit(
-  req: NextRequest,
-  bucket: string
-): Promise<NextResponse | null> {
-  // Disabled: no shared store configured yet. Always allows the request.
-  // (Params are kept to match the enabled signature below.)
-  void req;
-  void bucket;
-  return null;
+export interface RateLimitOptions {
+  /** Max requests allowed per window. */
+  limit: number;
+  /** Window length in milliseconds. */
+  windowMs: number;
 }
 
-/* ── ENABLE: replace the shim above with this ─────────────────────────────────
-import { Ratelimit } from "@upstash/ratelimit";
-import { Redis } from "@upstash/redis";
-
-const redis = Redis.fromEnv();
-const limiters: Record<string, Ratelimit> = {};
-
-function limiterFor(bucket: string): Ratelimit {
-  if (!limiters[bucket]) {
-    limiters[bucket] = new Ratelimit({
-      redis,
-      limiter: Ratelimit.slidingWindow(10, "10 s"), // 10 req / 10s per IP
-      prefix: `rl:${bucket}`,
-      analytics: true,
+/**
+ * Counts one request for `userId` in `bucket`. Returns a ready-to-return 429
+ * `NextResponse` when the user is over the limit, or `null` to proceed.
+ *
+ * Fails OPEN: if the Convex backend is unreachable we log and allow the request
+ * rather than 500 the user. Convex is this app's primary datastore, so an
+ * outage already degrades everything else — better to not also block AI calls.
+ */
+export async function enforceUserRateLimit(
+  userId: string,
+  bucket: string,
+  { limit, windowMs }: RateLimitOptions
+): Promise<NextResponse | null> {
+  try {
+    const result = await convexClient.mutation(api.rateLimit.consume, {
+      key: `${bucket}:${userId}`,
+      limit,
+      windowMs,
+      serverSecret: serverSecret(),
     });
-  }
-  return limiters[bucket];
-}
+    if (result.ok) return null;
 
-export async function enforceRateLimit(
-  req: NextRequest,
-  bucket: string
-): Promise<NextResponse | null> {
-  const ip =
-    req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
-    req.headers.get("x-real-ip") ||
-    "127.0.0.1";
-  const { success, limit, remaining, reset } = await limiterFor(bucket).limit(ip);
-  if (success) return null;
-  return NextResponse.json(
-    { error: "RATE_LIMITED", message: "Too many requests. Please slow down." },
-    {
-      status: 429,
-      headers: {
-        "Retry-After": String(Math.max(0, Math.ceil((reset - Date.now()) / 1000))),
-        "X-RateLimit-Limit": String(limit),
-        "X-RateLimit-Remaining": String(remaining),
-      },
-    }
-  );
+    const retryAfterSec = Math.max(1, Math.ceil(result.retryAfterMs / 1000));
+    return NextResponse.json(
+      { error: "Rate limit exceeded. Try again in a minute." },
+      {
+        status: 429,
+        headers: {
+          "Retry-After": String(retryAfterSec),
+          "X-RateLimit-Limit": String(limit),
+          "X-RateLimit-Remaining": String(result.remaining),
+        },
+      }
+    );
+  } catch (err) {
+    console.error(
+      `[ratelimit] backend error for bucket "${bucket}"; failing open:`,
+      err
+    );
+    return null;
+  }
 }
-───────────────────────────────────────────────────────────────────────────── */

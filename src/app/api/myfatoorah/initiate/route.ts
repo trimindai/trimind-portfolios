@@ -9,6 +9,7 @@ import {
 import { api } from "@convex/_generated/api";
 import { Id } from "@convex/_generated/dataModel";
 import { PRICE_KWD } from "@/lib/pricing";
+import { enforceUserRateLimit } from "@/lib/ratelimit";
 
 export async function POST(req: NextRequest) {
   try {
@@ -16,6 +17,15 @@ export async function POST(req: NextRequest) {
     if (!userId) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
+
+    // Each call can create a MyFatoorah invoice — cap initiation attempts so a
+    // user can't spam invoice creation (the per-portfolio PAYMENT_IN_PROGRESS
+    // guard below only covers repeats of the *same* portfolio).
+    const limited = await enforceUserRateLimit(userId, "payment-initiate", {
+      limit: 10,
+      windowMs: 60_000,
+    });
+    if (limited) return limited;
 
     const body = await req.json().catch(() => ({}));
     const portfolioId = body?.portfolioId as string | undefined;

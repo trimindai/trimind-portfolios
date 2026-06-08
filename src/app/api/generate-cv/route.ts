@@ -2,20 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
 import { renderCvPdf } from "@/lib/template-engine";
 import { portfolioQrDataUrl } from "@/lib/qr";
-
-// In-memory rate limit. Single-instance only (Vercel cold starts reset it).
-// Mirrors /api/generate; for multi-instance, back this with Convex/Redis.
-const WINDOW_MS = 60_000;
-const MAX_PER_WINDOW = 20; // 20 CV renders per minute per user
-const hits = new Map<string, number[]>();
-
-function rateLimit(key: string): boolean {
-  const now = Date.now();
-  const arr = (hits.get(key) || []).filter((t) => now - t < WINDOW_MS);
-  arr.push(now);
-  hits.set(key, arr);
-  return arr.length <= MAX_PER_WINDOW;
-}
+import { enforceUserRateLimit } from "@/lib/ratelimit";
+import { parseJsonBody } from "@/lib/api-input";
 
 /** The live portfolio is hosted under this origin; the QR resolves here. */
 const LIVE_ORIGIN = "https://portfolio-trimind.com";
@@ -41,14 +29,19 @@ export async function POST(req: NextRequest) {
     if (!userId) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
-    if (!rateLimit(userId)) {
-      return NextResponse.json(
-        { error: "Rate limit exceeded. Try again in a minute." },
-        { status: 429 }
-      );
-    }
 
-    const data = await req.json();
+    const limited = await enforceUserRateLimit(userId, "render-cv", {
+      limit: 20,
+      windowMs: 60_000,
+    });
+    if (limited) return limited;
+
+    // Full portfolio payload → larger cap, size-only (renderer reads the whole
+    // object).
+    const parsed = await parseJsonBody(req, { maxBytes: 512 * 1024 });
+    if (!parsed.ok) return parsed.response;
+    const data = parsed.data as any;
+
     const liveUrl = liveUrlFor(data);
     const qrDataUrl = await portfolioQrDataUrl(liveUrl);
     const html = renderCvPdf(data, { qrDataUrl, liveUrl });

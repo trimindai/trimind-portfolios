@@ -308,4 +308,16 @@ export default defineSchema({
     .index("by_portfolio", ["portfolioId"])
     .index("by_invoice", ["myfatoorahInvoiceId"])
     .index("by_user", ["userId"]),
+
+  // Durable, multi-instance API rate limiting (fixed-window counters).
+  // One row per active key (e.g. "ai-summary:user_2abc"). Replaces the
+  // per-instance in-memory counters that reset on every Vercel cold start.
+  // Rows for idle keys are purged by the daily cron in convex/crons.ts.
+  rateLimits: defineTable({
+    key: v.string(),
+    windowStart: v.number(),
+    count: v.number(),
+  })
+    .index("by_key", ["key"])
+    .index("by_window", ["windowStart"]),
 });

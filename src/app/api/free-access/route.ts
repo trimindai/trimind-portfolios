@@ -7,6 +7,7 @@ import {
 } from "@/lib/convex";
 import { api } from "@convex/_generated/api";
 import { Id } from "@convex/_generated/dataModel";
+import { enforceUserRateLimit } from "@/lib/ratelimit";
 
 /**
  * Server-side free-access grant. Replaces the previous frontend code path
@@ -21,6 +22,13 @@ export async function POST(req: NextRequest) {
     if (!userId) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
+
+    // Cheap guard against grant spam / allowlist probing.
+    const limited = await enforceUserRateLimit(userId, "free-access", {
+      limit: 10,
+      windowMs: 60_000,
+    });
+    if (limited) return limited;
 
     const user = await currentUser();
     const email = (

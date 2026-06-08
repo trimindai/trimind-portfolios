@@ -1,21 +1,19 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
+import { z } from "zod";
+import { enforceUserRateLimit } from "@/lib/ratelimit";
+import { parseJsonBody } from "@/lib/api-input";
 
-// In-memory rate limit. Single-instance only (Vercel cold starts reset it).
-// Mirrors /api/generate; for multi-instance back this with Convex/Redis (see
-// src/lib/ratelimit.ts). Tightest limit of the AI routes — full-CV generation
-// is the heaviest Gemini call (maxOutputTokens 2000).
-const WINDOW_MS = 60_000;
-const MAX_PER_WINDOW = 6; // 6 full-CV generations per minute per user
-const hits = new Map<string, number[]>();
-
-function rateLimit(key: string): boolean {
-  const now = Date.now();
-  const arr = (hits.get(key) || []).filter((t) => now - t < WINDOW_MS);
-  arr.push(now);
-  hits.set(key, arr);
-  return arr.length <= MAX_PER_WINDOW;
-}
+// fullName/professionalTitle/location/userNotes are interpolated into the
+// Gemini prompt; email is echoed back into the mapped basics. Free-text fields
+// are length-capped to bound prompt cost and injection surface.
+const FullCvSchema = z.object({
+  fullName: z.string().trim().min(1, "fullName is required").max(200),
+  professionalTitle: z.string().trim().min(1, "professionalTitle is required").max(200),
+  location: z.string().max(200).optional(),
+  userNotes: z.string().max(8000).optional(),
+  email: z.string().max(320).optional(),
+});
 
 export async function POST(req: NextRequest) {
   // Auth: this endpoint spends Gemini budget, so it must never be public.
@@ -23,12 +21,12 @@ export async function POST(req: NextRequest) {
   if (!userId) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
-  if (!rateLimit(userId)) {
-    return NextResponse.json(
-      { error: "Rate limit exceeded. Try again in a minute." },
-      { status: 429 }
-    );
-  }
+
+  const limited = await enforceUserRateLimit(userId, "ai-full-cv", {
+    limit: 6,
+    windowMs: 60_000,
+  });
+  if (limited) return limited;
 
   const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey) {
@@ -36,21 +34,10 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "AI service not configured" }, { status: 500 });
   }
 
-  let body: any;
-  try {
-    body = await req.json();
-  } catch {
-    return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
-  }
-
+  const parsed = await parseJsonBody(req, { schema: FullCvSchema });
+  if (!parsed.ok) return parsed.response;
+  const body = parsed.data;
   const { fullName, professionalTitle, location, userNotes } = body;
-
-  if (!fullName || !professionalTitle) {
-    return NextResponse.json(
-      { error: "fullName and professionalTitle are required" },
-      { status: 400 }
-    );
-  }
 
   const prompt = `CRITICAL — READ THIS FIRST:
 The user's job title is: "${professionalTitle}"
