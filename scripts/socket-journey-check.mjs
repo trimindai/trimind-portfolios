@@ -4,6 +4,7 @@
 import { chromium } from "playwright-core";
 import { spawn, spawnSync } from "node:child_process";
 import net from "node:net";
+import { readFileSync } from "node:fs";
 
 const EXEC = "/home/trimind/.cache/ms-playwright/chromium-1169/chrome-linux/chrome";
 function portFree(p){return new Promise(r=>{const s=net.createServer();s.once("error",()=>r(false));s.once("listening",()=>s.close(()=>r(true)));s.listen(p,"127.0.0.1");});}
@@ -36,6 +37,19 @@ async function withPage(route,view,opts,fn){
 
 try {
   console.log("── Socket Journey harness ──", BASE);
+
+  // GUARD: keycap icons must resolve on the EXTENSIONLESS production URL
+  // ("/demo/developer", base "/demo/"). A document-relative "./stack/icons"
+  // 404s there and every cap falls back to a text label. The path must be
+  // absolute or derived from the script's own src.
+  {
+    const kb = readFileSync("public/demo/developer/keyboard.js", "utf8");
+    if (/["']\.\/stack\/icons\//.test(kb)) fail(`[src] keyboard.js uses a relative "./stack/icons/" path — 404s on the clean URL`);
+    else pass(`[src] keyboard.js icon path is not document-relative`);
+    if (/ICON_BASE|currentScript|["']\/demo\/developer\/stack\/icons\//.test(kb)) pass(`[src] keyboard.js icon path is absolute / script-derived`);
+    else fail(`[src] keyboard.js icon path is neither absolute nor script-derived`);
+  }
+
   for (const route of ROUTES) for (const view of VIEWS) {
     await withPage(route,view,null,async(page,errors,tag)=>{
       // PHASE CHECKS APPENDED BELOW (Tasks add blocks here)
@@ -79,6 +93,17 @@ try {
       if (kbd.exists) pass(`[${tag}] #kbd-stage present`); else fail(`[${tag}] #kbd-stage missing`);
       const noIframe = await page.evaluate(()=>!document.querySelector(".stack-frame"));
       if (noIframe) pass(`[${tag}] inline keyboard iframe removed`); else fail(`[${tag}] iframe still present`);
+      // keycap logo icons actually resolve (200), using the SAME script-src
+      // resolution keyboard.js uses — guards the clean-URL relative-path 404.
+      const icon = await page.evaluate(async()=>{
+        const s=[...document.scripts].find(x=>/keyboard\.js/.test(x.src||""));
+        if(!s) return {ok:false,reason:"no keyboard.js <script>"};
+        const url=new URL("stack/icons/react.svg", s.src).href;
+        try{ const r=await fetch(url,{cache:"no-store"}); return {ok:r.ok,status:r.status,abs:/^https?:\/\//.test(url)}; }
+        catch(e){ return {ok:false,reason:String(e)}; }
+      });
+      if (icon.ok && icon.abs) pass(`[${tag}] keycap icon resolves (200) via script-derived path`);
+      else fail(`[${tag}] keycap icon failed to load (${JSON.stringify(icon)})`);
       const moved = await page.evaluate(async()=>{ window.scrollTo(0,600); await new Promise(r=>setTimeout(r,400)); return window.scrollY>300; });
       if (moved) pass(`[${tag}] page scrolls with keyboard as background`); else fail(`[${tag}] scroll blocked`);
       await page.evaluate(()=>window.scrollTo(0,0)); await page.waitForTimeout(300);

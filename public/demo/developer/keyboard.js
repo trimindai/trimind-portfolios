@@ -20,6 +20,19 @@
   var canvas = document.getElementById("kbd-stage");
   if (!canvas) return;
 
+  /* Resolve the keycap-icon folder as an ABSOLUTE URL derived from this
+     script's own src. The page is served at the extensionless clean URL
+     "/demo/developer" (a Vercel rewrite), so the document base is "/demo/" —
+     a document-relative icon path would 404 there and every cap would fall
+     back to a text label. Deriving from currentScript.src is mount-agnostic. */
+  var ICON_BASE = (function () {
+    try {
+      var s = document.currentScript;
+      if (s && s.src) return new URL("stack/icons/", s.src).href;
+    } catch (e) {}
+    return "/demo/developer/stack/icons/";
+  })();
+
   /* ============================================================
      CONFIG — swap a logo = change `slug` (any simple-icons slug).
      Caps fill sockets left->right; layout = 4 rows x columns per hand.
@@ -170,7 +183,7 @@
       } catch (e) { fallback(); }
     };
     img.onerror = fallback;
-    img.src = "./stack/icons/" + skill.slug + ".svg";
+    img.src = ICON_BASE + skill.slug + ".svg";
   }
 
   /* ---------- presets ---------- */
