@@ -50,7 +50,7 @@ The demo's `:root` currently is a dark theme. Replace with the Soft Daylight lig
 | `--border` | `rgba(148,163,184,.14)` | `rgba(75,80,86,.16)` (Davy α) | hairlines on light |
 | `--border-strong` | `rgba(148,163,184,.28)` | `rgba(75,80,86,.30)` | stronger hairlines |
 | `--brand` | `#7c5cff` | `#6D99CE` (Blue-Gray) | accent **fills** only |
-| `--brand-ink` | — (new) | `#3C6FAE` (derived darkened blue) | accent **text/links/eyebrows on light** (AA-safe) |
+| `--brand-ink` | — (new) | `#2F5588` (derived darkened blue) | accent **text/links/eyebrows on light** + primary-button bg (AA-safe both ways: ~4.9:1 as text on Mischka, ~7.6:1 for white-on-it). NOTE: an earlier `#2F5588` failed AA as text on `#CCD1DA` (3.36:1) — corrected per harness. |
 | `--accent` | `#38bdf8` | `#5F6B7A` (Shuttle) | secondary accent |
 | `--surface-dark` | — (new) | `#5F6B7A` (Shuttle) | nav pill / buttons / chips (dark-on-light) |
 | `--on-dark` | — (new) | `#EEF1F5` (derived near-white) | text on Shuttle/Davy surfaces |
@@ -58,11 +58,11 @@ The demo's `:root` currently is a dark theme. Replace with the Soft Daylight lig
 
 ### 4.2 Surface → text pairing (AA targets, verify live)
 
-- **Page (Mischka `#CCD1DA`)**: headings `#222831`; body `#4B5056`; muted `#5F6B7A`; links/eyebrows `--brand-ink #3C6FAE`.
+- **Page (Mischka `#CCD1DA`)**: headings `#222831`; body `#4B5056`; muted `#5F6B7A`; links/eyebrows `--brand-ink #2F5588`.
 - **Cards (Casper `#A6BAD0`)**: headings `#222831`; body `#4B5056`; border `rgba(75,80,86,.30)`.
 - **Generic surfaces (Shuttle `#5F6B7A`)** — nav pill, buttons, sound toggle, chips: text `--on-dark #EEF1F5`.
 - **Contact (Davy's `#4B5056`)**: text `--on-dark #EEF1F5`; muted `#A6BAD0`; inputs = translucent light fill `rgba(255,255,255,.08)` with `#EEF1F5` text.
-- **Primary button**: background `--brand-ink #3C6FAE` (NOT raw `#6D99CE` — white text on `#6D99CE` fails AA ~2.9:1; on `#3C6FAE` ≈ 4.6:1) with `#FFFFFF` text. Hover deepens.
+- **Primary button**: background `--brand-ink #2F5588` (NOT raw `#6D99CE` — white text on `#6D99CE` fails AA ~2.9:1; on `#2F5588` ≈ 4.6:1) with `#FFFFFF` text. Hover deepens.
 
 ### 4.3 Depth / shadows
 

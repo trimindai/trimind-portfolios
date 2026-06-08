@@ -36,7 +36,7 @@ Spec: `docs/superpowers/specs/2026-06-08-developer-demo-soft-daylight-recolor-de
 | `--border` | `rgba(148,163,184,.14)` | `rgba(75,80,86,.16)` |
 | `--border-strong` | `rgba(148,163,184,.28)` | `rgba(75,80,86,.30)` |
 | `--brand` | `#7c5cff` | `#6d99ce` Blue-Gray (fills) |
-| `--brand-ink` (new) | — | `#3c6fae` (links/eyebrows/buttons on light, AA-safe) |
+| `--brand-ink` (new) | — | `#2f5588` (links/eyebrows/buttons on light, AA-safe) |
 | `--accent` | `#38bdf8` | `#5f6b7a` Shuttle |
 | `--surface-dark` (new) | — | `#5f6b7a` (nav pill/buttons/chips) |
 | `--on-dark` (new) | — | `#eef1f5` (text on Shuttle/Davy) |
@@ -127,11 +127,11 @@ const hex = (h) => { h = h.replace("#", ""); return [0, 2, 4].map((i) => parseIn
 const PAIRS = [
   ["page body text", "#4b5056", "#ccd1da"],
   ["page heading", "#222831", "#ccd1da"],
-  ["link / eyebrow on light", "#3c6fae", "#ccd1da"],
+  ["link / eyebrow on light", "#2f5588", "#ccd1da"],
   ["text on Casper card", "#222831", "#a6bad0"],
   ["on-dark text on Shuttle", "#eef1f5", "#5f6b7a"],
   ["on-dark text on Contact(Davy)", "#eef1f5", "#4b5056"],
-  ["primary button text", "#ffffff", "#3c6fae"],
+  ["primary button text", "#ffffff", "#2f5588"],
 ];
 
 let failures = [];
@@ -208,7 +208,7 @@ Replace lines 30–42 (the color tokens; keep `--radius`/`--max`/fonts on 43–4
   --border:rgba(75,80,86,0.16);
   --border-strong:rgba(75,80,86,0.30);
   --brand:#6d99ce;
-  --brand-ink:#3c6fae;
+  --brand-ink:#2f5588;
   --accent:#5f6b7a;
   --surface-dark:#5f6b7a;
   --on-dark:#eef1f5;
