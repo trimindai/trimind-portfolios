@@ -132,6 +132,10 @@ try {
       else fail(`[${tag}] mute button missing/not toggling`);
       const hasLand = await page.evaluate(()=>typeof window.__orbLand==="function");
       if (hasLand) pass(`[${tag}] orb landing sound hook present`); else fail(`[${tag}] __orbLand missing`);
+      // T4.1: hero socket mirrors by language (EN right-of-centre, AR left-of-centre)
+      const hx = await page.evaluate(()=>{ const k=document.querySelector("#hero .orb-socket"); if(!k) return -1; const r=k.getBoundingClientRect(); return (r.left+r.width/2)/window.innerWidth; });
+      if (route.key==="en"){ if(hx>0.55) pass(`[${tag}] EN hero socket right-of-centre (${hx.toFixed(2)})`); else fail(`[${tag}] EN hero socket not right (${hx.toFixed(2)})`); }
+      else { if(hx>=0 && hx<0.45) pass(`[${tag}] AR hero socket left-of-centre (mirrored) (${hx.toFixed(2)})`); else fail(`[${tag}] AR hero socket not left (${hx.toFixed(2)})`); }
       if (errors.length) fail(`[${tag}] ${errors.length} console error(s): ${errors.slice(0,3).join(" | ")}`);
       else pass(`[${tag}] zero console errors`);
       try { await page.screenshot({path:`scripts/_sj-${tag}.png`,fullPage:false,timeout:8000,animations:"disabled"}); }
