@@ -384,8 +384,8 @@ section[data-reveal]{ will-change:opacity,transform; }
 #contact .sec-head .eyebrow{color:#a6bad0}
 #contact .sec-head .eyebrow::before{background:#a6bad0}
 #contact h2,#contact h3{color:var(--on-dark)}
-.contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:start}
-@media(max-width:820px){.contact-grid{grid-template-columns:1fr}}
+.contact-grid{display:grid;grid-template-columns:1fr;gap:40px;align-items:start}
+@media(min-width:820px){.contact-grid{grid-template-columns:minmax(0,1fr) 1fr}}
 .contact-card{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);border-radius:20px;padding:30px}
 .field{margin-bottom:18px}
 .field label{display:block;font-size:.82rem;color:#a6bad0;margin-bottom:8px;font-family:var(--font-mono)}
@@ -396,11 +396,13 @@ section[data-reveal]{ will-change:opacity,transform; }
 .field input::placeholder,.field textarea::placeholder{color:rgba(238,241,245,.55)}
 .field input:focus,.field textarea:focus{outline:none;border-color:#a6bad0;box-shadow:0 0 0 3px rgba(166,186,208,.25)}
 .field textarea{min-height:130px;resize:vertical}
-.contact-list{display:flex;flex-direction:column;gap:14px}
-.contact-list a{display:flex;align-items:center;gap:14px;padding:16px;border:1px solid rgba(255,255,255,.12);border-radius:14px;background:rgba(255,255,255,.05);color:var(--on-dark);transition:border-color .2s,transform .2s,background .2s}
+.contact-list{display:flex;flex-direction:column;gap:10px}
+.contact-list a{display:flex;align-items:center;gap:14px;padding:12px 14px;border:1px solid rgba(255,255,255,.12);border-radius:14px;background:rgba(255,255,255,.05);color:var(--on-dark);transition:border-color .2s,transform .2s,background .2s}
 .contact-list a:hover{border-color:rgba(255,255,255,.28);transform:translateX(4px);background:rgba(255,255,255,.10)}
-.contact-list a i{width:42px;height:42px;border-radius:11px;display:flex;align-items:center;justify-content:center;background:rgba(166,186,208,.18);color:#cdd9e8;font-size:1.05rem;flex:none}
+.contact-list a i{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;background:rgba(166,186,208,.18);color:#cdd9e8;font-size:.95rem;flex:none}
 .contact-list a b{display:block;font-size:.7rem;color:#a6bad0;font-family:var(--font-mono);text-transform:uppercase;letter-spacing:.08em}
+/* contact info inside the left card */
+.contact-card .contact-list{margin-top:22px;padding-top:22px;border-top:1px solid rgba(255,255,255,.10)}
 
 /* ── footer ─────────────────────────────────────────────────── */
 footer{border-top:1px solid var(--border);padding:40px 0;position:relative;z-index:1}
@@ -431,6 +433,28 @@ html[dir="rtl"] .tl-item::before{left:auto;right:0}
 #mute{ position:fixed; right:16px; bottom:16px; z-index:30; width:42px; height:42px; border-radius:50%;
   border:1px solid var(--border); background:var(--card); color:var(--fg); cursor:pointer; font-size:18px; }
 @media (max-width:768px){ #mute{ right:12px; bottom:12px; } }
+
+/* ── Shuttle-gray surface for Experience + Projects cards ────── */
+/* Primary text #eef1f5 on #5f6b7a = ~4.8:1 (passes AA) */
+.tl-card{
+  background:#5f6b7a;
+  border-color:rgba(238,241,245,0.14);
+  color:#eef1f5;
+}
+.tl-card:hover{
+  background:#6b7888;
+  border-color:rgba(238,241,245,0.26);
+}
+.tl-card h3{ color:#eef1f5; }
+.tl-card .co{ color:#a6bad0; }
+.tl-card .desc{ color:#c7cfd8; }
+.tl-card ul{ color:#c7cfd8; }
+.tl-card ul li::marker{ color:#a6bad0; }
+.tl-date{
+  color:#c7cfd8;
+  border-color:rgba(238,241,245,0.20);
+}
+.proj{ background:#5f6b7a; border-color:rgba(238,241,245,0.14); }
 </style>
     <meta property="og:image" content="https://portfolio-trimind.com/og-image.png" />
     <meta property="og:image:width" content="1200" />
@@ -555,7 +579,7 @@ html[dir="rtl"] .tl-item::before{left:auto;right:0}
   <div class="wrap">
     <div class="sec-head sticky-head">
       <div class="eyebrow">Projects</div>
-      <h2>Selected work</h2>
+      <h2>Projects</h2>
       <p>Click any project to dive into the details.</p>
     </div>
     <div class="proj-grid">
@@ -684,14 +708,16 @@ html[dir="rtl"] .tl-item::before{left:auto;right:0}
           <div class="field"><label for="cf-msg">Message</label><textarea id="cf-msg" name="message" required placeholder="Tell me about your project..."></textarea></div>
           <button class="btn primary" type="submit" style="width:100%;justify-content:center">Send message <i class="fa-solid fa-arrow-right"></i></button>
         </form>
+        <div class="contact-list">
+          <a href="mailto:maya@okafor.dev"><i class="fa-solid fa-envelope"></i><div><b>Email</b>maya@okafor.dev</div></a>
+          <a href="https://www.linkedin.com/in/example" target="_blank" rel="noopener"><i class="fa-brands fa-linkedin-in"></i><div><b>LinkedIn</b>Let's connect</div></a>
+          <a href="https://github.com/" target="_blank" rel="noopener"><i class="fa-brands fa-github"></i><div><b>GitHub</b>See the code</div></a>
+          <a href="tel:+351 900 000 000"><i class="fa-solid fa-phone"></i><div><b>Phone</b>+351 900 000 000</div></a>
+          <a><i class="fa-solid fa-location-dot"></i><div><b>Location</b>Lisbon, Portugal</div></a>
+        </div>
       </div>
-      <div class="contact-list">
-        <a href="mailto:maya@okafor.dev"><i class="fa-solid fa-envelope"></i><div><b>Email</b>maya@okafor.dev</div></a>
-        <a href="https://www.linkedin.com/in/example" target="_blank" rel="noopener"><i class="fa-brands fa-linkedin-in"></i><div><b>LinkedIn</b>Let's connect</div></a>
-        <a href="https://github.com/" target="_blank" rel="noopener"><i class="fa-brands fa-github"></i><div><b>GitHub</b>See the code</div></a>
-        <a href="tel:+351 900 000 000"><i class="fa-solid fa-phone"></i><div><b>Phone</b>+351 900 000 000</div></a>
-        <a><i class="fa-solid fa-location-dot"></i><div><b>Location</b>Lisbon, Portugal</div></a>
-      </div>
+      <!-- right column intentionally empty — the 3D keyboard occupies this space -->
+      <div aria-hidden="true"></div>
     </div>
   </div>
 </section>
