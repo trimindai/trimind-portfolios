@@ -93,15 +93,20 @@
     contact:    { x:  0.00, y:  0.02, scale: 0.86, color: 0x7fb0e6, deep: 0x4b7bbf, opacity: 1.00 }
   };
   var anchors = []; /* [{id, y}] sorted by scroll position */
+  var anchorY = {}; /* id -> centred-scroll value */
+  /* keyboard iframe + calibrated trackball position within it (for the dock handoff) */
+  var stackIframe = document.querySelector(".stack-frame");
+  var DOCK_FX = 0.50, DOCK_FY = 0.56, DOCK_TB = 0.18; /* trackball centre-x/centre-y/diameter as fractions of the iframe */
   function measure() {
-    anchors = [];
+    anchors = []; anchorY = {};
     for (var i = 0; i < SECTIONS.length; i++) {
       var el = document.getElementById(SECTIONS[i]);
       if (!el) continue;
       var rect = el.getBoundingClientRect();
       var top = rect.top + window.scrollY;
-      var y = top + el.offsetHeight / 2 - window.innerHeight / 2; /* scroll value where section is centred */
-      anchors.push({ id: SECTIONS[i], y: Math.max(0, y) });
+      var y = Math.max(0, top + el.offsetHeight / 2 - window.innerHeight / 2); /* scroll value where section is centred */
+      anchors.push({ id: SECTIONS[i], y: y });
+      anchorY[SECTIONS[i]] = y;
     }
     anchors.sort(function (a, b) { return a.y - b.y; });
   }
@@ -151,18 +156,49 @@
   var vx = 0, vy = 0, vs = 0;
   var K = 0.090, DAMP = 0.80;       /* responsive spring, slight overshoot on settle */
   var paused = false, tAcc = 0;
+  var dockLifted = false;           /* is the canvas currently raised above the iframe? */
+
+  /* how docked are we? a 0..1..0 bump peaking when the keyboard is centred */
+  function dockProgress(sy) {
+    if (anchorY.skills == null || !stackIframe) return 0;
+    var sk = anchorY.skills;
+    var prev = anchorY.hero != null ? anchorY.hero : sk - 800;
+    var next = anchorY.experience != null ? anchorY.experience : sk + 800;
+    var dp = (sy <= sk) ? (sy - prev) / Math.max(1, sk - prev)
+                        : 1 - (sy - sk) / Math.max(1, next - sk);
+    return smooth(Math.max(0, Math.min(1, dp)));
+  }
 
   function frame() {
     if (paused) return;
     requestAnimationFrame(frame);
     tAcc += 0.016;
-    var tgt = targetAt(window.scrollY || window.pageYOffset || 0);
+    var sy = window.scrollY || window.pageYOffset || 0;
+    var tgt = targetAt(sy);
+    var tx = tgt.x, ty = tgt.y, ts = tgt.scale, topac = tgt.opacity;
+
+    /* ---- DOCK: blend toward the keyboard's live trackball position + crossfade ---- */
+    var dp = dockProgress(sy);
+    if (dp > 0.001) {
+      var r = stackIframe.getBoundingClientRect();
+      var px = r.left + r.width * DOCK_FX;
+      var py = r.top + r.height * DOCK_FY;
+      var dfx = (px / window.innerWidth) * 2 - 1;
+      var dfy = -((py / window.innerHeight) * 2 - 1);
+      var dscale = (r.height * DOCK_TB * vpH) / (2 * window.innerHeight); /* match trackball apparent size */
+      tx = lerp(tx, dfx, dp); ty = lerp(ty, dfy, dp); ts = lerp(ts, dscale, dp);
+      var fade = 1 - smooth(Math.max(0, (dp - 0.72) / 0.28)); /* fade out as it overlaps the trackball */
+      topac = topac * fade;
+    }
+    /* raise the canvas above the iframe while docking so the orb is visible flying in */
+    var wantLift = dp > 0.002;
+    if (wantLift !== dockLifted) { dockLifted = wantLift; canvas.style.zIndex = wantLift ? "5" : "-1"; }
 
     /* spring position + scale toward target (fractions) */
-    vx += (tgt.x - cur.x) * K; vx *= DAMP; cur.x += vx;
-    vy += (tgt.y - cur.y) * K; vy *= DAMP; cur.y += vy;
-    vs += (tgt.scale - cur.scale) * K; vs *= DAMP; cur.scale += vs;
-    cur.opacity += (tgt.opacity - cur.opacity) * 0.08;
+    vx += (tx - cur.x) * K; vx *= DAMP; cur.x += vx;
+    vy += (ty - cur.y) * K; vy *= DAMP; cur.y += vy;
+    vs += (ts - cur.scale) * K; vs *= DAMP; cur.scale += vs;
+    cur.opacity += (topac - cur.opacity) * 0.12;
 
     /* eased colour toward the segment's target */
     var coreT = tgt._b ? tgt._b.color : (tgt.color || KF.hero.color);
