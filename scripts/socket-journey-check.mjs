@@ -39,6 +39,13 @@ try {
   for (const route of ROUTES) for (const view of VIEWS) {
     await withPage(route,view,null,async(page,errors,tag)=>{
       // PHASE CHECKS APPENDED BELOW (Tasks add blocks here)
+      // T1.1: education section removed
+      const secCount = await page.evaluate(()=>document.querySelectorAll("section[id]").length);
+      const hasExtras = await page.evaluate(()=>!!document.getElementById("extras"));
+      if (hasExtras) fail(`[${tag}] #extras section still present`);
+      else pass(`[${tag}] education section removed`);
+      if (secCount===5) pass(`[${tag}] exactly 5 sections`);
+      else fail(`[${tag}] expected 5 sections, found ${secCount}`);
       if (errors.length) fail(`[${tag}] ${errors.length} console error(s): ${errors.slice(0,3).join(" | ")}`);
       else pass(`[${tag}] zero console errors`);
       await page.screenshot({path:`scripts/_sj-${tag}.png`,fullPage:false});
