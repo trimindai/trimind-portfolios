@@ -89,7 +89,12 @@ No code changed yet — nothing to commit. Proceed.
 
 **Files:** Create `scripts/dev-daylight-check.mjs`.
 
-This script is the test. It serves the demo via the running Next dev server (`BASE_URL`, default `http://localhost:3000`), loads EN + AR at phone (390×844) and desktop (1280×900), and asserts: (a) computed `--bg` equals the new Mischka, (b) WCAG AA on each surface→text pair, (c) no horizontal overflow at 390px, (d) zero console errors, and writes screenshots to `scripts/_daylight-*.png`.
+> **REVISION (infra correction):** The repo already has a proven demo harness — `scripts/devstack-check.mjs` (committed in `cd932db`). Reuse its config, do NOT use Next dev / port 3000 / plain `chromium`:
+> - `import { chromium } from "playwright-core"` and launch with `executablePath: "/home/trimind/.cache/ms-playwright/chromium-1169/chrome-linux/chrome"`, `headless:true`, `args:["--no-sandbox","--use-gl=swiftshader"]` (swiftshader is REQUIRED or the Three.js keyboard canvas renders blank).
+> - Serve the static `public/` dir (the demo is static files; the iframe `src="/demo/developer/stack/"` is absolute). Spawn a static server inside the harness: `python3 -m http.server <port> --directory public` (pick a free port, e.g. 8799), wait for it, run checks, kill it on exit. Routes: `/demo/developer/index.html` (EN) and `/demo/developer/index-ar.html` (AR).
+> - Keep `devstack-check.mjs`'s `canvas#stage` non-blank + `glLost` check for the keyboard, AND add the new assertions below.
+
+This script is the test. It loads EN + AR at phone (390×844) and desktop (1280×900) and asserts: (a) computed `--bg` equals the new Mischka, (b) WCAG AA on each surface→text pair, (c) no horizontal overflow at 390px, (d) zero console errors, (e) the keyboard `canvas#stage` is present and its WebGL context is not lost, and writes screenshots to `scripts/_daylight-*.png`. The AA-pair math and `hex()`/`ratio()`/`lum()` helpers from the original code block below are still correct — keep them; only the launch/serve wiring changes per the revision note.
 
 - [ ] **Step 1: Write the harness**
 
