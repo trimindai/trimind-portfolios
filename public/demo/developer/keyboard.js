@@ -1,0 +1,465 @@
+/* ============================================================================
+   keyboard.js — the interactive 3D split-ergo tech keyboard, hosted in the
+   PARENT page (not an iframe). Renders into a fixed full-screen
+   <canvas id="kbd-stage"> that composites over the page (alpha:true). Ported
+   from public/demo/developer/stack/index.html: same scene, materials, keycaps,
+   trackball ("Maya" badge), synth switch sounds, idle spin, and drag-to-rotate.
+
+   Crucial difference vs the iframe: the page wheel/scroll is NEVER trapped.
+   - No wheel listener, no preventDefault on wheel -> the mouse wheel always
+     scrolls the PAGE.
+   - On touch, a rotate-drag only starts if the pointer actually hit the
+     keyboard/trackball/a keycap; a touch on empty space scrolls the page.
+
+   Vanilla Three.js (global THREE, vendored r128). Hardening (pause on hidden /
+   webglcontextlost guards, first-frame "kbd-live" signal) mirrors orb.js.
+   ============================================================================ */
+(function () {
+  "use strict";
+  if (!window.THREE) return;
+  var canvas = document.getElementById("kbd-stage");
+  if (!canvas) return;
+
+  /* ============================================================
+     CONFIG — swap a logo = change `slug` (any simple-icons slug).
+     Caps fill sockets left->right; layout = 4 rows x columns per hand.
+     ============================================================ */
+  var SKILLS = [
+    /* col 0 — frontend core — real brand shades */
+    { slug: "react",             label: "React",      tag: "component UIs, fast",           color: "#61dafb" },
+    { slug: "nextdotjs",         label: "Next.js",    tag: "SSR + the app router",          color: "#000000" },
+    { slug: "typescript",        label: "TypeScript", tag: "types end to end",              color: "#3178c6" },
+    { slug: "javascript",        label: "JavaScript", tag: "the language of the web",       color: "#f7df1e" },
+    /* col 1 — frontend craft */
+    { slug: "tailwindcss",       label: "Tailwind",   tag: "utility-first styling",         color: "#06b6d4" },
+    { slug: "threedotjs",        label: "Three.js",   tag: "real-time 3D in the browser",   color: "#000000" },
+    { slug: "webgl",             label: "WebGL",      tag: "GPU-driven visuals",            color: "#990000" },
+    { slug: "framer",            label: "Framer",     tag: "motion that feels alive",       color: "#0055ff" },
+    /* col 2 — backend */
+    { slug: "nodedotjs",         label: "Node.js",    tag: "event-driven services",         color: "#5fa04e" },
+    { slug: "python",            label: "Python",     tag: "automation + data tooling",     color: "#3776ab" },
+    { slug: "graphql",           label: "GraphQL",    tag: "ask for exactly what you need", color: "#e10098" },
+    { slug: "postgresql",        label: "PostgreSQL", tag: "relational, indexed, tuned",    color: "#4169e1" },
+    /* col 3 — data + cloud */
+    { slug: "redis",             label: "Redis",      tag: "in-memory cache + pub/sub",     color: "#ff4438" },
+    { slug: "amazonwebservices", label: "AWS",        tag: "cloud infra + serverless",      color: "#ff9900" },
+    { slug: "docker",            label: "Docker",     tag: "reproducible builds",           color: "#2496ed" },
+    { slug: "kubernetes",        label: "Kubernetes", tag: "orchestrate + scale",           color: "#326ce5" },
+    /* col 4 — ship + craft */
+    { slug: "githubactions",     label: "Actions",    tag: "ship on every push",            color: "#2088ff" },
+    { slug: "git",               label: "Git",        tag: "history you can trust",         color: "#f05032" },
+    { slug: "figma",             label: "Figma",      tag: "design-to-dev handoff",         color: "#f24e1e" },
+    { slug: null,                label: "A11y",       tag: "usable by everyone",            color: "#4b5056" }
+  ];
+  var DARK = 1.0; // 1.0 = true brand shades
+
+  /* ---- renderer / scene / camera (orb.js Phase-6 guard pattern) ---- */
+  var renderer;
+  try {
+    renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true, powerPreference: "high-performance" });
+  } catch (e) { canvas.style.display = "none"; return; }
+  if (!renderer) { canvas.style.display = "none"; return; }
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  renderer.outputEncoding = THREE.sRGBEncoding;
+  renderer.toneMapping = THREE.NoToneMapping;
+
+  var scene = new THREE.Scene();
+  var camera = new THREE.PerspectiveCamera(40, window.innerWidth / window.innerHeight, 0.1, 100);
+
+  var pmrem = new THREE.PMREMGenerator(renderer);
+  (function buildEnv() {
+    var c = document.createElement("canvas"); c.width = 512; c.height = 256;
+    var g = c.getContext("2d");
+    /* soft-daylight dome: bright sky overhead grading to a soft floor (never black)
+       so the metallic body + trackball reflect clean light, not a dark studio */
+    var grad = g.createLinearGradient(0, 0, 0, 256);
+    grad.addColorStop(0, "#e7ecf3"); grad.addColorStop(0.42, "#c4cdda"); grad.addColorStop(0.78, "#97a4b7"); grad.addColorStop(1, "#6f7a8a");
+    g.fillStyle = grad; g.fillRect(0, 0, 512, 256);
+    /* two soft overhead "softbox" highlights for crisp speculars on caps + trackball */
+    g.globalAlpha = 0.85; g.fillStyle = "#ffffff";
+    g.beginPath(); g.ellipse(150, 48, 58, 16, 0, 0, 7); g.fill();
+    g.globalAlpha = 0.45; g.beginPath(); g.ellipse(380, 76, 78, 11, 0, 0, 7); g.fill();
+    g.globalAlpha = 1;
+    var tex = new THREE.Texture(c); tex.needsUpdate = true; tex.mapping = THREE.EquirectangularReflectionMapping;
+    scene.environment = pmrem.fromEquirectangular(tex).texture;
+  })();
+
+  scene.add(new THREE.AmbientLight(0xffffff, 0.42));
+  var keyL = new THREE.DirectionalLight(0xffffff, 0.66); keyL.position.set(6, 14, 9); scene.add(keyL);
+  var rimL = new THREE.DirectionalLight(0xdfe6f0, 0.42); rimL.position.set(-9, 6, -6); scene.add(rimL);
+  var fillL = new THREE.PointLight(0xffffff, 0.3, 70); fillL.position.set(2, 9, 8); scene.add(fillL);
+
+  (function () {
+    var g = new THREE.BufferGeometry(); var n = 700; var p = new Float32Array(n * 3);
+    for (var i = 0; i < n * 3; i++) p[i] = (Math.random() - 0.5) * 100;
+    g.setAttribute("position", new THREE.BufferAttribute(p, 3));
+    scene.add(new THREE.Points(g, new THREE.PointsMaterial({ color: 0x8b99ad, size: 0.05, transparent: true, opacity: 0.28 })));
+  })();
+
+  function roundedBoxGeo(w, d, h, r) {
+    var shape = new THREE.Shape();
+    var x = -w / 2, y = -d / 2;
+    shape.moveTo(x + r, y);
+    shape.lineTo(x + w - r, y); shape.quadraticCurveTo(x + w, y, x + w, y + r);
+    shape.lineTo(x + w, y + d - r); shape.quadraticCurveTo(x + w, y + d, x + w - r, y + d);
+    shape.lineTo(x + r, y + d); shape.quadraticCurveTo(x, y + d, x, y + d - r);
+    shape.lineTo(x, y + r); shape.quadraticCurveTo(x, y, x + r, y);
+    var bevel = Math.min(0.08, h * 0.26);
+    var geo = new THREE.ExtrudeGeometry(shape, {
+      depth: Math.max(0.01, h - bevel * 2), bevelEnabled: true,
+      bevelThickness: bevel, bevelSize: bevel, bevelSegments: 4, steps: 1, curveSegments: 8
+    });
+    geo.rotateX(-Math.PI / 2);
+    geo.computeBoundingBox();
+    var bb = geo.boundingBox;
+    geo.translate(0, -(bb.min.y + bb.max.y) / 2, 0);
+    return geo;
+  }
+  function taper(geo, topScale) {
+    geo.computeBoundingBox();
+    var mn = geo.boundingBox.min.y, mx = geo.boundingBox.max.y, h = mx - mn;
+    var pos = geo.attributes.position;
+    for (var i = 0; i < pos.count; i++) {
+      var tt = (pos.getY(i) - mn) / h;
+      var s = 1 - (1 - topScale) * tt;
+      pos.setX(i, pos.getX(i) * s); pos.setZ(i, pos.getZ(i) * s);
+    }
+    pos.needsUpdate = true; geo.computeVertexNormals();
+    return geo;
+  }
+
+  /* dark glyphs on light caps, white glyphs on dark caps — keeps logos legible across the muted palette */
+  function inkFor(hex) {
+    var c = new THREE.Color(hex); var lum = 0.2126 * c.r + 0.7152 * c.g + 0.0722 * c.b;
+    return lum > 0.55 ? "#1b2230" : "#ffffff";
+  }
+  function makeTextTexture(label, ink, apply) {
+    var S = 256; var cv = document.createElement("canvas"); cv.width = cv.height = S;
+    var ctx = cv.getContext("2d");
+    ctx.fillStyle = ink || "#ffffff"; ctx.textAlign = "center"; ctx.textBaseline = "middle";
+    var txt = label.toUpperCase();
+    var fs = 130; ctx.font = "900 " + fs + "px -apple-system, Segoe UI, sans-serif";
+    while (ctx.measureText(txt).width > S * 0.84 && fs > 26) { fs -= 6; ctx.font = "900 " + fs + "px -apple-system, Segoe UI, sans-serif"; }
+    ctx.fillText(txt, S / 2, S / 2);
+    var tex = new THREE.CanvasTexture(cv); tex.anisotropy = 8; tex.encoding = THREE.sRGBEncoding; apply(tex);
+  }
+  function makeLogoTexture(skill, apply) {
+    var S = 256;
+    var cv = document.createElement("canvas"); cv.width = cv.height = S;
+    var ctx = cv.getContext("2d");
+    var ink = inkFor(skill.color);
+    function fallback() {
+      ctx.clearRect(0, 0, S, S); ctx.fillStyle = ink;
+      ctx.font = "900 116px -apple-system, Segoe UI, sans-serif";
+      ctx.textAlign = "center"; ctx.textBaseline = "middle";
+      ctx.fillText(skill.label.replace(/[^A-Za-z]/g, "").slice(0, 3).toUpperCase(), S / 2, S / 2);
+      var tex = new THREE.CanvasTexture(cv); tex.anisotropy = 8; tex.encoding = THREE.sRGBEncoding; apply(tex);
+    }
+    var img = new Image(); img.crossOrigin = "anonymous";
+    img.onload = function () {
+      try {
+        ctx.clearRect(0, 0, S, S);
+        var pad = S * 0.1;
+        ctx.drawImage(img, pad, pad, S - 2 * pad, S - 2 * pad);
+        ctx.globalCompositeOperation = "source-in";
+        ctx.fillStyle = ink; ctx.fillRect(0, 0, S, S);
+        ctx.globalCompositeOperation = "source-over";
+        ctx.getImageData(0, 0, 1, 1);
+        var tex = new THREE.CanvasTexture(cv); tex.anisotropy = 8; tex.encoding = THREE.sRGBEncoding; apply(tex);
+      } catch (e) { fallback(); }
+    };
+    img.onerror = fallback;
+    img.src = "./icons/" + skill.slug + ".svg";
+  }
+
+  /* ---------- presets ---------- */
+  var KW = 0.92, KH = 0.72, TOP = 0.72;
+  var capGeo = taper(roundedBoxGeo(KW, KW, KH, 0.11), TOP);
+  var TOPW = KW * TOP;
+  var switchGeo = roundedBoxGeo(KW * 0.78, KW * 0.78, 0.22, 0.06);
+  var switchMat = new THREE.MeshStandardMaterial({ color: 0x111216, metalness: 0.3, roughness: 0.7 });
+  /* matte + low env, and a DARKENED albedo: the bright daylight rig (~2.4x) lifts a raw
+     #4b5056 to light grey, so we feed a darker base that RENDERS as Davy #4b5056 */
+  var caseMat = new THREE.MeshStandardMaterial({ color: 0x24282d, metalness: 0.04, roughness: 0.72, envMapIntensity: 0.1 });
+
+  var caps = [];
+  var board = new THREE.Group();
+  board.rotation.x = -0.16;          /* near-flat: read the whole grid from a 3/4 angle */
+  scene.add(board);
+
+  /* soft contact shadow so the keyboard sits on the light band instead of floating */
+  (function groundShadow() {
+    var S = 256; var cv = document.createElement("canvas"); cv.width = cv.height = S;
+    var c = cv.getContext("2d");
+    var rg = c.createRadialGradient(S / 2, S / 2, 0, S / 2, S / 2, S / 2);
+    rg.addColorStop(0, "rgba(40,46,56,0.34)");
+    rg.addColorStop(0.55, "rgba(40,46,56,0.16)");
+    rg.addColorStop(1, "rgba(40,46,56,0)");
+    c.fillStyle = rg; c.fillRect(0, 0, S, S);
+    var tex = new THREE.CanvasTexture(cv);
+    var shadow = new THREE.Mesh(
+      new THREE.PlaneGeometry(16, 11),
+      new THREE.MeshBasicMaterial({ map: tex, transparent: true, depthWrite: false, opacity: 0.9 })
+    );
+    shadow.rotation.x = -Math.PI / 2;
+    shadow.position.set(0, -0.62, 1.4);
+    scene.add(shadow);
+  })();
+
+  var skillIdx = 0;
+
+  /* ---------- geometry layout ---------- */
+  var ROWS_H = 4;                                   /* 4 vertical keycaps (fixed) */
+  var COLS_H = Math.max(1, Math.ceil(SKILLS.length / ROWS_H)); /* horizontal keycaps scale with the stack */
+  var CG = 1.0, RG = 1.0;
+
+  function placeCap(parent, x, z) {
+    var sw = new THREE.Mesh(switchGeo, switchMat); sw.position.set(x, 0, z); parent.add(sw);
+    if (skillIdx < SKILLS.length) {
+      var skill = SKILLS[skillIdx++];
+      var cap = new THREE.Group(); cap.position.set(x, 0, z);
+      var mat = new THREE.MeshStandardMaterial({ color: new THREE.Color(skill.color).multiplyScalar(DARK), metalness: 0.04, roughness: 0.5, envMapIntensity: 0.25, emissive: new THREE.Color(skill.color).multiplyScalar(DARK), emissiveIntensity: 0.0 });
+      var body = new THREE.Mesh(capGeo, mat); body.position.y = 0.18 + KH / 2; cap.add(body);
+      var lm = new THREE.MeshBasicMaterial({ transparent: true, opacity: 0, depthWrite: false });
+      var lg = new THREE.Mesh(new THREE.PlaneGeometry(TOPW * 0.84, TOPW * 0.84), lm); lg.rotation.x = -Math.PI / 2; lg.position.y = 0.18 + KH + 0.012; cap.add(lg);
+      if (skill.slug) makeLogoTexture(skill, function (t) { lm.map = t; lm.opacity = 1; lm.needsUpdate = true; });
+      else makeTextTexture(skill.label, inkFor(skill.color), function (t) { lm.map = t; lm.opacity = 1; lm.needsUpdate = true; });
+      cap.userData = { skill: skill, mat: mat, baseY: 0, vy: 0 }; body.userData.cap = cap; caps.push(cap); parent.add(cap);
+    }
+  }
+
+  function buildHalf(side) {
+    var half = new THREE.Group();
+    var SKEW = 0;   /* straight grid, no slope */
+    var pts = [];
+
+    /* 4-row grid, columns = stack size, fully filled with keycaps */
+    for (var col = 0; col < COLS_H; col++) {
+      var bx = (col - (COLS_H - 1) / 2) * CG;
+      var dz = side * (col - (COLS_H - 1) / 2) * SKEW;
+      for (var row = 0; row < ROWS_H; row++) {
+        var x = bx * side, z = dz + (row - (ROWS_H - 1) / 2) * RG;
+        placeCap(half, x, z); pts.push([x, z]);
+      }
+    }
+
+    /* case slab under the keycaps */
+    var minX = 1e9, maxX = -1e9, minZ = 1e9, maxZ = -1e9;
+    pts.forEach(function (pair) { var x = pair[0], z = pair[1]; minX = Math.min(minX, x); maxX = Math.max(maxX, x); minZ = Math.min(minZ, z); maxZ = Math.max(maxZ, z); });
+    var cx = (minX + maxX) / 2;
+    var block = new THREE.Mesh(roundedBoxGeo((maxX - minX) + KW + 0.5, (maxZ - minZ) + KW + 0.5, 0.5, 0.45), caseMat);
+    block.position.set(cx, -0.2, (minZ + maxZ) / 2); half.add(block);
+
+    /* BIG trackball, centered, on the round housing just under the keycaps */
+    var R_BALL = 0.8;
+    var ballZ = maxZ + 2.25;
+    var housing = new THREE.Mesh(new THREE.CylinderGeometry(R_BALL + 0.55, R_BALL + 0.7, 0.6, 56), caseMat);
+    housing.position.set(cx, -0.16, ballZ); half.add(housing);
+    var ring = new THREE.Mesh(new THREE.TorusGeometry(R_BALL + 0.12, 0.13, 18, 56), caseMat);
+    ring.rotation.x = Math.PI / 2; ring.position.set(cx, 0.18, ballZ); half.add(ring);
+    var tb = new THREE.Mesh(new THREE.SphereGeometry(R_BALL, 48, 48),
+      new THREE.MeshStandardMaterial({ color: 0x6d99ce, metalness: 0.0, roughness: 0.62, envMapIntensity: 0.12 }));
+    tb.position.set(cx, 0.5, ballZ);
+    /* "Maya" label on trackball */
+    var mCvs = document.createElement("canvas");
+    mCvs.width = 256; mCvs.height = 256;
+    var mCtx = mCvs.getContext("2d");
+    mCtx.fillStyle = "#2f5588"; mCtx.fillRect(0, 0, 256, 256);
+    mCtx.fillStyle = "#eef1f5";
+    mCtx.font = "bold 72px sans-serif";
+    mCtx.textAlign = "center"; mCtx.textBaseline = "middle";
+    mCtx.fillText("Maya", 128, 128);
+    mCtx.strokeStyle = "#eef1f5"; mCtx.lineWidth = 4;
+    mCtx.beginPath(); mCtx.arc(128, 128, 110, 0, Math.PI * 2); mCtx.stroke();
+    var mTex = new THREE.CanvasTexture(mCvs);
+    var mBadge = new THREE.Mesh(new THREE.CircleGeometry(0.36, 48),
+      new THREE.MeshBasicMaterial({ map: mTex, transparent: true }));
+    /* seat the badge ON the sphere surface (not inside it) facing up-and-out toward the camera */
+    var bA = 0.62, bR = R_BALL * 1.03;
+    mBadge.position.set(0, bR * Math.sin(bA), bR * Math.cos(bA)); mBadge.rotation.x = -bA;
+    tb.add(mBadge);
+    half.add(tb);
+
+    half.position.set(0, 0, 0);
+    half.rotation.y = 0;
+    half.rotation.z = 0;
+    return { half: half, trackball: tb };
+  }
+
+  var R = buildHalf(+1);
+  board.add(R.half);
+  var trackball = R.trackball;
+
+  var dot = new THREE.Mesh(new THREE.SphereGeometry(0.07, 16, 16), new THREE.MeshBasicMaterial({ color: 0xff4d6d }));
+  dot.visible = false; scene.add(dot);
+
+  /* ---------- keyboard sounds (Web Audio, synthesized switch profiles) ---------- */
+  /* No in-page HUD: a single default profile (index 0), and ALL playback is gated
+     behind the shared global mute flag window.__demoSound (unset/true => sound on). */
+  var actx = null, profileIdx = 0;
+  var PROFILES = [
+    { name: "THOCK",      dn: { d: 0.05, f: 1900, q: 0.7, g: 0.55 }, th: { a: 185, b: 82,  g: 0.42, d: 0.10 }, up: { d: 0.028, f: 2700, q: 0.9, g: 0.28 }, click: false },
+    { name: "CLICKY",     dn: { d: 0.04, f: 3400, q: 1.1, g: 0.55 }, th: { a: 260, b: 150, g: 0.16, d: 0.05 }, up: { d: 0.03,  f: 4400, q: 1.2, g: 0.40 }, click: true  },
+    { name: "TACTILE",    dn: { d: 0.045, f: 2400, q: 0.9, g: 0.5 }, th: { a: 205, b: 110, g: 0.30, d: 0.07 }, up: { d: 0.03,  f: 3100, q: 1.0, g: 0.30 }, click: false },
+    { name: "MARBLE",     dn: { d: 0.035, f: 4100, q: 1.2, g: 0.45 }, th: { a: 320, b: 185, g: 0.16, d: 0.05 }, up: { d: 0.025, f: 5200, q: 1.3, g: 0.30 }, click: false },
+    { name: "TYPEWRITER", dn: { d: 0.06, f: 1600, q: 0.6, g: 0.62 }, th: { a: 160, b: 70,  g: 0.5, d: 0.12 }, up: { d: 0.05,  f: 2200, q: 0.8, g: 0.42 }, click: true  },
+    { name: "MIX",        dn: { d: 0.04, f: 2500, q: 0.8, g: 0.35 }, th: { a: 200, b: 100, g: 0.35, d: 0.08 }, up: { d: 0.03,  f: 3500, q: 1.0, g: 0.25 }, click: false }
+  ];
+  var _audioUnlocked = false;
+  function ac() {
+    if (!actx) { var C = window.AudioContext || window.webkitAudioContext; if (C) actx = new C(); }
+    if (actx && actx.state === "suspended") actx.resume();
+    /* iOS/Safari: a silent buffer played inside the first touch gesture unlocks Web Audio */
+    if (actx && !_audioUnlocked) { _audioUnlocked = true; try { var b = actx.createBuffer(1, 1, 22050); var s = actx.createBufferSource(); s.buffer = b; s.connect(actx.destination); s.start(0); } catch (e) {} }
+    return actx;
+  }
+  function burst(dur, freq, q, gain, t) {
+    var a = ac(); if (!a) return;
+    var n = Math.floor(a.sampleRate * dur);
+    var buf = a.createBuffer(1, n, a.sampleRate); var d = buf.getChannelData(0);
+    for (var i = 0; i < n; i++) { d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / n, 2.2); }
+    var src = a.createBufferSource(); src.buffer = buf;
+    var bp = a.createBiquadFilter(); bp.type = "bandpass"; bp.frequency.value = freq; bp.Q.value = q;
+    var g = a.createGain(); g.gain.value = gain;
+    src.connect(bp); bp.connect(g); g.connect(a.destination); src.start(t);
+  }
+  function thump(a0, b0, gain, dur, t) {
+    var a = ac(); if (!a) return;
+    var o = a.createOscillator(); o.type = "sine";
+    o.frequency.setValueAtTime(a0, t); o.frequency.exponentialRampToValueAtTime(b0, t + dur * 0.6);
+    var g = a.createGain(); g.gain.setValueAtTime(gain, t); g.gain.exponentialRampToValueAtTime(0.001, t + dur);
+    o.connect(g); g.connect(a.destination); o.start(t); o.stop(t + dur + 0.02);
+  }
+  /* unified mute: gate ALL playback behind the shared global flag */
+  function playDown(scale) {
+    if (window.__demoSound === false) return;
+    var a = ac(); if (!a) return; scale = scale || 1; var p = PROFILES[profileIdx], t = a.currentTime;
+    if (p.name === "MIX") { for (var i = 0; i < 5; i++) { var q = PROFILES[i]; burst(q.dn.d, q.dn.f, q.dn.q, q.dn.g * scale * 0.35, t + i * 0.015); thump(q.th.a, q.th.b, q.th.g * scale * 0.35, q.th.d, t + i * 0.015); if (q.click) burst(0.012, q.dn.f * 1.6, 1.6, q.dn.g * 0.18 * scale, t + i * 0.015 + 0.004); } return; }
+    burst(p.dn.d, p.dn.f, p.dn.q, p.dn.g * scale, t); thump(p.th.a, p.th.b, p.th.g * scale, p.th.d, t);
+    if (p.click) burst(0.012, p.dn.f * 1.6, 1.6, p.dn.g * 0.5 * scale, t + 0.004);
+  }
+  function playUp() {
+    if (window.__demoSound === false) return;
+    var a = ac(); if (!a) return; var p = PROFILES[profileIdx], t = a.currentTime;
+    burst(p.up.d, p.up.f, p.up.q, p.up.g, t); if (p.click) burst(0.01, p.up.f * 1.3, 1.6, p.up.g * 0.5, t);
+  }
+  function playHover() { playDown(0.55); }
+
+  /* ---------- interaction ---------- */
+  var ray = new THREE.Raycaster();
+  var mouse = new THREE.Vector2(-2, -2);
+  var hovered = null;
+
+  function setMouse(e) { var t = e.touches ? e.touches[0] : e; mouse.x = (t.clientX / window.innerWidth) * 2 - 1; mouse.y = -(t.clientY / window.innerHeight) * 2 + 1; }
+  var isDown = false, dragging = false, downX = 0, downY = 0, lastX = 0, lastY = 0, downCap = null;
+
+  /* did the current pointer ray hit any interactive part of the keyboard? */
+  function rayHitsBoard() {
+    ray.setFromCamera(mouse, camera);
+    var capHits = ray.intersectObjects(caps.flatMap(function (c) { return c.children; }), true);
+    if (capHits.find(function (h) { return h.object.userData.cap; })) return true;
+    if (trackball && ray.intersectObject(trackball, false).length > 0) return true;
+    /* also count the board halves / case so dragging on the body rotates */
+    if (ray.intersectObject(board, true).length > 0) return true;
+    return false;
+  }
+
+  window.addEventListener("pointerdown", function (e) {
+    ac(); setMouse(e); pickHover();
+    /* TOUCH: only capture a rotate-drag if we actually hit the keyboard; a touch on
+       empty space must scroll the PAGE (no scroll-trap). DESKTOP mouse: gate on a hit
+       too — safe, and still lets you drag the board/trackball/empty-near-board freely. */
+    var hit = (hovered != null) || rayHitsBoard();
+    if (!hit) { isDown = false; dragging = false; downCap = null; return; }
+    isDown = true; dragging = false; downX = lastX = e.clientX; downY = lastY = e.clientY; downCap = hovered;
+  }, { passive: true });
+  window.addEventListener("pointermove", function (e) {
+    setMouse(e);
+    if (isDown) {
+      /* touch that STARTED on a key => scrub-hover the keys (lift + label) like desktop hover;
+         touch on the empty desk/trackball (or mouse drag) => rotate the board */
+      if (e.pointerType === "touch" && downCap) { pickHover(); }
+      else { if (!dragging && Math.hypot(e.clientX - downX, e.clientY - downY) > 6) dragging = true; if (dragging) orbit(e); }
+    } else pickHover();
+  }, { passive: true });
+  window.addEventListener("pointerup", function () {
+    if (isDown && !dragging) { var c = hovered || downCap; if (c) { playDown(); c.userData.pressed = true; setTimeout(function () { c.userData.pressed = false; }, 220); } }
+    isDown = false; dragging = false; downCap = null;
+  }, { passive: true });
+  window.addEventListener("pointercancel", function () { isDown = false; dragging = false; downCap = null; }, { passive: true });
+
+  function orbit(e) { var dx = (e.clientX - lastX) / window.innerWidth, dy = (e.clientY - lastY) / window.innerHeight; board.rotation.y += dx * 2.4; board.rotation.x = Math.max(-1.45, Math.min(0.4, board.rotation.x + dy * 1.8)); lastX = e.clientX; lastY = e.clientY; }
+
+  function pickHover() {
+    ray.setFromCamera(mouse, camera);
+    var hits = ray.intersectObjects(caps.flatMap(function (c) { return c.children; }), true);
+    var hit = hits.find(function (h) { return h.object.userData.cap; });
+    var cap = hit ? hit.object.userData.cap : null;
+    if (cap !== hovered) { hovered = cap; if (cap) { playHover(); } }
+    if (trackball) {
+      var bh = ray.intersectObject(trackball, false);
+      var nowHov = bh.length > 0;
+      if (nowHov !== trackballHovered) { trackballHovered = nowHov; rollTargetSpeed = nowHov ? 8 : 1; }
+    }
+  }
+
+  function layout() {
+    var portrait = window.innerHeight > window.innerWidth || window.innerWidth < 760;
+    if (portrait) { camera.fov = 58; camera.position.set(0, 7.6, 10.0); camera.lookAt(0, 0.0, 1.7); }
+    else { camera.fov = 40; camera.position.set(0, 8.6, 11.6); camera.lookAt(0, 0.1, 1.4); }
+    camera.aspect = window.innerWidth / window.innerHeight; camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+  }
+  layout();
+
+  var t = 0, rollSpeedY = 0.012, rollSpeedX = 0.004, rollTargetSpeed = 1, trackballHovered = false;
+  var tmp = new THREE.Vector3();
+
+  /* ---- hardening (mirror orb.js): pause on hidden, first-frame signal, ctx-lost ---- */
+  var paused = false, running = false, firstFrame = true;
+
+  function animate() {
+    if (paused) { running = false; return; }
+    requestAnimationFrame(animate);
+    running = true;
+    t += 0.016;
+    if (!isDown) pickHover();
+    board.position.y = Math.sin(t * 0.8) * 0.07;
+    caps.forEach(function (cap) {
+      var u = cap.userData; var target = u.baseY;
+      if (u.pressed) target = u.baseY - 0.18;
+      else if (cap === hovered) target = u.baseY + 0.5;
+      u.vy += (target - cap.position.y) * 0.28; u.vy *= 0.56; cap.position.y += u.vy;
+      var glow = (cap === hovered && !u.pressed) ? 0.3 : 0.0;
+      u.mat.emissiveIntensity += (glow - u.mat.emissiveIntensity) * 0.2;
+    });
+    rollSpeedY += (0.012 * rollTargetSpeed - rollSpeedY) * 0.08;
+    rollSpeedX += (0.004 * rollTargetSpeed - rollSpeedX) * 0.08;
+    if (trackball) { trackball.rotation.y += rollSpeedY; trackball.rotation.x += rollSpeedX; }
+    if (hovered) { dot.visible = true; hovered.getWorldPosition(tmp); dot.position.set(tmp.x - 0.4, tmp.y + 0.5 + Math.sin(t * 3) * 0.05, tmp.z); }
+    else dot.visible = false;
+    renderer.render(scene, camera);
+    /* first real WebGL frame has painted → signal the page */
+    if (firstFrame) { firstFrame = false; document.documentElement.classList.add("kbd-live"); }
+  }
+
+  function resume() { if (!running && !paused) requestAnimationFrame(animate); }
+  document.addEventListener("visibilitychange", function () {
+    if (document.hidden) { paused = true; }
+    else { paused = false; resume(); }
+  });
+  canvas.addEventListener("webglcontextlost", function (e) {
+    e.preventDefault(); paused = true; running = false;
+    document.documentElement.classList.remove("kbd-live");
+  }, false);
+  canvas.addEventListener("webglcontextrestored", function () {
+    document.documentElement.classList.remove("kbd-live");
+  }, false);
+
+  window.addEventListener("resize", layout);
+  requestAnimationFrame(animate);
+
+  /* expose for tests: lets a later harness verify drag-rotate */
+  window.__kbd = { getRotation: function () { return board.rotation.y; } };
+})();
