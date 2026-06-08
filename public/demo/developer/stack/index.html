@@ -4,32 +4,32 @@
 <link rel="icon" href="data:,"/>
 <title>Split Ergo Tech Keyboard — Trimind</title>
 <style>
-  html, body { margin: 0; height: 100%; background: #04050d; overflow: hidden; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+  html, body { margin: 0; height: 100%; background: #ccd1da; overflow: hidden; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
   #bg { position: fixed; inset: 0;
     background:
-      radial-gradient(1100px 650px at 60% 12%, #16264d 0%, rgba(22,38,77,0) 60%),
-      radial-gradient(850px 560px at 24% 86%, #1d2740 0%, rgba(29,39,64,0) 60%),
-      #04050d; }
+      radial-gradient(1100px 650px at 60% 10%, #dfe4ec 0%, rgba(223,228,236,0) 62%),
+      radial-gradient(900px 600px at 22% 88%, #b9c4d4 0%, rgba(185,196,212,0) 60%),
+      #ccd1da; }
   #stage { position: fixed; inset: 0; }
-  #heading { position: fixed; top: 5vh; left: 0; right: 0; text-align: center; color: #fff; pointer-events: none; z-index: 5; }
+  #heading { position: fixed; top: 5vh; left: 0; right: 0; text-align: center; color: #222831; pointer-events: none; z-index: 5; }
   #heading h1 { margin: 0; font-size: clamp(34px, 6.5vw, 86px); font-weight: 800; letter-spacing: -2px; }
-  #heading p { margin: 6px 0 0; font-size: clamp(12px, 1.6vw, 18px); font-weight: 700; opacity: .7; }
-  #label { position: fixed; left: 5vw; top: 40%; transform: translateY(-50%); z-index: 5; pointer-events: none; color: #fff;
+  #heading p { margin: 6px 0 0; font-size: clamp(12px, 1.6vw, 18px); font-weight: 700; color: #5f6b7a; opacity: .85; }
+  #label { position: fixed; left: 5vw; top: 40%; transform: translateY(-50%); z-index: 5; pointer-events: none; color: #222831;
     max-width: 36vw; text-align: left; opacity: 0; transition: opacity .15s ease; }
   #label.on { opacity: 1; }
   @media (max-aspect-ratio: 1/1), (max-width: 760px){
     #label { left: 5vw; top: 32%; max-width: 72vw; }
   }
-  #label .name { font-size: clamp(34px, 7vw, 70px); font-weight: 900; line-height: .92; letter-spacing: -2px;
-    text-shadow: 1px 1px 0 #2f2f3f, 2px 2px 0 #262635, 3px 3px 0 #1d1d2a, 4px 4px 0 #14141f, 6px 7px 14px rgba(0,0,0,.5); }
-  #label .tag { margin-top: 10px; font-family: "SF Mono", ui-monospace, Menlo, Consolas, monospace; font-size: clamp(12px, 2vw, 18px); font-style: italic; opacity: .8; line-height: 1.5; white-space: pre-line; }
-  #hint { position: fixed; bottom: 16px; left: 0; right: 0; text-align: center; color:#fff; opacity:.35; font-size:12px; z-index:5; pointer-events:none; }
-  #snd { position: fixed; bottom: 14px; right: 16px; z-index: 6; cursor: pointer; color:#fff; opacity:.7;
-    font-size:12px; font-weight:700; letter-spacing:.5px; background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.18);
+  #label .name { font-size: clamp(34px, 7vw, 70px); font-weight: 900; line-height: .92; letter-spacing: -2px; color: #222831;
+    text-shadow: 1px 1px 0 #b9c4d4, 2px 2px 0 #aeb9cb, 3px 3px 0 #a6bad0, 4px 4px 0 #9aa9bf, 5px 6px 12px rgba(34,40,49,.22); }
+  #label .tag { margin-top: 10px; font-family: "SF Mono", ui-monospace, Menlo, Consolas, monospace; font-size: clamp(12px, 2vw, 18px); font-style: italic; color: #5f6b7a; opacity: .92; line-height: 1.5; white-space: pre-line; }
+  #hint { position: fixed; bottom: 16px; left: 0; right: 0; text-align: center; color:#5f6b7a; opacity:.7; font-size:12px; z-index:5; pointer-events:none; }
+  #snd { position: fixed; bottom: 14px; right: 16px; z-index: 6; cursor: pointer; color:#4b5056; opacity:.85;
+    font-size:12px; font-weight:700; letter-spacing:.5px; background:rgba(34,40,49,.06); border:1px solid rgba(75,80,86,.28);
     padding:7px 12px; border-radius:20px; user-select:none; -webkit-tap-highlight-color:transparent; }
   #snd:hover { opacity:1; }
-  #sw { position: fixed; bottom: 14px; right: 116px; z-index: 6; cursor: pointer; color:#fff; opacity:.7;
-    font-size:12px; font-weight:700; letter-spacing:.5px; background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.18);
+  #sw { position: fixed; bottom: 14px; right: 116px; z-index: 6; cursor: pointer; color:#4b5056; opacity:.85;
+    font-size:12px; font-weight:700; letter-spacing:.5px; background:rgba(34,40,49,.06); border:1px solid rgba(75,80,86,.28);
     padding:7px 12px; border-radius:20px; user-select:none; -webkit-tap-highlight-color:transparent; }
   #sw:hover { opacity:1; }
 </style>
@@ -50,30 +50,30 @@
    Caps fill sockets left->right; layout = 6x4 main per hand + thumb clusters.
    ============================================================ */
 const SKILLS = [
-  /* col 0 — frontend core (casper) */
-  { slug:"react",             label:"React",      tag:"component UIs, fast",          color:"#a6bad0" },
-  { slug:"nextdotjs",         label:"Next.js",    tag:"SSR + the app router",         color:"#a6bad0" },
-  { slug:"typescript",        label:"TypeScript", tag:"types end to end",             color:"#a6bad0" },
-  { slug:"javascript",        label:"JavaScript", tag:"the language of the web",      color:"#a6bad0" },
-  /* col 1 — frontend craft (mischka) */
-  { slug:"tailwindcss",       label:"Tailwind",   tag:"utility-first styling",        color:"#ccd1da" },
-  { slug:"threedotjs",        label:"Three.js",   tag:"real-time 3D in the browser",  color:"#ccd1da" },
-  { slug:"webgl",             label:"WebGL",      tag:"GPU-driven visuals",           color:"#ccd1da" },
-  { slug:"framer",            label:"Framer",     tag:"motion that feels alive",      color:"#ccd1da" },
-  /* col 2 — backend (blue) */
-  { slug:"nodedotjs",         label:"Node.js",    tag:"event-driven services",        color:"#6d99ce" },
-  { slug:"python",            label:"Python",     tag:"automation + data tooling",    color:"#6d99ce" },
-  { slug:"graphql",           label:"GraphQL",    tag:"ask for exactly what you need",color:"#6d99ce" },
-  { slug:"postgresql",        label:"PostgreSQL", tag:"relational, indexed, tuned",   color:"#6d99ce" },
-  /* col 3 — data + cloud (shuttle) */
-  { slug:"redis",             label:"Redis",      tag:"in-memory cache + pub/sub",    color:"#5f6b7a" },
-  { slug:"amazonwebservices", label:"AWS",        tag:"cloud infra + serverless",     color:"#5f6b7a" },
-  { slug:"docker",            label:"Docker",     tag:"reproducible builds",          color:"#5f6b7a" },
-  { slug:"kubernetes",        label:"Kubernetes", tag:"orchestrate + scale",          color:"#5f6b7a" },
-  /* col 4 — ship + craft (davy) */
-  { slug:"githubactions",     label:"Actions",    tag:"ship on every push",           color:"#4b5056" },
-  { slug:"git",               label:"Git",        tag:"history you can trust",        color:"#4b5056" },
-  { slug:"figma",             label:"Figma",      tag:"design-to-dev handoff",        color:"#4b5056" },
+  /* col 0 — frontend core — real brand shades */
+  { slug:"react",             label:"React",      tag:"component UIs, fast",          color:"#61dafb" },
+  { slug:"nextdotjs",         label:"Next.js",    tag:"SSR + the app router",         color:"#000000" },
+  { slug:"typescript",        label:"TypeScript", tag:"types end to end",             color:"#3178c6" },
+  { slug:"javascript",        label:"JavaScript", tag:"the language of the web",      color:"#f7df1e" },
+  /* col 1 — frontend craft */
+  { slug:"tailwindcss",       label:"Tailwind",   tag:"utility-first styling",        color:"#06b6d4" },
+  { slug:"threedotjs",        label:"Three.js",   tag:"real-time 3D in the browser",  color:"#000000" },
+  { slug:"webgl",             label:"WebGL",      tag:"GPU-driven visuals",           color:"#990000" },
+  { slug:"framer",            label:"Framer",     tag:"motion that feels alive",      color:"#0055ff" },
+  /* col 2 — backend */
+  { slug:"nodedotjs",         label:"Node.js",    tag:"event-driven services",        color:"#5fa04e" },
+  { slug:"python",            label:"Python",     tag:"automation + data tooling",    color:"#3776ab" },
+  { slug:"graphql",           label:"GraphQL",    tag:"ask for exactly what you need",color:"#e10098" },
+  { slug:"postgresql",        label:"PostgreSQL", tag:"relational, indexed, tuned",   color:"#4169e1" },
+  /* col 3 — data + cloud */
+  { slug:"redis",             label:"Redis",      tag:"in-memory cache + pub/sub",    color:"#ff4438" },
+  { slug:"amazonwebservices", label:"AWS",        tag:"cloud infra + serverless",     color:"#ff9900" },
+  { slug:"docker",            label:"Docker",     tag:"reproducible builds",          color:"#2496ed" },
+  { slug:"kubernetes",        label:"Kubernetes", tag:"orchestrate + scale",          color:"#326ce5" },
+  /* col 4 — ship + craft */
+  { slug:"githubactions",     label:"Actions",    tag:"ship on every push",           color:"#2088ff" },
+  { slug:"git",               label:"Git",        tag:"history you can trust",        color:"#f05032" },
+  { slug:"figma",             label:"Figma",      tag:"design-to-dev handoff",        color:"#f24e1e" },
   { slug:null,                label:"A11y",       tag:"usable by everyone",           color:"#4b5056" },
 ];
 const ICON_VER = "v15";
@@ -93,27 +93,30 @@ const pmrem = new THREE.PMREMGenerator(renderer);
 (function buildEnv(){
   const c = document.createElement('canvas'); c.width = 512; c.height = 256;
   const g = c.getContext('2d');
+  /* soft-daylight dome: bright sky overhead grading to a soft Shuttle floor (never black)
+     so the metallic body + trackball reflect clean light, not a dark studio */
   const grad = g.createLinearGradient(0,0,0,256);
-  grad.addColorStop(0,'#5567ad'); grad.addColorStop(0.45,'#1a2138'); grad.addColorStop(1,'#06070f');
+  grad.addColorStop(0,'#e7ecf3'); grad.addColorStop(0.42,'#c4cdda'); grad.addColorStop(0.78,'#97a4b7'); grad.addColorStop(1,'#6f7a8a');
   g.fillStyle = grad; g.fillRect(0,0,512,256);
-  g.globalAlpha = 0.95; g.fillStyle = '#ffffff';
-  g.beginPath(); g.ellipse(150,54,54,15,0,0,7); g.fill();
-  g.globalAlpha = 0.4; g.beginPath(); g.ellipse(380,82,72,10,0,0,7); g.fill();
+  /* two soft overhead "softbox" highlights for crisp speculars on caps + trackball */
+  g.globalAlpha = 0.85; g.fillStyle = '#ffffff';
+  g.beginPath(); g.ellipse(150,48,58,16,0,0,7); g.fill();
+  g.globalAlpha = 0.45; g.beginPath(); g.ellipse(380,76,78,11,0,0,7); g.fill();
   g.globalAlpha = 1;
   const tex = new THREE.Texture(c); tex.needsUpdate = true; tex.mapping = THREE.EquirectangularReflectionMapping;
   scene.environment = pmrem.fromEquirectangular(tex).texture;
 })();
 
-scene.add(new THREE.AmbientLight(0xffffff, 0.55));
-const keyL = new THREE.DirectionalLight(0xffffff, 0.85); keyL.position.set(6, 14, 9); scene.add(keyL);
-const rimL = new THREE.DirectionalLight(0xffffff, 0.3); rimL.position.set(-9, 6, -6); scene.add(rimL);
-const fillL= new THREE.PointLight(0xffffff, 0.25, 70); fillL.position.set(2, 9, 8); scene.add(fillL);
+scene.add(new THREE.AmbientLight(0xffffff, 0.42));
+const keyL = new THREE.DirectionalLight(0xffffff, 0.66); keyL.position.set(6, 14, 9); scene.add(keyL);
+const rimL = new THREE.DirectionalLight(0xdfe6f0, 0.42); rimL.position.set(-9, 6, -6); scene.add(rimL);
+const fillL= new THREE.PointLight(0xffffff, 0.3, 70); fillL.position.set(2, 9, 8); scene.add(fillL);
 
 (() => {
   const g = new THREE.BufferGeometry(); const n = 700; const p = new Float32Array(n*3);
   for (let i=0;i<n*3;i++) p[i] = (Math.random()-0.5)*100;
   g.setAttribute('position', new THREE.BufferAttribute(p,3));
-  scene.add(new THREE.Points(g, new THREE.PointsMaterial({ color:0xffffff, size:0.06, transparent:true, opacity:0.7 })));
+  scene.add(new THREE.Points(g, new THREE.PointsMaterial({ color:0x8b99ad, size:0.05, transparent:true, opacity:0.28 })));
 })();
 
 function roundedBoxGeo(w, d, h, r){
@@ -198,12 +201,31 @@ const capGeo   = taper(roundedBoxGeo(KW, KW, KH, 0.11), TOP);
 const TOPW     = KW * TOP;
 const switchGeo= roundedBoxGeo(KW*0.78, KW*0.78, 0.22, 0.06);
 const switchMat= new THREE.MeshStandardMaterial({ color:0x111216, metalness:0.3, roughness:0.7 });
-const caseMat  = new THREE.MeshStandardMaterial({ color:0x141519, metalness:0.25, roughness:0.5, envMapIntensity:0.7 });
+const caseMat  = new THREE.MeshStandardMaterial({ color:0x4b5056, metalness:0.25, roughness:0.5, envMapIntensity:0.7 });
 
 const caps = [];
 const board = new THREE.Group();
 board.rotation.x = -0.16;          /* near-flat: read the whole grid from a 3/4 angle */
 scene.add(board);
+
+/* soft contact shadow so the keyboard sits on the light band instead of floating */
+(function groundShadow(){
+  const S = 256; const cv = document.createElement('canvas'); cv.width = cv.height = S;
+  const c = cv.getContext('2d');
+  const rg = c.createRadialGradient(S/2, S/2, 0, S/2, S/2, S/2);
+  rg.addColorStop(0, 'rgba(40,46,56,0.34)');
+  rg.addColorStop(0.55, 'rgba(40,46,56,0.16)');
+  rg.addColorStop(1, 'rgba(40,46,56,0)');
+  c.fillStyle = rg; c.fillRect(0,0,S,S);
+  const tex = new THREE.CanvasTexture(cv);
+  const shadow = new THREE.Mesh(
+    new THREE.PlaneGeometry(16, 11),
+    new THREE.MeshBasicMaterial({ map:tex, transparent:true, depthWrite:false, opacity:0.9 })
+  );
+  shadow.rotation.x = -Math.PI/2;
+  shadow.position.set(0, -0.62, 1.4);
+  scene.add(shadow);
+})();
 
 let skillIdx = 0;
 function placeKey(half, x, z, pts){
@@ -280,23 +302,25 @@ function buildHalf(side){
   const ring = new THREE.Mesh(new THREE.TorusGeometry(R_BALL+0.12, 0.13, 18, 56), caseMat);
   ring.rotation.x = Math.PI/2; ring.position.set(cx, 0.18, ballZ); half.add(ring);
   const trackball = new THREE.Mesh(new THREE.SphereGeometry(R_BALL, 48, 48),
-    new THREE.MeshStandardMaterial({ color:0x3a5a82, metalness:0.4, roughness:0.12, envMapIntensity:1.7 }));
+    new THREE.MeshStandardMaterial({ color:0x6d99ce, metalness:0.0, roughness:0.62, envMapIntensity:0.12 }));
   trackball.position.set(cx, 0.5, ballZ);
   /* "Maya" label on trackball */
   const mCvs = document.createElement('canvas');
   mCvs.width = 256; mCvs.height = 256;
   const mCtx = mCvs.getContext('2d');
-  mCtx.fillStyle = '#3a5a82'; mCtx.fillRect(0,0,256,256);
-  mCtx.fillStyle = '#cfe0f5';
+  mCtx.fillStyle = '#2f5588'; mCtx.fillRect(0,0,256,256);
+  mCtx.fillStyle = '#eef1f5';
   mCtx.font = 'bold 72px sans-serif';
   mCtx.textAlign = 'center'; mCtx.textBaseline = 'middle';
   mCtx.fillText('Maya',128,128);
-  mCtx.strokeStyle = '#cfe0f5'; mCtx.lineWidth = 4;
+  mCtx.strokeStyle = '#eef1f5'; mCtx.lineWidth = 4;
   mCtx.beginPath(); mCtx.arc(128,128,110,0,Math.PI*2); mCtx.stroke();
   const mTex = new THREE.CanvasTexture(mCvs);
-  const mBadge = new THREE.Mesh(new THREE.CircleGeometry(0.42,32),
-    new THREE.MeshStandardMaterial({map:mTex,metalness:0.2,roughness:0.5,transparent:true}));
-  mBadge.position.set(0,R_BALL*0.78,R_BALL*0.35); mBadge.rotation.x = -0.45;
+  const mBadge = new THREE.Mesh(new THREE.CircleGeometry(0.36,48),
+    new THREE.MeshBasicMaterial({map:mTex,transparent:true}));
+  /* seat the badge ON the sphere surface (not inside it) facing up-and-out toward the camera */
+  const bA = 0.62, bR = R_BALL*1.03;
+  mBadge.position.set(0, bR*Math.sin(bA), bR*Math.cos(bA)); mBadge.rotation.x = -bA;
   trackball.add(mBadge);
   half.add(trackball);
 
