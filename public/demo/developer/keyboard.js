@@ -404,7 +404,11 @@
     }
   }
 
+  /* phone detection — recomputed on every resize so transitions are smooth */
+  var isPhone = window.matchMedia("(max-width:760px)").matches;
+
   function layout() {
+    isPhone = window.matchMedia("(max-width:760px)").matches;
     var portrait = window.innerHeight > window.innerWidth || window.innerWidth < 760;
     if (portrait) { camera.fov = 58; camera.position.set(0, 7.6, 10.0); camera.lookAt(0, 0.0, 1.7); }
     else { camera.fov = 40; camera.position.set(0, 8.6, 11.6); camera.lookAt(0, 0.1, 1.4); }
@@ -416,6 +420,8 @@
   var t = 0, rollSpeedY = 0.012, rollSpeedX = 0.004, rollTargetSpeed = 1, trackballHovered = false;
   var tmp = new THREE.Vector3();
   var lastNow = (typeof performance !== "undefined" && performance.now) ? performance.now() : Date.now();
+  /* phone: smooth Y position target (lerped each frame) */
+  var boardYBase = 0; // current lerp target for board base Y (before idle bob)
 
   /* ---- R2: scroll-driven per-section horizontal positioning ----
      The keyboard is the connective thread: it glides between a floated-right
@@ -450,15 +456,22 @@
     running = true;
     t += 0.016;
     if (!isDown) pickHover();
-    board.position.y = Math.sin(t * 0.8) * 0.07;
     /* R2: glide the board horizontally to the active section's parking spot.
        viewport size in world units at the board's z-plane (board.position.z≈0): */
     var vpH = 2 * Math.tan((camera.fov * Math.PI / 180) / 2) * Math.abs(camera.position.z - board.position.z);
     vpW = vpH * camera.aspect;
     var sid = activeSectionId();
-    var frac = SECTION_FRAC[sid] || 0;
-    if (isRTL()) frac = -frac;
+    /* R4: on phone centre the keyboard (no side-float — narrow screen has no room) and
+       push it downward so it reads as a backdrop below the hero text, not covering it. */
+    var frac = isPhone ? 0 : (SECTION_FRAC[sid] || 0);
+    if (!isPhone && isRTL()) frac = -frac;
     var targetX = frac * (vpW / 2);
+    /* R4: phone Y base — push down so keyboard clears the full text block (name+role+para+CTAs).
+       0.32 × vpH is roughly the lower third of the visible world-height at the board plane. */
+    var phoneYOffset = isPhone ? -(vpH * 0.32) : 0;
+    boardYBase += (phoneYOffset - boardYBase) * 0.14; // lerp: ~14% per frame — snappy on resize
+    /* idle bob is relative to boardYBase */
+    board.position.y = boardYBase + Math.sin(t * 0.8) * 0.07;
     /* frame-rate-independent smoothing: exponential decay over REAL elapsed time,
        so the glide converges in ~real seconds regardless of fps (smooth, deterministic) */
     var now = (typeof performance !== "undefined" && performance.now) ? performance.now() : Date.now();
@@ -466,7 +479,8 @@
     var k = 7; // smoothing rate (per second); higher = snappier, still glides
     var sm = 1 - Math.exp(-k * dt);
     board.position.x += (targetX - board.position.x) * sm;
-    var ts = SECTION_SCALE[sid] || 1.0;
+    /* R4: on phone multiply the section scale by 0.52 — clearly smaller, reads as backdrop */
+    var ts = (SECTION_SCALE[sid] || 1.0) * (isPhone ? 0.52 : 1.0);
     board.scale.x += (ts - board.scale.x) * sm;
     board.scale.y = board.scale.z = board.scale.x;
     caps.forEach(function (cap) {
