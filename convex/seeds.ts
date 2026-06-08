@@ -16,6 +16,7 @@ import {
   ABDULRAHMAN_SLUG,
   ABDULRAHMAN_EMAIL,
 } from "./seedData/abdulrahman";
+import { WADHAH_PORTFOLIO, WADHAH_SLUG } from "./seedData/wadhah";
 
 /**
  * Upsert a `users` row for a pre-created Clerk account. Mirrors
@@ -133,5 +134,46 @@ export const publishAbdulrahman = internalMutation({
       lastEditedAt: Date.now(),
     });
     return { portfolioId: p._id, url: `/p/${ABDULRAHMAN_SLUG}` };
+  },
+});
+
+/**
+ * Publish Wadhah Almutairi's developer portfolio in one shot (no Clerk owner
+ * required — userId is optional). Upserts the portfolio doc by slug with the
+ * Node-rendered, CSP-clean HTML and flips status to "published". After this,
+ * /p/wadhah-almutairi serves live (HOSTING_ENABLED is true globally).
+ *
+ * Run (after `convex deploy`):
+ *   npx convex run seeds:publishWadhah "$(cat /tmp/wadhah-publish.json)"
+ */
+export const publishWadhah = internalMutation({
+  args: { generatedHtml: v.string() },
+  handler: async (ctx, { generatedHtml }) => {
+    const now = Date.now();
+    // WADHAH_PORTFOLIO is declared `as const`; deep-copy to a mutable doc.
+    const base = JSON.parse(JSON.stringify(WADHAH_PORTFOLIO));
+    const data = {
+      ...base,
+      status: "published" as const,
+      slug: WADHAH_SLUG,
+      generatedHtml,
+      generatedProjectPages: [],
+      publishedAt: now,
+      lastEditedAt: now,
+    };
+
+    const existing = await ctx.db
+      .query("portfolios")
+      .withIndex("by_slug", (q) => q.eq("slug", WADHAH_SLUG))
+      .first();
+
+    if (existing) {
+      const { createdAt: _ignored, ...patch } = data as any;
+      await ctx.db.patch(existing._id, patch);
+      return { portfolioId: existing._id, action: "updated" as const, url: `/p/${WADHAH_SLUG}` };
+    }
+
+    const portfolioId = await ctx.db.insert("portfolios", { ...data, createdAt: now });
+    return { portfolioId, action: "inserted" as const, url: `/p/${WADHAH_SLUG}` };
   },
 });
