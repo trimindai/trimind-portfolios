@@ -1,6 +1,35 @@
 import { NextRequest, NextResponse } from "next/server";
+import { auth } from "@clerk/nextjs/server";
+
+// In-memory rate limit. Single-instance only (Vercel cold starts reset it).
+// Mirrors /api/generate; for multi-instance back this with Convex/Redis (see
+// src/lib/ratelimit.ts). Tightest limit of the AI routes — full-CV generation
+// is the heaviest Gemini call (maxOutputTokens 2000).
+const WINDOW_MS = 60_000;
+const MAX_PER_WINDOW = 6; // 6 full-CV generations per minute per user
+const hits = new Map<string, number[]>();
+
+function rateLimit(key: string): boolean {
+  const now = Date.now();
+  const arr = (hits.get(key) || []).filter((t) => now - t < WINDOW_MS);
+  arr.push(now);
+  hits.set(key, arr);
+  return arr.length <= MAX_PER_WINDOW;
+}
 
 export async function POST(req: NextRequest) {
+  // Auth: this endpoint spends Gemini budget, so it must never be public.
+  const { userId } = await auth();
+  if (!userId) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+  if (!rateLimit(userId)) {
+    return NextResponse.json(
+      { error: "Rate limit exceeded. Try again in a minute." },
+      { status: 429 }
+    );
+  }
+
   const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey) {
     console.error("GEMINI_API_KEY not set");

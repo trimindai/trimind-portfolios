@@ -1,6 +1,9 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import { useAuth } from "@clerk/nextjs";
+import { usePathname } from "next/navigation";
+import { Link } from "@/i18n/navigation";
 import { TextField } from "../fields/TextField";
 import { TextareaField } from "../fields/TextareaField";
 import { DynamicList } from "../fields/DynamicList";
@@ -26,6 +29,11 @@ export function BasicsStep({ data, onChange }: BasicsStepProps) {
   const basics = data.basics || {};
   const metrics = data.metrics || [];
   const [showOptional, setShowOptional] = useState(false);
+
+  // The AI endpoints are sign-in-gated (they spend Gemini budget). Guests on the
+  // public /try builder see a sign-in CTA instead of the AI tools.
+  const { isLoaded, isSignedIn } = useAuth();
+  const pathname = usePathname();
 
   // Summary AI state
   const [aiGenerating, setAiGenerating] = useState(false);
@@ -181,8 +189,9 @@ export function BasicsStep({ data, onChange }: BasicsStepProps) {
         <TextField label="Email" value={basics.email} onChange={(v) => updateBasics("email", v)} required type="email" placeholder="email@example.com" />
       </div>
 
-      {/* AI Section — only visible when name + title are filled */}
-      {canShowAi && (
+      {/* AI Section — only when name + title are filled AND the user is signed
+          in (the AI endpoints require auth). */}
+      {canShowAi && isSignedIn && (
         <div className="space-y-3">
           {/* Progress UI during generation */}
           {fillGenerating && (
@@ -352,6 +361,27 @@ export function BasicsStep({ data, onChange }: BasicsStepProps) {
               <p className="text-xs text-[var(--land-body)] line-clamp-2">{basics.summary}</p>
             </div>
           )}
+        </div>
+      )}
+
+      {/* Guest equivalent: AI is sign-in-gated, so show a sign-in CTA in place
+          of the AI tools rather than a button that would 401. redirect_url
+          returns them here (their draft lives in localStorage) with AI unlocked. */}
+      {canShowAi && isLoaded && !isSignedIn && (
+        <div className="rounded-xl border border-emerald-600/30 bg-emerald-600/5 p-5 text-center space-y-2">
+          <p className="flex items-center justify-center gap-1.5 text-sm font-medium text-[var(--land-bright)]">
+            <svg className="h-4 w-4 text-emerald-600" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M8 2v4M6 4h4M3 8l2 6 3-4 3 4 2-6" /></svg>
+            Write your CV with AI
+          </p>
+          <p className="text-xs text-[var(--land-muted)]">
+            Create a free account to let AI write your summary and fill your CV. Your draft is saved.
+          </p>
+          <Link
+            href={`/sign-up?redirect_url=${encodeURIComponent(pathname)}`}
+            className="inline-flex items-center justify-center gap-1.5 rounded-lg bg-emerald-600 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-emerald-700"
+          >
+            Sign in to use AI &rarr;
+          </Link>
         </div>
       )}
 

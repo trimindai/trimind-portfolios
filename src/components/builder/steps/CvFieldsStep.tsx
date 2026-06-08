@@ -2,6 +2,9 @@
 
 import { useState } from "react";
 import { useTranslations } from "next-intl";
+import { useAuth } from "@clerk/nextjs";
+import { usePathname } from "next/navigation";
+import { Link } from "@/i18n/navigation";
 import { TextField } from "../fields/TextField";
 import { TextareaField } from "../fields/TextareaField";
 import { DynamicList } from "../fields/DynamicList";
@@ -56,6 +59,9 @@ function calculateTotalYears(experience: any[]): string {
 
 export function CvFieldsStep({ data, onChange }: CvFieldsStepProps) {
   const t = useTranslations("builder.cvFields");
+  // AI is sign-in-gated (spends Gemini budget); guests get a sign-in CTA.
+  const { isLoaded, isSignedIn } = useAuth();
+  const pathname = usePathname();
   const basics = data.basics || {};
   const [generating, setGenerating] = useState(false);
   const [aiSuggestion, setAiSuggestion] = useState("");
@@ -136,7 +142,7 @@ export function CvFieldsStep({ data, onChange }: CvFieldsStepProps) {
           hint={t("summaryHint")}
           rows={4}
         />
-        {!aiSuggestion && (
+        {!aiSuggestion && isSignedIn && (
           <button
             type="button"
             onClick={generateSummary}
@@ -161,6 +167,23 @@ export function CvFieldsStep({ data, onChange }: CvFieldsStepProps) {
             </div>
             {!basics.fullName && <span className="text-[10px] text-[var(--land-muted)]">Fill Basic Info first</span>}
           </button>
+        )}
+
+        {/* Guests: AI is sign-in-gated, so offer sign-in instead of a 401 button. */}
+        {!aiSuggestion && isLoaded && !isSignedIn && (
+          <Link
+            href={`/sign-up?redirect_url=${encodeURIComponent(pathname)}`}
+            className="mt-3 flex w-full items-center justify-between rounded-xl border border-[var(--land-accent)]/20 bg-[var(--land-accent)]/5 px-4 py-3 text-start transition-colors hover:bg-[var(--land-accent)]/10"
+          >
+            <span>
+              <span className="flex items-center gap-1.5 text-sm font-medium text-[var(--land-accent)]">
+                <svg className="h-4 w-4" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M8 2v4M6 4h4M3 8l2 6 3-4 3 4 2-6" /></svg>
+                Write with AI
+              </span>
+              <span className="mt-0.5 block text-xs text-[var(--land-muted)]">Sign in to unlock — your draft is saved</span>
+            </span>
+            <span className="text-sm text-[var(--land-accent)]">&rarr;</span>
+          </Link>
         )}
 
         {aiSuggestion && (
