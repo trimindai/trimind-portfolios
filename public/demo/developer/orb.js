@@ -23,10 +23,15 @@
     return mobile ? "mobile" : "desktop";
   }
   var TIER = detectTier();
-  if (TIER === "low") { canvas.style.display = "none"; return; } /* Phase 6 adds a static fallback */
+  /* low-end / reduced-motion: no WebGL at all — the static CSS #orb-fallback in the hero stays visible */
+  if (TIER === "low") { canvas.style.display = "none"; return; }
 
   /* ---- renderer / scene / camera ---- */
-  var renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true, powerPreference: "high-performance" });
+  var renderer;
+  try {
+    renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true, powerPreference: "high-performance" });
+  } catch (e) { renderer = null; }
+  if (!renderer) { canvas.style.display = "none"; return; } /* WebGL unavailable → static CSS #orb-fallback stays */
   renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, TIER === "mobile" ? 1.5 : 2));
   renderer.outputEncoding = THREE.sRGBEncoding;
 
@@ -214,7 +219,7 @@
   /* ---- spring (slight overshoot on settle) ---- */
   var vx = 0, vy = 0, vs = 0;
   var K = 0.090, DAMP = 0.80;       /* responsive spring, slight overshoot on settle */
-  var paused = false, tAcc = 0;
+  var paused = false, running = false, firstFrame = true, tAcc = 0;
   var dockLifted = false;           /* is the canvas currently raised above the iframe? */
   var bloomActive = true, bloomClock = 0, BLOOM_DUR = 1.6;  /* hero load bloom */
   var lastNow = 0;                                          /* for frame-rate-independent timing */
@@ -231,8 +236,9 @@
   }
 
   function frame() {
-    if (paused) return;
+    if (paused) { running = false; return; }
     requestAnimationFrame(frame);
+    running = true;
     var now = (typeof performance !== "undefined" && performance.now) ? performance.now() : Date.now();
     var dt = lastNow ? Math.min(0.05, (now - lastNow) / 1000) : 0.016; lastNow = now;
     tAcc += dt;
@@ -308,13 +314,26 @@
     }
 
     renderer.render(scene, camera);
+    /* first real WebGL frame has painted → hand off from the static CSS orb */
+    if (firstFrame) { firstFrame = false; document.documentElement.classList.add("orb-live"); }
   }
 
-  /* ---- pause when the tab/canvas is offscreen ---- */
+  /* ---- pause when the tab is hidden, or the GL context is lost ----
+     (the canvas is position:fixed full-viewport, so it is never scrolled offscreen — an
+     IntersectionObserver would always report intersecting; tab-visibility is the real signal.) */
+  function resume() { if (!running && !paused) requestAnimationFrame(frame); }
   document.addEventListener("visibilitychange", function () {
     if (document.hidden) { paused = true; }
-    else if (paused) { paused = false; requestAnimationFrame(frame); }
+    else { paused = false; resume(); }
   });
+  canvas.addEventListener("webglcontextlost", function (e) {
+    e.preventDefault(); paused = true; running = false;
+    document.documentElement.classList.remove("orb-live"); /* reveal the static CSS orb again */
+  }, false);
+  canvas.addEventListener("webglcontextrestored", function () {
+    /* GL resources are gone and not re-uploaded here; keep the static orb rather than a black canvas */
+    document.documentElement.classList.remove("orb-live");
+  }, false);
 
   resize();
   requestAnimationFrame(frame);

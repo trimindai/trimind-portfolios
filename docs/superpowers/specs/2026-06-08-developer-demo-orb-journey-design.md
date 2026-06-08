@@ -59,3 +59,15 @@ The orb (background canvas) flies to the trackball's on-screen position (compute
 6. Perf tiers + reduced-motion fallback + offscreen pause + lazy-load hardening.
 
 Verify after each phase via headless (playwright-core + swiftshader): scroll top→bottom, confirm ONE continuous orb, dock reads as a settle, no jank; AA/console clean.
+
+---
+
+## Status — ALL PHASES SHIPPED ✅ (2026-06-08)
+P1 (traveling solid orb), P3 (keyboard dock), P4 (particle bloom), P5 (contact glow-through + card polish), and the Arabic RTL mirror shipped earlier today (`eec9066`→`6af66ae`).
+
+**Phase 6 (final — this session):** progressive-enhancement hardening so the orb degrades gracefully instead of vanishing.
+- **Static CSS fallback orb** (`#orb-fallback`, a radial-gradient glass sphere in the hero) is now the default. `orb.js` adds `<html>.orb-live` only after the first real WebGL frame paints, which hides the fallback. So reduced-motion, low-end, WebGL-unavailable, GL-context-loss, and the pre-load window all show a tasteful static orb — never an empty hero. RTL mirrors it to the left.
+- **WebGL creation guarded** (try/catch → fallback stays). **`webglcontextlost`** removes `.orb-live` (reverts to the static orb) instead of a black canvas.
+- **Loop hardening:** `running`/`firstFrame` flags; `resume()` can't stack RAF loops; tab-hidden pause kept. (Note: the canvas is `position:fixed` full-viewport, so it is never scrolled offscreen — an IntersectionObserver would always intersect; tab-visibility is the real signal. Documented in code.)
+- **Lazy-load tier-gate:** the 3D injector now skips on `reduce` **or** low-end (`deviceMemory<=2` / `hardwareConcurrency<=2`), so weak phones don't download the ~600KB Three.js bundle just to bail.
+- **Verify harness:** `scripts/orb-phase6-check.mjs` (playwright-core + swiftshader) — 3 device states × EN/AR: normal→live orb engages + `.orb-live` set + fallback hidden + GL healthy + `orb.js` injected; reduce & low-end→`.orb-live` absent + fallback visible/circular/sized + `orb.js` NOT injected; everywhere→zero console errors, no phone overflow. **30/30 PASS.** (The keyboard `/stack/` iframe loads its own Three.js and is out of scope — "KEEP AS-IS"; the harness keys on `orb.js`, not `three.min.js`, to avoid that false signal.)

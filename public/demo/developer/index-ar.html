@@ -146,6 +146,19 @@ section{position:relative;z-index:1}
 #hero .wrap{position:relative}
 #hero .grid{display:grid;grid-template-columns:minmax(0,1fr);gap:8px;position:relative;z-index:1}
 @media(min-width:900px){#hero .grid{max-width:440px;margin-inline-start:0}} /* text owns the start (right in RTL); the keyboard render owns the far side (left) */
+/* static fallback orb — RTL mirror (left side). Visible until the live WebGL orb (#orb-stage) paints,
+   and the permanent resting orb for reduced-motion / low-end / no-WebGL. .orb-live hides it. */
+#orb-fallback{position:absolute;z-index:0;pointer-events:none;left:5%;top:48%;transform:translateY(-50%);
+  width:min(34%,360px);aspect-ratio:1;border-radius:50%;
+  background:radial-gradient(circle at 38% 32%,#eef4fc 0%,#a8c4e8 19%,#6d99ce 44%,#46699d 72%,#2f5588 100%);
+  box-shadow:0 34px 70px -16px rgba(47,85,136,.5),inset -16px -20px 54px rgba(47,85,136,.6),inset 12px 14px 36px rgba(238,244,252,.5);
+  animation:orbFloat 7s ease-in-out infinite}
+#orb-fallback::after{content:"";position:absolute;inset:0;border-radius:50%;
+  background:radial-gradient(circle at 33% 26%,rgba(255,255,255,.65),rgba(255,255,255,0) 34%)}
+@keyframes orbFloat{0%,100%{transform:translateY(-50%)}50%{transform:translateY(calc(-50% - 14px))}}
+.orb-live #orb-fallback{display:none}
+@media (prefers-reduced-motion:reduce){#orb-fallback{animation:none}}
+@media(max-width:900px){#orb-fallback{left:3%;top:18%;transform:none;width:42vw;max-width:240px;animation:none}}
 /* photoreal split-keyboard hero render (Blender) — RTL: keyboard on the LEFT */
 .hero-kbd{position:absolute;left:1.5%;top:50%;transform:translateY(-50%);width:min(33%,520px);height:auto;pointer-events:none;z-index:0;
   filter:drop-shadow(0 24px 40px rgba(34,40,49,.18));
@@ -460,7 +473,8 @@ html[dir="rtl"] .tl-item::before{left:auto;right:0}
       <div class="scroll-cue blur-in" data-delay="440"><span class="mouse"></span>اسحب للأسفل</div>
     </div>
   </div>
-  <!-- hero orb is now the live 3D mesh in #orb-stage -->
+  <!-- hero orb: static CSS fallback (below); live 3D mesh in #orb-stage hides it via .orb-live -->
+  <div id="orb-fallback" aria-hidden="true"></div>
 </section>
 
 <section id="skills" class="stack-section">
@@ -1051,7 +1065,8 @@ html[dir="rtl"] .tl-item::before{left:auto;right:0}
 
   /* signature orb journey (lazy 3D, progressive enhancement) */
   (function(){
-    if(reduce) return;
+    var lowEnd=(navigator.deviceMemory&&navigator.deviceMemory<=2)||(navigator.hardwareConcurrency&&navigator.hardwareConcurrency<=2);
+    if(reduce||lowEnd) return; /* static CSS #orb-fallback covers these — skip the ~600KB 3D download */
     function inject(){
       var t=document.createElement("script"); t.src="/demo/developer/vendor/three.min.js";
       t.onload=function(){ var o=document.createElement("script"); o.src="/demo/developer/orb.js"; document.body.appendChild(o); };
