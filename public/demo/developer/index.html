@@ -75,7 +75,11 @@ img{display:block;max-width:100%}
 ::selection{background:var(--brand-ink);color:var(--on-dark)}
 
 /* ── star-field ─────────────────────────────────────────────── */
-#stars{position:fixed;inset:0;z-index:-2;pointer-events:none;opacity:.18}
+#stars{position:fixed;inset:0;z-index:-3;pointer-events:none;opacity:.18}
+/* keyboard canvas: fixed full-screen behind orb, receives clicks through .content */
+#kbd-stage{ position:fixed; inset:0; width:100%; height:100%; z-index:-2; pointer-events:auto; }
+/* keyboard fallback hides once the live keyboard paints */
+.kbd-live #kbd-fallback{ display:none; }
 /* signature orb: fixed full-screen canvas BEHIND the DOM content */
 #orb-stage{position:fixed;inset:0;width:100%;height:100%;z-index:-1;pointer-events:none}
 
@@ -208,7 +212,7 @@ section[data-reveal]{ will-change:opacity,transform; }
 /* ── skills / Dygma-style split 3D keyboard (pure CSS + Web Audio) ── */
 #skills{padding:80px 0 110px;--ks:62px;--glow:#2f6bff;--body:#243049}
 .kbd-toolbar{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-top:10px}
-.kbd-hint{font-family:var(--font-mono);color:var(--muted-2);font-size:.85rem}
+.kbd-hint{text-align:center;color:var(--muted);font-family:var(--font-mono);font-size:.85rem;margin-top:8px}
 .kbd-sound-wrap{margin-inline-start:auto;display:inline-flex;align-items:center;gap:9px;padding:7px 11px;border-radius:10px;border:1px solid var(--border-strong);background:var(--card);color:var(--muted);transition:border-color .2s,color .2s}
 .kbd-sound-wrap:hover{border-color:var(--brand);color:var(--fg)}
 .kbd-sound-wrap i{font-size:.8rem}
@@ -452,6 +456,7 @@ html[dir="rtl"] .tl-item::before{left:auto;right:0}
 <div id="cursor"></div><div id="cursor-dot"></div>
 
 <canvas id="stars"></canvas>
+<canvas id="kbd-stage" aria-hidden="true"></canvas>
 <canvas id="orb-stage" aria-hidden="true"></canvas>
 <div id="progress"></div>
 
@@ -489,9 +494,15 @@ html[dir="rtl"] .tl-item::before{left:auto;right:0}
   <div id="orb-fallback" aria-hidden="true"></div>
 </section>
 
-<section id="skills" class="stack-section" data-reveal>
-    <iframe class="stack-frame" src="/demo/developer/stack/index.html" title="Tech Stack — interactive 3D keyboard" loading="lazy"></iframe>
-  </section>
+<section id="skills" data-reveal>
+  <div class="wrap">
+    <div class="sec-head sticky-head">
+      <div class="eyebrow">Tech Stack</div>
+      <h2>Tech Stack</h2>
+    </div>
+    <p class="kbd-hint">Drag to rotate · press a key</p>
+  </div>
+</section>
 
 <section id="experience" data-reveal>
   <div class="wrap">
@@ -1083,13 +1094,16 @@ html[dir="rtl"] .tl-item::before{left:auto;right:0}
     }
   })();
 
-  /* ── signature orb journey (lazy 3D, progressive enhancement) ── */
+  /* ── signature orb + keyboard journey (lazy 3D, progressive enhancement) ── */
   (function(){
     var lowEnd=(navigator.deviceMemory&&navigator.deviceMemory<=2)||(navigator.hardwareConcurrency&&navigator.hardwareConcurrency<=2);
-    if(reduce||lowEnd) return; /* static CSS #orb-fallback covers these — skip the ~600KB 3D download */
+    if(reduce||lowEnd) return; /* static CSS fallbacks cover these — skip the ~600KB 3D download */
     function inject(){
       var t=document.createElement("script"); t.src="/demo/developer/vendor/three.min.js";
-      t.onload=function(){ var o=document.createElement("script"); o.src="/demo/developer/orb.js"; document.body.appendChild(o); };
+      t.onload=function(){
+        var o=document.createElement("script"); o.src="/demo/developer/orb.js"; document.body.appendChild(o);
+        var k=document.createElement("script"); k.src="/demo/developer/keyboard.js"; document.body.appendChild(k);
+      };
       t.onerror=function(){};
       document.body.appendChild(t);
     }

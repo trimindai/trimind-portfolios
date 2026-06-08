@@ -170,7 +170,7 @@
       } catch (e) { fallback(); }
     };
     img.onerror = fallback;
-    img.src = "./icons/" + skill.slug + ".svg";
+    img.src = "./stack/icons/" + skill.slug + ".svg";
   }
 
   /* ---------- presets ---------- */

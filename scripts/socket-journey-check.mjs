@@ -74,6 +74,18 @@ try {
       const fonts = await page.evaluate(()=>{ const h1=document.querySelector("#hero h1"); return { display: h1?getComputedStyle(h1).fontFamily:"", body:getComputedStyle(document.body).fontFamily }; });
       if (/Archivo/i.test(fonts.display)) pass(`[${tag}] hero display = Archivo Black`);
       else fail(`[${tag}] hero display font is "${fonts.display}"`);
+      // T2.2: keyboard mounted as background, iframe gone, scroll free
+      const kbd = await page.evaluate(()=>{ const c=document.getElementById("kbd-stage"); const gl=c&&(c.getContext("webgl2")||c.getContext("webgl")); return { exists:!!c, live:document.documentElement.classList.contains("kbd-live"), glLost: gl?gl.isContextLost():"no-gl" }; });
+      if (kbd.exists) pass(`[${tag}] #kbd-stage present`); else fail(`[${tag}] #kbd-stage missing`);
+      const noIframe = await page.evaluate(()=>!document.querySelector(".stack-frame"));
+      if (noIframe) pass(`[${tag}] inline keyboard iframe removed`); else fail(`[${tag}] iframe still present`);
+      const moved = await page.evaluate(async()=>{ window.scrollTo(0,600); await new Promise(r=>setTimeout(r,400)); return window.scrollY>300; });
+      if (moved) pass(`[${tag}] page scrolls with keyboard as background`); else fail(`[${tag}] scroll blocked`);
+      await page.evaluate(()=>window.scrollTo(0,0)); await page.waitForTimeout(300);
+      if (view.key==="desk"){
+        if (kbd.live) pass(`[${tag}] keyboard live`); else fail(`[${tag}] keyboard not live`);
+        if (kbd.glLost===false) pass(`[${tag}] keyboard GL healthy`); else fail(`[${tag}] keyboard GL ${kbd.glLost}`);
+      }
       if (errors.length) fail(`[${tag}] ${errors.length} console error(s): ${errors.slice(0,3).join(" | ")}`);
       else pass(`[${tag}] zero console errors`);
       try { await page.screenshot({path:`scripts/_sj-${tag}.png`,fullPage:false,timeout:8000,animations:"disabled"}); }
