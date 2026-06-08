@@ -53,6 +53,10 @@ try {
       if (reachedBottom) pass(`[${tag}] scroll reaches contact (not trapped)`);
       else fail(`[${tag}] could not scroll to bottom`);
       await page.evaluate(()=>window.scrollTo(0,0)); await page.waitForTimeout(400);
+      // T1.3: interactivity preserved under the overlay
+      const navClickable = await page.evaluate(()=>{ const a=document.querySelector('nav a'); if(!a) return false; return getComputedStyle(a).pointerEvents!=="none"; });
+      if (navClickable) pass(`[${tag}] nav links remain clickable under overlay`);
+      else fail(`[${tag}] nav lost pointer-events`);
       if (errors.length) fail(`[${tag}] ${errors.length} console error(s): ${errors.slice(0,3).join(" | ")}`);
       else pass(`[${tag}] zero console errors`);
       try { await page.screenshot({path:`scripts/_sj-${tag}.png`,fullPage:false,timeout:8000,animations:"disabled"}); }

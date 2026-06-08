@@ -79,6 +79,14 @@ img{display:block;max-width:100%}
 /* signature orb: fixed full-screen canvas BEHIND the DOM content */
 #orb-stage{position:fixed;inset:0;width:100%;height:100%;z-index:-1;pointer-events:none}
 
+/* canvas-overlay mode: wheel/touch fall through .content to the fixed 3D canvases behind it;
+   re-enable pointer events on everything interactive (Naresh's pattern). */
+.content{ pointer-events:none; }
+.content a, .content button, .content input, .content textarea, .content select,
+.content label, .content [role="button"], .content summary, .content nav,
+.content .proj, .content .key, .content .kbd-chip, .content details{ pointer-events:auto; }
+.content .modal{ pointer-events:auto; }
+
 /* ── scroll progress ────────────────────────────────────────── */
 #progress{
   position:fixed;top:0;left:0;height:2px;width:0;z-index:90;
@@ -434,6 +442,7 @@ html[dir="rtl"] .tl-item::before{left:auto;right:0}
 <canvas id="orb-stage" aria-hidden="true"></canvas>
 <div id="progress"></div>
 
+<main class="content">
 <nav aria-label="Section navigation">
   <a href="#hero" data-sec="hero" class="active"><i class="fa-solid fa-house"></i> <span>Home</span></a>
   <a href="#skills" data-sec="skills"><i class="fa-solid fa-keyboard"></i> <span>Stack</span></a>
@@ -684,6 +693,7 @@ html[dir="rtl"] .tl-item::before{left:auto;right:0}
     <div class="credit">Design inspired by <a href="https://github.com/Naresh-Khatri/3d-portfolio" target="_blank" rel="noopener">Naresh Khatri's 3D Portfolio</a></div>
   </div>
 </footer>
+</main>
 
 <script>
 (function(){
