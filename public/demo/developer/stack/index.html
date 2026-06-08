@@ -18,11 +18,10 @@
     max-width: 36vw; text-align: left; opacity: 0; transition: opacity .15s ease; }
   #label.on { opacity: 1; }
   @media (max-aspect-ratio: 1/1), (max-width: 760px){
-    /* keep the tool name/desc OUT of the keyboard: park it bottom-centre */
-    #label { left: 0; right: 0; top: auto; bottom: 96px; transform: none; max-width: 100%; padding: 0 7vw; text-align: center; }
-    #label .name { font-size: clamp(26px, 8.5vw, 44px); }
-    #label .tag { font-size: 13px; }
-    #hint { bottom: 66px; }
+    /* tool name/desc in the UPPER-LEFT corner: tucked under the headline, clear of the keyboard */
+    #label { left: 4vw; right: auto; top: 12.5vh; bottom: auto; transform: none; max-width: 56vw; padding: 0; text-align: left; }
+    #label .name { font-size: clamp(20px, 6.4vw, 30px); }
+    #label .tag { font-size: 11.5px; margin-top: 5px; line-height: 1.34; }
   }
   #label .name { font-size: clamp(34px, 7vw, 70px); font-weight: 900; line-height: .92; letter-spacing: -2px; color: #222831;
     text-shadow: 1px 1px 0 #b9c4d4, 2px 2px 0 #aeb9cb, 3px 3px 0 #a6bad0, 4px 4px 0 #9aa9bf, 5px 6px 12px rgba(34,40,49,.22); }
@@ -400,8 +399,15 @@ const tagEl=labelEl.querySelector('.tag');
 function setMouse(e){ const t=e.touches?e.touches[0]:e; mouse.x=(t.clientX/innerWidth)*2-1; mouse.y=-(t.clientY/innerHeight)*2+1; }
 let isDown=false, dragging=false, downX=0, downY=0, lastX=0, lastY=0, downCap=null;
 addEventListener('pointerdown',(e)=>{ if(e.target && e.target.id==='snd') return; ac(); setMouse(e); pickHover(); isDown=true; dragging=false; downX=lastX=e.clientX; downY=lastY=e.clientY; downCap=hovered; });
-addEventListener('pointermove',(e)=>{ setMouse(e); if(isDown){ if(!dragging && Math.hypot(e.clientX-downX, e.clientY-downY)>6) dragging=true; if(dragging) orbit(e); } else pickHover(); });
-addEventListener('pointerup',()=>{ if(isDown && !dragging && downCap){ playDown(); const c=downCap; c.userData.pressed=true; setTimeout(()=>{ c.userData.pressed=false; },220);} isDown=false; dragging=false; downCap=null; });
+addEventListener('pointermove',(e)=>{ setMouse(e);
+  if(isDown){
+    /* touch that STARTED on a key => scrub-hover the keys (lift + label) like desktop hover;
+       touch on the empty desk/trackball (or mouse drag) => rotate the board */
+    if(e.pointerType==='touch' && downCap){ pickHover(); }
+    else { if(!dragging && Math.hypot(e.clientX-downX, e.clientY-downY)>6) dragging=true; if(dragging) orbit(e); }
+  } else pickHover();
+});
+addEventListener('pointerup',()=>{ if(isDown && !dragging){ const c=hovered||downCap; if(c){ playDown(); c.userData.pressed=true; setTimeout(()=>{ c.userData.pressed=false; },220);} } isDown=false; dragging=false; downCap=null; });
 addEventListener('pointercancel',()=>{ isDown=false; dragging=false; downCap=null; });
 function orbit(e){ const dx=(e.clientX-lastX)/innerWidth, dy=(e.clientY-lastY)/innerHeight; board.rotation.y+=dx*2.4; board.rotation.x=Math.max(-1.45,Math.min(0.4, board.rotation.x+dy*1.8)); lastX=e.clientX; lastY=e.clientY; }
 function pickHover(){
