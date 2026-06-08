@@ -441,6 +441,26 @@ html[dir="rtl"] .tl-item::before{left:auto;right:0}
 #contact{ min-height:100vh; }
 /* centre content vertically inside the taller sections */
 #experience .wrap, #projects .wrap, #contact .wrap{ display:flex; flex-direction:column; justify-content:center; }
+
+/* ── T3.1: Davy socket cradles ─────────────────────────────── */
+.orb-socket{ position:absolute; z-index:0; pointer-events:none;
+  width:clamp(120px,16vw,190px); aspect-ratio:2/1;
+  border-radius:0 0 50% 50% / 0 0 90% 90%;
+  background:linear-gradient(180deg,#565c63 0%,#4b5056 45%,#33373c 100%);
+  box-shadow:inset 0 10px 16px rgba(0,0,0,.38), 0 16px 26px -10px rgba(34,40,49,.5);
+  transform:translateY(-50%); }
+.orb-socket::after{ content:""; position:absolute; left:8%; right:8%; top:0; height:46%;
+  border-radius:50%; background:radial-gradient(50% 120% at 50% 0,rgba(0,0,0,.28),transparent 70%); }
+@media (prefers-reduced-motion:reduce){ .orb-socket{ /* sockets stay visible; inert */ } }
+
+/* per-section placement (zig-zag, EN/LTR) */
+#hero       .orb-socket{ right:6%;  top:54%; }
+#skills     .orb-socket{ left:8%;   top:60%; }
+#experience .orb-socket{ right:7%;  top:48%; }
+#projects   .orb-socket{ left:6%;   top:42%; }
+#contact    .orb-socket{ left:50%;  top:60%; transform:translate(-50%,-50%); }
+/* contact bg is dark — add a rim so the socket reads */
+#contact .orb-socket{ box-shadow:inset 0 10px 16px rgba(0,0,0,.45), 0 0 0 1px rgba(238,244,252,.12), 0 16px 26px -10px rgba(0,0,0,.5); }
 </style>
     <meta property="og:image" content="https://portfolio-trimind.com/og-image.png" />
     <meta property="og:image:width" content="1200" />
@@ -473,6 +493,7 @@ html[dir="rtl"] .tl-item::before{left:auto;right:0}
 </nav>
 
 <section id="hero" data-reveal>
+  <div class="orb-socket" data-socket aria-hidden="true"></div>
   <div class="wrap">
     <div class="grid">
       <div class="hello blur-in">Hi, I'm</div>
@@ -498,6 +519,7 @@ html[dir="rtl"] .tl-item::before{left:auto;right:0}
 </section>
 
 <section id="skills" data-reveal>
+  <div class="orb-socket" data-socket aria-hidden="true"></div>
   <div class="wrap">
     <div class="sec-head sticky-head">
       <div class="eyebrow">Tech Stack</div>
@@ -509,6 +531,7 @@ html[dir="rtl"] .tl-item::before{left:auto;right:0}
 </section>
 
 <section id="experience" data-reveal>
+  <div class="orb-socket" data-socket aria-hidden="true"></div>
   <div class="wrap">
     <div class="sec-head sticky-head">
       <div class="eyebrow">Experience</div>
@@ -565,6 +588,7 @@ html[dir="rtl"] .tl-item::before{left:auto;right:0}
 </section>
 
 <section id="projects" data-reveal>
+  <div class="orb-socket" data-socket aria-hidden="true"></div>
   <div class="wrap">
     <div class="sec-head sticky-head">
       <div class="eyebrow">Projects</div>
@@ -684,6 +708,7 @@ html[dir="rtl"] .tl-item::before{left:auto;right:0}
 </div>
 
 <section id="contact" data-reveal>
+  <div class="orb-socket" data-socket aria-hidden="true"></div>
   <div class="wrap">
     <div class="sec-head sticky-head">
       <div class="eyebrow">Contact</div>

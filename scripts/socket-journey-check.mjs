@@ -106,6 +106,12 @@ try {
         if (rot && rot.scrollY<5) pass(`[${tag}] drag did not scroll page`);
         else fail(`[${tag}] drag leaked into scroll (scrollY=${rot?rot.scrollY:'?'})`);
       }
+      // T3.1: a Davy socket sized in all 5 sections
+      const socks = await page.evaluate(()=>{ const ids=["hero","skills","experience","projects","contact"];
+        return ids.map(id=>{ const s=document.getElementById(id); const k=s&&s.querySelector(".orb-socket"); if(!k) return {id,ok:false}; const r=k.getBoundingClientRect(); return {id,ok:true,w:Math.round(r.width),h:Math.round(r.height)}; }); });
+      const allOk = socks.every(s=>s.ok && s.w>60 && s.h>20);
+      if (allOk) pass(`[${tag}] Davy socket in all 5 sections`);
+      else fail(`[${tag}] missing/undersized socket: ${JSON.stringify(socks.filter(s=>!s.ok||s.w<=60||s.h<=20))}`);
       if (errors.length) fail(`[${tag}] ${errors.length} console error(s): ${errors.slice(0,3).join(" | ")}`);
       else pass(`[${tag}] zero console errors`);
       try { await page.screenshot({path:`scripts/_sj-${tag}.png`,fullPage:false,timeout:8000,animations:"disabled"}); }
