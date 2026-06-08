@@ -158,6 +158,27 @@ try {
       if(errors.length) fail(`[${tag}] ${errors.length} console error(s): ${errors.slice(0,3).join(" | ")}`); else pass(`[${tag}] zero console errors`);
     });
   }
+
+  // T4.2: low-end → neither 3D script injected; both fallbacks visible
+  for (const route of ROUTES){
+    const ctx=await browser.newContext({viewport:{width:1280,height:900},deviceScaleFactor:2});
+    const page=await ctx.newPage(); const errors=[];
+    let orbJs=false, kbdJs=false;
+    page.on("console",m=>{if(m.type()==="error")errors.push(m.text());});
+    page.on("pageerror",e=>errors.push("PE:"+e.message));
+    page.on("request",r=>{ const u=r.url(); if(u.includes("/orb.js"))orbJs=true; if(u.includes("/keyboard.js"))kbdJs=true; });
+    await page.addInitScript(()=>{ try{Object.defineProperty(navigator,"hardwareConcurrency",{get:()=>2,configurable:true});}catch{} try{Object.defineProperty(navigator,"deviceMemory",{get:()=>2,configurable:true});}catch{} });
+    await page.goto(`${BASE}/demo/developer/${route.file}`,{waitUntil:"load",timeout:60000});
+    await page.waitForTimeout(3000);
+    const tag=route.key+"-lowend";
+    const st=await page.evaluate(()=>({ orbFb:(()=>{const f=document.getElementById("orb-fallback");return f?getComputedStyle(f).display:"none";})(), kbdFb:(()=>{const f=document.getElementById("kbd-fallback");return f?getComputedStyle(f).display:"none";})() }));
+    if(!orbJs) pass(`[${tag}] orb.js NOT injected`); else fail(`[${tag}] orb.js injected on low-end`);
+    if(!kbdJs) pass(`[${tag}] keyboard.js NOT injected`); else fail(`[${tag}] keyboard.js injected on low-end`);
+    if(st.orbFb!=="none") pass(`[${tag}] orb fallback visible`); else fail(`[${tag}] orb fallback hidden`);
+    if(st.kbdFb!=="none") pass(`[${tag}] keyboard fallback visible`); else fail(`[${tag}] keyboard fallback hidden`);
+    if(errors.length) fail(`[${tag}] ${errors.length} console errors: ${errors.slice(0,3).join(" | ")}`); else pass(`[${tag}] zero console errors`);
+    await ctx.close();
+  }
 } finally { await browser.close().catch(()=>{}); killServer(); }
 
 if (failures.length){ console.error("\n──── FAILURES ("+failures.length+") ────"); failures.forEach(f=>console.error(" ✗ "+f)); process.exit(1); }
