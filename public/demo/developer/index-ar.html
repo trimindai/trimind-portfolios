@@ -321,7 +321,7 @@ section[data-reveal]{ will-change:opacity,transform; }
 @media (prefers-reduced-motion:reduce){.kbd-deck{transform:rotateX(12deg)}}
 
 /* ── experience timeline ────────────────────────────────────── */
-#experience{padding:90px 0}
+#experience{padding:clamp(80px,12vh,160px) 0}
 .timeline{position:relative;margin-left:6px}
 .timeline::before{content:"";position:absolute;left:7px;top:6px;bottom:6px;width:1px;background:linear-gradient(180deg,var(--brand),transparent)}
 .tl-item{position:relative;padding-left:38px;padding-bottom:38px}
@@ -338,7 +338,7 @@ section[data-reveal]{ will-change:opacity,transform; }
 .tl-card .desc{color:var(--muted);margin-top:12px}
 
 /* ── projects ───────────────────────────────────────────────── */
-#projects{padding:90px 0}
+#projects{padding:clamp(80px,12vh,160px) 0}
 .proj-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:22px}
 .proj{position:relative;border-radius:var(--radius);overflow:hidden;cursor:pointer;border:1px solid var(--border);aspect-ratio:3/2;background:var(--card)}
 .proj .ph{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-size:2.4rem;color:color-mix(in srgb,var(--fg) 22%,transparent);background:
@@ -386,7 +386,7 @@ section[data-reveal]{ will-change:opacity,transform; }
 .modal .dock{display:flex;flex-wrap:wrap;gap:10px;margin-top:20px;padding-top:20px;border-top:1px solid var(--border)}
 
 /* ── contact (dark Davy surface, light text) ────────────────── */
-#contact{padding:90px 0 140px;background:radial-gradient(78% 72% at 50% 40%,rgba(75,80,86,0.5) 0%,rgba(75,80,86,0.97) 70%);color:var(--on-dark)}
+#contact{padding:clamp(80px,12vh,160px) 0 clamp(120px,16vh,200px);background:radial-gradient(78% 72% at 50% 40%,rgba(75,80,86,0.5) 0%,rgba(75,80,86,0.97) 70%);color:var(--on-dark)}
 #contact .sec-head .eyebrow{color:#a6bad0}
 #contact .sec-head .eyebrow::before{background:#a6bad0}
 #contact h2,#contact h3{color:var(--on-dark)}

@@ -70,6 +70,10 @@ try {
       const sticky = await page.evaluate(()=>{ const h=document.querySelector("#projects .sticky-head"); return h?getComputedStyle(h).position:""; });
       if (sticky==="sticky") pass(`[${tag}] section headings sticky`);
       else fail(`[${tag}] heading not sticky (${sticky})`);
+      // T1.6: fonts applied
+      const fonts = await page.evaluate(()=>{ const h1=document.querySelector("#hero h1"); return { display: h1?getComputedStyle(h1).fontFamily:"", body:getComputedStyle(document.body).fontFamily }; });
+      if (/Archivo/i.test(fonts.display)) pass(`[${tag}] hero display = Archivo Black`);
+      else fail(`[${tag}] hero display font is "${fonts.display}"`);
       if (errors.length) fail(`[${tag}] ${errors.length} console error(s): ${errors.slice(0,3).join(" | ")}`);
       else pass(`[${tag}] zero console errors`);
       try { await page.screenshot({path:`scripts/_sj-${tag}.png`,fullPage:false,timeout:8000,animations:"disabled"}); }
