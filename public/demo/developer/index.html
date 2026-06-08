@@ -166,8 +166,8 @@ section[data-reveal]{ will-change:opacity,transform; }
 @media(min-width:900px){#hero .grid{max-width:440px}} /* text owns the left column; the 3D keyboard render owns the right */
 /* static fallback orb — visible until the live WebGL orb (#orb-stage) paints, and the permanent
    resting orb for reduced-motion / low-end / no-WebGL. .orb-live (set by orb.js on first frame) hides it. */
-#orb-fallback{position:absolute;z-index:0;pointer-events:none;right:5%;top:48%;transform:translateY(-50%);
-  width:min(34%,360px);aspect-ratio:1;border-radius:50%;
+#orb-fallback{position:absolute;z-index:0;pointer-events:none;right:9%;top:50%;transform:translateY(-50%);
+  width:clamp(90px,12vw,140px);aspect-ratio:1;border-radius:50%;
   background:radial-gradient(circle at 38% 32%,#eef4fc 0%,#a8c4e8 19%,#6d99ce 44%,#46699d 72%,#2f5588 100%);
   box-shadow:0 34px 70px -16px rgba(47,85,136,.5),inset -16px -20px 54px rgba(47,85,136,.6),inset 12px 14px 36px rgba(238,244,252,.5);
   animation:orbFloat 7s ease-in-out infinite}
@@ -176,7 +176,7 @@ section[data-reveal]{ will-change:opacity,transform; }
 @keyframes orbFloat{0%,100%{transform:translateY(-50%)}50%{transform:translateY(calc(-50% - 14px))}}
 .orb-live #orb-fallback{display:none}
 @media (prefers-reduced-motion:reduce){#orb-fallback{animation:none}}
-@media(max-width:900px){#orb-fallback{right:3%;top:18%;transform:none;width:42vw;max-width:240px;animation:none}}
+@media(max-width:900px){#orb-fallback{right:3%;top:18%;transform:none;width:clamp(70px,28vw,120px);animation:none}}
 /* photoreal split-keyboard hero render (Blender) — static image, no runtime */
 .hero-kbd{position:absolute;right:1.5%;top:50%;transform:translateY(-50%);width:min(33%,520px);height:auto;pointer-events:none;z-index:0;
   filter:drop-shadow(0 24px 40px rgba(34,40,49,.18));

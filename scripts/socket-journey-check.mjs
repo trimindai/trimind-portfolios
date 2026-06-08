@@ -149,6 +149,8 @@ try {
       }));
       if(!st.live) pass(`[${tag}] keyboard not live (reduced-motion)`); else fail(`[${tag}] kbd-live set under reduced-motion`);
       if(st.fb!=="none") pass(`[${tag}] keyboard fallback visible`); else fail(`[${tag}] keyboard fallback hidden (${st.fb})`);
+      const ofb=await page.evaluate(()=>{ const f=document.getElementById("orb-fallback"); return f?getComputedStyle(f).display:"none"; });
+      if(ofb!=="none") pass(`[${tag}] orb fallback visible (reduced-motion)`); else fail(`[${tag}] orb fallback hidden`);
       if(errors.length) fail(`[${tag}] ${errors.length} console error(s): ${errors.slice(0,3).join(" | ")}`); else pass(`[${tag}] zero console errors`);
     });
   }
