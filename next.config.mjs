@@ -16,7 +16,7 @@ const nextConfig = {
         source: "/(.*)",
         headers: [
           { key: "X-Content-Type-Options", value: "nosniff" },
-          { key: "X-Frame-Options", value: "DENY" },
+          { key: "X-Frame-Options", value: "SAMEORIGIN" },
           { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
           { key: "Strict-Transport-Security", value: "max-age=63072000; includeSubDomains; preload" },
           { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=(), interest-cohort=()" },
@@ -32,7 +32,7 @@ const nextConfig = {
               "connect-src 'self' https://*.clerk.accounts.dev https://clerk.portfolio-trimind.com https://img.clerk.com https://api.myfatoorah.com https://challenges.cloudflare.com https://*.convex.cloud wss://*.convex.cloud",
               "worker-src 'self' blob:",
               "frame-src 'self' https://*.clerk.accounts.dev https://clerk.portfolio-trimind.com https://challenges.cloudflare.com https://demo.myfatoorah.com https://portal.myfatoorah.com",
-              "frame-ancestors 'none'",
+              "frame-ancestors 'self'",
             ].join("; "),
           },
         ],
