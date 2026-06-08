@@ -149,7 +149,7 @@ export default function DashboardPage() {
               onClick={handleNewPortfolio}
               className="mt-6 w-full rounded-lg bg-[var(--land-accent)] py-3 font-semibold text-white hover:bg-[var(--land-accent-hover)] transition-colors"
             >
-              {t("common.getStarted")} — 4.900 KD
+              {t("common.getStarted")}
             </button>
           </div>
         </div>

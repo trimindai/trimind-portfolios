@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 
 const DEMO_LINES = [
   { label: "Name", text: "Sarah Al-Rashidi" },
@@ -9,30 +9,51 @@ const DEMO_LINES = [
   { label: "Summary", text: "Detail-oriented financial analyst with 6+ years of experience in corporate banking, risk assessment, and portfolio management across the Gulf region." },
 ];
 
+const CHAR_DELAY = 40; // ms per character
+const FIELD_PAUSE = 500; // ms pause between fields completing and next starting
+const RESET_PAUSE = 2000; // ms pause after all fields complete before looping
+
 export function CvPreviewCard() {
+  const [fieldIndex, setFieldIndex] = useState(0);
   const [charIndex, setCharIndex] = useState(0);
-  const fullText = DEMO_LINES.map((l) => l.text).join("|||");
-  const totalChars = fullText.length;
+  const [phase, setPhase] = useState<"typing" | "fieldPause" | "resetPause">("typing");
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      setCharIndex((prev) => {
-        if (prev >= totalChars) return 0;
-        return prev + 1;
-      });
-    }, 40);
-    return () => clearInterval(interval);
-  }, [totalChars]);
+    if (phase === "typing") {
+      const currentField = DEMO_LINES[fieldIndex];
+      if (charIndex < currentField.text.length) {
+        timerRef.current = setTimeout(() => {
+          setCharIndex((prev) => prev + 1);
+        }, CHAR_DELAY);
+      } else {
+        // Field complete
+        if (fieldIndex < DEMO_LINES.length - 1) {
+          // More fields to go: pause then start next
+          setPhase("fieldPause");
+        } else {
+          // All fields complete: longer pause then reset
+          setPhase("resetPause");
+        }
+      }
+    } else if (phase === "fieldPause") {
+      timerRef.current = setTimeout(() => {
+        setFieldIndex((prev) => prev + 1);
+        setCharIndex(0);
+        setPhase("typing");
+      }, FIELD_PAUSE);
+    } else if (phase === "resetPause") {
+      timerRef.current = setTimeout(() => {
+        setFieldIndex(0);
+        setCharIndex(0);
+        setPhase("typing");
+      }, RESET_PAUSE);
+    }
 
-  let consumed = 0;
-  const rendered = DEMO_LINES.map((line) => {
-    const start = consumed;
-    consumed += line.text.length + 3;
-    const visible = Math.max(0, Math.min(line.text.length, charIndex - start));
-    const text = line.text.slice(0, visible);
-    const showCursor = charIndex >= start && charIndex < start + line.text.length;
-    return { ...line, text, showCursor };
-  });
+    return () => {
+      if (timerRef.current) clearTimeout(timerRef.current);
+    };
+  }, [fieldIndex, charIndex, phase]);
 
   return (
     <div className="mt-6 lg:mt-0 w-full max-w-sm mx-auto">
@@ -42,15 +63,30 @@ export function CvPreviewCard() {
           <span className="text-[10px] font-medium text-emerald-600 uppercase tracking-wider">AI generating...</span>
         </div>
         <div className="space-y-2">
-          {rendered.map((line, i) => (
-            <div key={i}>
-              <p className="text-[10px] uppercase tracking-wider text-gray-400">{line.label}</p>
-              <p className={`text-sm text-gray-900 ${i === 3 ? "leading-relaxed" : "font-medium"}`}>
-                {line.text || <span className="text-gray-300">...</span>}
-                {line.showCursor && <span className="inline-block w-0.5 h-4 bg-emerald-500 animate-pulse ml-0.5 align-text-bottom" />}
-              </p>
-            </div>
-          ))}
+          {DEMO_LINES.map((line, i) => {
+            let displayText = "";
+            let showCursor = false;
+
+            if (i < fieldIndex) {
+              // Completed field
+              displayText = line.text;
+            } else if (i === fieldIndex) {
+              // Currently typing field
+              displayText = line.text.slice(0, charIndex);
+              showCursor = phase === "typing";
+            }
+            // Fields after fieldIndex stay empty (no text, no "...")
+
+            return (
+              <div key={i}>
+                <p className="text-[10px] uppercase tracking-wider text-gray-400">{line.label}</p>
+                <p className={`text-sm text-gray-900 min-h-[1.25rem] ${i === 3 ? "leading-relaxed" : "font-medium"}`}>
+                  {displayText}
+                  {showCursor && <span className="inline-block w-0.5 h-4 bg-emerald-500 animate-pulse ml-0.5 align-text-bottom" />}
+                </p>
+              </div>
+            );
+          })}
         </div>
         <div className="mt-3 pt-3 border-t border-gray-100 flex items-center justify-between">
           <div className="flex gap-1">

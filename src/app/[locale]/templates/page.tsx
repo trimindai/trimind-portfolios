@@ -55,9 +55,9 @@ type PageProps = {
 export async function generateMetadata({ params }: PageProps) {
   const { locale } = await params;
   return {
-    title: "Portfolio Templates — Portfolio Pro",
+    title: "Portfolio Templates — Portfolio Pro — Professional CV & Portfolio",
     description:
-      "Professional portfolio templates: General, Engineer, Creative, Creator, Developer.",
+      "Build your professional CV and portfolio free. Pay 4.9 KD only when you publish. Choose from General, Engineer, Creative, Creator, Developer templates. Arabic & English. Kuwait & Gulf.",
     alternates: {
       canonical: `https://portfolio-trimind.com/${locale}/templates`,
     },
@@ -95,8 +95,8 @@ export default async function TemplatesPage({ params, searchParams }: PageProps)
       ? "قوالب مصممة لكل مهنة — اختر واحدًا وابدأ خلال دقائق."
       : "Profession-specific templates — pick one and launch in minutes.",
     priceLine: isAr
-      ? `رسوم لمرة واحدة ${priceLabel} (~١٦ دولار) لكل بورتفوليو.`
-      : `One-time fee of ${priceLabel} (~$16 USD) per portfolio.`,
+      ? `مجاني للبناء والمعاينة. ادفع ${priceLabel} فقط عند النشر.`
+      : `Free to build and preview. Pay ${priceLabel} only when you publish.`,
     noSub: isAr ? "بدون اشتراك" : "No subscription",
     securePay: isAr ? "دفع آمن (K-NET، Apple Pay)" : "Secure payment (K-NET, Apple Pay)",
     usd: "~$16 USD",
