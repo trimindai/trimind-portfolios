@@ -137,16 +137,16 @@ section{position:relative;z-index:1}
 }
 
 /* ── hero ───────────────────────────────────────────────────── */
-#hero{min-height:100svh;display:flex;align-items:center;padding:120px 0 80px}
+#hero{min-height:100svh;display:flex;align-items:center;padding:120px 0 80px;position:relative;overflow:hidden}
 #hero .wrap{position:relative}
 #hero .grid{display:grid;grid-template-columns:minmax(0,1fr);gap:8px;position:relative;z-index:1}
 @media(min-width:900px){#hero .grid{max-width:440px;margin-inline-start:0}} /* text owns the start (right in RTL); the keyboard render owns the far side (left) */
 /* photoreal split-keyboard hero render (Blender) — RTL: keyboard on the LEFT */
-.hero-kbd{position:absolute;left:0;top:50%;transform:translateY(-50%);width:min(48%,660px);height:auto;pointer-events:none;z-index:0;
-  filter:drop-shadow(0 30px 50px rgba(0,0,0,.6));
-  -webkit-mask-image:linear-gradient(270deg,transparent 0,#000 26%);mask-image:linear-gradient(270deg,transparent 0,#000 26%)}
-@media(max-width:900px){.hero-kbd{position:static;transform:none;display:block;width:100%;max-width:520px;margin:28px auto 0;opacity:.92;
-  -webkit-mask-image:none;mask-image:none;filter:drop-shadow(0 20px 36px rgba(0,0,0,.55))}}
+.hero-kbd{position:absolute;left:1.5%;top:50%;transform:translateY(-50%);width:min(33%,520px);height:auto;pointer-events:none;z-index:0;
+  filter:drop-shadow(0 34px 64px rgba(8,18,40,.72));
+  -webkit-mask-image:radial-gradient(closest-side at 50% 50%,#000 70%,transparent 100%);mask-image:radial-gradient(closest-side at 50% 50%,#000 70%,transparent 100%)}
+@media(max-width:900px){#hero{flex-direction:column}.hero-kbd{position:static;transform:none;display:block;width:100%;max-width:440px;margin:26px auto 0;opacity:.96;
+  -webkit-mask-image:radial-gradient(closest-side at 50% 50%,#000 74%,transparent 100%);mask-image:radial-gradient(closest-side at 50% 50%,#000 74%,transparent 100%);filter:drop-shadow(0 22px 44px rgba(8,18,40,.6))}}
 #hero .hello{font-family:var(--font-mono);color:var(--accent);font-size:.95rem;letter-spacing:.08em;margin-bottom:18px}
 #hero h1{
   font-family:var(--font-display);font-weight:400;
@@ -172,6 +172,10 @@ section{position:relative;z-index:1}
 @keyframes wheel{0%{opacity:0;transform:translate(-50%,0)}40%{opacity:1}100%{opacity:0;transform:translate(-50%,10px)}}
 
 /* ── skills / tech stack ────────────────────────────────────── */
+/* ── stack section: self-hosted interactive 3D keyboard build (iframe) ── */
+#skills.stack-section{padding:0;position:relative}
+.stack-frame{display:block;width:100%;height:min(100svh,920px);min-height:560px;border:0;background:#04050d}
+@media(max-width:768px){.stack-frame{height:84svh;min-height:480px}}
 /* ── skills / Dygma-style split 3D keyboard (pure CSS + Web Audio) ── */
 #skills{padding:80px 0 110px;--ks:62px;--glow:#2f6bff;--body:#243049}
 .kbd-toolbar{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-top:10px}
@@ -435,84 +439,13 @@ html[dir="rtl"] .tl-item::before{left:auto;right:0}
       </div>
       <div class="scroll-cue blur-in" data-delay="440"><span class="mouse"></span>اسحب للأسفل</div>
     </div>
-    <img class="hero-kbd" src="/assets/hero-keyboard.png" alt="لوحة مفاتيح ميكانيكية مقسّمة ثلاثية الأبعاد" loading="eager" width="1600" height="900">
   </div>
+  <img class="hero-kbd" src="/assets/hero-orb.png" alt="كرة زجاجية تحوي شعار لوحة المفاتيح" loading="eager" width="1100" height="918">
 </section>
 
-<section id="skills">
-  <div class="wrap">
-    <div class="sec-head">
-      <div class="eyebrow">التقنيات</div>
-      <h2>حزمة التقنيات</h2>
-      <div class="kbd-toolbar">
-        <p class="kbd-hint">(اضغط أي مفتاح — كل مفتاح مهارة)</p>
-        <label class="kbd-sound-wrap" for="kbd-sound"><i class="fa-solid fa-volume-high"></i>
-          <select class="kbd-sound" id="kbd-sound" aria-label="صوت المفاتيح">
-            <option value="thocky">ثوكي</option>
-            <option value="creamy">كريمي</option>
-            <option value="clacky">كلاكي</option>
-            <option value="poppy">بوبي</option>
-            <option value="clicky">كليكي</option>
-            <option value="lego">ليغو</option>
-            <option value="none">بدون صوت</option>
-          </select>
-        </label>
-      </div>
-    </div>
-    <div class="kbd-wrap">
-      <div class="kbd-stage">
-        <div class="kbd-deck" id="kbd-deck">
-          <button type="button" class="key kc-0" data-skill="React" data-cat="الواجهة الأمامية" data-desc="واجهات ومكوّنات سريعة وتفاعلية ونظام تصميم متّسق." aria-label="React"><i class="fab fa-react"></i><span class="label">React</span></button>
-          <button type="button" class="key kc-0" data-skill="Next.js" data-cat="الواجهة الأمامية" data-desc="تصيير من الخادم وتوجيه وعرض على الحافة لتطبيقات React الإنتاجية." aria-label="Next.js"><span class="abbr">Next</span><span class="label">Next.js</span></button>
-          <button type="button" class="key kc-0" data-skill="TypeScript" data-cat="الواجهة الأمامية" data-desc="كود آمن الأنواع عبر كامل الحزمة — أخطاء أقل وقت التشغيل." aria-label="TypeScript"><span class="abbr">TS</span><span class="label">TypeScript</span></button>
-          <button type="button" class="key kc-0" data-skill="Tailwind" data-cat="الواجهة الأمامية" data-desc="تنسيق بالأدوات يحافظ على سرعة التصميم واتّساقه." aria-label="Tailwind"><span class="abbr">TW</span><span class="label">Tailwind</span></button>
-          <button type="button" class="key kc-0" data-skill="Three.js" data-cat="الواجهة الأمامية" data-desc="مشاهد ثلاثية الأبعاد و WebGL لحظية داخل المتصفّح." aria-label="Three.js"><span class="abbr">TJ</span><span class="label">Three.js</span></button>
-          <button type="button" class="key kc-1" data-skill="Node.js" data-cat="الواجهة الخلفية" data-desc="خدمات وواجهات برمجية وخلفيات لحظية مدفوعة بالأحداث." aria-label="Node.js"><i class="fab fa-node-js"></i><span class="label">Node.js</span></button>
-          <button type="button" class="key kc-1" data-skill="Python" data-cat="الواجهة الخلفية" data-desc="خدمات خلفية وأتمتة وأدوات بيانات." aria-label="Python"><i class="fab fa-python"></i><span class="label">Python</span></button>
-          <button type="button" class="key kc-1" data-skill="GraphQL" data-cat="الواجهة الخلفية" data-desc="واجهات مطبوعة بنقطة واحدة تُرجع ما يطلبه العميل بالضبط." aria-label="GraphQL"><i class="fas fa-diagram-project"></i><span class="label">GraphQL</span></button>
-          <button type="button" class="key kc-1" data-skill="PostgreSQL" data-cat="الواجهة الخلفية" data-desc="نمذجة علائقية وفهرسة وضبط الاستعلامات." aria-label="PostgreSQL"><i class="fas fa-database"></i><span class="label">PostgreSQL</span></button>
-          <button type="button" class="key kc-1" data-skill="Redis" data-cat="الواجهة الخلفية" data-desc="تخزين مؤقت في الذاكرة وطوابير ونشر/اشتراك لحظي." aria-label="Redis"><i class="fas fa-database"></i><span class="label">Redis</span></button>
-          <button type="button" class="key kc-2" data-skill="AWS" data-cat="السحابة / التشغيل" data-desc="بنية سحابية وخدمات بلا خوادم وقواعد بيانات مُدارة." aria-label="AWS"><i class="fab fa-aws"></i><span class="label">AWS</span></button>
-          <button type="button" class="key kc-2" data-skill="Docker" data-cat="السحابة / التشغيل" data-desc="بُنى قابلة للتكرار وتطابق الحاويات من التطوير إلى الإنتاج." aria-label="Docker"><i class="fab fa-docker"></i><span class="label">Docker</span></button>
-          <button type="button" class="key kc-2" data-skill="Kubernetes" data-cat="السحابة / التشغيل" data-desc="تنسيق الحاويات والتوسّع والنشر التدريجي." aria-label="Kubernetes"><i class="fas fa-dharmachakra"></i><span class="label">Kubernetes</span></button>
-          <button type="button" class="key kc-2" data-skill="Terraform" data-cat="السحابة / التشغيل" data-desc="البنية التحتية ككود — مُؤرشفة وقابلة للتكرار." aria-label="Terraform"><i class="fas fa-server"></i><span class="label">Terraform</span></button>
-          <button type="button" class="key kc-2" data-skill="GitHub Actions" data-cat="السحابة / التشغيل" data-desc="مسارات CI/CD: اختبار وبناء وإطلاق مع كل دفعة." aria-label="GitHub Actions"><span class="abbr">GA</span><span class="label">GitHub Actions</span></button>
-          <button type="button" class="key kc-3" data-skill="Figma" data-cat="الحرفية" data-desc="النماذج الأولية وتسليم سلس من التصميم إلى التطوير." aria-label="Figma"><i class="fab fa-figma"></i><span class="label">Figma</span></button>
-          <button type="button" class="key kc-3" data-skill="WebGL" data-cat="الحرفية" data-desc="رسوميات مُسرَّعة بالـ GPU ومؤثّرات قائمة على الـ shaders." aria-label="WebGL"><span class="abbr">GL</span><span class="label">WebGL</span></button>
-          <button type="button" class="key kc-3" data-skill="Accessibility" data-cat="الحرفية" data-desc="واجهات متوافقة مع WCAG، تدعم لوحة المفاتيح وقارئات الشاشة." aria-label="Accessibility"><i class="fas fa-universal-access"></i><span class="label">Accessibility</span></button>
-        </div>
-      </div>
-      <aside class="kbd-panel empty" id="kbd-panel" aria-live="polite">
-        <div class="pk-cat">اختر مفتاحًا</div>
-        <div class="pk-name">حزمة التقنيات</div>
-        <div class="pk-desc">اضغط أي مفتاح لرؤية الأداة ووصفها.</div>
-      </aside>
-    </div>
-    <div class="kbd-listwrap">
-      <div class="kbd-listhead">كل المهارات</div>
-      <div class="kbd-list" id="kbd-list">
-        <button type="button" class="kbd-chip kc-0" data-skill="React" data-cat="الواجهة الأمامية" data-desc="واجهات ومكوّنات سريعة وتفاعلية ونظام تصميم متّسق."><i class="fab fa-react"></i><span>React</span></button>
-        <button type="button" class="kbd-chip kc-0" data-skill="Next.js" data-cat="الواجهة الأمامية" data-desc="تصيير من الخادم وتوجيه وعرض على الحافة لتطبيقات React الإنتاجية."><span class="dot"></span><span>Next.js</span></button>
-        <button type="button" class="kbd-chip kc-0" data-skill="TypeScript" data-cat="الواجهة الأمامية" data-desc="كود آمن الأنواع عبر كامل الحزمة — أخطاء أقل وقت التشغيل."><span class="dot"></span><span>TypeScript</span></button>
-        <button type="button" class="kbd-chip kc-0" data-skill="Tailwind" data-cat="الواجهة الأمامية" data-desc="تنسيق بالأدوات يحافظ على سرعة التصميم واتّساقه."><span class="dot"></span><span>Tailwind</span></button>
-        <button type="button" class="kbd-chip kc-0" data-skill="Three.js" data-cat="الواجهة الأمامية" data-desc="مشاهد ثلاثية الأبعاد و WebGL لحظية داخل المتصفّح."><span class="dot"></span><span>Three.js</span></button>
-        <button type="button" class="kbd-chip kc-1" data-skill="Node.js" data-cat="الواجهة الخلفية" data-desc="خدمات وواجهات برمجية وخلفيات لحظية مدفوعة بالأحداث."><i class="fab fa-node-js"></i><span>Node.js</span></button>
-        <button type="button" class="kbd-chip kc-1" data-skill="Python" data-cat="الواجهة الخلفية" data-desc="خدمات خلفية وأتمتة وأدوات بيانات."><i class="fab fa-python"></i><span>Python</span></button>
-        <button type="button" class="kbd-chip kc-1" data-skill="GraphQL" data-cat="الواجهة الخلفية" data-desc="واجهات مطبوعة بنقطة واحدة تُرجع ما يطلبه العميل بالضبط."><i class="fas fa-diagram-project"></i><span>GraphQL</span></button>
-        <button type="button" class="kbd-chip kc-1" data-skill="PostgreSQL" data-cat="الواجهة الخلفية" data-desc="نمذجة علائقية وفهرسة وضبط الاستعلامات."><i class="fas fa-database"></i><span>PostgreSQL</span></button>
-        <button type="button" class="kbd-chip kc-1" data-skill="Redis" data-cat="الواجهة الخلفية" data-desc="تخزين مؤقت في الذاكرة وطوابير ونشر/اشتراك لحظي."><i class="fas fa-database"></i><span>Redis</span></button>
-        <button type="button" class="kbd-chip kc-2" data-skill="AWS" data-cat="السحابة / التشغيل" data-desc="بنية سحابية وخدمات بلا خوادم وقواعد بيانات مُدارة."><i class="fab fa-aws"></i><span>AWS</span></button>
-        <button type="button" class="kbd-chip kc-2" data-skill="Docker" data-cat="السحابة / التشغيل" data-desc="بُنى قابلة للتكرار وتطابق الحاويات من التطوير إلى الإنتاج."><i class="fab fa-docker"></i><span>Docker</span></button>
-        <button type="button" class="kbd-chip kc-2" data-skill="Kubernetes" data-cat="السحابة / التشغيل" data-desc="تنسيق الحاويات والتوسّع والنشر التدريجي."><i class="fas fa-dharmachakra"></i><span>Kubernetes</span></button>
-        <button type="button" class="kbd-chip kc-2" data-skill="Terraform" data-cat="السحابة / التشغيل" data-desc="البنية التحتية ككود — مُؤرشفة وقابلة للتكرار."><i class="fas fa-server"></i><span>Terraform</span></button>
-        <button type="button" class="kbd-chip kc-2" data-skill="GitHub Actions" data-cat="السحابة / التشغيل" data-desc="مسارات CI/CD: اختبار وبناء وإطلاق مع كل دفعة."><span class="dot"></span><span>GitHub Actions</span></button>
-        <button type="button" class="kbd-chip kc-3" data-skill="Figma" data-cat="الحرفية" data-desc="النماذج الأولية وتسليم سلس من التصميم إلى التطوير."><i class="fab fa-figma"></i><span>Figma</span></button>
-        <button type="button" class="kbd-chip kc-3" data-skill="WebGL" data-cat="الحرفية" data-desc="رسوميات مُسرَّعة بالـ GPU ومؤثّرات قائمة على الـ shaders."><span class="dot"></span><span>WebGL</span></button>
-        <button type="button" class="kbd-chip kc-3" data-skill="Accessibility" data-cat="الحرفية" data-desc="واجهات متوافقة مع WCAG، تدعم لوحة المفاتيح وقارئات الشاشة."><i class="fas fa-universal-access"></i><span>Accessibility</span></button>
-      </div>
-    </div>
-  </div>
-</section>
+<section id="skills" class="stack-section">
+    <iframe class="stack-frame" src="/demo/developer/stack/" title="حزمة التقنيات — لوحة مفاتيح ثلاثية الأبعاد تفاعلية" loading="lazy"></iframe>
+  </section>
 
 <section id="experience">
   <div class="wrap">

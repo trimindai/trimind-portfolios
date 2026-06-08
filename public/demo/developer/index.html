@@ -135,16 +135,16 @@ section{position:relative;z-index:1}
 }
 
 /* ── hero ───────────────────────────────────────────────────── */
-#hero{min-height:100svh;display:flex;align-items:center;padding:120px 0 80px}
+#hero{min-height:100svh;display:flex;align-items:center;padding:120px 0 80px;position:relative;overflow:hidden}
 #hero .wrap{position:relative}
 #hero .grid{display:grid;grid-template-columns:minmax(0,1fr);gap:8px;position:relative;z-index:1}
 @media(min-width:900px){#hero .grid{max-width:440px}} /* text owns the left column; the 3D keyboard render owns the right */
 /* photoreal split-keyboard hero render (Blender) — static image, no runtime */
-.hero-kbd{position:absolute;right:0;top:50%;transform:translateY(-50%);width:min(48%,660px);height:auto;pointer-events:none;z-index:0;
-  filter:drop-shadow(0 30px 50px rgba(0,0,0,.6));
-  -webkit-mask-image:linear-gradient(90deg,transparent 0,#000 26%);mask-image:linear-gradient(90deg,transparent 0,#000 26%)}
-@media(max-width:900px){.hero-kbd{position:static;transform:none;display:block;width:100%;max-width:520px;margin:28px auto 0;opacity:.92;
-  -webkit-mask-image:none;mask-image:none;filter:drop-shadow(0 20px 36px rgba(0,0,0,.55))}}
+.hero-kbd{position:absolute;right:1.5%;top:50%;transform:translateY(-50%);width:min(33%,520px);height:auto;pointer-events:none;z-index:0;
+  filter:drop-shadow(0 34px 64px rgba(8,18,40,.72));
+  -webkit-mask-image:radial-gradient(closest-side at 50% 50%,#000 70%,transparent 100%);mask-image:radial-gradient(closest-side at 50% 50%,#000 70%,transparent 100%)}
+@media(max-width:900px){#hero{flex-direction:column}.hero-kbd{position:static;transform:none;display:block;width:100%;max-width:440px;margin:26px auto 0;opacity:.96;
+  -webkit-mask-image:radial-gradient(closest-side at 50% 50%,#000 74%,transparent 100%);mask-image:radial-gradient(closest-side at 50% 50%,#000 74%,transparent 100%);filter:drop-shadow(0 22px 44px rgba(8,18,40,.6))}}
 #hero .hello{font-family:var(--font-mono);color:var(--accent);font-size:.95rem;letter-spacing:.08em;margin-bottom:18px}
 #hero h1{
   font-family:var(--font-display);font-weight:400;
@@ -170,6 +170,10 @@ section{position:relative;z-index:1}
 @keyframes wheel{0%{opacity:0;transform:translate(-50%,0)}40%{opacity:1}100%{opacity:0;transform:translate(-50%,10px)}}
 
 /* ── skills / tech stack ────────────────────────────────────── */
+/* ── stack section: self-hosted interactive 3D keyboard build (iframe) ── */
+#skills.stack-section{padding:0;position:relative}
+.stack-frame{display:block;width:100%;height:min(100svh,920px);min-height:560px;border:0;background:#04050d}
+@media(max-width:768px){.stack-frame{height:84svh;min-height:480px}}
 /* ── skills / Dygma-style split 3D keyboard (pure CSS + Web Audio) ── */
 #skills{padding:80px 0 110px;--ks:62px;--glow:#2f6bff;--body:#243049}
 .kbd-toolbar{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-top:10px}
@@ -433,84 +437,13 @@ html[dir="rtl"] .tl-item::before{left:auto;right:0}
       </div>
       <div class="scroll-cue blur-in" data-delay="440"><span class="mouse"></span>SCROLL</div>
     </div>
-    <img class="hero-kbd" src="/assets/hero-keyboard.png" alt="3D split mechanical keyboard" loading="eager" width="1600" height="900">
   </div>
+  <img class="hero-kbd" src="/assets/hero-orb.png" alt="Glass trackball orb" loading="eager" width="1100" height="918">
 </section>
 
-<section id="skills">
-  <div class="wrap">
-    <div class="sec-head">
-      <div class="eyebrow">Tech Stack</div>
-      <h2>Tech Stack</h2>
-      <div class="kbd-toolbar">
-        <p class="kbd-hint">(press a key — every key is a skill)</p>
-        <label class="kbd-sound-wrap" for="kbd-sound"><i class="fa-solid fa-volume-high"></i>
-          <select class="kbd-sound" id="kbd-sound" aria-label="Key sound">
-            <option value="thocky">Thocky</option>
-            <option value="creamy">Creamy</option>
-            <option value="clacky">Clacky</option>
-            <option value="poppy">Poppy</option>
-            <option value="clicky">Clicky</option>
-            <option value="lego">Lego</option>
-            <option value="none">No sound</option>
-          </select>
-        </label>
-      </div>
-    </div>
-    <div class="kbd-wrap">
-      <div class="kbd-stage">
-        <div class="kbd-deck" id="kbd-deck">
-          <button type="button" class="key kc-0" data-skill="React" data-cat="Frontend" data-desc="Component UIs and design systems for fast, interactive products." aria-label="React — Frontend"><i class="fab fa-react"></i><span class="label">React</span></button>
-          <button type="button" class="key kc-0" data-skill="Next.js" data-cat="Frontend" data-desc="App-router SSR, edge rendering and routing for production React." aria-label="Next.js — Frontend"><span class="abbr">Next</span><span class="label">Next.js</span></button>
-          <button type="button" class="key kc-0" data-skill="TypeScript" data-cat="Frontend" data-desc="Type-safe code end to end — fewer runtime surprises." aria-label="TypeScript — Frontend"><span class="abbr">TS</span><span class="label">TypeScript</span></button>
-          <button type="button" class="key kc-0" data-skill="Tailwind" data-cat="Frontend" data-desc="Utility-first styling that keeps design fast and consistent." aria-label="Tailwind — Frontend"><span class="abbr">TW</span><span class="label">Tailwind</span></button>
-          <button type="button" class="key kc-0" data-skill="Three.js" data-cat="Frontend" data-desc="Real-time 3D and WebGL scenes that run in the browser." aria-label="Three.js — Frontend"><span class="abbr">TJ</span><span class="label">Three.js</span></button>
-          <button type="button" class="key kc-1" data-skill="Node.js" data-cat="Backend" data-desc="Event-driven services, APIs and real-time backends." aria-label="Node.js — Backend"><i class="fab fa-node-js"></i><span class="label">Node.js</span></button>
-          <button type="button" class="key kc-1" data-skill="Python" data-cat="Backend" data-desc="Backend services, automation and data tooling." aria-label="Python — Backend"><i class="fab fa-python"></i><span class="label">Python</span></button>
-          <button type="button" class="key kc-1" data-skill="GraphQL" data-cat="Backend" data-desc="Typed, single-endpoint APIs that return exactly what's asked." aria-label="GraphQL — Backend"><i class="fas fa-diagram-project"></i><span class="label">GraphQL</span></button>
-          <button type="button" class="key kc-1" data-skill="PostgreSQL" data-cat="Backend" data-desc="Relational modelling, indexing and query tuning." aria-label="PostgreSQL — Backend"><i class="fas fa-database"></i><span class="label">PostgreSQL</span></button>
-          <button type="button" class="key kc-1" data-skill="Redis" data-cat="Backend" data-desc="In-memory caching, queues and real-time pub/sub." aria-label="Redis — Backend"><i class="fas fa-database"></i><span class="label">Redis</span></button>
-          <button type="button" class="key kc-2" data-skill="AWS" data-cat="Cloud / Ops" data-desc="Cloud infrastructure, serverless and managed data services." aria-label="AWS — Cloud / Ops"><i class="fab fa-aws"></i><span class="label">AWS</span></button>
-          <button type="button" class="key kc-2" data-skill="Docker" data-cat="Cloud / Ops" data-desc="Reproducible builds and container parity from local to prod." aria-label="Docker — Cloud / Ops"><i class="fab fa-docker"></i><span class="label">Docker</span></button>
-          <button type="button" class="key kc-2" data-skill="Kubernetes" data-cat="Cloud / Ops" data-desc="Orchestrating containers, scaling and rolling deploys." aria-label="Kubernetes — Cloud / Ops"><i class="fas fa-dharmachakra"></i><span class="label">Kubernetes</span></button>
-          <button type="button" class="key kc-2" data-skill="Terraform" data-cat="Cloud / Ops" data-desc="Infrastructure as code — versioned and repeatable." aria-label="Terraform — Cloud / Ops"><i class="fas fa-server"></i><span class="label">Terraform</span></button>
-          <button type="button" class="key kc-2" data-skill="GitHub Actions" data-cat="Cloud / Ops" data-desc="CI/CD pipelines: test, build and ship on every push." aria-label="GitHub Actions — Cloud / Ops"><span class="abbr">GA</span><span class="label">GitHub Actions</span></button>
-          <button type="button" class="key kc-3" data-skill="Figma" data-cat="Craft" data-desc="Prototyping and a tight design-to-development handoff." aria-label="Figma — Craft"><i class="fab fa-figma"></i><span class="label">Figma</span></button>
-          <button type="button" class="key kc-3" data-skill="WebGL" data-cat="Craft" data-desc="GPU-accelerated graphics and shader-driven visuals." aria-label="WebGL — Craft"><span class="abbr">GL</span><span class="label">WebGL</span></button>
-          <button type="button" class="key kc-3" data-skill="Accessibility" data-cat="Craft" data-desc="WCAG-compliant, keyboard-first, screen-reader-friendly UIs." aria-label="Accessibility — Craft"><i class="fas fa-universal-access"></i><span class="label">Accessibility</span></button>
-        </div>
-      </div>
-      <aside class="kbd-panel empty" id="kbd-panel" aria-live="polite">
-        <div class="pk-cat">Select a key</div>
-        <div class="pk-name">Tech Stack</div>
-        <div class="pk-desc">Press any key to see the tool and what it's used for.</div>
-      </aside>
-    </div>
-    <div class="kbd-listwrap">
-      <div class="kbd-listhead">All skills</div>
-      <div class="kbd-list" id="kbd-list">
-        <button type="button" class="kbd-chip kc-0" data-skill="React" data-cat="Frontend" data-desc="Component UIs and design systems for fast, interactive products."><i class="fab fa-react"></i><span>React</span></button>
-        <button type="button" class="kbd-chip kc-0" data-skill="Next.js" data-cat="Frontend" data-desc="App-router SSR, edge rendering and routing for production React."><span class="dot"></span><span>Next.js</span></button>
-        <button type="button" class="kbd-chip kc-0" data-skill="TypeScript" data-cat="Frontend" data-desc="Type-safe code end to end — fewer runtime surprises."><span class="dot"></span><span>TypeScript</span></button>
-        <button type="button" class="kbd-chip kc-0" data-skill="Tailwind" data-cat="Frontend" data-desc="Utility-first styling that keeps design fast and consistent."><span class="dot"></span><span>Tailwind</span></button>
-        <button type="button" class="kbd-chip kc-0" data-skill="Three.js" data-cat="Frontend" data-desc="Real-time 3D and WebGL scenes that run in the browser."><span class="dot"></span><span>Three.js</span></button>
-        <button type="button" class="kbd-chip kc-1" data-skill="Node.js" data-cat="Backend" data-desc="Event-driven services, APIs and real-time backends."><i class="fab fa-node-js"></i><span>Node.js</span></button>
-        <button type="button" class="kbd-chip kc-1" data-skill="Python" data-cat="Backend" data-desc="Backend services, automation and data tooling."><i class="fab fa-python"></i><span>Python</span></button>
-        <button type="button" class="kbd-chip kc-1" data-skill="GraphQL" data-cat="Backend" data-desc="Typed, single-endpoint APIs that return exactly what's asked."><i class="fas fa-diagram-project"></i><span>GraphQL</span></button>
-        <button type="button" class="kbd-chip kc-1" data-skill="PostgreSQL" data-cat="Backend" data-desc="Relational modelling, indexing and query tuning."><i class="fas fa-database"></i><span>PostgreSQL</span></button>
-        <button type="button" class="kbd-chip kc-1" data-skill="Redis" data-cat="Backend" data-desc="In-memory caching, queues and real-time pub/sub."><i class="fas fa-database"></i><span>Redis</span></button>
-        <button type="button" class="kbd-chip kc-2" data-skill="AWS" data-cat="Cloud / Ops" data-desc="Cloud infrastructure, serverless and managed data services."><i class="fab fa-aws"></i><span>AWS</span></button>
-        <button type="button" class="kbd-chip kc-2" data-skill="Docker" data-cat="Cloud / Ops" data-desc="Reproducible builds and container parity from local to prod."><i class="fab fa-docker"></i><span>Docker</span></button>
-        <button type="button" class="kbd-chip kc-2" data-skill="Kubernetes" data-cat="Cloud / Ops" data-desc="Orchestrating containers, scaling and rolling deploys."><i class="fas fa-dharmachakra"></i><span>Kubernetes</span></button>
-        <button type="button" class="kbd-chip kc-2" data-skill="Terraform" data-cat="Cloud / Ops" data-desc="Infrastructure as code — versioned and repeatable."><i class="fas fa-server"></i><span>Terraform</span></button>
-        <button type="button" class="kbd-chip kc-2" data-skill="GitHub Actions" data-cat="Cloud / Ops" data-desc="CI/CD pipelines: test, build and ship on every push."><span class="dot"></span><span>GitHub Actions</span></button>
-        <button type="button" class="kbd-chip kc-3" data-skill="Figma" data-cat="Craft" data-desc="Prototyping and a tight design-to-development handoff."><i class="fab fa-figma"></i><span>Figma</span></button>
-        <button type="button" class="kbd-chip kc-3" data-skill="WebGL" data-cat="Craft" data-desc="GPU-accelerated graphics and shader-driven visuals."><span class="dot"></span><span>WebGL</span></button>
-        <button type="button" class="kbd-chip kc-3" data-skill="Accessibility" data-cat="Craft" data-desc="WCAG-compliant, keyboard-first, screen-reader-friendly UIs."><i class="fas fa-universal-access"></i><span>Accessibility</span></button>
-      </div>
-    </div>
-  </div>
-</section>
+<section id="skills" class="stack-section">
+    <iframe class="stack-frame" src="/demo/developer/stack/" title="Tech Stack — interactive 3D keyboard" loading="lazy"></iframe>
+  </section>
 
 <section id="experience">
   <div class="wrap">

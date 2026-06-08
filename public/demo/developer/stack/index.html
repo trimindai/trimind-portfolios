@@ -1,0 +1,421 @@
+<!DOCTYPE html><html lang="en"><head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<link rel="icon" href="data:,"/>
+<title>Split Ergo Tech Keyboard — Trimind</title>
+<style>
+  html, body { margin: 0; height: 100%; background: #04050d; overflow: hidden; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+  #bg { position: fixed; inset: 0;
+    background:
+      radial-gradient(1100px 650px at 60% 12%, #16264d 0%, rgba(22,38,77,0) 60%),
+      radial-gradient(850px 560px at 24% 86%, #1d2740 0%, rgba(29,39,64,0) 60%),
+      #04050d; }
+  #stage { position: fixed; inset: 0; }
+  #heading { position: fixed; top: 5vh; left: 0; right: 0; text-align: center; color: #fff; pointer-events: none; z-index: 5; }
+  #heading h1 { margin: 0; font-size: clamp(34px, 6.5vw, 86px); font-weight: 800; letter-spacing: -2px; }
+  #heading p { margin: 6px 0 0; font-size: clamp(12px, 1.6vw, 18px); font-weight: 700; opacity: .7; }
+  #label { position: fixed; left: 5vw; top: 40%; transform: translateY(-50%); z-index: 5; pointer-events: none; color: #fff;
+    max-width: 36vw; text-align: left; opacity: 0; transition: opacity .15s ease; }
+  #label.on { opacity: 1; }
+  @media (max-aspect-ratio: 1/1), (max-width: 760px){
+    #label { left: 5vw; top: 32%; max-width: 72vw; }
+  }
+  #label .name { font-size: clamp(34px, 7vw, 70px); font-weight: 900; line-height: .92; letter-spacing: -2px;
+    text-shadow: 1px 1px 0 #2f2f3f, 2px 2px 0 #262635, 3px 3px 0 #1d1d2a, 4px 4px 0 #14141f, 6px 7px 14px rgba(0,0,0,.5); }
+  #label .tag { margin-top: 10px; font-family: "SF Mono", ui-monospace, Menlo, Consolas, monospace; font-size: clamp(12px, 2vw, 18px); font-style: italic; opacity: .8; line-height: 1.5; white-space: pre-line; }
+  #hint { position: fixed; bottom: 16px; left: 0; right: 0; text-align: center; color:#fff; opacity:.35; font-size:12px; z-index:5; pointer-events:none; }
+  #snd { position: fixed; bottom: 14px; right: 16px; z-index: 6; cursor: pointer; color:#fff; opacity:.7;
+    font-size:12px; font-weight:700; letter-spacing:.5px; background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.18);
+    padding:7px 12px; border-radius:20px; user-select:none; -webkit-tap-highlight-color:transparent; }
+  #snd:hover { opacity:1; }
+  #sw { position: fixed; bottom: 14px; right: 116px; z-index: 6; cursor: pointer; color:#fff; opacity:.7;
+    font-size:12px; font-weight:700; letter-spacing:.5px; background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.18);
+    padding:7px 12px; border-radius:20px; user-select:none; -webkit-tap-highlight-color:transparent; }
+  #sw:hover { opacity:1; }
+</style>
+</head>
+<body>
+<div id="bg"></div>
+<div id="heading"><h1>Tech Stack</h1><p>(hint: press a key)</p></div>
+<div id="label"><div class="name"></div><div class="tag"></div></div>
+<div id="hint">hover to reveal · click a key to press · drag anywhere to rotate</div>
+<div id="sw">SWITCH: THOCK</div>
+<div id="snd">SOUND: ON</div>
+<canvas id="stage"></canvas>
+
+<script src="./vendor/three.min.js"></script>
+<script>
+/* ============================================================
+   CONFIG — swap a logo = change `slug` (any simple-icons slug).
+   Caps fill sockets left->right; layout = 6x4 main per hand + thumb clusters.
+   ============================================================ */
+const SKILLS = [
+  /* col 0 — frontend core (casper) */
+  { slug:"react",             label:"React",      tag:"component UIs, fast",          color:"#a6bad0" },
+  { slug:"nextdotjs",         label:"Next.js",    tag:"SSR + the app router",         color:"#a6bad0" },
+  { slug:"typescript",        label:"TypeScript", tag:"types end to end",             color:"#a6bad0" },
+  { slug:"javascript",        label:"JavaScript", tag:"the language of the web",      color:"#a6bad0" },
+  /* col 1 — frontend craft (mischka) */
+  { slug:"tailwindcss",       label:"Tailwind",   tag:"utility-first styling",        color:"#ccd1da" },
+  { slug:"threedotjs",        label:"Three.js",   tag:"real-time 3D in the browser",  color:"#ccd1da" },
+  { slug:"webgl",             label:"WebGL",      tag:"GPU-driven visuals",           color:"#ccd1da" },
+  { slug:"framer",            label:"Framer",     tag:"motion that feels alive",      color:"#ccd1da" },
+  /* col 2 — backend (blue) */
+  { slug:"nodedotjs",         label:"Node.js",    tag:"event-driven services",        color:"#6d99ce" },
+  { slug:"python",            label:"Python",     tag:"automation + data tooling",    color:"#6d99ce" },
+  { slug:"graphql",           label:"GraphQL",    tag:"ask for exactly what you need",color:"#6d99ce" },
+  { slug:"postgresql",        label:"PostgreSQL", tag:"relational, indexed, tuned",   color:"#6d99ce" },
+  /* col 3 — data + cloud (shuttle) */
+  { slug:"redis",             label:"Redis",      tag:"in-memory cache + pub/sub",    color:"#5f6b7a" },
+  { slug:"amazonwebservices", label:"AWS",        tag:"cloud infra + serverless",     color:"#5f6b7a" },
+  { slug:"docker",            label:"Docker",     tag:"reproducible builds",          color:"#5f6b7a" },
+  { slug:"kubernetes",        label:"Kubernetes", tag:"orchestrate + scale",          color:"#5f6b7a" },
+  /* col 4 — ship + craft (davy) */
+  { slug:"githubactions",     label:"Actions",    tag:"ship on every push",           color:"#4b5056" },
+  { slug:"git",               label:"Git",        tag:"history you can trust",        color:"#4b5056" },
+  { slug:"figma",             label:"Figma",      tag:"design-to-dev handoff",        color:"#4b5056" },
+  { slug:null,                label:"A11y",       tag:"usable by everyone",           color:"#4b5056" },
+];
+const ICON_VER = "v15";
+const DARK = 1.0; // 1.0 = true brand shades
+
+const canvas = document.getElementById('stage');
+const renderer = new THREE.WebGLRenderer({ canvas, antialias:true, alpha:true });
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+renderer.setSize(innerWidth, innerHeight);
+renderer.outputEncoding = THREE.sRGBEncoding;
+renderer.toneMapping = THREE.NoToneMapping;
+
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(40, innerWidth/innerHeight, 0.1, 100);
+
+const pmrem = new THREE.PMREMGenerator(renderer);
+(function buildEnv(){
+  const c = document.createElement('canvas'); c.width = 512; c.height = 256;
+  const g = c.getContext('2d');
+  const grad = g.createLinearGradient(0,0,0,256);
+  grad.addColorStop(0,'#5567ad'); grad.addColorStop(0.45,'#1a2138'); grad.addColorStop(1,'#06070f');
+  g.fillStyle = grad; g.fillRect(0,0,512,256);
+  g.globalAlpha = 0.95; g.fillStyle = '#ffffff';
+  g.beginPath(); g.ellipse(150,54,54,15,0,0,7); g.fill();
+  g.globalAlpha = 0.4; g.beginPath(); g.ellipse(380,82,72,10,0,0,7); g.fill();
+  g.globalAlpha = 1;
+  const tex = new THREE.Texture(c); tex.needsUpdate = true; tex.mapping = THREE.EquirectangularReflectionMapping;
+  scene.environment = pmrem.fromEquirectangular(tex).texture;
+})();
+
+scene.add(new THREE.AmbientLight(0xffffff, 0.55));
+const keyL = new THREE.DirectionalLight(0xffffff, 0.85); keyL.position.set(6, 14, 9); scene.add(keyL);
+const rimL = new THREE.DirectionalLight(0xffffff, 0.3); rimL.position.set(-9, 6, -6); scene.add(rimL);
+const fillL= new THREE.PointLight(0xffffff, 0.25, 70); fillL.position.set(2, 9, 8); scene.add(fillL);
+
+(() => {
+  const g = new THREE.BufferGeometry(); const n = 700; const p = new Float32Array(n*3);
+  for (let i=0;i<n*3;i++) p[i] = (Math.random()-0.5)*100;
+  g.setAttribute('position', new THREE.BufferAttribute(p,3));
+  scene.add(new THREE.Points(g, new THREE.PointsMaterial({ color:0xffffff, size:0.06, transparent:true, opacity:0.7 })));
+})();
+
+function roundedBoxGeo(w, d, h, r){
+  const shape = new THREE.Shape();
+  const x = -w/2, y = -d/2;
+  shape.moveTo(x+r, y);
+  shape.lineTo(x+w-r, y); shape.quadraticCurveTo(x+w, y, x+w, y+r);
+  shape.lineTo(x+w, y+d-r); shape.quadraticCurveTo(x+w, y+d, x+w-r, y+d);
+  shape.lineTo(x+r, y+d); shape.quadraticCurveTo(x, y+d, x, y+d-r);
+  shape.lineTo(x, y+r); shape.quadraticCurveTo(x, y, x+r, y);
+  const bevel = Math.min(0.08, h*0.26);
+  const geo = new THREE.ExtrudeGeometry(shape, {
+    depth: Math.max(0.01, h - bevel*2), bevelEnabled:true,
+    bevelThickness:bevel, bevelSize:bevel, bevelSegments:4, steps:1, curveSegments:8
+  });
+  geo.rotateX(-Math.PI/2);
+  geo.computeBoundingBox();
+  const bb = geo.boundingBox;
+  geo.translate(0, -(bb.min.y+bb.max.y)/2, 0);
+  return geo;
+}
+function taper(geo, topScale){
+  geo.computeBoundingBox();
+  const mn = geo.boundingBox.min.y, mx = geo.boundingBox.max.y, h = mx - mn;
+  const pos = geo.attributes.position;
+  for (let i=0;i<pos.count;i++){
+    const tt = (pos.getY(i)-mn)/h;
+    const s = 1 - (1-topScale)*tt;
+    pos.setX(i, pos.getX(i)*s); pos.setZ(i, pos.getZ(i)*s);
+  }
+  pos.needsUpdate = true; geo.computeVertexNormals();
+  return geo;
+}
+
+/* dark glyphs on light caps, white glyphs on dark caps — keeps logos legible across the muted palette */
+function inkFor(hex){
+  const c=new THREE.Color(hex); const lum=0.2126*c.r+0.7152*c.g+0.0722*c.b;
+  return lum>0.55 ? '#1b2230' : '#ffffff';
+}
+function makeTextTexture(label, ink, apply){
+  const S=256; const cv=document.createElement('canvas'); cv.width=cv.height=S;
+  const ctx=cv.getContext('2d');
+  ctx.fillStyle=ink||'#ffffff'; ctx.textAlign='center'; ctx.textBaseline='middle';
+  const txt = label.toUpperCase();
+  let fs=130; ctx.font='900 '+fs+'px -apple-system, Segoe UI, sans-serif';
+  while(ctx.measureText(txt).width > S*0.84 && fs>26){ fs-=6; ctx.font='900 '+fs+'px -apple-system, Segoe UI, sans-serif'; }
+  ctx.fillText(txt, S/2, S/2);
+  const tex=new THREE.CanvasTexture(cv); tex.anisotropy=8; tex.encoding=THREE.sRGBEncoding; apply(tex);
+}
+function makeLogoTexture(skill, apply){
+  const S = 256;
+  const cv = document.createElement('canvas'); cv.width = cv.height = S;
+  const ctx = cv.getContext('2d');
+  const ink = inkFor(skill.color);
+  function fallback(){
+    ctx.clearRect(0,0,S,S); ctx.fillStyle = ink;
+    ctx.font = '900 116px -apple-system, Segoe UI, sans-serif';
+    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText(skill.label.replace(/[^A-Za-z]/g,'').slice(0,3).toUpperCase(), S/2, S/2);
+    const tex = new THREE.CanvasTexture(cv); tex.anisotropy = 8; tex.encoding = THREE.sRGBEncoding; apply(tex);
+  }
+  const img = new Image(); img.crossOrigin = 'anonymous';
+  img.onload = () => {
+    try {
+      ctx.clearRect(0,0,S,S);
+      const pad = S*0.1;
+      ctx.drawImage(img, pad, pad, S-2*pad, S-2*pad);
+      ctx.globalCompositeOperation = 'source-in';
+      ctx.fillStyle = ink; ctx.fillRect(0,0,S,S);
+      ctx.globalCompositeOperation = 'source-over';
+      ctx.getImageData(0,0,1,1);
+      const tex = new THREE.CanvasTexture(cv); tex.anisotropy = 8; tex.encoding = THREE.sRGBEncoding; apply(tex);
+    } catch(e){ fallback(); }
+  };
+  img.onerror = fallback;
+  img.src = "./icons/" + skill.slug + ".svg";
+}
+
+/* ---------- presets ---------- */
+const KW = 0.92, KH = 0.72, TOP = 0.72;
+const capGeo   = taper(roundedBoxGeo(KW, KW, KH, 0.11), TOP);
+const TOPW     = KW * TOP;
+const switchGeo= roundedBoxGeo(KW*0.78, KW*0.78, 0.22, 0.06);
+const switchMat= new THREE.MeshStandardMaterial({ color:0x111216, metalness:0.3, roughness:0.7 });
+const caseMat  = new THREE.MeshStandardMaterial({ color:0x141519, metalness:0.25, roughness:0.5, envMapIntensity:0.7 });
+
+const caps = [];
+const board = new THREE.Group();
+board.rotation.x = -0.16;          /* near-flat: read the whole grid from a 3/4 angle */
+scene.add(board);
+
+let skillIdx = 0;
+function placeKey(half, x, z, pts){
+  pts.push([x,z]);
+  const sw = new THREE.Mesh(switchGeo, switchMat); sw.position.set(x, 0, z); half.add(sw);
+  if (skillIdx < SKILLS.length){
+    const skill = SKILLS[skillIdx++];
+    const cap = new THREE.Group(); cap.position.set(x, 0, z);
+    const mat = new THREE.MeshStandardMaterial({
+      color:new THREE.Color(skill.color).multiplyScalar(DARK), metalness:0.12, roughness:0.34, envMapIntensity:1.0,
+      emissive:new THREE.Color(skill.color).multiplyScalar(DARK), emissiveIntensity:0.0
+    });
+    const body = new THREE.Mesh(capGeo, mat); body.position.y = 0.18 + KH/2; cap.add(body);
+    const lm = new THREE.MeshBasicMaterial({ transparent:true, opacity:0, depthWrite:false });
+    const lg = new THREE.Mesh(new THREE.PlaneGeometry(TOPW*0.84, TOPW*0.84), lm);
+    lg.rotation.x = -Math.PI/2; lg.position.y = 0.18 + KH + 0.012; cap.add(lg);
+    makeLogoTexture(skill, (t)=>{ lm.map=t; lm.opacity=1; lm.needsUpdate=true; });
+    cap.userData = { skill, mat, baseY:0, vy:0 }; body.userData.cap = cap;
+    caps.push(cap); half.add(cap);
+  }
+}
+
+/* ---------- geometry layout ---------- */
+const ROWS_H = 4;                                   /* 4 vertical keycaps (fixed) */
+const COLS_H = Math.max(1, Math.ceil(SKILLS.length / ROWS_H)); /* horizontal keycaps scale with the stack */
+const CG = 1.0, RG = 1.0;
+/* finger lengths: how far BACK each column sits (inner->outer). middle longest, pinky shortest => hand shape */
+const FINGER = [0.55, 0.95, 1.15, 0.9, 0.45, 0.1];
+const G = KW + 0.12; /* thumb key spacing */
+
+function placeCap(parent, x, z){
+  const sw = new THREE.Mesh(switchGeo, switchMat); sw.position.set(x,0,z); parent.add(sw);
+  if (skillIdx < SKILLS.length){
+    const skill = SKILLS[skillIdx++];
+    const cap = new THREE.Group(); cap.position.set(x,0,z);
+    const mat = new THREE.MeshStandardMaterial({ color:new THREE.Color(skill.color).multiplyScalar(DARK), metalness:0.04, roughness:0.5, envMapIntensity:0.25, emissive:new THREE.Color(skill.color).multiplyScalar(DARK), emissiveIntensity:0.0 });
+    const body=new THREE.Mesh(capGeo,mat); body.position.y=0.18+KH/2; cap.add(body);
+    const lm=new THREE.MeshBasicMaterial({transparent:true,opacity:0,depthWrite:false});
+    const lg=new THREE.Mesh(new THREE.PlaneGeometry(TOPW*0.84,TOPW*0.84),lm); lg.rotation.x=-Math.PI/2; lg.position.y=0.18+KH+0.012; cap.add(lg);
+    if (skill.slug) makeLogoTexture(skill,(t)=>{lm.map=t;lm.opacity=1;lm.needsUpdate=true;});
+    else makeTextTexture(skill.label,inkFor(skill.color),(t)=>{lm.map=t;lm.opacity=1;lm.needsUpdate=true;});
+    cap.userData={skill,mat,baseY:0,vy:0}; body.userData.cap=cap; caps.push(cap); parent.add(cap);
+  }
+}
+
+function placeSocket(parent,x,z){ const sw=new THREE.Mesh(switchGeo,switchMat); sw.position.set(x,0,z); parent.add(sw); }
+function buildHalf(side){
+  const half = new THREE.Group();
+  const SKEW = 0;   /* straight grid, no slope */
+  const pts = [];
+
+  /* 4-row grid, columns = stack size, fully filled with keycaps */
+  for (let col=0; col<COLS_H; col++){
+    const bx = (col-(COLS_H-1)/2)*CG;
+    const dz = side*(col-(COLS_H-1)/2)*SKEW;
+    for (let row=0; row<ROWS_H; row++){
+      const x = bx*side, z = dz + (row-(ROWS_H-1)/2)*RG;
+      placeCap(half, x, z); pts.push([x,z]);
+    }
+  }
+
+  /* case slab under the keycaps */
+  let minX=1e9,maxX=-1e9,minZ=1e9,maxZ=-1e9;
+  pts.forEach(([x,z])=>{minX=Math.min(minX,x);maxX=Math.max(maxX,x);minZ=Math.min(minZ,z);maxZ=Math.max(maxZ,z);});
+  const cx=(minX+maxX)/2;
+  const block=new THREE.Mesh(roundedBoxGeo((maxX-minX)+KW+0.5, (maxZ-minZ)+KW+0.5, 0.5, 0.45), caseMat);
+  block.position.set(cx, -0.2, (minZ+maxZ)/2); half.add(block);
+
+  /* BIG trackball, centered, on the round housing just under the keycaps */
+  const R_BALL = 0.8;
+  const ballZ  = maxZ + 2.25;
+  const housing = new THREE.Mesh(new THREE.CylinderGeometry(R_BALL+0.55, R_BALL+0.7, 0.6, 56), caseMat);
+  housing.position.set(cx, -0.16, ballZ); half.add(housing);
+  const ring = new THREE.Mesh(new THREE.TorusGeometry(R_BALL+0.12, 0.13, 18, 56), caseMat);
+  ring.rotation.x = Math.PI/2; ring.position.set(cx, 0.18, ballZ); half.add(ring);
+  const trackball = new THREE.Mesh(new THREE.SphereGeometry(R_BALL, 48, 48),
+    new THREE.MeshStandardMaterial({ color:0x3a5a82, metalness:0.4, roughness:0.12, envMapIntensity:1.7 }));
+  trackball.position.set(cx, 0.5, ballZ);
+  /* "Maya" label on trackball */
+  const mCvs = document.createElement('canvas');
+  mCvs.width = 256; mCvs.height = 256;
+  const mCtx = mCvs.getContext('2d');
+  mCtx.fillStyle = '#3a5a82'; mCtx.fillRect(0,0,256,256);
+  mCtx.fillStyle = '#cfe0f5';
+  mCtx.font = 'bold 72px sans-serif';
+  mCtx.textAlign = 'center'; mCtx.textBaseline = 'middle';
+  mCtx.fillText('Maya',128,128);
+  mCtx.strokeStyle = '#cfe0f5'; mCtx.lineWidth = 4;
+  mCtx.beginPath(); mCtx.arc(128,128,110,0,Math.PI*2); mCtx.stroke();
+  const mTex = new THREE.CanvasTexture(mCvs);
+  const mBadge = new THREE.Mesh(new THREE.CircleGeometry(0.42,32),
+    new THREE.MeshStandardMaterial({map:mTex,metalness:0.2,roughness:0.5,transparent:true}));
+  mBadge.position.set(0,R_BALL*0.78,R_BALL*0.35); mBadge.rotation.x = -0.45;
+  trackball.add(mBadge);
+  half.add(trackball);
+
+  half.position.set(0,0,0);
+  half.rotation.y = 0;
+  half.rotation.z = 0;
+  return { half, trackball };
+}
+
+const R = buildHalf(+1);
+board.add(R.half);
+const trackball = R.trackball;
+
+const dot = new THREE.Mesh(new THREE.SphereGeometry(0.07,16,16), new THREE.MeshBasicMaterial({ color:0xff4d6d }));
+dot.visible=false; scene.add(dot);
+
+/* ---------- interaction ---------- */
+/* ---------- keyboard sounds (Web Audio, synthesized switch profiles) ---------- */
+let actx=null, soundOn=true, profileIdx=0;
+const PROFILES = [
+  { name:"THOCK",      dn:{d:0.05, f:1900, q:0.7, g:0.55}, th:{a:185,b:82,g:0.42,d:0.10}, up:{d:0.028,f:2700,q:0.9,g:0.28}, click:false },
+  { name:"CLICKY",     dn:{d:0.04, f:3400, q:1.1, g:0.55}, th:{a:260,b:150,g:0.16,d:0.05}, up:{d:0.03, f:4400,q:1.2,g:0.40}, click:true  },
+  { name:"TACTILE",    dn:{d:0.045,f:2400, q:0.9, g:0.5 }, th:{a:205,b:110,g:0.30,d:0.07}, up:{d:0.03, f:3100,q:1.0,g:0.30}, click:false },
+  { name:"MARBLE",     dn:{d:0.035,f:4100, q:1.2, g:0.45}, th:{a:320,b:185,g:0.16,d:0.05}, up:{d:0.025,f:5200,q:1.3,g:0.30}, click:false },
+  { name:"TYPEWRITER", dn:{d:0.06, f:1600, q:0.6, g:0.62}, th:{a:160,b:70, g:0.5, d:0.12}, up:{d:0.05, f:2200,q:0.8,g:0.42}, click:true  },
+  { name:"MIX",        dn:{d:0.04, f:2500, q:0.8, g:0.35}, th:{a:200,b:100,g:0.35,d:0.08}, up:{d:0.03, f:3500,q:1.0,g:0.25}, click:false },
+];
+function ac(){ if(!actx){ const C=window.AudioContext||window.webkitAudioContext; if(C) actx=new C(); } if(actx && actx.state==='suspended') actx.resume(); return actx; }
+function burst(dur, freq, q, gain, t){
+  const a=ac(); if(!a) return;
+  const n=Math.floor(a.sampleRate*dur);
+  const buf=a.createBuffer(1,n,a.sampleRate); const d=buf.getChannelData(0);
+  for(let i=0;i<n;i++){ d[i]=(Math.random()*2-1)*Math.pow(1-i/n,2.2); }
+  const src=a.createBufferSource(); src.buffer=buf;
+  const bp=a.createBiquadFilter(); bp.type='bandpass'; bp.frequency.value=freq; bp.Q.value=q;
+  const g=a.createGain(); g.gain.value=gain;
+  src.connect(bp); bp.connect(g); g.connect(a.destination); src.start(t);
+}
+function thump(a0,b0,gain,dur,t){
+  const a=ac(); if(!a) return;
+  const o=a.createOscillator(); o.type='sine';
+  o.frequency.setValueAtTime(a0,t); o.frequency.exponentialRampToValueAtTime(b0,t+dur*0.6);
+  const g=a.createGain(); g.gain.setValueAtTime(gain,t); g.gain.exponentialRampToValueAtTime(0.001,t+dur);
+  o.connect(g); g.connect(a.destination); o.start(t); o.stop(t+dur+0.02);
+}
+function playDown(scale){ if(!soundOn) return; const a=ac(); if(!a) return; scale=scale||1; const p=PROFILES[profileIdx], t=a.currentTime;
+  if(p.name==="MIX"){ for(let i=0;i<5;i++){ const q=PROFILES[i]; burst(q.dn.d,q.dn.f,q.dn.q,q.dn.g*scale*0.35,t+i*0.015); thump(q.th.a,q.th.b,q.th.g*scale*0.35,q.th.d,t+i*0.015); if(q.click) burst(0.012,q.dn.f*1.6,1.6,q.dn.g*0.18*scale,t+i*0.015+0.004);} return;}
+  burst(p.dn.d,p.dn.f,p.dn.q,p.dn.g*scale,t); thump(p.th.a,p.th.b,p.th.g*scale,p.th.d,t);
+  if(p.click) burst(0.012, p.dn.f*1.6, 1.6, p.dn.g*0.5*scale, t+0.004); }
+function playUp(){ if(!soundOn) return; const a=ac(); if(!a) return; const p=PROFILES[profileIdx], t=a.currentTime;
+  burst(p.up.d,p.up.f,p.up.q,p.up.g,t); if(p.click) burst(0.01,p.up.f*1.3,1.6,p.up.g*0.5,t); }
+function playHover(){ playDown(0.55); }
+const sndBtn=document.getElementById('snd');
+sndBtn.addEventListener('pointerdown',(e)=>{ e.stopPropagation(); });
+sndBtn.addEventListener('click',(e)=>{ e.stopPropagation(); soundOn=!soundOn; sndBtn.textContent='SOUND: '+(soundOn?'ON':'OFF'); if(soundOn){ ac(); playUp(); } });
+const swBtn=document.getElementById('sw');
+swBtn.addEventListener('pointerdown',(e)=>{ e.stopPropagation(); });
+swBtn.addEventListener('click',(e)=>{ e.stopPropagation(); profileIdx=(profileIdx+1)%PROFILES.length; swBtn.textContent='SWITCH: '+PROFILES[profileIdx].name; ac(); const so=soundOn; soundOn=true; playDown(); soundOn=so; });
+
+const ray = new THREE.Raycaster();
+const mouse = new THREE.Vector2(-2,-2);
+let hovered=null;
+const labelEl=document.getElementById('label');
+const nameEl=labelEl.querySelector('.name');
+const tagEl=labelEl.querySelector('.tag');
+
+function setMouse(e){ const t=e.touches?e.touches[0]:e; mouse.x=(t.clientX/innerWidth)*2-1; mouse.y=-(t.clientY/innerHeight)*2+1; }
+let isDown=false, dragging=false, downX=0, downY=0, lastX=0, lastY=0, downCap=null;
+addEventListener('pointerdown',(e)=>{ if(e.target && e.target.id==='snd') return; ac(); setMouse(e); pickHover(); isDown=true; dragging=false; downX=lastX=e.clientX; downY=lastY=e.clientY; downCap=hovered; });
+addEventListener('pointermove',(e)=>{ setMouse(e); if(isDown){ if(!dragging && Math.hypot(e.clientX-downX, e.clientY-downY)>6) dragging=true; if(dragging) orbit(e); } else pickHover(); });
+addEventListener('pointerup',()=>{ if(isDown && !dragging && downCap){ playDown(); const c=downCap; c.userData.pressed=true; setTimeout(()=>{ c.userData.pressed=false; },220);} isDown=false; dragging=false; downCap=null; });
+function orbit(e){ const dx=(e.clientX-lastX)/innerWidth, dy=(e.clientY-lastY)/innerHeight; board.rotation.y+=dx*2.4; board.rotation.x=Math.max(-1.45,Math.min(0.4, board.rotation.x+dy*1.8)); lastX=e.clientX; lastY=e.clientY; }
+function pickHover(){
+  ray.setFromCamera(mouse,camera);
+  const hits = ray.intersectObjects(caps.flatMap(c=>c.children), true);
+  const hit = hits.find(h=>h.object.userData.cap);
+  const cap = hit?hit.object.userData.cap:null;
+  if (cap!==hovered){ hovered=cap; if(cap){ playHover(); nameEl.textContent=cap.userData.skill.label; tagEl.textContent=cap.userData.skill.tag; labelEl.classList.add('on'); } else labelEl.classList.remove('on'); }
+  if(trackball){
+    const bh = ray.intersectObject(trackball,false);
+    const nowHov = bh.length>0;
+    if(nowHov!==trackballHovered){ trackballHovered=nowHov; rollTargetSpeed=nowHov?8:1; }
+  }
+}
+
+function layout(){
+  const portrait = innerHeight>innerWidth || innerWidth<760;
+  if (portrait){ camera.fov=58; camera.position.set(0,7.6,10.0); camera.lookAt(0,0.0,1.7); }
+  else { camera.fov=40; camera.position.set(0,8.6,11.6); camera.lookAt(0,0.1,1.4); }
+  camera.aspect=innerWidth/innerHeight; camera.updateProjectionMatrix();
+  renderer.setSize(innerWidth,innerHeight);
+}
+layout();
+
+let t=0, rollSpeedY=0.012, rollSpeedX=0.004, rollTargetSpeed=1, trackballHovered=false;
+const tmp = new THREE.Vector3();
+function animate(){
+  requestAnimationFrame(animate);
+  t += 0.016;
+  if(!isDown) pickHover();
+  board.position.y = Math.sin(t*0.8)*0.07;
+  caps.forEach(cap=>{
+    const u=cap.userData; let target=u.baseY;
+    if(u.pressed) target=u.baseY-0.18;
+    else if(cap===hovered) target=u.baseY+0.5;
+    u.vy += (target-cap.position.y)*0.28; u.vy*=0.56; cap.position.y += u.vy;
+    const glow=(cap===hovered&&!u.pressed)?0.3:0.0;
+    u.mat.emissiveIntensity += (glow-u.mat.emissiveIntensity)*0.2;
+  });
+  rollSpeedY += (0.012*rollTargetSpeed - rollSpeedY)*0.08;
+  rollSpeedX += (0.004*rollTargetSpeed - rollSpeedX)*0.08;
+  if(trackball){ trackball.rotation.y += rollSpeedY; trackball.rotation.x += rollSpeedX; }
+  if(hovered){ dot.visible=true; hovered.getWorldPosition(tmp); dot.position.set(tmp.x-0.4, tmp.y+0.5+Math.sin(t*3)*0.05, tmp.z); }
+  else dot.visible=false;
+  renderer.render(scene,camera);
+}
+animate();
+addEventListener('resize', layout);
+</script>
+
+
+</body></html>
