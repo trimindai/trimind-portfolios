@@ -569,6 +569,15 @@
      0.72 floated keeps the right edge inside the viewport at the larger offset
      and shrinks the footprint so the hero text column stays fully clear. */
   var SECTION_SCALE = { hero: 0.72, skills: 1.0, experience: 1.0, projects: 1.0, contact: 0.72 };
+  /* phone: the board is always centred (no side-float). Size it per section
+     type (Naresh's mobile pattern): a big, prominent lower-half anchor in the
+     showcase sections (skills/experience/projects — little text), and a smaller
+     backdrop pushed well down in the text-heavy sections (hero/contact) so the
+     stacked copy stays clearly on top. (was a flat SECTION_SCALE×0.52.) */
+  var PHONE_SCALE_SHOW = 0.92;   /* showcase sections — big + prominent */
+  var PHONE_SCALE_TEXT = 0.58;   /* hero/contact — backdrop behind the text */
+  var PHONE_Y_SHOW = 0.22;       /* showcase: sits in the lower-centre */
+  var PHONE_Y_TEXT = 0.36;       /* text sections: pushed well down */
   function isRTL() { return document.documentElement.getAttribute("dir") === "rtl" || document.dir === "rtl"; }
   /* latest viewport width in world units at the board's z-plane (updated each frame) */
   var vpW = 1;
@@ -608,7 +617,9 @@
     var targetX = frac * (vpW / 2);
     /* R4: phone Y base — push down so keyboard clears the full text block (name+role+para+CTAs).
        0.32 × vpH is roughly the lower third of the visible world-height at the board plane. */
-    var phoneYOffset = isPhone ? -(vpH * 0.32) : 0;
+    /* hero/contact are the text-heavy "float" sections (SECTION_FRAC != 0) */
+    var phoneText = isPhone && (SECTION_FRAC[sid] || 0) !== 0;
+    var phoneYOffset = isPhone ? -(vpH * (phoneText ? PHONE_Y_TEXT : PHONE_Y_SHOW)) : 0;
     boardYBase += (phoneYOffset - boardYBase) * 0.14; // lerp: ~14% per frame — snappy on resize
     /* idle bob is relative to boardYBase */
     board.position.y = boardYBase + Math.sin(t * 0.8) * 0.07;
@@ -620,7 +631,7 @@
     var sm = 1 - Math.exp(-k * dt);
     board.position.x += (targetX - board.position.x) * sm;
     /* R4: on phone multiply the section scale by 0.52 — clearly smaller, reads as backdrop */
-    var ts = (SECTION_SCALE[sid] || 1.0) * (isPhone ? 0.52 : 1.0);
+    var ts = isPhone ? (phoneText ? PHONE_SCALE_TEXT : PHONE_SCALE_SHOW) : (SECTION_SCALE[sid] || 1.0);
     board.scale.x += (ts - board.scale.x) * sm;
     board.scale.y = board.scale.z = board.scale.x;
     caps.forEach(function (cap) {
