@@ -112,6 +112,20 @@ try {
       catch(e){ console.log(`note: screenshot skipped for ${tag} (${e.name})`); }
     });
   }
+
+  // T2.4: reduced-motion → static keyboard fallback visible, no live keyboard
+  for (const route of ROUTES){
+    await withPage(route,{key:"desk",vp:{width:1280,height:900}},{reducedMotion:"reduce"},async(page,errors,tag0)=>{
+      const tag=tag0+"-rm";
+      const st=await page.evaluate(()=>({
+        live: document.documentElement.classList.contains("kbd-live"),
+        fb: (()=>{ const f=document.getElementById("kbd-fallback"); return f?getComputedStyle(f).display:"none"; })()
+      }));
+      if(!st.live) pass(`[${tag}] keyboard not live (reduced-motion)`); else fail(`[${tag}] kbd-live set under reduced-motion`);
+      if(st.fb!=="none") pass(`[${tag}] keyboard fallback visible`); else fail(`[${tag}] keyboard fallback hidden (${st.fb})`);
+      if(errors.length) fail(`[${tag}] ${errors.length} console error(s): ${errors.slice(0,3).join(" | ")}`); else pass(`[${tag}] zero console errors`);
+    });
+  }
 } finally { await browser.close().catch(()=>{}); killServer(); }
 
 if (failures.length){ console.error("\n──── FAILURES ("+failures.length+") ────"); failures.forEach(f=>console.error(" ✗ "+f)); process.exit(1); }
