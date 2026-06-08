@@ -86,6 +86,26 @@ try {
         if (kbd.live) pass(`[${tag}] keyboard live`); else fail(`[${tag}] keyboard not live`);
         if (kbd.glLost===false) pass(`[${tag}] keyboard GL healthy`); else fail(`[${tag}] keyboard GL ${kbd.glLost}`);
       }
+      // T2.3: drag rotates the keyboard, without leaking into page scroll
+      if (view.key==="desk"){
+        const rot = await page.evaluate(async()=>{
+          if(!window.__kbd) return null;
+          window.scrollTo(0,0); await new Promise(r=>requestAnimationFrame(r));
+          const r0=window.__kbd.getRotation();
+          // drag horizontally across the keyboard. It renders centred, so use viewport centre.
+          const cx=window.innerWidth*0.5, cy=window.innerHeight*0.5;
+          function pe(t,x){ window.dispatchEvent(new PointerEvent(t,{clientX:x,clientY:cy,bubbles:true,pointerId:1,isPrimary:true,pointerType:"mouse"})); }
+          pe("pointerdown",cx);
+          for(let i=1;i<=10;i++){ pe("pointermove",cx+i*14); }
+          pe("pointerup",cx+140);
+          await new Promise(r=>setTimeout(r,300));
+          return { before:r0, after:window.__kbd.getRotation(), scrollY:window.scrollY };
+        });
+        if (rot && Math.abs(rot.after-rot.before)>0.001) pass(`[${tag}] drag rotates keyboard (Δ=${rot?(rot.after-rot.before).toFixed(3):'?'})`);
+        else fail(`[${tag}] drag did not rotate keyboard (${JSON.stringify(rot)})`);
+        if (rot && rot.scrollY<5) pass(`[${tag}] drag did not scroll page`);
+        else fail(`[${tag}] drag leaked into scroll (scrollY=${rot?rot.scrollY:'?'})`);
+      }
       if (errors.length) fail(`[${tag}] ${errors.length} console error(s): ${errors.slice(0,3).join(" | ")}`);
       else pass(`[${tag}] zero console errors`);
       try { await page.screenshot({path:`scripts/_sj-${tag}.png`,fullPage:false,timeout:8000,animations:"disabled"}); }
