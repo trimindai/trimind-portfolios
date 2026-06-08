@@ -21,11 +21,11 @@ const hex=h=>{h=h.replace("#","");return[0,2,4].map(i=>parseInt(h.slice(i,i+2),1
 const PAIRS=[
   ["page body text","#4b5056","#ccd1da"],
   ["page heading","#222831","#ccd1da"],
-  ["link/eyebrow on light","#3c6fae","#ccd1da"],
+  ["link/eyebrow on light","#2f5588","#ccd1da"],
   ["text on Casper card","#222831","#a6bad0"],
   ["on-dark text on Shuttle","#eef1f5","#5f6b7a"],
   ["on-dark text on Contact(Davy)","#eef1f5","#4b5056"],
-  ["primary button text","#ffffff","#3c6fae"],
+  ["primary button text","#ffffff","#2f5588"],
 ];
 
 const EXPECTED_BG = "#ccd1da";
