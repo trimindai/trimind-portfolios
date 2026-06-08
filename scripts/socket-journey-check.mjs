@@ -106,36 +106,10 @@ try {
         if (rot && rot.scrollY<5) pass(`[${tag}] drag did not scroll page`);
         else fail(`[${tag}] drag leaked into scroll (scrollY=${rot?rot.scrollY:'?'})`);
       }
-      // T3.1: a Davy socket sized in all 5 sections
-      const socks = await page.evaluate(()=>{ const ids=["hero","skills","experience","projects","contact"];
-        return ids.map(id=>{ const s=document.getElementById(id); const k=s&&s.querySelector(".orb-socket"); if(!k) return {id,ok:false}; const r=k.getBoundingClientRect(); return {id,ok:true,w:Math.round(r.width),h:Math.round(r.height)}; }); });
-      const allOk = socks.every(s=>s.ok && s.w>60 && s.h>20);
-      if (allOk) pass(`[${tag}] Davy socket in all 5 sections`);
-      else fail(`[${tag}] missing/undersized socket: ${JSON.stringify(socks.filter(s=>!s.ok||s.w<=60||s.h<=20))}`);
-      // T3.2: the orb lands in each section's socket (desktop)
-      if (view.key==="desk"){
-        const land = await page.evaluate(async()=>{
-          const out=[]; const ids=["hero","skills","experience","projects","contact"];
-          for(const id of ids){ document.getElementById(id).scrollIntoView({block:"center"}); await new Promise(r=>setTimeout(r,1000));
-            const k=document.getElementById(id).querySelector(".orb-socket").getBoundingClientRect();
-            const o=window.__orbPos? window.__orbPos() : null;
-            out.push({id, dx:o?Math.round(Math.abs(o.x-(k.left+k.width/2))):999, dy:o?Math.round(Math.abs(o.y-(k.top+k.height*0.3))):999}); }
-          return out;
-        });
-        const near = land.every(l=>l.dx<110 && l.dy<140);
-        if (near) pass(`[${tag}] orb lands in each section's socket`);
-        else fail(`[${tag}] orb off-socket: ${JSON.stringify(land.filter(l=>l.dx>=110||l.dy>=140))}`);
-      }
-      // T3.3: mute toggles shared sound flag + orb landing hook present
+      // T3.3: mute toggles shared sound flag
       const mute = await page.evaluate(()=>{ const b=document.getElementById("mute"); if(!b) return null; const before=window.__demoSound; b.click(); const after=window.__demoSound; b.click(); return {before,after}; });
       if (mute && mute.before!==mute.after) pass(`[${tag}] mute button toggles sound`);
       else fail(`[${tag}] mute button missing/not toggling`);
-      const hasLand = await page.evaluate(()=>typeof window.__orbLand==="function");
-      if (hasLand) pass(`[${tag}] orb landing sound hook present`); else fail(`[${tag}] __orbLand missing`);
-      // T4.1: hero socket mirrors by language (EN right-of-centre, AR left-of-centre)
-      const hx = await page.evaluate(()=>{ const k=document.querySelector("#hero .orb-socket"); if(!k) return -1; const r=k.getBoundingClientRect(); return (r.left+r.width/2)/window.innerWidth; });
-      if (route.key==="en"){ if(hx>0.55) pass(`[${tag}] EN hero socket right-of-centre (${hx.toFixed(2)})`); else fail(`[${tag}] EN hero socket not right (${hx.toFixed(2)})`); }
-      else { if(hx>=0 && hx<0.45) pass(`[${tag}] AR hero socket left-of-centre (mirrored) (${hx.toFixed(2)})`); else fail(`[${tag}] AR hero socket not left (${hx.toFixed(2)})`); }
       if (errors.length) fail(`[${tag}] ${errors.length} console error(s): ${errors.slice(0,3).join(" | ")}`);
       else pass(`[${tag}] zero console errors`);
       try { await page.screenshot({path:`scripts/_sj-${tag}.png`,fullPage:false,timeout:8000,animations:"disabled"}); }
@@ -153,8 +127,6 @@ try {
       }));
       if(!st.live) pass(`[${tag}] keyboard not live (reduced-motion)`); else fail(`[${tag}] kbd-live set under reduced-motion`);
       if(st.fb!=="none") pass(`[${tag}] keyboard fallback visible`); else fail(`[${tag}] keyboard fallback hidden (${st.fb})`);
-      const ofb=await page.evaluate(()=>{ const f=document.getElementById("orb-fallback"); return f?getComputedStyle(f).display:"none"; });
-      if(ofb!=="none") pass(`[${tag}] orb fallback visible (reduced-motion)`); else fail(`[${tag}] orb fallback hidden`);
       if(errors.length) fail(`[${tag}] ${errors.length} console error(s): ${errors.slice(0,3).join(" | ")}`); else pass(`[${tag}] zero console errors`);
     });
   }
@@ -163,18 +135,16 @@ try {
   for (const route of ROUTES){
     const ctx=await browser.newContext({viewport:{width:1280,height:900},deviceScaleFactor:2});
     const page=await ctx.newPage(); const errors=[];
-    let orbJs=false, kbdJs=false;
+    let kbdJs=false;
     page.on("console",m=>{if(m.type()==="error")errors.push(m.text());});
     page.on("pageerror",e=>errors.push("PE:"+e.message));
-    page.on("request",r=>{ const u=r.url(); if(u.includes("/orb.js"))orbJs=true; if(u.includes("/keyboard.js"))kbdJs=true; });
+    page.on("request",r=>{ const u=r.url(); if(u.includes("/keyboard.js"))kbdJs=true; });
     await page.addInitScript(()=>{ try{Object.defineProperty(navigator,"hardwareConcurrency",{get:()=>2,configurable:true});}catch{} try{Object.defineProperty(navigator,"deviceMemory",{get:()=>2,configurable:true});}catch{} });
     await page.goto(`${BASE}/demo/developer/${route.file}`,{waitUntil:"load",timeout:60000});
     await page.waitForTimeout(3000);
     const tag=route.key+"-lowend";
-    const st=await page.evaluate(()=>({ orbFb:(()=>{const f=document.getElementById("orb-fallback");return f?getComputedStyle(f).display:"none";})(), kbdFb:(()=>{const f=document.getElementById("kbd-fallback");return f?getComputedStyle(f).display:"none";})() }));
-    if(!orbJs) pass(`[${tag}] orb.js NOT injected`); else fail(`[${tag}] orb.js injected on low-end`);
+    const st=await page.evaluate(()=>({ kbdFb:(()=>{const f=document.getElementById("kbd-fallback");return f?getComputedStyle(f).display:"none";})() }));
     if(!kbdJs) pass(`[${tag}] keyboard.js NOT injected`); else fail(`[${tag}] keyboard.js injected on low-end`);
-    if(st.orbFb!=="none") pass(`[${tag}] orb fallback visible`); else fail(`[${tag}] orb fallback hidden`);
     if(st.kbdFb!=="none") pass(`[${tag}] keyboard fallback visible`); else fail(`[${tag}] keyboard fallback hidden`);
     if(errors.length) fail(`[${tag}] ${errors.length} console errors: ${errors.slice(0,3).join(" | ")}`); else pass(`[${tag}] zero console errors`);
     await ctx.close();

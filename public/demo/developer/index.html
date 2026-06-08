@@ -76,15 +76,13 @@ img{display:block;max-width:100%}
 
 /* ── star-field ─────────────────────────────────────────────── */
 #stars{position:fixed;inset:0;z-index:-3;pointer-events:none;opacity:.18}
-/* keyboard canvas: fixed full-screen behind orb, receives clicks through .content */
+/* keyboard canvas: fixed full-screen, receives clicks through .content */
 #kbd-stage{ position:fixed; inset:0; width:100%; height:100%; z-index:-2; pointer-events:auto; }
 /* keyboard fallback hides once the live keyboard paints */
 #kbd-fallback{ display:block; margin:24px auto; width:min(72%,520px); aspect-ratio:16/9;
   border-radius:18px; background:linear-gradient(180deg,#5a6068,#4b5056 55%,#3a3f45);
   box-shadow:0 24px 40px -16px rgba(34,40,49,.4), inset 0 2px 0 rgba(255,255,255,.15); }
 .kbd-live #kbd-fallback{ display:none; }
-/* signature orb: fixed full-screen canvas BEHIND the DOM content */
-#orb-stage{position:fixed;inset:0;width:100%;height:100%;z-index:-1;pointer-events:none}
 
 /* canvas-overlay mode: wheel/touch fall through .content to the fixed 3D canvases behind it;
    re-enable pointer events on everything interactive (Naresh's pattern). */
@@ -164,19 +162,6 @@ section[data-reveal]{ will-change:opacity,transform; }
 #hero .wrap{position:relative}
 #hero .grid{display:grid;grid-template-columns:minmax(0,1fr);gap:8px;position:relative;z-index:1}
 @media(min-width:900px){#hero .grid{max-width:440px}} /* text owns the left column; the 3D keyboard render owns the right */
-/* static fallback orb — visible until the live WebGL orb (#orb-stage) paints, and the permanent
-   resting orb for reduced-motion / low-end / no-WebGL. .orb-live (set by orb.js on first frame) hides it. */
-#orb-fallback{position:absolute;z-index:0;pointer-events:none;right:9%;top:50%;transform:translateY(-50%);
-  width:clamp(90px,12vw,140px);aspect-ratio:1;border-radius:50%;
-  background:radial-gradient(circle at 38% 32%,#eef4fc 0%,#a8c4e8 19%,#6d99ce 44%,#46699d 72%,#2f5588 100%);
-  box-shadow:0 34px 70px -16px rgba(47,85,136,.5),inset -16px -20px 54px rgba(47,85,136,.6),inset 12px 14px 36px rgba(238,244,252,.5);
-  animation:orbFloat 7s ease-in-out infinite}
-#orb-fallback::after{content:"";position:absolute;inset:0;border-radius:50%;
-  background:radial-gradient(circle at 33% 26%,rgba(255,255,255,.65),rgba(255,255,255,0) 34%)}
-@keyframes orbFloat{0%,100%{transform:translateY(-50%)}50%{transform:translateY(calc(-50% - 14px))}}
-.orb-live #orb-fallback{display:none}
-@media (prefers-reduced-motion:reduce){#orb-fallback{animation:none}}
-@media(max-width:900px){#orb-fallback{right:3%;top:18%;transform:none;width:clamp(70px,28vw,120px);animation:none}}
 /* photoreal split-keyboard hero render (Blender) — static image, no runtime */
 .hero-kbd{position:absolute;right:1.5%;top:50%;transform:translateY(-50%);width:min(33%,520px);height:auto;pointer-events:none;z-index:0;
   filter:drop-shadow(0 24px 40px rgba(34,40,49,.18));
@@ -442,26 +427,6 @@ html[dir="rtl"] .tl-item::before{left:auto;right:0}
 /* centre content vertically inside the taller sections */
 #experience .wrap, #projects .wrap, #contact .wrap{ display:flex; flex-direction:column; justify-content:center; }
 
-/* ── T3.1: Davy socket cradles ─────────────────────────────── */
-.orb-socket{ position:absolute; z-index:0; pointer-events:none;
-  width:clamp(120px,16vw,190px); aspect-ratio:2/1;
-  border-radius:0 0 50% 50% / 0 0 90% 90%;
-  background:linear-gradient(180deg,#565c63 0%,#4b5056 45%,#33373c 100%);
-  box-shadow:inset 0 10px 16px rgba(0,0,0,.38), 0 16px 26px -10px rgba(34,40,49,.5);
-  transform:translateY(-50%); }
-.orb-socket::after{ content:""; position:absolute; left:8%; right:8%; top:0; height:46%;
-  border-radius:50%; background:radial-gradient(50% 120% at 50% 0,rgba(0,0,0,.28),transparent 70%); }
-@media (prefers-reduced-motion:reduce){ .orb-socket{ /* sockets stay visible; inert */ } }
-
-/* per-section placement (zig-zag, EN/LTR) */
-#hero       .orb-socket{ right:6%;  top:54%; }
-#skills     .orb-socket{ left:8%;   top:60%; }
-#experience .orb-socket{ right:7%;  top:48%; }
-#projects   .orb-socket{ left:6%;   top:42%; }
-#contact    .orb-socket{ left:50%;  top:60%; transform:translate(-50%,-50%); }
-/* contact bg is dark — add a rim so the socket reads */
-#contact .orb-socket{ box-shadow:inset 0 10px 16px rgba(0,0,0,.45), 0 0 0 1px rgba(238,244,252,.12), 0 16px 26px -10px rgba(0,0,0,.5); }
-
 /* ── mute button ─────────────────────────────────────────────── */
 #mute{ position:fixed; right:16px; bottom:16px; z-index:30; width:42px; height:42px; border-radius:50%;
   border:1px solid var(--border); background:var(--card); color:var(--fg); cursor:pointer; font-size:18px; }
@@ -485,7 +450,6 @@ html[dir="rtl"] .tl-item::before{left:auto;right:0}
 
 <canvas id="stars"></canvas>
 <canvas id="kbd-stage" aria-hidden="true"></canvas>
-<canvas id="orb-stage" aria-hidden="true"></canvas>
 <div id="progress"></div>
 
 <main class="content">
@@ -498,7 +462,6 @@ html[dir="rtl"] .tl-item::before{left:auto;right:0}
 </nav>
 
 <section id="hero" data-reveal>
-  <div class="orb-socket" data-socket aria-hidden="true"></div>
   <div class="wrap">
     <div class="grid">
       <div class="hello blur-in">Hi, I'm</div>
@@ -519,12 +482,9 @@ html[dir="rtl"] .tl-item::before{left:auto;right:0}
       <div class="scroll-cue blur-in" data-delay="440"><span class="mouse"></span>SCROLL</div>
     </div>
   </div>
-  <!-- hero orb: static CSS fallback (below); live 3D mesh in #orb-stage hides it via .orb-live -->
-  <div id="orb-fallback" aria-hidden="true"></div>
 </section>
 
 <section id="skills" data-reveal>
-  <div class="orb-socket" data-socket aria-hidden="true"></div>
   <div class="wrap">
     <div class="sec-head sticky-head">
       <div class="eyebrow">Tech Stack</div>
@@ -536,7 +496,6 @@ html[dir="rtl"] .tl-item::before{left:auto;right:0}
 </section>
 
 <section id="experience" data-reveal>
-  <div class="orb-socket" data-socket aria-hidden="true"></div>
   <div class="wrap">
     <div class="sec-head sticky-head">
       <div class="eyebrow">Experience</div>
@@ -593,7 +552,6 @@ html[dir="rtl"] .tl-item::before{left:auto;right:0}
 </section>
 
 <section id="projects" data-reveal>
-  <div class="orb-socket" data-socket aria-hidden="true"></div>
   <div class="wrap">
     <div class="sec-head sticky-head">
       <div class="eyebrow">Projects</div>
@@ -713,7 +671,6 @@ html[dir="rtl"] .tl-item::before{left:auto;right:0}
 </div>
 
 <section id="contact" data-reveal>
-  <div class="orb-socket" data-socket aria-hidden="true"></div>
   <div class="wrap">
     <div class="sec-head sticky-head">
       <div class="eyebrow">Contact</div>
@@ -767,12 +724,6 @@ html[dir="rtl"] .tl-item::before{left:auto;right:0}
     function ctx(){ if(!actx&&AC){ actx=new AC(); } if(actx&&actx.state==="suspended"){ actx.resume(); } return actx; }
     function unlock(){ var a=ctx(); if(a){ var b=a.createBuffer(1,1,22050); var s=a.createBufferSource(); s.buffer=b; s.connect(a.destination); s.start(0); } window.removeEventListener("pointerdown",unlock); window.removeEventListener("keydown",unlock); window.removeEventListener("touchstart",unlock); window.removeEventListener("wheel",unlock); }
     ["pointerdown","keydown","touchstart","wheel"].forEach(function(ev){ window.addEventListener(ev,unlock,{passive:true}); });
-    /* marble-click for orb landings */
-    window.__orbLand = function(){ if(window.__demoSound===false) return; var a=ctx(); if(!a) return;
-      var o=a.createOscillator(), g=a.createGain(); o.type="triangle"; o.frequency.setValueAtTime(420,a.currentTime);
-      o.frequency.exponentialRampToValueAtTime(140,a.currentTime+0.08);
-      g.gain.setValueAtTime(0.0001,a.currentTime); g.gain.exponentialRampToValueAtTime(0.25,a.currentTime+0.005);
-      g.gain.exponentialRampToValueAtTime(0.0001,a.currentTime+0.13); o.connect(g); g.connect(a.destination); o.start(); o.stop(a.currentTime+0.14); };
   })();
 
   /* ── year ── */
@@ -1150,14 +1101,13 @@ html[dir="rtl"] .tl-item::before{left:auto;right:0}
   if(muteBtn){ muteBtn.textContent = window.__demoSound===false ? "🔇" : "🔊";
     muteBtn.addEventListener("click",function(){ window.__demoSound=!window.__demoSound; localStorage.setItem("demoMute", window.__demoSound?"0":"1"); muteBtn.textContent= window.__demoSound?"🔊":"🔇"; }); }
 
-  /* ── signature orb + keyboard journey (lazy 3D, progressive enhancement) ── */
+  /* ── keyboard journey (lazy 3D, progressive enhancement) ── */
   (function(){
     var lowEnd=(navigator.deviceMemory&&navigator.deviceMemory<=2)||(navigator.hardwareConcurrency&&navigator.hardwareConcurrency<=2);
     if(reduce||lowEnd) return; /* static CSS fallbacks cover these — skip the ~600KB 3D download */
     function inject(){
       var t=document.createElement("script"); t.src="/demo/developer/vendor/three.min.js";
       t.onload=function(){
-        var o=document.createElement("script"); o.src="/demo/developer/orb.js"; document.body.appendChild(o);
         var k=document.createElement("script"); k.src="/demo/developer/keyboard.js"; document.body.appendChild(k);
       };
       t.onerror=function(){};
