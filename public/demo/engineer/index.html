@@ -3,11 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Abdulrahman Alkandari — Electrical Engineer</title>
-<meta name="description" content="Electrical Engineer based in Kuwait City. Focused on smart systems, electronics, and automation.">
+<title>Abdulrahman Alkandari — Senior Electrical Engineer</title>
+<meta name="description" content="Senior Electrical Engineer with 7+ years in industrial automation and smart systems across Kuwait's oil & gas and infrastructure sectors.">
 <meta name="theme-color" content="#ffffff">
-<meta property="og:title" content="Abdulrahman Alkandari | Electrical Engineer">
-<meta property="og:description" content="Electrical Engineer focused on smart systems, electronics, and automation. Based in Kuwait City.">
+<meta property="og:title" content="Abdulrahman Alkandari | Senior Electrical Engineer">
+<meta property="og:description" content="Senior Electrical Engineer with 7+ years designing and deploying industrial automation and smart systems. Based in Kuwait City.">
 <meta property="og:type" content="website">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -52,6 +52,38 @@ a:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 .skill-group h4{font-family:var(--font-head);font-size:0.78rem;font-weight:600;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:16px;color:var(--accent)}
 .skill-group ul{list-style:none}.skill-group li{font-size:0.9rem;color:var(--text-secondary);padding:5px 0}
 
+/* Experience */
+.exp-list{display:flex;flex-direction:column;gap:40px}
+.exp-item{display:grid;grid-template-columns:200px 1fr;gap:32px;align-items:start}
+.exp-date{font-family:var(--font-head);font-size:0.78rem;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted);padding-top:4px}
+.exp-body h3{font-family:var(--font-head);font-size:1.1rem;font-weight:700;letter-spacing:-0.01em}
+.exp-body .exp-company{font-size:0.9rem;color:var(--accent);font-weight:600;margin-top:2px}
+.exp-body ul{list-style:none;margin-top:12px}
+.exp-body li{font-size:0.9rem;color:var(--text-secondary);padding:4px 0;padding-left:16px;position:relative}
+.exp-body li::before{content:"";position:absolute;left:0;top:12px;width:6px;height:6px;border-radius:50%;background:var(--accent);opacity:0.5}
+
+/* Achievements */
+.achieve-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:24px}
+.achieve-card{background:var(--bg-card);border:1px solid var(--border);padding:32px;transition:transform 200ms}
+.achieve-card:hover{transform:translateY(-2px)}
+.achieve-card h3{font-family:var(--font-head);font-size:1rem;font-weight:700;margin-bottom:16px;color:var(--accent)}
+.achieve-card .achieve-label{font-size:0.7rem;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted);margin-bottom:4px}
+.achieve-card .achieve-text{font-size:0.9rem;color:var(--text-secondary);line-height:1.7}
+.achieve-card .achieve-metric{display:inline-block;margin-top:12px;font-family:var(--font-head);font-size:0.85rem;font-weight:700;color:var(--accent);background:var(--accent-glow);padding:4px 12px;border:1px solid var(--accent);opacity:0.9}
+
+/* Education */
+.edu-item{display:grid;grid-template-columns:200px 1fr;gap:32px;align-items:start}
+.edu-body h3{font-family:var(--font-head);font-size:1.1rem;font-weight:700;letter-spacing:-0.01em}
+.edu-body .edu-school{font-size:0.9rem;color:var(--accent);font-weight:600;margin-top:2px}
+.edu-body .edu-detail{font-size:0.9rem;color:var(--text-secondary);margin-top:8px}
+
+/* Endorsements */
+.endorsements-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(400px,1fr));gap:24px}
+.endorsement{background:var(--bg-card);border:1px solid var(--border);padding:32px}
+.endorsement blockquote{font-size:1rem;color:var(--text-secondary);line-height:1.8;font-style:italic;margin-bottom:16px}
+.endorsement .endorse-author{font-family:var(--font-head);font-size:0.85rem;font-weight:600}
+.endorsement .endorse-role{font-size:0.78rem;color:var(--text-muted)}
+
 .footer{background:var(--bg-warm);border-top:1px solid var(--border);padding:60px 40px 40px}
 .footer-inner{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr 1fr;gap:40px}
 .footer-col h4{font-family:var(--font-head);font-size:0.75rem;font-weight:600;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:12px;color:var(--text-muted)}
@@ -63,7 +95,7 @@ a:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 .rv.v{opacity:1;transform:translateY(0)}
 .rv-d1{transition-delay:0.08s}.rv-d2{transition-delay:0.16s}.rv-d3{transition-delay:0.24s}
 
-@media(max-width:900px){.hero-grid{grid-template-columns:1fr;gap:32px}.hero-left h1{font-size:2.2rem}}
+@media(max-width:900px){.hero-grid{grid-template-columns:1fr;gap:32px}.hero-left h1{font-size:2.2rem}.exp-item,.edu-item{grid-template-columns:1fr;gap:8px}.achieve-grid{grid-template-columns:1fr}.endorsements-grid{grid-template-columns:1fr}}
 @media(max-width:640px){.header-inner{padding:14px 20px}.header-nav{display:none}.section{padding:48px 20px}.hero{padding-top:72px;padding-bottom:48px}.hero-left h1{font-size:1.8rem}.hero-actions{flex-direction:column}.footer-inner{grid-template-columns:1fr;gap:24px}}
 
 @media print{
@@ -91,7 +123,7 @@ a:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
     <a href="#about" class="header-brand">Abdulrahman Alkandari</a>
     <nav class="header-nav">
       <a href="#about">Home</a>
-      <a href="/demo/engineer/projects/smart-irrigation.html">Projects</a>
+      <a href="#projects">Projects</a>
     </nav>
   </div>
 </header>
@@ -100,21 +132,26 @@ a:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
   <div class="hero-grid">
     <div class="hero-left rv">
       <h1>Abdulrahman<br>Alkandari</h1>
-      <div class="hero-discipline">Electrical Engineer</div>
+      <div class="hero-discipline">Senior Electrical Engineer</div>
     </div>
     <div class="rv rv-d1">
       <div class="hero-bio">
-        <p>Electrical Engineering graduate with hands-on experience in smart systems, electronics, automation, and practical engineering solutions. Focused on building real hardware that solves real problems.</p>
-        <p>Bilingual in Arabic and English with strong communication skills and a collaborative approach to teamwork and problem-solving.</p>
+        <p>Senior Electrical Engineer with 7+ years designing and deploying industrial automation and smart systems across Kuwait's oil &amp; gas and infrastructure sectors. Led KOC and MEW projects from concept to commissioning. Bilingual in Arabic and English.</p>
+      </div>
+      <div style="display:flex;gap:32px;margin-top:24px;padding:20px 0;border-top:1px solid var(--border);border-bottom:1px solid var(--border)">
+        <div><div style="font-family:var(--font-head);font-size:1.5rem;font-weight:700;color:var(--accent)">7+</div><div style="font-size:0.7rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted)">Years Experience</div></div>
+        <div><div style="font-family:var(--font-head);font-size:1.5rem;font-weight:700;color:var(--accent)">12</div><div style="font-size:0.7rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted)">Projects Delivered</div></div>
+        <div><div style="font-family:var(--font-head);font-size:1.5rem;font-weight:700;color:var(--accent)">KWD 2.1M</div><div style="font-size:0.7rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted)">Project Value</div></div>
+        <div><div style="font-family:var(--font-head);font-size:1.5rem;font-weight:700;color:var(--accent)">3</div><div style="font-size:0.7rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted)">Certifications</div></div>
       </div>
       <div class="hero-meta">
         <div class="hero-meta-item"><span class="hero-meta-label">Location</span><span class="hero-meta-value">Kuwait City, Kuwait</span></div>
-        <div class="hero-meta-item"><span class="hero-meta-label">Email</span><span class="hero-meta-value">aak22xq8@gmail.com</span></div>
-        <div class="hero-meta-item"><span class="hero-meta-label">Phone</span><span class="hero-meta-value">55502344</span></div>
+        <div class="hero-meta-item"><span class="hero-meta-label">Email</span><span class="hero-meta-value">a.alkandari@outlook.com</span></div>
+        <div class="hero-meta-item"><span class="hero-meta-label">Phone</span><span class="hero-meta-value">+965 5550 2344</span></div>
       </div>
       <div class="hero-actions">
         <span class="btn btn-primary" aria-disabled="true" title="Available on request" style="opacity:.55;cursor:not-allowed"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>Resume</span>
-        <a href="/demo/engineer/projects/smart-irrigation.html" class="btn btn-secondary"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>Projects</a>
+        <a href="#projects" class="btn btn-secondary"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>Projects</a>
       </div>
     </div>
   </div>
@@ -125,19 +162,135 @@ a:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 <section class="section" id="skills">
   <h2 class="section-title rv">Skills</h2>
   <div class="skills-grid">
-    <div class="skill-group rv"><h4>Engineering</h4><ul><li>Electrical circuit design &amp; analysis</li><li>Smart systems &amp; automation</li><li>Sensor integration &amp; signal conditioning</li><li>Power systems fundamentals</li></ul></div>
-    <div class="skill-group rv rv-d1"><h4>Hardware &amp; Prototyping</h4><ul><li>Arduino &amp; ESP32 development</li><li>Raspberry Pi projects</li><li>PCB layout &amp; soldering</li><li>Microcontroller programming</li></ul></div>
-    <div class="skill-group rv rv-d2"><h4>Tools &amp; Software</h4><ul><li>MATLAB &amp; Simulink</li><li>AutoCAD Electrical</li><li>Arduino IDE &amp; PlatformIO</li><li>Python scripting</li></ul></div>
+    <div class="skill-group rv"><h4>Technical</h4><ul><li>Power Systems Design</li><li>PLC Programming</li><li>SCADA</li><li>HV/LV Electrical Design</li><li>Relay Protection</li><li>Load Flow Analysis</li></ul></div>
+    <div class="skill-group rv rv-d1"><h4>Software</h4><ul><li>ETAP</li><li>MATLAB</li><li>Python</li><li>AutoCAD Electrical</li><li>MS Project</li><li>SAP PM</li></ul></div>
+    <div class="skill-group rv rv-d2"><h4>Certifications</h4><ul><li>PMP &mdash; Project Management Institute</li><li>CAP &mdash; ISA (Certified Automation Professional)</li><li>Kuwait Engineers Association Member</li></ul></div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section class="section" id="experience">
+  <h2 class="section-title rv">Experience</h2>
+  <div class="exp-list">
+    <div class="exp-item rv">
+      <div class="exp-date">2021 &mdash; Present</div>
+      <div class="exp-body">
+        <h3>Senior Electrical Engineer</h3>
+        <div class="exp-company">Kuwait Oil Company (KOC)</div>
+        <ul>
+          <li>Lead electrical design and commissioning for upstream oil &amp; gas automation projects valued at KWD 1.4M+</li>
+          <li>Designed and deployed SCADA systems across 6 gathering centers, improving real-time monitoring coverage by 40%</li>
+          <li>Managed cross-functional teams of 8 engineers and technicians from concept through commissioning</li>
+          <li>Implemented predictive maintenance protocols using vibration analysis, reducing unplanned downtime by 28%</li>
+        </ul>
+      </div>
+    </div>
+    <div class="exp-item rv rv-d1">
+      <div class="exp-date">2018 &mdash; 2021</div>
+      <div class="exp-body">
+        <h3>Electrical Engineer</h3>
+        <div class="exp-company">Ministry of Electricity &amp; Water (MEW)</div>
+        <ul>
+          <li>Designed HV/LV electrical systems for 3 substation upgrade projects across Kuwait's national grid</li>
+          <li>Performed load flow analysis and relay coordination studies using ETAP for 132kV/11kV substations</li>
+          <li>Coordinated with international contractors on procurement and installation of switchgear and transformers</li>
+          <li>Developed standardized testing and commissioning procedures adopted department-wide</li>
+        </ul>
+      </div>
+    </div>
+    <div class="exp-item rv rv-d2">
+      <div class="exp-date">2017 &mdash; 2018</div>
+      <div class="exp-body">
+        <h3>Junior Electrical Engineer</h3>
+        <div class="exp-company">Al-Ghanim International</div>
+        <ul>
+          <li>Assisted in electrical design and drafting for commercial and industrial building projects</li>
+          <li>Conducted site inspections and prepared technical reports for project managers</li>
+          <li>Supported senior engineers in preparing BOQ documents and tender submissions</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section class="section" id="projects">
+  <h2 class="section-title rv">Key Achievements</h2>
+  <div class="achieve-grid">
+    <div class="achieve-card rv">
+      <h3>KOC Gathering Center Automation</h3>
+      <div class="achieve-label">Situation</div>
+      <div class="achieve-text">Six gathering centers relied on manual monitoring with no centralized control, leading to frequent production delays and safety incidents.</div>
+      <div class="achieve-label" style="margin-top:16px">Action</div>
+      <div class="achieve-text">Designed and deployed an integrated SCADA system with PLC-based automation across all six facilities, including fiber optic communication backbone.</div>
+      <div class="achieve-label" style="margin-top:16px">Result</div>
+      <div class="achieve-text">Achieved 40% improvement in monitoring coverage and 28% reduction in unplanned downtime. Project delivered on time within KWD 800K budget.</div>
+      <div class="achieve-metric">KWD 800K | 6 Facilities | 40% Monitoring Gain</div>
+    </div>
+    <div class="achieve-card rv rv-d1">
+      <h3>MEW 132kV Substation Upgrade</h3>
+      <div class="achieve-label">Situation</div>
+      <div class="achieve-text">Aging 132kV/11kV substations in the Ahmadi governorate were operating beyond rated capacity, risking grid instability during peak summer loads.</div>
+      <div class="achieve-label" style="margin-top:16px">Action</div>
+      <div class="achieve-text">Led the complete redesign of protection relay coordination and switchgear replacement. Performed load flow and short-circuit analysis using ETAP to validate the new configuration.</div>
+      <div class="achieve-label" style="margin-top:16px">Result</div>
+      <div class="achieve-text">Increased substation capacity by 35% and eliminated critical fault risks. Zero safety incidents during the 14-month commissioning period.</div>
+      <div class="achieve-metric">35% Capacity Increase | Zero Incidents | 14-Month Delivery</div>
+    </div>
+    <div class="achieve-card rv rv-d2">
+      <h3>Predictive Maintenance Program</h3>
+      <div class="achieve-label">Situation</div>
+      <div class="achieve-text">KOC's rotating equipment fleet experienced frequent unplanned failures, costing an estimated KWD 500K annually in lost production and emergency repairs.</div>
+      <div class="achieve-label" style="margin-top:16px">Action</div>
+      <div class="achieve-text">Implemented a condition-based maintenance program using vibration analysis sensors, thermal imaging, and Python-based anomaly detection on critical rotating equipment.</div>
+      <div class="achieve-label" style="margin-top:16px">Result</div>
+      <div class="achieve-text">Reduced unplanned downtime by 28% in the first year. Program was adopted as a KOC best practice and expanded to 3 additional facilities.</div>
+      <div class="achieve-metric">28% Downtime Reduction | KWD 500K Saved | 3 Facilities Expanded</div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section class="section" id="education">
+  <h2 class="section-title rv">Education</h2>
+  <div class="edu-item rv">
+    <div class="exp-date">2013 &mdash; 2017</div>
+    <div class="edu-body">
+      <h3>BSc Electrical Engineering</h3>
+      <div class="edu-school">Kuwait University</div>
+      <div class="edu-detail">GPA: 3.4 / 4.0</div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section class="section" id="endorsements">
+  <h2 class="section-title rv">Endorsements</h2>
+  <div class="endorsements-grid">
+    <div class="endorsement rv">
+      <blockquote>"Abdulrahman consistently delivers complex automation projects on schedule and within budget. His ability to bridge the gap between design and field execution is exceptional. He is one of the most reliable engineers I have worked with at KOC."</blockquote>
+      <div class="endorse-author">Eng. Fahad Al-Mutairi</div>
+      <div class="endorse-role">Team Lead, Automation Division &mdash; Kuwait Oil Company</div>
+    </div>
+    <div class="endorsement rv rv-d1">
+      <blockquote>"During the substation upgrade project, Abdulrahman demonstrated a rare combination of deep technical knowledge and strong project management skills. His ETAP analysis work was thorough and his coordination with contractors was seamless."</blockquote>
+      <div class="endorse-author">Eng. Noura Al-Sabah</div>
+      <div class="endorse-role">Senior Engineer, Power Systems &mdash; Ministry of Electricity &amp; Water</div>
+    </div>
   </div>
 </section>
 
 <footer class="footer">
   <div class="footer-inner">
-    <div class="footer-col"><h4>Location</h4><p>Kuwait City, Kuwait</p></div>
-    <div class="footer-col"><h4>Contact</h4><p><a href="mailto:aak22xq8@gmail.com">aak22xq8@gmail.com</a></p><p><a href="tel:55502344">55502344</a></p></div>
+    <div class="footer-col"><h4>Contact</h4><p><a href="mailto:a.alkandari@outlook.com">a.alkandari@outlook.com</a></p><p><a href="tel:+96555502344">+965 5550 2344</a></p></div>
+    <div class="footer-col"><h4>Online</h4><p><a href="https://linkedin.com/in/abdulrahman-alkandari" target="_blank" rel="noopener">linkedin.com/in/abdulrahman-alkandari</a></p></div>
     <div class="footer-col"><h4>Template</h4><p>Engineer Portfolio by <a href="https://portfolio-trimind.com" target="_blank">Portfolio Pro</a></p></div>
   </div>
-  <div class="footer-bottom">&copy; Abdulrahman Alkandari &mdash; Electrical Engineer</div>
+  <div class="footer-bottom">&copy; Abdulrahman Alkandari &mdash; Senior Electrical Engineer</div>
 </footer>
 
 <script>
