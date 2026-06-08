@@ -82,6 +82,62 @@
   var orb = new THREE.Mesh(new THREE.SphereGeometry(1, 64, 64), orbMat);
   scene.add(orb);
 
+  /* ---- particle cloud: only simulated during the hero bloom + dock windows ---- */
+  var PN = (TIER === "mobile") ? 5000 : 20000;
+  var pts = null, ptsU = null;
+  (function buildParticles() {
+    var g = new THREE.BufferGeometry();
+    var pos = new Float32Array(PN * 3), rnd = new Float32Array(PN * 3);
+    var GA = Math.PI * (3 - Math.sqrt(5));
+    for (var i = 0; i < PN; i++) {
+      var y = 1 - (i / (PN - 1)) * 2;                 /* fibonacci sphere (same silhouette) */
+      var rad = Math.sqrt(Math.max(0, 1 - y * y));
+      var th = GA * i;
+      pos[i * 3] = Math.cos(th) * rad; pos[i * 3 + 1] = y; pos[i * 3 + 2] = Math.sin(th) * rad;
+      rnd[i * 3] = Math.random(); rnd[i * 3 + 1] = Math.random(); rnd[i * 3 + 2] = Math.random();
+    }
+    g.setAttribute("position", new THREE.BufferAttribute(pos, 3));
+    g.setAttribute("aRand", new THREE.BufferAttribute(rnd, 3));
+    ptsU = {
+      uMorph: { value: 1 }, uDisp: { value: 0 }, uTime: { value: 0 },
+      uSize: { value: (TIER === "mobile") ? 2.2 : 2.7 },
+      uColor: { value: new THREE.Color(0x6d99ce) }, uRim: { value: new THREE.Color(0xeaf2fb) },
+      uOpacity: { value: 0 }
+    };
+    var mat = new THREE.ShaderMaterial({
+      uniforms: ptsU, transparent: true, depthWrite: false,
+      vertexShader: [
+        "attribute vec3 aRand;",
+        "uniform float uMorph; uniform float uDisp; uniform float uTime; uniform float uSize;",
+        "varying float vA;",
+        "void main(){",
+        "  vec3 home = position;",
+        "  vec3 drift = vec3(sin(uTime*0.8 + aRand.x*6.28), cos(uTime*0.7 + aRand.y*6.28), sin(uTime*0.6 + aRand.z*6.28));",
+        "  float radial = mix(0.06, 1.0, uMorph) + uDisp*(0.5 + aRand.x);",   /* bloom: expand from centre; dock: push out */
+        "  vec3 p = home*radial + drift*((1.0-uMorph)*0.30 + uDisp*0.45);",
+        "  vec4 mv = modelViewMatrix * vec4(p, 1.0);",
+        "  gl_Position = projectionMatrix * mv;",
+        "  gl_PointSize = uSize * (300.0 / -mv.z);",
+        "  vA = 0.45 + 0.55*aRand.y;",
+        "}"
+      ].join("\n"),
+      fragmentShader: [
+        "uniform vec3 uColor; uniform vec3 uRim; uniform float uOpacity;",
+        "varying float vA;",
+        "void main(){",
+        "  vec2 c = gl_PointCoord - 0.5; float r = dot(c, c);",
+        "  if (r > 0.25) discard;",
+        "  float a = smoothstep(0.25, 0.0, r) * vA * uOpacity;",
+        "  vec3 col = mix(uColor, uRim, smoothstep(0.06, 0.0, r));",   /* brighter core dot */
+        "  gl_FragColor = vec4(col, a);",
+        "}"
+      ].join("\n")
+    });
+    pts = new THREE.Points(g, mat);
+    pts.visible = false; pts.frustumCulled = false;
+    scene.add(pts);
+  })();
+
   /* ---- section anchoring (runtime; keyframes are fractions, never px) ---- */
   var SECTIONS = ["hero", "skills", "experience", "projects", "contact"];
   /* per-section orb target: x/y are fractions of the half-viewport at the z=0 plane */
@@ -157,6 +213,8 @@
   var K = 0.090, DAMP = 0.80;       /* responsive spring, slight overshoot on settle */
   var paused = false, tAcc = 0;
   var dockLifted = false;           /* is the canvas currently raised above the iframe? */
+  var bloomActive = true, bloomClock = 0, BLOOM_DUR = 1.6;  /* hero load bloom */
+  var lastNow = 0;                                          /* for frame-rate-independent timing */
 
   /* how docked are we? a 0..1..0 bump peaking when the keyboard is centred */
   function dockProgress(sy) {
@@ -172,7 +230,9 @@
   function frame() {
     if (paused) return;
     requestAnimationFrame(frame);
-    tAcc += 0.016;
+    var now = (typeof performance !== "undefined" && performance.now) ? performance.now() : Date.now();
+    var dt = lastNow ? Math.min(0.05, (now - lastNow) / 1000) : 0.016; lastNow = now;
+    tAcc += dt;
     var sy = window.scrollY || window.pageYOffset || 0;
     var tgt = targetAt(sy);
     var tx = tgt.x, ty = tgt.y, ts = tgt.scale, topac = tgt.opacity;
@@ -207,14 +267,42 @@
     curDeep.lerp(new THREE.Color(deepT), 0.05);
     uniforms.uCore.value.copy(curCore);
     uniforms.uDeep.value.copy(curDeep);
-    uniforms.uOpacity.value = cur.opacity;
+    /* ---- particle windows: hero bloom (on load) + dock burst ---- */
+    var morph = 1, ptsOpac = 0, disp = 0, solidMul = 1;
+    if (bloomActive) {
+      var bt = Math.min(1, bloomClock / BLOOM_DUR); bloomClock += dt;
+      var be = 1 - Math.pow(1 - bt, 3);                       /* ease-out cubic */
+      morph = be; disp = (1 - be) * 0.18;
+      ptsOpac = 1 - smooth(Math.max(0, (bt - 0.80) / 0.20));  /* particles fade as the solid forms */
+      solidMul = smooth(Math.max(0, (bt - 0.60) / 0.40));     /* solid fades in at the end */
+      if (bt >= 1) bloomActive = false;
+    } else if (dp > 0.70) {
+      var bump = smooth((dp - 0.70) / 0.18) * (1 - smooth(Math.max(0, (dp - 0.90) / 0.10)));
+      ptsOpac = bump; disp = bump * 0.9; morph = 1;           /* particalize + scatter into the trackball */
+    }
+
+    uniforms.uOpacity.value = cur.opacity * solidMul;
     uniforms.uTime.value = tAcc;
 
     /* map fraction -> world, place + scale + idle rotation */
     orb.position.set(cur.x * vpW / 2, cur.y * vpH / 2, 0);
     orb.scale.setScalar(Math.max(0.001, cur.scale));
-    orb.rotation.y += 0.0016;
+    orb.rotation.y += dt * 0.10;
     orb.rotation.x = Math.sin(tAcc * 0.3) * 0.06; /* gentle breathe/tilt */
+
+    /* particles ride the orb transform; rendered only while a window is active */
+    if (pts) {
+      var on = ptsOpac > 0.004;
+      if (pts.visible !== on) pts.visible = on;
+      if (on) {
+        pts.position.copy(orb.position);
+        pts.scale.copy(orb.scale);
+        pts.rotation.copy(orb.rotation);
+        ptsU.uMorph.value = morph; ptsU.uDisp.value = disp;
+        ptsU.uTime.value = tAcc; ptsU.uOpacity.value = ptsOpac;
+        ptsU.uColor.value.copy(curCore);
+      }
+    }
 
     renderer.render(scene, camera);
   }
