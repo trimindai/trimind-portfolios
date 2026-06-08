@@ -415,6 +415,31 @@
 
   var t = 0, rollSpeedY = 0.012, rollSpeedX = 0.004, rollTargetSpeed = 1, trackballHovered = false;
   var tmp = new THREE.Vector3();
+  var lastNow = (typeof performance !== "undefined" && performance.now) ? performance.now() : Date.now();
+
+  /* ---- R2: scroll-driven per-section horizontal positioning ----
+     The keyboard is the connective thread: it glides between a floated-right
+     parking spot (hero/contact — clears the left-aligned hero name) and a
+     centred, prominent home (skills/experience/projects). RTL mirrors sides. */
+  var SECTION_IDS = ["hero", "skills", "experience", "projects", "contact"];
+  /* target X as a fraction of HALF the viewport width (LTR). 0 = centred. */
+  var SECTION_FRAC = { hero: 0.42, skills: 0.0, experience: 0.0, projects: 0.0, contact: 0.42 };
+  /* subtle scale: smaller when floated to a side, full when centred */
+  var SECTION_SCALE = { hero: 0.82, skills: 1.0, experience: 1.0, projects: 1.0, contact: 0.82 };
+  function isRTL() { return document.documentElement.getAttribute("dir") === "rtl" || document.dir === "rtl"; }
+  /* latest viewport width in world units at the board's z-plane (updated each frame) */
+  var vpW = 1;
+  function activeSectionId() {
+    var best = "hero", bestD = Infinity, mid = window.innerHeight / 2;
+    for (var i = 0; i < SECTION_IDS.length; i++) {
+      var el = document.getElementById(SECTION_IDS[i]);
+      if (!el) continue;
+      var r = el.getBoundingClientRect();
+      var d = Math.abs(r.top + r.height / 2 - mid);
+      if (d < bestD) { bestD = d; best = SECTION_IDS[i]; }
+    }
+    return best;
+  }
 
   /* ---- hardening (mirror orb.js): pause on hidden, first-frame signal, ctx-lost ---- */
   var paused = false, running = false, firstFrame = true;
@@ -426,6 +451,24 @@
     t += 0.016;
     if (!isDown) pickHover();
     board.position.y = Math.sin(t * 0.8) * 0.07;
+    /* R2: glide the board horizontally to the active section's parking spot.
+       viewport size in world units at the board's z-plane (board.position.z≈0): */
+    var vpH = 2 * Math.tan((camera.fov * Math.PI / 180) / 2) * Math.abs(camera.position.z - board.position.z);
+    vpW = vpH * camera.aspect;
+    var sid = activeSectionId();
+    var frac = SECTION_FRAC[sid] || 0;
+    if (isRTL()) frac = -frac;
+    var targetX = frac * (vpW / 2);
+    /* frame-rate-independent smoothing: exponential decay over REAL elapsed time,
+       so the glide converges in ~real seconds regardless of fps (smooth, deterministic) */
+    var now = (typeof performance !== "undefined" && performance.now) ? performance.now() : Date.now();
+    var dt = Math.min(0.25, Math.max(0, (now - lastNow) / 1000)); lastNow = now;
+    var k = 7; // smoothing rate (per second); higher = snappier, still glides
+    var sm = 1 - Math.exp(-k * dt);
+    board.position.x += (targetX - board.position.x) * sm;
+    var ts = SECTION_SCALE[sid] || 1.0;
+    board.scale.x += (ts - board.scale.x) * sm;
+    board.scale.y = board.scale.z = board.scale.x;
     caps.forEach(function (cap) {
       var u = cap.userData; var target = u.baseY;
       if (u.pressed) target = u.baseY - 0.18;
@@ -461,5 +504,8 @@
   requestAnimationFrame(animate);
 
   /* expose for tests: lets a later harness verify drag-rotate */
-  window.__kbd = { getRotation: function () { return board.rotation.y; } };
+  window.__kbd = {
+    getRotation: function () { return board.rotation.y; },
+    getPosFrac: function () { return board.position.x / (vpW / 2); }  // normalized -1..1 of half-viewport
+  };
 })();

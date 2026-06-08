@@ -86,25 +86,48 @@ try {
         if (kbd.live) pass(`[${tag}] keyboard live`); else fail(`[${tag}] keyboard not live`);
         if (kbd.glLost===false) pass(`[${tag}] keyboard GL healthy`); else fail(`[${tag}] keyboard GL ${kbd.glLost}`);
       }
+      // R2: keyboard repositions per section (hero/contact floated to a side, skills centred)
+      if (view.key==="desk"){
+        const pos = await page.evaluate(async()=>{
+          if(!window.__kbd || !window.__kbd.getPosFrac) return null;
+          async function at(id){ document.getElementById(id).scrollIntoView({block:"center"}); await new Promise(r=>setTimeout(r,1100)); return window.__kbd.getPosFrac(); }
+          const hero=await at("hero"), skills=await at("skills"), contact=await at("contact");
+          return {hero,skills,contact};
+        });
+        if(!pos){ fail(`[${tag}] __kbd.getPosFrac missing`); }
+        else if (route.key==="en"){
+          if(pos.hero>0.15) pass(`[${tag}] hero keyboard floated right (${pos.hero.toFixed(2)})`); else fail(`[${tag}] hero keyboard not right (${pos.hero.toFixed(2)})`);
+          if(Math.abs(pos.skills)<0.15) pass(`[${tag}] skills keyboard centred (${pos.skills.toFixed(2)})`); else fail(`[${tag}] skills keyboard not centred (${pos.skills.toFixed(2)})`);
+          if(pos.contact>0.15) pass(`[${tag}] contact keyboard floated right (${pos.contact.toFixed(2)})`); else fail(`[${tag}] contact keyboard not right (${pos.contact.toFixed(2)})`);
+        } else { // AR mirrored
+          if(pos.hero<-0.15) pass(`[${tag}] AR hero keyboard floated left (${pos.hero.toFixed(2)})`); else fail(`[${tag}] AR hero keyboard not left (${pos.hero.toFixed(2)})`);
+          if(Math.abs(pos.skills)<0.15) pass(`[${tag}] AR skills keyboard centred (${pos.skills.toFixed(2)})`); else fail(`[${tag}] AR skills keyboard not centred (${pos.skills.toFixed(2)})`);
+          if(pos.contact<-0.15) pass(`[${tag}] AR contact keyboard floated left (${pos.contact.toFixed(2)})`); else fail(`[${tag}] AR contact keyboard not left (${pos.contact.toFixed(2)})`);
+        }
+        await page.evaluate(()=>window.scrollTo(0,0)); await page.waitForTimeout(500);
+      }
       // T2.3: drag rotates the keyboard, without leaking into page scroll
       if (view.key==="desk"){
         const rot = await page.evaluate(async()=>{
           if(!window.__kbd) return null;
-          window.scrollTo(0,0); await new Promise(r=>requestAnimationFrame(r));
+          // keyboard is centred at the skills section; scroll there so the centre-drag hits the board
+          document.getElementById("skills").scrollIntoView({block:"center"}); await new Promise(r=>setTimeout(r,1100));
+          const sy0=window.scrollY;
           const r0=window.__kbd.getRotation();
-          // drag horizontally across the keyboard. It renders centred, so use viewport centre.
+          // drag horizontally across the centred keyboard, using viewport centre.
           const cx=window.innerWidth*0.5, cy=window.innerHeight*0.5;
           function pe(t,x){ window.dispatchEvent(new PointerEvent(t,{clientX:x,clientY:cy,bubbles:true,pointerId:1,isPrimary:true,pointerType:"mouse"})); }
           pe("pointerdown",cx);
           for(let i=1;i<=10;i++){ pe("pointermove",cx+i*14); }
           pe("pointerup",cx+140);
           await new Promise(r=>setTimeout(r,300));
-          return { before:r0, after:window.__kbd.getRotation(), scrollY:window.scrollY };
+          return { before:r0, after:window.__kbd.getRotation(), scrollDelta:Math.abs(window.scrollY-sy0) };
         });
         if (rot && Math.abs(rot.after-rot.before)>0.001) pass(`[${tag}] drag rotates keyboard (Δ=${rot?(rot.after-rot.before).toFixed(3):'?'})`);
         else fail(`[${tag}] drag did not rotate keyboard (${JSON.stringify(rot)})`);
-        if (rot && rot.scrollY<5) pass(`[${tag}] drag did not scroll page`);
-        else fail(`[${tag}] drag leaked into scroll (scrollY=${rot?rot.scrollY:'?'})`);
+        if (rot && rot.scrollDelta<5) pass(`[${tag}] drag did not scroll page`);
+        else fail(`[${tag}] drag leaked into scroll (scrollDelta=${rot?rot.scrollDelta:'?'})`);
+        await page.evaluate(()=>window.scrollTo(0,0)); await page.waitForTimeout(400);
       }
       // T3.3: mute toggles shared sound flag
       const mute = await page.evaluate(()=>{ const b=document.getElementById("mute"); if(!b) return null; const before=window.__demoSound; b.click(); const after=window.__demoSound; b.click(); return {before,after}; });
