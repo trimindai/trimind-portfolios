@@ -62,6 +62,14 @@ try {
       if (op>0.85) pass(`[${tag}] centred section near full opacity (${op.toFixed(2)})`);
       else fail(`[${tag}] centred section opacity too low (${op.toFixed(2)})`);
       await page.evaluate(()=>window.scrollTo(0,0)); await page.waitForTimeout(400);
+      // T1.5: headings sticky + no phone overflow
+      if (view.key==="phone"){
+        const ov = await page.evaluate(()=>document.documentElement.scrollWidth-document.documentElement.clientWidth);
+        if (ov>1) fail(`[${tag}] horizontal overflow ${ov}px`); else pass(`[${tag}] no overflow`);
+      }
+      const sticky = await page.evaluate(()=>{ const h=document.querySelector("#projects .sticky-head"); return h?getComputedStyle(h).position:""; });
+      if (sticky==="sticky") pass(`[${tag}] section headings sticky`);
+      else fail(`[${tag}] heading not sticky (${sticky})`);
       if (errors.length) fail(`[${tag}] ${errors.length} console error(s): ${errors.slice(0,3).join(" | ")}`);
       else pass(`[${tag}] zero console errors`);
       try { await page.screenshot({path:`scripts/_sj-${tag}.png`,fullPage:false,timeout:8000,animations:"disabled"}); }

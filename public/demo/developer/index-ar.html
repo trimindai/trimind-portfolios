@@ -422,6 +422,16 @@ footer .credit a{color:var(--muted);text-decoration:underline;text-underline-off
 html[dir="rtl"] .tl-item{padding-left:0;padding-right:38px}
 html[dir="rtl"] .timeline::before{left:auto;right:7px}
 html[dir="rtl"] .tl-item::before{left:auto;right:0}
+
+/* ── T1.5: sticky centred headings + oversized scroll runway (Naresh layout) ── */
+.sticky-head{ position:sticky; top:70px; z-index:2; text-align:center; margin-bottom:64px; }
+@media (max-width:768px){ .sticky-head{ top:58px; margin-bottom:40px; } }
+/* oversized scroll runway (Naresh uses 120–150vh) */
+#experience, #projects{ min-height:130vh; }
+#skills{ min-height:120vh; }
+#contact{ min-height:100vh; }
+/* centre content vertically inside the taller sections */
+#experience .wrap, #projects .wrap, #contact .wrap{ display:flex; flex-direction:column; justify-content:center; }
 </style>
     <meta property="og:image" content="https://portfolio-trimind.com/og-image.png" />
     <meta property="og:image:width" content="1200" />
@@ -483,7 +493,7 @@ html[dir="rtl"] .tl-item::before{left:auto;right:0}
 
 <section id="experience" data-reveal>
   <div class="wrap">
-    <div class="sec-head">
+    <div class="sec-head sticky-head">
       <div class="eyebrow">الخبرة</div>
       <h2>مسيرتي المهنية</h2>
     </div>
@@ -539,7 +549,7 @@ html[dir="rtl"] .tl-item::before{left:auto;right:0}
 
 <section id="projects" data-reveal>
   <div class="wrap">
-    <div class="sec-head">
+    <div class="sec-head sticky-head">
       <div class="eyebrow">المشاريع</div>
       <h2>أعمال مختارة</h2>
       <p>انقر على أي مشروع للاطلاع على التفاصيل.</p>
@@ -658,7 +668,7 @@ html[dir="rtl"] .tl-item::before{left:auto;right:0}
 
 <section id="contact" data-reveal>
   <div class="wrap">
-    <div class="sec-head">
+    <div class="sec-head sticky-head">
       <div class="eyebrow">تواصل</div>
       <h2>لنعمل معًا</h2>
     </div>
