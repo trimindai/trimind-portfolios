@@ -71,24 +71,8 @@ a{color:inherit;text-decoration:none}
 img{display:block;max-width:100%}
 ::selection{background:var(--brand);color:#fff}
 
-/* ── star-field + 3D scene layers ───────────────────────────── */
+/* ── star-field ─────────────────────────────────────────────── */
 #stars{position:fixed;inset:0;z-index:-2;pointer-events:none}
-#scene{
-  position:fixed;inset:0;z-index:-1;pointer-events:none;
-  opacity:0;transition:opacity 1s ease;
-  animation:sceneIn 1.2s ease 4.5s forwards; /* CSS fallback: reveal even if JS never flags ready */
-}
-#scene.ready{opacity:1;animation:none}
-@keyframes sceneIn{from{opacity:0}to{opacity:1}}
-#scene canvas{display:block;width:100%!important;height:100%!important}
-/* let the keyboard be interactive only while the skills section is active */
-body[data-active="skills"] #scene{pointer-events:auto}
-/* floating keycap tooltip (hover label over the 3D keyboard) */
-#kbd-tip{position:fixed;z-index:95;pointer-events:none;transform:translate(-50%,-100%);
-  font-family:var(--font-mono);font-size:.72rem;letter-spacing:.03em;padding:5px 10px;border-radius:9px;
-  background:color-mix(in srgb,var(--bg) 82%,transparent);border:1px solid var(--border-strong);
-  color:var(--fg);opacity:0;transition:opacity .15s ease;white-space:nowrap;box-shadow:0 8px 24px rgba(0,0,0,.45)}
-#kbd-tip.on{opacity:1}
 
 /* ── scroll progress ────────────────────────────────────────── */
 #progress{
@@ -150,13 +134,19 @@ section{position:relative;z-index:1}
 .box-reveal.in{opacity:1;transform:none}
 @media (prefers-reduced-motion:reduce){
   .blur-in,.box-reveal{opacity:1;filter:none;transform:none;transition:none}
-  #scene{display:none}
 }
 
 /* ── hero ───────────────────────────────────────────────────── */
 #hero{min-height:100svh;display:flex;align-items:center;padding:120px 0 80px}
-#hero .grid{display:grid;grid-template-columns:minmax(0,1fr);gap:8px}
-@media(min-width:900px){#hero .grid{max-width:440px}} /* keep text in the left column; keyboard owns the right (two-column hero, like the source) */
+#hero .wrap{position:relative}
+#hero .grid{display:grid;grid-template-columns:minmax(0,1fr);gap:8px;position:relative;z-index:1}
+@media(min-width:900px){#hero .grid{max-width:440px;margin-inline-start:0}} /* text owns the start (right in RTL); the keyboard render owns the far side (left) */
+/* photoreal split-keyboard hero render (Blender) — RTL: keyboard on the LEFT */
+.hero-kbd{position:absolute;left:0;top:50%;transform:translateY(-50%);width:min(48%,660px);height:auto;pointer-events:none;z-index:0;
+  filter:drop-shadow(0 30px 50px rgba(0,0,0,.6));
+  -webkit-mask-image:linear-gradient(270deg,transparent 0,#000 26%);mask-image:linear-gradient(270deg,transparent 0,#000 26%)}
+@media(max-width:900px){.hero-kbd{position:static;transform:none;display:block;width:100%;max-width:520px;margin:28px auto 0;opacity:.92;
+  -webkit-mask-image:none;mask-image:none;filter:drop-shadow(0 20px 36px rgba(0,0,0,.55))}}
 #hero .hello{font-family:var(--font-mono);color:var(--accent);font-size:.95rem;letter-spacing:.08em;margin-bottom:18px}
 #hero h1{
   font-family:var(--font-display);font-weight:400;
@@ -182,25 +172,119 @@ section{position:relative;z-index:1}
 @keyframes wheel{0%{opacity:0;transform:translate(-50%,0)}40%{opacity:1}100%{opacity:0;transform:translate(-50%,10px)}}
 
 /* ── skills / tech stack ────────────────────────────────────── */
-#skills{padding:80px 0 100px;min-height:90svh}
+/* ── skills / Dygma-style split 3D keyboard (pure CSS + Web Audio) ── */
+#skills{padding:80px 0 110px;--ks:62px;--glow:#2f6bff;--body:#243049}
+.kbd-toolbar{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-top:10px}
 .kbd-hint{font-family:var(--font-mono);color:var(--muted-2);font-size:.85rem}
-.skill-grid{display:flex;flex-wrap:wrap;gap:12px;margin-top:8px}
-.keycap{
-  position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;
-  width:96px;height:96px;border-radius:14px;cursor:default;
-  background:linear-gradient(180deg,var(--card-hover),var(--card));
-  border:1px solid var(--border-strong);
-  box-shadow:0 6px 0 rgba(0,0,0,.35),0 10px 24px rgba(0,0,0,.35),inset 0 1px 0 rgba(255,255,255,.06);
-  transition:transform .12s ease,box-shadow .12s ease,border-color .2s;
+.kbd-sound-wrap{margin-inline-start:auto;display:inline-flex;align-items:center;gap:9px;padding:7px 11px;border-radius:10px;border:1px solid var(--border-strong);background:var(--card);color:var(--muted);transition:border-color .2s,color .2s}
+.kbd-sound-wrap:hover{border-color:var(--brand);color:var(--fg)}
+.kbd-sound-wrap i{font-size:.8rem}
+.kbd-sound{appearance:none;-webkit-appearance:none;background:transparent;border:none;color:var(--fg);font-family:var(--font-mono);font-size:.74rem;letter-spacing:.04em;cursor:pointer;padding-right:4px}
+.kbd-sound:focus{outline:none}
+.kbd-sound option{background:var(--bg-2);color:var(--fg)}
+
+.kbd-wrap{display:grid;grid-template-columns:1fr;gap:26px;margin-top:36px}
+@media(min-width:1040px){.kbd-wrap{grid-template-columns:minmax(0,1fr) 322px;align-items:center}}
+
+/* perspective stage + floating, glowing split chassis */
+.kbd-stage{perspective:1800px;perspective-origin:50% 22%}
+.kbd-deck{
+  position:relative;transform-style:preserve-3d;
+  display:flex;justify-content:center;align-items:flex-start;gap:clamp(16px,3vw,46px);
+  padding:clamp(22px,2.6vw,40px) clamp(20px,3vw,52px) clamp(28px,3vw,46px);
+  border-radius:30px;
+  background:linear-gradient(180deg,#1b2335 0%,#11192b 50%,#0a1120 100%);
+  border:1px solid rgba(148,163,184,.18);
+  box-shadow:0 2px 0 rgba(255,255,255,.06) inset,0 -16px 40px rgba(0,0,0,.5) inset,0 40px 80px -28px rgba(0,0,0,.85),0 12px 0 #060a14,0 0 46px 3px var(--glow),0 0 100px 12px color-mix(in srgb,var(--glow) 45%,transparent);
+  transform:rotateX(22deg) rotateY(-5deg);
 }
-.keycap:hover{transform:translateY(2px);box-shadow:0 4px 0 rgba(0,0,0,.35),0 6px 16px rgba(0,0,0,.4),inset 0 1px 0 rgba(255,255,255,.06)}
-.keycap.pressed{transform:translateY(4px);box-shadow:0 2px 0 rgba(0,0,0,.35),0 3px 8px rgba(0,0,0,.4)}
-.keycap i{font-size:1.7rem}
-.keycap .abbr{font-family:var(--font-mono);font-size:1.1rem;font-weight:600}
-.keycap .label{font-size:.66rem;color:var(--muted);max-width:84px;text-align:center;line-height:1.15;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.keycap .cat{position:absolute;top:-9px;right:-6px;font-family:var(--font-mono);font-size:.55rem;padding:1px 6px;border-radius:999px;background:var(--bg-2);border:1px solid var(--border-strong);color:var(--muted)}
-.kc-0{color:#a78bfa}.kc-1{color:#38bdf8}.kc-2{color:#34d399}.kc-3{color:#f472b6}.kc-4{color:#fbbf24}.kc-5{color:#fb7185}
-@media(max-width:560px){.keycap{width:76px;height:76px}.keycap i{font-size:1.35rem}}
+
+/* two ergonomic hand clusters (built by JS) — Charybdis-style split body */
+.kbd-hand{position:relative;display:flex;flex-direction:column;gap:clamp(8px,1.2vw,14px);padding:18px 18px 14px;transform-style:preserve-3d}
+.kbd-hand.left{align-items:flex-start;transform:rotateZ(-8deg)}
+.kbd-hand.right{align-items:flex-end;transform:rotateZ(8deg)}
+.kbd-hand::before{content:"";position:absolute;inset:-6px;z-index:-1;border-radius:24px;
+  background:linear-gradient(165deg,color-mix(in srgb,var(--body) 86%,#fff 14%),var(--body) 58%,color-mix(in srgb,var(--body) 70%,#000 30%));
+  box-shadow:0 12px 0 color-mix(in srgb,var(--body) 50%,#000 50%),0 24px 36px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.10)}
+.kbd-hand.left::before{clip-path:polygon(0 9%,80% 0,100% 44%,100% 72%,60% 100%,28% 100%,0 78%)}
+.kbd-hand.right::before{clip-path:polygon(20% 0,100% 9%,100% 78%,72% 100%,40% 100%,0 72%,0 44%)}
+.kbd-cols{display:flex;gap:clamp(7px,.9vw,11px);align-items:flex-start}
+.kbd-col{display:flex;flex-direction:column;gap:clamp(7px,.9vw,11px)}
+
+/* thumb cluster + trackball — the split-ergo signature */
+.kbd-thumbwrap{display:flex;align-items:center;gap:10px}
+.kbd-hand.left .kbd-thumbwrap{align-self:flex-end;transform:translate(-4px,2px) rotate(15deg);transform-origin:right top}
+.kbd-hand.right .kbd-thumbwrap{align-self:flex-start;transform:translate(4px,2px) rotate(-15deg);transform-origin:left top}
+.kbd-thumb{display:flex;gap:clamp(6px,.8vw,10px)}
+.kbd-thumb .key{width:calc(var(--ks)*.92);height:calc(var(--ks)*.92)}
+.kbd-trackball{flex:none;width:calc(var(--ks)*1.3);height:calc(var(--ks)*1.3);border-radius:50%;
+  background:radial-gradient(36% 30% at 38% 30%,#ffb3b3,#e11d2b 42%,#6f0d14 100%);
+  box-shadow:0 0 0 5px color-mix(in srgb,var(--body) 70%,#000 30%),0 10px 16px rgba(0,0,0,.6),inset 0 -8px 14px rgba(0,0,0,.55),inset 0 6px 12px rgba(255,255,255,.3)}
+
+.kbd-palm{width:72%;height:calc(var(--ks)*.7);margin-top:8px;
+  background:linear-gradient(180deg,color-mix(in srgb,var(--body) 70%,#fff 30%),color-mix(in srgb,var(--body) 92%,#000 8%));
+  box-shadow:0 9px 0 color-mix(in srgb,var(--body) 45%,#000 55%),0 16px 20px rgba(0,0,0,.45)}
+.kbd-hand.left .kbd-palm{align-self:flex-start;clip-path:polygon(0 0,100% 16%,84% 100%,0 100%)}
+.kbd-hand.right .kbd-palm{align-self:flex-end;clip-path:polygon(0 16%,100% 0,100% 100%,16% 100%)}
+
+/* tinted mechanical keycap — the cap colour IS the tool colour */
+.key{
+  --kc:#5b6478;
+  position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;
+  width:var(--ks);height:var(--ks);
+  border:none;border-radius:9px;cursor:pointer;color:#fff;font-family:inherit;
+  background:linear-gradient(158deg,color-mix(in srgb,var(--kc) 70%,#fff 24%),color-mix(in srgb,var(--kc) 95%,#000 5%) 58%,color-mix(in srgb,var(--kc) 86%,#000 14%));
+  box-shadow:0 1px 0 rgba(255,255,255,.4) inset,0 -2px 4px rgba(0,0,0,.32) inset,0 4px 0 color-mix(in srgb,var(--kc) 72%,#000 28%),0 8px 0 color-mix(in srgb,var(--kc) 58%,#000 42%),0 12px 0 color-mix(in srgb,var(--kc) 44%,#000 56%),0 15px 18px rgba(0,0,0,.55);
+  transition:transform .06s ease,box-shadow .06s ease,filter .2s ease;
+  -webkit-tap-highlight-color:transparent;
+}
+.key::after{content:"";position:absolute;left:7%;right:7%;top:6%;height:40%;border-radius:7px;
+  background:linear-gradient(180deg,rgba(255,255,255,.32),transparent);pointer-events:none}
+.key i{font-size:clamp(1.1rem,1.9vw,1.5rem);color:#fff;filter:drop-shadow(0 1px 2px rgba(0,0,0,.6));z-index:1}
+.key .abbr{font-family:var(--font-mono);font-size:clamp(.7rem,1.3vw,.92rem);font-weight:700;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.6);z-index:1}
+.key .label{font-size:clamp(.4rem,.8vw,.5rem);color:rgba(255,255,255,.95);max-width:92%;text-align:center;line-height:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-shadow:0 1px 2px rgba(0,0,0,.55);z-index:1}
+.key:hover{transform:translateY(-3px);filter:brightness(1.09)}
+.key:focus-visible{outline:2px solid #fff;outline-offset:3px}
+.key.pressed,.key:active{transform:translateY(11px);box-shadow:0 1px 0 rgba(255,255,255,.3) inset,0 -2px 4px rgba(0,0,0,.32) inset,0 2px 0 color-mix(in srgb,var(--kc) 58%,#000 42%),0 4px 9px rgba(0,0,0,.55)}
+.key.active{box-shadow:0 1px 0 rgba(255,255,255,.4) inset,0 -2px 4px rgba(0,0,0,.32) inset,0 4px 0 color-mix(in srgb,var(--kc) 72%,#000 28%),0 8px 0 color-mix(in srgb,var(--kc) 58%,#000 42%),0 12px 0 color-mix(in srgb,var(--kc) 44%,#000 56%),0 16px 30px color-mix(in srgb,var(--kc) 75%,transparent)}
+.key.blank{--kc:#39435c;cursor:default}
+.key.blank>*{display:none}
+.kc-0{--kc:#a78bfa}.kc-1{--kc:#38bdf8}.kc-2{--kc:#34d399}.kc-3{--kc:#f472b6}.kc-4{--kc:#fbbf24}.kc-5{--kc:#fb7185}
+
+/* info panel: tool name + custom description */
+.kbd-panel{align-self:center;border:1px solid var(--border-strong);border-radius:16px;
+  background:linear-gradient(180deg,var(--card-hover),var(--card));padding:22px;min-height:178px;position:relative;overflow:hidden}
+.kbd-panel::before{content:"";position:absolute;inset:0;pointer-events:none;transition:background .35s ease;
+  background:radial-gradient(90% 60% at 0% 0%,color-mix(in srgb,var(--pk,#7c5cff) 18%,transparent),transparent 60%)}
+.kbd-panel .pk-cat{font-family:var(--font-mono);font-size:.66rem;letter-spacing:.12em;text-transform:uppercase;color:var(--pk,#a78bfa);position:relative}
+.kbd-panel .pk-name{font-family:var(--font-display);font-size:1.5rem;margin:8px 0 10px;line-height:1.12;position:relative}
+.kbd-panel .pk-desc{color:var(--muted);font-size:.92rem;line-height:1.55;position:relative}
+.kbd-panel.empty .pk-cat,.kbd-panel.empty .pk-name{opacity:.5}
+
+/* all-skills list (full list of every tool) */
+.kbd-listwrap{margin-top:44px}
+.kbd-listhead{font-family:var(--font-mono);font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted-2);text-align:center;margin-bottom:14px}
+.kbd-list{display:flex;flex-wrap:wrap;gap:9px;justify-content:center;max-width:920px;margin:0 auto}
+.kbd-chip{--kc:#a78bfa;display:inline-flex;align-items:center;gap:8px;padding:8px 13px;border-radius:999px;border:1px solid var(--border-strong);background:var(--card);font-size:.82rem;color:var(--fg);cursor:pointer;transition:border-color .2s,transform .12s,background .2s}
+.kbd-chip .dot{width:9px;height:9px;border-radius:50%;background:var(--kc);box-shadow:0 0 8px var(--kc)}
+.kbd-chip i{color:var(--kc);font-size:.95rem}
+.kbd-chip:hover{border-color:var(--kc);transform:translateY(-2px)}
+.kbd-chip.active{border-color:var(--kc);background:color-mix(in srgb,var(--kc) 14%,var(--card))}
+
+@media(max-width:1040px){.kbd-deck{transform:rotateX(16deg) rotateY(-4deg)}}
+@media(max-width:768px){#skills{--ks:54px}}
+@media(max-width:560px){
+  #skills{--ks:clamp(26px,7.4vw,46px);overflow-x:clip}
+  .kbd-deck{gap:5px;padding:14px 6px 20px;transform:rotateX(10deg)}
+  .kbd-hand{padding:8px 5px}
+  .kbd-hand.left,.kbd-hand.right{transform:none}
+  .kbd-cols{gap:4px}
+  .kbd-col{gap:4px}
+  .kbd-thumb{gap:5px}
+  .kbd-sound-wrap{margin-inline-start:0}
+  .kbd-panel{min-height:0}
+}
+@media (prefers-reduced-motion:reduce){.kbd-deck{transform:rotateX(12deg)}}
 
 /* ── experience timeline ────────────────────────────────────── */
 #experience{padding:90px 0}
@@ -321,8 +405,6 @@ html[dir="rtl"] .tl-item::before{left:auto;right:0}
 <div id="cursor"></div><div id="cursor-dot"></div>
 
 <canvas id="stars"></canvas>
-<div id="scene" aria-hidden="true"></div>
-<div id="kbd-tip" aria-hidden="true"></div>
 <div id="progress"></div>
 
 <nav aria-label="التنقل بين الأقسام">
@@ -353,6 +435,7 @@ html[dir="rtl"] .tl-item::before{left:auto;right:0}
       </div>
       <div class="scroll-cue blur-in" data-delay="440"><span class="mouse"></span>اسحب للأسفل</div>
     </div>
+    <img class="hero-kbd" src="/assets/hero-keyboard.png" alt="لوحة مفاتيح ميكانيكية مقسّمة ثلاثية الأبعاد" loading="eager" width="1600" height="900">
   </div>
 </section>
 
@@ -361,98 +444,71 @@ html[dir="rtl"] .tl-item::before{left:auto;right:0}
     <div class="sec-head">
       <div class="eyebrow">التقنيات</div>
       <h2>حزمة التقنيات</h2>
-      <p class="kbd-hint">(تلميح: اضغط أي مفتاح — لوحة المفاتيح ثلاثية الأبعاد العائمة تفاعلية)</p>
+      <div class="kbd-toolbar">
+        <p class="kbd-hint">(اضغط أي مفتاح — كل مفتاح مهارة)</p>
+        <label class="kbd-sound-wrap" for="kbd-sound"><i class="fa-solid fa-volume-high"></i>
+          <select class="kbd-sound" id="kbd-sound" aria-label="صوت المفاتيح">
+            <option value="thocky">ثوكي</option>
+            <option value="creamy">كريمي</option>
+            <option value="clacky">كلاكي</option>
+            <option value="poppy">بوبي</option>
+            <option value="clicky">كليكي</option>
+            <option value="lego">ليغو</option>
+            <option value="none">بدون صوت</option>
+          </select>
+        </label>
+      </div>
     </div>
-    <div class="skill-grid">
-      <div class="keycap" data-key tabindex="0">
-        <span class="cat">الواجهة الأمامية</span>
-        <i class="fab fa-react kc-0"></i>
-        <span class="label">React</span>
+    <div class="kbd-wrap">
+      <div class="kbd-stage">
+        <div class="kbd-deck" id="kbd-deck">
+          <button type="button" class="key kc-0" data-skill="React" data-cat="الواجهة الأمامية" data-desc="واجهات ومكوّنات سريعة وتفاعلية ونظام تصميم متّسق." aria-label="React"><i class="fab fa-react"></i><span class="label">React</span></button>
+          <button type="button" class="key kc-0" data-skill="Next.js" data-cat="الواجهة الأمامية" data-desc="تصيير من الخادم وتوجيه وعرض على الحافة لتطبيقات React الإنتاجية." aria-label="Next.js"><span class="abbr">Next</span><span class="label">Next.js</span></button>
+          <button type="button" class="key kc-0" data-skill="TypeScript" data-cat="الواجهة الأمامية" data-desc="كود آمن الأنواع عبر كامل الحزمة — أخطاء أقل وقت التشغيل." aria-label="TypeScript"><span class="abbr">TS</span><span class="label">TypeScript</span></button>
+          <button type="button" class="key kc-0" data-skill="Tailwind" data-cat="الواجهة الأمامية" data-desc="تنسيق بالأدوات يحافظ على سرعة التصميم واتّساقه." aria-label="Tailwind"><span class="abbr">TW</span><span class="label">Tailwind</span></button>
+          <button type="button" class="key kc-0" data-skill="Three.js" data-cat="الواجهة الأمامية" data-desc="مشاهد ثلاثية الأبعاد و WebGL لحظية داخل المتصفّح." aria-label="Three.js"><span class="abbr">TJ</span><span class="label">Three.js</span></button>
+          <button type="button" class="key kc-1" data-skill="Node.js" data-cat="الواجهة الخلفية" data-desc="خدمات وواجهات برمجية وخلفيات لحظية مدفوعة بالأحداث." aria-label="Node.js"><i class="fab fa-node-js"></i><span class="label">Node.js</span></button>
+          <button type="button" class="key kc-1" data-skill="Python" data-cat="الواجهة الخلفية" data-desc="خدمات خلفية وأتمتة وأدوات بيانات." aria-label="Python"><i class="fab fa-python"></i><span class="label">Python</span></button>
+          <button type="button" class="key kc-1" data-skill="GraphQL" data-cat="الواجهة الخلفية" data-desc="واجهات مطبوعة بنقطة واحدة تُرجع ما يطلبه العميل بالضبط." aria-label="GraphQL"><i class="fas fa-diagram-project"></i><span class="label">GraphQL</span></button>
+          <button type="button" class="key kc-1" data-skill="PostgreSQL" data-cat="الواجهة الخلفية" data-desc="نمذجة علائقية وفهرسة وضبط الاستعلامات." aria-label="PostgreSQL"><i class="fas fa-database"></i><span class="label">PostgreSQL</span></button>
+          <button type="button" class="key kc-1" data-skill="Redis" data-cat="الواجهة الخلفية" data-desc="تخزين مؤقت في الذاكرة وطوابير ونشر/اشتراك لحظي." aria-label="Redis"><i class="fas fa-database"></i><span class="label">Redis</span></button>
+          <button type="button" class="key kc-2" data-skill="AWS" data-cat="السحابة / التشغيل" data-desc="بنية سحابية وخدمات بلا خوادم وقواعد بيانات مُدارة." aria-label="AWS"><i class="fab fa-aws"></i><span class="label">AWS</span></button>
+          <button type="button" class="key kc-2" data-skill="Docker" data-cat="السحابة / التشغيل" data-desc="بُنى قابلة للتكرار وتطابق الحاويات من التطوير إلى الإنتاج." aria-label="Docker"><i class="fab fa-docker"></i><span class="label">Docker</span></button>
+          <button type="button" class="key kc-2" data-skill="Kubernetes" data-cat="السحابة / التشغيل" data-desc="تنسيق الحاويات والتوسّع والنشر التدريجي." aria-label="Kubernetes"><i class="fas fa-dharmachakra"></i><span class="label">Kubernetes</span></button>
+          <button type="button" class="key kc-2" data-skill="Terraform" data-cat="السحابة / التشغيل" data-desc="البنية التحتية ككود — مُؤرشفة وقابلة للتكرار." aria-label="Terraform"><i class="fas fa-server"></i><span class="label">Terraform</span></button>
+          <button type="button" class="key kc-2" data-skill="GitHub Actions" data-cat="السحابة / التشغيل" data-desc="مسارات CI/CD: اختبار وبناء وإطلاق مع كل دفعة." aria-label="GitHub Actions"><span class="abbr">GA</span><span class="label">GitHub Actions</span></button>
+          <button type="button" class="key kc-3" data-skill="Figma" data-cat="الحرفية" data-desc="النماذج الأولية وتسليم سلس من التصميم إلى التطوير." aria-label="Figma"><i class="fab fa-figma"></i><span class="label">Figma</span></button>
+          <button type="button" class="key kc-3" data-skill="WebGL" data-cat="الحرفية" data-desc="رسوميات مُسرَّعة بالـ GPU ومؤثّرات قائمة على الـ shaders." aria-label="WebGL"><span class="abbr">GL</span><span class="label">WebGL</span></button>
+          <button type="button" class="key kc-3" data-skill="Accessibility" data-cat="الحرفية" data-desc="واجهات متوافقة مع WCAG، تدعم لوحة المفاتيح وقارئات الشاشة." aria-label="Accessibility"><i class="fas fa-universal-access"></i><span class="label">Accessibility</span></button>
+        </div>
       </div>
-      <div class="keycap" data-key tabindex="0">
-        <span class="cat">الواجهة الأمامية</span>
-        <span class="abbr kc-0">Next</span>
-        <span class="label">Next.js</span>
-      </div>
-      <div class="keycap" data-key tabindex="0">
-        <span class="cat">الواجهة الأمامية</span>
-        <span class="abbr kc-0">TS</span>
-        <span class="label">TypeScript</span>
-      </div>
-      <div class="keycap" data-key tabindex="0">
-        <span class="cat">الواجهة الأمامية</span>
-        <span class="abbr kc-0">TW</span>
-        <span class="label">Tailwind</span>
-      </div>
-      <div class="keycap" data-key tabindex="0">
-        <span class="cat">الواجهة الأمامية</span>
-        <span class="abbr kc-0">TJ</span>
-        <span class="label">Three.js</span>
-      </div>
-      <div class="keycap" data-key tabindex="0">
-        <span class="cat">الواجهة الخلفية</span>
-        <i class="fab fa-node-js kc-1"></i>
-        <span class="label">Node.js</span>
-      </div>
-      <div class="keycap" data-key tabindex="0">
-        <span class="cat">الواجهة الخلفية</span>
-        <i class="fab fa-python kc-1"></i>
-        <span class="label">Python</span>
-      </div>
-      <div class="keycap" data-key tabindex="0">
-        <span class="cat">الواجهة الخلفية</span>
-        <i class="fas fa-diagram-project kc-1"></i>
-        <span class="label">GraphQL</span>
-      </div>
-      <div class="keycap" data-key tabindex="0">
-        <span class="cat">الواجهة الخلفية</span>
-        <i class="fas fa-database kc-1"></i>
-        <span class="label">PostgreSQL</span>
-      </div>
-      <div class="keycap" data-key tabindex="0">
-        <span class="cat">الواجهة الخلفية</span>
-        <i class="fas fa-database kc-1"></i>
-        <span class="label">Redis</span>
-      </div>
-      <div class="keycap" data-key tabindex="0">
-        <span class="cat">السحابة / التشغيل</span>
-        <i class="fab fa-aws kc-2"></i>
-        <span class="label">AWS</span>
-      </div>
-      <div class="keycap" data-key tabindex="0">
-        <span class="cat">السحابة / التشغيل</span>
-        <i class="fab fa-docker kc-2"></i>
-        <span class="label">Docker</span>
-      </div>
-      <div class="keycap" data-key tabindex="0">
-        <span class="cat">السحابة / التشغيل</span>
-        <i class="fas fa-dharmachakra kc-2"></i>
-        <span class="label">Kubernetes</span>
-      </div>
-      <div class="keycap" data-key tabindex="0">
-        <span class="cat">السحابة / التشغيل</span>
-        <i class="fas fa-server kc-2"></i>
-        <span class="label">Terraform</span>
-      </div>
-      <div class="keycap" data-key tabindex="0">
-        <span class="cat">السحابة / التشغيل</span>
-        <span class="abbr kc-2">GA</span>
-        <span class="label">GitHub Actions</span>
-      </div>
-      <div class="keycap" data-key tabindex="0">
-        <span class="cat">الحرفية</span>
-        <i class="fab fa-figma kc-3"></i>
-        <span class="label">Figma</span>
-      </div>
-      <div class="keycap" data-key tabindex="0">
-        <span class="cat">الحرفية</span>
-        <span class="abbr kc-3">WebGL</span>
-        <span class="label">WebGL</span>
-      </div>
-      <div class="keycap" data-key tabindex="0">
-        <span class="cat">الحرفية</span>
-        <span class="abbr kc-3">Acce</span>
-        <span class="label">Accessibility</span>
+      <aside class="kbd-panel empty" id="kbd-panel" aria-live="polite">
+        <div class="pk-cat">اختر مفتاحًا</div>
+        <div class="pk-name">حزمة التقنيات</div>
+        <div class="pk-desc">اضغط أي مفتاح لرؤية الأداة ووصفها.</div>
+      </aside>
+    </div>
+    <div class="kbd-listwrap">
+      <div class="kbd-listhead">كل المهارات</div>
+      <div class="kbd-list" id="kbd-list">
+        <button type="button" class="kbd-chip kc-0" data-skill="React" data-cat="الواجهة الأمامية" data-desc="واجهات ومكوّنات سريعة وتفاعلية ونظام تصميم متّسق."><i class="fab fa-react"></i><span>React</span></button>
+        <button type="button" class="kbd-chip kc-0" data-skill="Next.js" data-cat="الواجهة الأمامية" data-desc="تصيير من الخادم وتوجيه وعرض على الحافة لتطبيقات React الإنتاجية."><span class="dot"></span><span>Next.js</span></button>
+        <button type="button" class="kbd-chip kc-0" data-skill="TypeScript" data-cat="الواجهة الأمامية" data-desc="كود آمن الأنواع عبر كامل الحزمة — أخطاء أقل وقت التشغيل."><span class="dot"></span><span>TypeScript</span></button>
+        <button type="button" class="kbd-chip kc-0" data-skill="Tailwind" data-cat="الواجهة الأمامية" data-desc="تنسيق بالأدوات يحافظ على سرعة التصميم واتّساقه."><span class="dot"></span><span>Tailwind</span></button>
+        <button type="button" class="kbd-chip kc-0" data-skill="Three.js" data-cat="الواجهة الأمامية" data-desc="مشاهد ثلاثية الأبعاد و WebGL لحظية داخل المتصفّح."><span class="dot"></span><span>Three.js</span></button>
+        <button type="button" class="kbd-chip kc-1" data-skill="Node.js" data-cat="الواجهة الخلفية" data-desc="خدمات وواجهات برمجية وخلفيات لحظية مدفوعة بالأحداث."><i class="fab fa-node-js"></i><span>Node.js</span></button>
+        <button type="button" class="kbd-chip kc-1" data-skill="Python" data-cat="الواجهة الخلفية" data-desc="خدمات خلفية وأتمتة وأدوات بيانات."><i class="fab fa-python"></i><span>Python</span></button>
+        <button type="button" class="kbd-chip kc-1" data-skill="GraphQL" data-cat="الواجهة الخلفية" data-desc="واجهات مطبوعة بنقطة واحدة تُرجع ما يطلبه العميل بالضبط."><i class="fas fa-diagram-project"></i><span>GraphQL</span></button>
+        <button type="button" class="kbd-chip kc-1" data-skill="PostgreSQL" data-cat="الواجهة الخلفية" data-desc="نمذجة علائقية وفهرسة وضبط الاستعلامات."><i class="fas fa-database"></i><span>PostgreSQL</span></button>
+        <button type="button" class="kbd-chip kc-1" data-skill="Redis" data-cat="الواجهة الخلفية" data-desc="تخزين مؤقت في الذاكرة وطوابير ونشر/اشتراك لحظي."><i class="fas fa-database"></i><span>Redis</span></button>
+        <button type="button" class="kbd-chip kc-2" data-skill="AWS" data-cat="السحابة / التشغيل" data-desc="بنية سحابية وخدمات بلا خوادم وقواعد بيانات مُدارة."><i class="fab fa-aws"></i><span>AWS</span></button>
+        <button type="button" class="kbd-chip kc-2" data-skill="Docker" data-cat="السحابة / التشغيل" data-desc="بُنى قابلة للتكرار وتطابق الحاويات من التطوير إلى الإنتاج."><i class="fab fa-docker"></i><span>Docker</span></button>
+        <button type="button" class="kbd-chip kc-2" data-skill="Kubernetes" data-cat="السحابة / التشغيل" data-desc="تنسيق الحاويات والتوسّع والنشر التدريجي."><i class="fas fa-dharmachakra"></i><span>Kubernetes</span></button>
+        <button type="button" class="kbd-chip kc-2" data-skill="Terraform" data-cat="السحابة / التشغيل" data-desc="البنية التحتية ككود — مُؤرشفة وقابلة للتكرار."><i class="fas fa-server"></i><span>Terraform</span></button>
+        <button type="button" class="kbd-chip kc-2" data-skill="GitHub Actions" data-cat="السحابة / التشغيل" data-desc="مسارات CI/CD: اختبار وبناء وإطلاق مع كل دفعة."><span class="dot"></span><span>GitHub Actions</span></button>
+        <button type="button" class="kbd-chip kc-3" data-skill="Figma" data-cat="الحرفية" data-desc="النماذج الأولية وتسليم سلس من التصميم إلى التطوير."><i class="fab fa-figma"></i><span>Figma</span></button>
+        <button type="button" class="kbd-chip kc-3" data-skill="WebGL" data-cat="الحرفية" data-desc="رسوميات مُسرَّعة بالـ GPU ومؤثّرات قائمة على الـ shaders."><span class="dot"></span><span>WebGL</span></button>
+        <button type="button" class="kbd-chip kc-3" data-skill="Accessibility" data-cat="الحرفية" data-desc="واجهات متوافقة مع WCAG، تدعم لوحة المفاتيح وقارئات الشاشة."><i class="fas fa-universal-access"></i><span>Accessibility</span></button>
       </div>
     </div>
   </div>
@@ -688,14 +744,10 @@ html[dir="rtl"] .tl-item::before{left:auto;right:0}
   </div>
 </footer>
 
-<!-- The 3D keyboard now renders via the self-contained Three.js module at the end of <body>.
-     (The legacy Spline branch in the script below stays inert without this custom element.) -->
-
 <script>
 (function(){
   "use strict";
   var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion:reduce)").matches;
-  var splineUrl = "/assets/skills-keyboard.spline";
 
   /* ── year ── */
   var y = document.getElementById("year"); if(y){ y.textContent = new Date().getFullYear(); }
@@ -750,7 +802,6 @@ html[dir="rtl"] .tl-item::before{left:auto;right:0}
           var id = e.target.id;
           document.body.setAttribute("data-active", id);
           navLinks.forEach(function(a){ a.classList.toggle("active", a.getAttribute("data-sec") === id); });
-          if(window.__setKbdSection){ window.__setKbdSection(id); }
         }
       });
     }, {threshold:0.4});
@@ -800,18 +851,11 @@ html[dir="rtl"] .tl-item::before{left:auto;right:0}
       requestAnimationFrame(ring);
     }
     requestAnimationFrame(ring);
-    document.querySelectorAll("a,button,[role='button'],.keycap,.proj,input,textarea").forEach(function(el){
+    document.querySelectorAll("a,button,[role='button'],.key,.kbd-chip,.proj,input,textarea").forEach(function(el){
       el.addEventListener("mouseenter", function(){ cur.classList.add("hover"); });
       el.addEventListener("mouseleave", function(){ cur.classList.remove("hover"); });
     });
   }
-
-  /* ── keycap press feedback (mirror "press a key") ── */
-  document.querySelectorAll("[data-key]").forEach(function(k){
-    function press(){ k.classList.add("pressed"); setTimeout(function(){ k.classList.remove("pressed"); }, 150); }
-    k.addEventListener("mousedown", press);
-    k.addEventListener("keydown", function(e){ if(e.key === "Enter" || e.key === " "){ e.preventDefault(); press(); } });
-  });
 
   /* ── project modal ── */
   function openModal(i){ var m = document.getElementById("modal-" + i); if(m){ m.classList.add("open"); document.body.style.overflow = "hidden"; } }
@@ -859,355 +903,200 @@ html[dir="rtl"] .tl-item::before{left:auto;right:0}
     document.head.appendChild(ls);
   }
 
-  /* ── mount the 3D keyboard + frame it per section (mirrors the source) ── */
-  // Keyboard poses in the scene's own units, per section, desktop + mobile.
-  var P = Math.PI;
-  var STATES = {
-    hero:       { d:{s:0.24, x:460, y:-55,  rx:0,    ry:0,     rz:0}, m:{s:0.36, x:0, y:-150, rx:0, ry:0, rz:0} },
-    skills:     { d:{s:0.26, x:0,   y:-30,  rx:0,    ry:P/12,  rz:0}, m:{s:0.30, x:0, y:-40,  rx:0, ry:P/12, rz:0} },
-    experience: { d:{s:0.22, x:0,   y:-40,  rx:P/12, ry:-P/4,  rz:0}, m:{s:0.28, x:0, y:-40,  rx:P/8, ry:-P/6, rz:0} },
-    projects:   { d:{s:0.19, x:0,   y:-40,  rx:P/16, ry:P/6,   rz:0}, m:{s:0.26, x:0, y:-40,  rx:P/10, ry:P/8, rz:0} },
-    extras:     { d:{s:0.20, x:-150,y:-40,  rx:0,    ry:P/8,   rz:0}, m:{s:0.26, x:0, y:-40,  rx:0, ry:P/8, rz:0} },
-    contact:    { d:{s:0.20, x:200, y:-40,  rx:0,    ry:-P/9,  rz:0}, m:{s:0.26, x:0, y:-40,  rx:0, ry:-P/9, rz:0} }
-  };
-  function poseFor(sec){ var st = STATES[sec] || STATES.hero; return (innerWidth < 768) ? st.m : st.d; }
+  /* ── Dygma-style split 3D keyboard: build, tint, sound, info panel (pure CSS + Web Audio, no runtime) ── */
+  (function(){
+    var deck = document.getElementById("kbd-deck");
+    if(!deck){ return; }
+    var panel = document.getElementById("kbd-panel");
+    var pCat = panel && panel.querySelector(".pk-cat");
+    var pName = panel && panel.querySelector(".pk-name");
+    var pDesc = panel && panel.querySelector(".pk-desc");
+    var soundSel = document.getElementById("kbd-sound");
+    var chips = Array.prototype.slice.call(document.querySelectorAll("#kbd-list .kbd-chip"));
+    var hoverable = !!(window.matchMedia && window.matchMedia("(hover:hover)").matches);
 
-  function mountScene(){
-    if(reduce){ return; }
-    var host = document.getElementById("scene");
-    if(!host || window.__splineFailed){ return; }
-    if(!("customElements" in window)){ return; }
-    customElements.whenDefined("spline-viewer").then(function(){
-      var v = document.createElement("spline-viewer");
-      v.setAttribute("url", splineUrl);
-      v.setAttribute("loading-anim-type", "none");
-      v.setAttribute("events-target", "global"); /* lets physical keypresses drive the scene */
-      v.style.width = "100%"; v.style.height = "100%";
-      v.addEventListener("error", function(){ host.style.display = "none"; finishLoad(); });
-      host.appendChild(v);
+    /* ── per-tool brand colours; the keycap takes its tool's colour ── */
+    var BRAND = {
+      react:"#61dafb",reactjs:"#61dafb",reactnative:"#61dafb",javascript:"#f7df1e",js:"#f7df1e",
+      typescript:"#3178c6",ts:"#3178c6",node:"#3c873a",nodejs:"#3c873a",express:"#3c873a",
+      python:"#3776ab",django:"#3776ab",flask:"#3776ab",docker:"#2496ed",kubernetes:"#326ce5",k8s:"#326ce5",
+      java:"#ea2d2e",spring:"#6db33f",springboot:"#6db33f",html:"#e34f26",html5:"#e34f26",css:"#1572b6",css3:"#1572b6",
+      sass:"#cc6699",scss:"#cc6699",php:"#777bb4",laravel:"#ff2d20",vue:"#42b883",vuejs:"#42b883",angular:"#dd0031",
+      aws:"#ff9900",azure:"#0078d4",gcp:"#4285f4",googlecloud:"#4285f4",graphql:"#e10098",
+      postgresql:"#336791",postgres:"#336791",mysql:"#4479a1",mongodb:"#47a248",redis:"#dc382d",sqlite:"#003b57",
+      git:"#f05032",github:"#e6edf3",gitlab:"#fc6d26",linux:"#fcc624",ubuntu:"#e95420",rust:"#dea584",
+      go:"#00add8",golang:"#00add8",swift:"#fa7343",kotlin:"#7f52ff",figma:"#f24e1e",tailwind:"#38bdf8",tailwindcss:"#38bdf8",
+      bootstrap:"#7952b3",nextjs:"#e6edf3",next:"#e6edf3",pandas:"#8a4baf",tensorflow:"#ff6f00",pytorch:"#ee4c2c",
+      elasticstack:"#00bfb3",elastic:"#00bfb3",powershell:"#5391fe",windows:"#0078d4"
+    };
+    function brandOf(name){ var k = String(name||"").toLowerCase().replace(/[^a-z0-9]/g,""); return BRAND[k] || ""; }
+    function tint(el){ var b = brandOf(el.getAttribute("data-skill")); if(b){ el.style.setProperty("--kc", b); } }
 
-      var kbd = null, target = poseFor("hero"), tries = 0;
-      window.__setKbdSection = function(sec){ target = poseFor(sec); };
-
-      function applyPose(p, snap){
-        if(!kbd){ return; }
-        var t = snap ? 1 : 0.07;
-        kbd.scale.x = kbd.scale.y = kbd.scale.z = kbd.scale.x + (p.s - kbd.scale.x) * t;
-        kbd.position.x += (p.x - kbd.position.x) * t;
-        kbd.position.y += (p.y - kbd.position.y) * t;
-        kbd.rotation.x += (p.rx - kbd.rotation.x) * t;
-        kbd.rotation.y += (p.ry - kbd.rotation.y) * t;
-        kbd.rotation.z += (p.rz - kbd.rotation.z) * t;
+    /* ── build the two ergonomic hand clusters from the skill keys ── */
+    var COLS = 4, ROWS = 3, HALF = COLS * ROWS, CAP = HALF * 2;     /* fixed 24-key board */
+    var master = Array.prototype.slice.call(deck.querySelectorAll(".key"));
+    master.forEach(tint);
+    chips.forEach(tint);
+    var board = master.slice(0, CAP);
+    master.slice(CAP).forEach(function(k){ k.remove(); });          /* overflow lives in the list */
+    var staL = [10, 2, -8, -2], staR = [-2, -8, 2, 10];             /* ergonomic column stagger */
+    function makeBlank(){ var b = document.createElement("button"); b.type = "button"; b.className = "key blank"; b.tabIndex = -1; b.setAttribute("aria-hidden","true"); return b; }
+    function buildHand(cls, hk, stag){
+      var hand = document.createElement("div"); hand.className = "kbd-hand " + cls;
+      var cols = document.createElement("div"); cols.className = "kbd-cols";
+      var ki = 0;
+      for(var c = 0; c < COLS; c++){
+        var col = document.createElement("div"); col.className = "kbd-col";
+        col.style.transform = "translateY(" + stag[c] + "px)";
+        for(var r = 0; r < ROWS; r++){ col.appendChild(hk[ki++] || makeBlank()); }
+        cols.appendChild(col);
       }
-      function animate(){ applyPose(target, false); requestAnimationFrame(animate); }
+      hand.appendChild(cols);
+      /* thumb cluster — the defining split-ergo silhouette (decorative caps) */
+      var thumbWrap = document.createElement("div"); thumbWrap.className = "kbd-thumbwrap";
+      var thumb = document.createElement("div"); thumb.className = "kbd-thumb";
+      for(var ti = 0; ti < 3; ti++){ var tk = makeBlank(); tk.classList.add("thumbkey"); thumb.appendChild(tk); }
+      /* right hand carries the trackball, nested by the thumb */
+      if(cls === "right"){
+        var tb = document.createElement("div"); tb.className = "kbd-trackball"; tb.setAttribute("aria-hidden","true");
+        thumbWrap.appendChild(tb); thumbWrap.appendChild(thumb);
+      } else {
+        thumbWrap.appendChild(thumb);
+      }
+      hand.appendChild(thumbWrap);
+      var palm = document.createElement("div"); palm.className = "kbd-palm"; hand.appendChild(palm);
+      return hand;
+    }
+    deck.innerHTML = "";
+    deck.appendChild(buildHand("left", board.slice(0, HALF), staL));
+    deck.appendChild(buildHand("right", board.slice(HALF), staR));
 
-      // Poll for the runtime (sv._spline) AND the keyboard object — keep trying
-      // until the object resolves, otherwise it stays at the scene's (large,
-      // centered) default pose and covers the hero text.
-      var poll = setInterval(function(){
-        tries++;
-        var app = v._spline;
-        var ready = app && typeof app.findObjectByName === "function" && typeof app.getAllObjects === "function";
-        if(ready){ try{ kbd = app.findObjectByName("keyboard"); }catch(e){ kbd = null; } }
-        if((ready && kbd) || tries > 60){   // wait for the keyboard; ~18s ceiling
-          clearInterval(poll);
-          host.classList.add("ready");
-          finishLoad();
-          if(ready){
-            // Reveal the keycaps: the scene EXPORTS them hidden — mirror the source
-            // by switching on the desktop (or mobile) keycap objects, staggered.
-            try{
-              var capName = (innerWidth < 768) ? "keycap-mobile" : "keycap-desktop";
-              var caps = app.getAllObjects().filter(function(o){ return o && (o.name === capName || o.name === "keycap"); });
-              caps.forEach(function(c, idx){ setTimeout(function(){ try{ c.visible = true; }catch(e){} }, 250 + idx * 55); });
-            }catch(e){}
-          }
-          if(kbd){
-            var active = document.body.getAttribute("data-active") || "hero";
-            target = poseFor(active);
-            applyPose(target, true);   // snap to the section's pose immediately
-            requestAnimationFrame(animate);
-          }
-        }
-      }, 300);
+    /* ── Web Audio: selectable synthesized key-sound profiles (no audio assets) ── */
+    var AC = window.AudioContext || window.webkitAudioContext;
+    var actx = null;
+    var soundProfile = "thocky";
+    try{ var sv = localStorage.getItem("kbdSound"); if(sv){ soundProfile = sv; } }catch(e){}
+    function ensureCtx(){
+      if(!actx && AC){ try{ actx = new AC(); }catch(e){ actx = null; } }
+      if(actx && actx.state === "suspended"){ try{ actx.resume(); }catch(e){} }
+    }
+    if(soundSel){
+      soundSel.value = soundProfile;
+      soundSel.addEventListener("change", function(){
+        soundProfile = soundSel.value;
+        try{ localStorage.setItem("kbdSound", soundProfile); }catch(e){}
+        ensureCtx();
+        if(soundProfile !== "none"){ playClick(0); } /* preview the chosen sound */
+      });
+    }
+    /* unlock audio on the first user gesture so the first key press is audible */
+    function primeAudio(){
+      ensureCtx();
+      if(actx){ try{ var b = actx.createBuffer(1,1,actx.sampleRate); var s = actx.createBufferSource(); s.buffer=b; s.connect(actx.destination); s.start(0); }catch(e){} }
+      document.removeEventListener("pointerdown", primeAudio);
+      document.removeEventListener("keydown", primeAudio);
+    }
+    document.addEventListener("pointerdown", primeAudio);
+    document.addEventListener("keydown", primeAudio);
+
+    /* synth helpers */
+    function noise(dur, ftype, freq, q, peak, t){
+      var len = Math.max(1, Math.floor(actx.sampleRate * dur));
+      var buf = actx.createBuffer(1, len, actx.sampleRate); var d = buf.getChannelData(0);
+      for(var i = 0; i < len; i++){ d[i] = (Math.random()*2 - 1) * Math.pow(1 - i/len, 3); }
+      var n = actx.createBufferSource(); n.buffer = buf;
+      var f = actx.createBiquadFilter(); f.type = ftype; f.frequency.value = freq; if(q){ f.Q.value = q; }
+      var g = actx.createGain();
+      g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(peak, t+0.002); g.gain.exponentialRampToValueAtTime(0.0001, t+dur);
+      n.connect(f); f.connect(g); g.connect(actx.destination); n.start(t);
+    }
+    function tone(wave, f0, f1, peak, dur, lp, t){
+      var o = actx.createOscillator(), g = actx.createGain(), filt = actx.createBiquadFilter();
+      filt.type = "lowpass"; filt.frequency.value = lp;
+      o.type = wave; o.frequency.setValueAtTime(f0, t); o.frequency.exponentialRampToValueAtTime(f1, t + dur*0.7);
+      g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(peak, t+0.005); g.gain.exponentialRampToValueAtTime(0.0001, t+dur);
+      o.connect(g); g.connect(filt); filt.connect(actx.destination); o.start(t); o.stop(t + dur + 0.02);
+    }
+    /* each profile emulates the *character* of a popular switch-sound style */
+    var PROFILES = {
+      thocky: function(p,t){ tone("sine",152+p*14,80,0.26,0.13,720,t); noise(0.018,"lowpass",520,0,0.10,t); },
+      creamy: function(p,t){ tone("sine",128+p*12,74,0.24,0.17,440,t); noise(0.022,"lowpass",360,0,0.07,t); },
+      clacky: function(p,t){ noise(0.022,"highpass",2700,0,0.22,t); tone("triangle",320+p*22,150,0.13,0.05,2200,t); },
+      poppy:  function(p,t){ tone("triangle",215+p*18,120,0.22,0.09,1500,t); noise(0.012,"bandpass",760,1.3,0.13,t); },
+      clicky: function(p,t){ noise(0.009,"highpass",3300,0,0.20,t); tone("square",1350,920,0.09,0.018,3200,t); tone("sine",175,92,0.16,0.08,820,t); },
+      lego:   function(p,t){ noise(0.016,"highpass",2200,0,0.26,t); tone("square",920,540,0.13,0.04,2600,t); }
+    };
+    function playClick(pitch){
+      if(soundProfile === "none"){ return; }
+      ensureCtx();
+      if(!actx){ return; }
+      var fn = PROFILES[soundProfile] || PROFILES.thocky;
+      try{ fn(pitch || 0, actx.currentTime); }catch(e){}
+    }
+
+    /* ── info panel: show the tool name + its custom description ── */
+    var activeEl = null;
+    function showInfo(el, lock){
+      if(!panel){ return; }
+      var name = el.getAttribute("data-skill") || "";
+      var cat = el.getAttribute("data-cat") || "";
+      var desc = el.getAttribute("data-desc") || "";
+      var col = (getComputedStyle(el).getPropertyValue("--kc") || "").trim() || "#7c5cff";
+      panel.style.setProperty("--pk", col);
+      panel.classList.remove("empty");
+      if(pCat){ pCat.textContent = cat || "Tech"; }
+      if(pName){ pName.textContent = name; }
+      if(pDesc){ pDesc.textContent = desc || (cat ? (name + " — part of the " + cat + " stack.") : ""); }
+      if(lock){
+        if(activeEl && activeEl !== el){ activeEl.classList.remove("active"); }
+        el.classList.add("active"); activeEl = el;
+      }
+    }
+
+    function press(el, pitch){
+      if(!el){ return; }
+      var isKey = el.classList.contains("key");
+      if(isKey){ el.classList.add("pressed"); }
+      playClick(pitch || 0);
+      showInfo(el, true);
+      if(isKey){ setTimeout(function(){ el.classList.remove("pressed"); }, 120); }
+    }
+    function wire(el, p){
+      el.addEventListener("pointerdown", function(){ ensureCtx(); press(el, p); });
+      el.addEventListener("keydown", function(e){ if(e.key === "Enter" || e.key === " "){ e.preventDefault(); press(el, p); } });
+      if(hoverable){ el.addEventListener("mouseenter", function(){ showInfo(el, false); }); }
+    }
+    /* keyboard keys + every chip in the "all skills" list are interactive */
+    board.forEach(function(k, i){ wire(k, i % 6); });
+    chips.forEach(function(c, i){ wire(c, i % 6); });
+
+    /* physical keyboard → press the matching skill key (by first letter), else a random board key */
+    document.addEventListener("keydown", function(e){
+      if(e.metaKey || e.ctrlKey || e.altKey){ return; }
+      var tag = e.target && e.target.tagName;
+      if(tag === "INPUT" || tag === "TEXTAREA"){ return; }
+      if(e.key && e.key.length === 1 && /[a-z0-9]/i.test(e.key) && board.length){
+        var ch = e.key.toLowerCase();
+        var m = board.filter(function(k){ return (k.getAttribute("data-skill") || "").toLowerCase().charAt(0) === ch; });
+        var pick = m.length ? m[(Math.random() * m.length) | 0] : board[(Math.random() * board.length) | 0];
+        press(pick, ch.charCodeAt(0) % 6);
+      }
     });
-    /* if the custom element is never defined (blocked CDN), stop waiting on it */
-    setTimeout(function(){ if(!host.classList.contains("ready")){ finishLoad(); } }, 3500);
-  }
-  if(document.readyState !== "loading"){ mountScene(); }
-  else { document.addEventListener("DOMContentLoaded", mountScene); }
+
+    /* desktop pointer-parallax tilt (skip touch + reduced-motion) */
+    if(!reduce && hoverable){
+      var stage = deck.parentElement;
+      stage.addEventListener("pointermove", function(e){
+        var r = stage.getBoundingClientRect();
+        var dx = (e.clientX - r.left) / r.width - 0.5;
+        var dy = (e.clientY - r.top) / r.height - 0.5;
+        deck.style.transform = "rotateX(" + (22 - dy * 8) + "deg) rotateY(" + (dx * 10) + "deg)";
+      });
+      stage.addEventListener("pointerleave", function(){ deck.style.transform = ""; });
+    }
+  })();
 })();
 </script>
 
-<!-- ── 3D split-ergo keyboard (Three.js, self-contained, CDN ESM) ───────────── -->
-<script type="importmap">
-{ "imports": {
-  "three": "/demo/developer/vendor/three.module.js",
-  "three/addons/": "/demo/developer/vendor/addons/"
-}}
-</script>
-<script type="module">
-/* ════════════════════════════════════════════════════════════════════════
-   Split-ergo 3D keyboard (Charybdis / Dactyl-Manuform style).
-   Two sculpted white halves: columnar-staggered COLOURFUL icon keycaps,
-   angled thumb clusters, and a glossy red trackball on the right half.
-   Floats in the star-field and re-frames per section. No build step.
-   ════════════════════════════════════════════════════════════════════════ */
-import * as THREE from 'three';
-import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.js';
-import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
-
-const reduce = matchMedia('(prefers-reduced-motion:reduce)').matches;
-const host = document.getElementById('scene');
-if (host && !reduce) boot(host);
-
-/* colourful tech-stack caps — brand colour + Font Awesome glyph (text fallback) */
-const SK = [
-  {l:'React',     c:'#149eca', g:'', f:'b'},
-  {l:'Next.js',   c:'#111418', t:'N',   fg:'#fff'},
-  {l:'TypeScript',c:'#3178c6', t:'TS'},
-  {l:'JavaScript',c:'#f7df1e', t:'JS',  fg:'#111'},
-  {l:'Tailwind',  c:'#38bdf8', t:'TW',  fg:'#06283b'},
-  {l:'Three.js',  c:'#111418', t:'3JS', fg:'#fff'},
-  {l:'Vue',       c:'#42b883', g:'', f:'b'},
-  {l:'Sass',      c:'#cd6799', g:'', f:'b'},
-  {l:'HTML5',     c:'#e34f26', g:'', f:'b'},
-  {l:'CSS3',      c:'#1572b6', g:'', f:'b'},
-  {l:'Vite',      c:'#646cff', t:'Vt'},
-  {l:'Figma',     c:'#a259ff', g:'', f:'b'},
-  {l:'Node.js',   c:'#5fa04e', g:'', f:'b'},
-  {l:'Python',    c:'#3776ab', g:'', f:'b'},
-  {l:'GraphQL',   c:'#e10098', t:'GQL'},
-  {l:'PostgreSQL',c:'#336791', t:'PG'},
-  {l:'Redis',     c:'#dc382d', t:'Rd'},
-  {l:'Docker',    c:'#2496ed', g:'', f:'b'},
-  {l:'AWS',       c:'#ff9900', g:'', f:'b', fg:'#111'},
-  {l:'Kubernetes',c:'#326ce5', t:'K8s'},
-  {l:'Terraform', c:'#7b42bc', t:'TF'},
-  {l:'Git',       c:'#f05032', g:'', f:'b'},
-  {l:'GitHub',    c:'#24292e', g:'', f:'b', fg:'#fff'},
-  {l:'WebGL',     c:'#990000', t:'GL', fg:'#fff'}
-];
-
-async function boot(host){
-  let renderer;
-  try { renderer = new THREE.WebGLRenderer({antialias:true, alpha:true, powerPreference:'high-performance'}); }
-  catch(e){ host.style.display = 'none'; return; }
-  const vw = () => host.clientWidth || innerWidth, vh = () => host.clientHeight || innerHeight;
-  renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 2));
-  renderer.setSize(vw(), vh());
-  renderer.setClearAlpha(0);
-  renderer.outputColorSpace = THREE.SRGBColorSpace;
-  renderer.toneMapping = THREE.ACESFilmicToneMapping;
-  renderer.toneMappingExposure = 1.08;
-  renderer.shadowMap.enabled = true;
-  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-  host.appendChild(renderer.domElement);
-
-  const scene = new THREE.Scene();
-  const camera = new THREE.PerspectiveCamera(34, vw()/vh(), 0.1, 100);
-  camera.position.set(0, 0.4, 15);
-  camera.lookAt(0, 0, 0);
-
-  const pmrem = new THREE.PMREMGenerator(renderer);
-  scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.035).texture;
-
-  const key = new THREE.DirectionalLight(0xffffff, 2.2);
-  key.position.set(6, 12, 9); key.castShadow = true;
-  key.shadow.mapSize.set(2048, 2048);
-  key.shadow.camera.near = 1; key.shadow.camera.far = 44;
-  Object.assign(key.shadow.camera, {left:-10, right:10, top:10, bottom:-10});
-  key.shadow.camera.updateProjectionMatrix();
-  key.shadow.bias = -0.0004; key.shadow.radius = 6;
-  scene.add(key);
-  const fill = new THREE.DirectionalLight(0x9fb4ff, 0.55); fill.position.set(-9, 3, 5);  scene.add(fill);
-  const rim  = new THREE.DirectionalLight(0x7c5cff, 0.9);  rim.position.set(-1, 4, -11);  scene.add(rim);
-  scene.add(new THREE.HemisphereLight(0xcdd9ff, 0x0a0f1e, 0.5));
-
-  /* fonts: render real glyphs where available, fall back to short labels */
-  let faReady = false;
-  try {
-    await Promise.race([
-      Promise.all([document.fonts.load('900 32px "Font Awesome 6 Free"'),
-                   document.fonts.load('400 32px "Font Awesome 6 Brands"')]),
-      new Promise(r => setTimeout(r, 1500))
-    ]);
-    faReady = document.fonts.check('400 32px "Font Awesome 6 Brands"');
-  } catch(e){}
-
-  const bodyMat  = new THREE.MeshStandardMaterial({color:0xe9ecf1, roughness:0.5,  metalness:0.0, envMapIntensity:0.95});
-  const plateMat = new THREE.MeshStandardMaterial({color:0xf4f6fa, roughness:0.42, metalness:0.0, envMapIntensity:1.05});
-  const capGeo  = new RoundedBoxGeometry(0.78, 0.46, 0.78, 3, 0.12);
-  const iconGeo = new THREE.PlaneGeometry(0.6, 0.6);
-  const caps = [];
-
-  function iconTex(d){
-    const s = 128, cv = document.createElement('canvas'); cv.width = cv.height = s;
-    const x = cv.getContext('2d'); x.clearRect(0, 0, s, s);
-    x.fillStyle = d.fg || '#ffffff'; x.textAlign = 'center'; x.textBaseline = 'middle';
-    if (d.g && faReady){
-      x.font = (d.f === 'b' ? '400' : '900') + ' 74px "' + (d.f === 'b' ? 'Font Awesome 6 Brands' : 'Font Awesome 6 Free') + '"';
-      x.fillText(d.g, s/2, s/2 + 4);
-    } else {
-      const t = d.t || d.l.replace(/[^A-Za-z0-9]/g, '').slice(0, 3);
-      x.font = '800 ' + (t.length > 2 ? 42 : 56) + 'px Inter, system-ui, sans-serif';
-      x.fillText(t, s/2, s/2 + 2);
-    }
-    const tex = new THREE.CanvasTexture(cv); tex.colorSpace = THREE.SRGBColorSpace; tex.anisotropy = 4;
-    return tex;
-  }
-  function makeCap(d){
-    const g = new THREE.Group();
-    const m = new THREE.Mesh(capGeo, new THREE.MeshStandardMaterial({color:new THREE.Color(d.c), roughness:0.32, metalness:0.0, envMapIntensity:0.7}));
-    m.castShadow = m.receiveShadow = true; g.add(m);
-    const im = new THREE.Mesh(iconGeo, new THREE.MeshBasicMaterial({map:iconTex(d), transparent:true, depthWrite:false}));
-    im.rotation.x = -Math.PI/2; im.position.y = 0.235; g.add(im);
-    g.userData = {label:d.l, press:0, baseY:0};
-    caps.push(g); return g;
-  }
-  function makeBlank(color){
-    const g = new THREE.Group();
-    const m = new THREE.Mesh(capGeo, new THREE.MeshStandardMaterial({color:new THREE.Color(color || 0x2b3242), roughness:0.5, metalness:0.0, envMapIntensity:0.5}));
-    m.castShadow = m.receiveShadow = true; g.add(m);
-    g.userData = {label:'', press:0, baseY:0};
-    caps.push(g); return g;
-  }
-
-  const KX = 0.94, RZ = 0.97;
-  const colZ = [0.46, 0.14, 0.0, 0.30];   // columnar stagger (depth): pinky → index
-  const colY = [0.0, 0.05, 0.09, 0.0];     // gentle height curve
-
-  function buildHalf(side, data, trackball){
-    const half = new THREE.Group();
-
-    const plate = new THREE.Mesh(new RoundedBoxGeometry(4.0, 0.5, 3.3, 4, 0.42), plateMat);
-    plate.position.set(0, -0.5, -0.1); plate.castShadow = plate.receiveShadow = true; half.add(plate);
-
-    const palm = new THREE.Mesh(new RoundedBoxGeometry(3.0, 0.85, 1.85, 4, 0.5), bodyMat);
-    palm.position.set(side*0.15, -0.6, 2.5); palm.rotation.x = 0.05;
-    palm.castShadow = palm.receiveShadow = true; half.add(palm);
-
-    const field = new THREE.Group();
-    for (let c = 0; c < 4; c++) for (let r = 0; r < 3; r++){
-      const d = data[c*3 + r];
-      const cap = d ? makeCap(d) : makeBlank();
-      cap.position.set(side * ((c - 1.5)*KX), colY[c], (r - 1)*RZ - colZ[c]);
-      cap.userData.baseY = cap.position.y;
-      field.add(cap);
-    }
-    field.rotation.z = -side * 0.13;        // fan / splay outward
-    field.position.set(0, 0.0, -0.4);
-    half.add(field);
-
-    const thumb = new THREE.Group();
-    for (let i = 0; i < 3; i++){
-      const cap = makeBlank(0x39414f);
-      const a = -0.30 + i*0.42;
-      cap.position.set(side*Math.cos(a)*0.98, -0.04 - i*0.03, Math.sin(a)*0.98);
-      cap.userData.baseY = cap.position.y;
-      cap.rotation.y = -side*a;
-      thumb.add(cap);
-    }
-    thumb.scale.setScalar(0.92);
-    thumb.position.set(side*1.05, 0.05, 1.7);
-    thumb.rotation.y = -side*0.5;
-    half.add(thumb);
-
-    if (trackball){
-      const ball = new THREE.Mesh(new THREE.SphereGeometry(0.6, 40, 40),
-        new THREE.MeshPhysicalMaterial({color:0x97121a, roughness:0.12, metalness:0.0, clearcoat:1, clearcoatRoughness:0.05, envMapIntensity:1.4}));
-      ball.position.set(side*0.5, 0.08, 1.62); ball.castShadow = true; half.add(ball);
-      const ring = new THREE.Mesh(new THREE.TorusGeometry(0.58, 0.1, 16, 44), bodyMat);
-      ring.rotation.x = Math.PI/2; ring.position.set(side*0.5, -0.22, 1.62); half.add(ring);
-    }
-
-    half.position.x = side * 2.55;
-    half.rotation.y = side * 0.1;
-    return half;
-  }
-
-  const keyboard = new THREE.Group();
-  keyboard.add(buildHalf(-1, SK.slice(0, 12), false));
-  keyboard.add(buildHalf( 1, SK.slice(12, 24), true));
-
-  /* soft fake contact shadow so it reads as "floating in the star-field" */
-  const shTex = (() => {
-    const s = 256, cv = document.createElement('canvas'); cv.width = cv.height = s;
-    const x = cv.getContext('2d'), g = x.createRadialGradient(s/2, s/2, 8, s/2, s/2, s/2);
-    g.addColorStop(0, 'rgba(0,0,0,0.45)'); g.addColorStop(1, 'rgba(0,0,0,0)');
-    x.fillStyle = g; x.fillRect(0, 0, s, s);
-    return new THREE.CanvasTexture(cv);
-  })();
-  const shadow = new THREE.Mesh(new THREE.PlaneGeometry(13, 8), new THREE.MeshBasicMaterial({map:shTex, transparent:true, depthWrite:false}));
-  shadow.rotation.x = -Math.PI/2; shadow.position.y = -1.35; keyboard.add(shadow);
-  scene.add(keyboard);
-
-  /* per-section framing — desktop (d) + mobile (m) */
-  const POSE = {
-    hero:      {d:{s:0.52,x:4.7, y:0.3, rx:0.70,ry:-0.42,rz:0},    m:{s:0.34,x:0,y:-3.9,rx:0.72,ry:0.0, rz:0}},
-    skills:    {d:{s:0.66,x:0.1, y:-0.1,rx:0.92,ry:0.0,  rz:0},    m:{s:0.46,x:0,y:-0.2,rx:0.95,ry:0.0, rz:0}},
-    experience:{d:{s:0.54,x:-3.3,y:0.2, rx:0.62,ry:0.5,  rz:-0.04},m:{s:0.42,x:0,y:-0.5,rx:0.70,ry:0.45,rz:0}},
-    projects:  {d:{s:0.50,x:3.3, y:0.2, rx:0.62,ry:-0.5, rz:0.04}, m:{s:0.40,x:0,y:-0.7,rx:0.70,ry:-0.45,rz:0}},
-    extras:    {d:{s:0.54,x:-3.3,y:0.2, rx:0.58,ry:0.45, rz:0},    m:{s:0.42,x:0,y:-0.5,rx:0.62,ry:0.4,rz:0}},
-    contact:   {d:{s:0.54,x:3.3, y:0.2, rx:0.58,ry:-0.42,rz:0},    m:{s:0.42,x:0,y:-0.6,rx:0.62,ry:-0.4,rz:0}}
-  };
-  const poseFor = s => { const p = POSE[s] || POSE.hero; return innerWidth < 768 ? p.m : p.d; };
-  let target = poseFor(document.body.getAttribute('data-active') || 'hero');
-  keyboard.scale.setScalar(target.s);
-  keyboard.position.set(target.x, target.y, 0);
-  keyboard.rotation.set(target.rx, target.ry, target.rz);
-  window.__setKbdSection = s => { target = poseFor(s); };
-
-  /* interaction: hover tooltip + press (pointer is active over #scene only in #skills) */
-  const ray = new THREE.Raycaster(), ptr = new THREE.Vector2(), tip = document.getElementById('kbd-tip');
-  let hovered = null;
-  const rootOf = o => { let p = o; while (p && caps.indexOf(p) < 0) p = p.parent; return p; };
-  renderer.domElement.addEventListener('pointermove', e => {
-    const r = renderer.domElement.getBoundingClientRect();
-    ptr.x = ((e.clientX - r.left)/r.width)*2 - 1; ptr.y = -((e.clientY - r.top)/r.height)*2 + 1;
-    ray.setFromCamera(ptr, camera);
-    const hit = ray.intersectObjects(caps, true)[0];
-    hovered = hit ? rootOf(hit.object) : null;
-    if (hovered && hovered.userData.label && tip){
-      tip.textContent = hovered.userData.label;
-      tip.style.left = e.clientX + 'px'; tip.style.top = (e.clientY - 16) + 'px'; tip.classList.add('on');
-    } else if (tip) tip.classList.remove('on');
-  });
-  renderer.domElement.addEventListener('pointerleave', () => { if (tip) tip.classList.remove('on'); hovered = null; });
-  renderer.domElement.addEventListener('pointerdown', () => { if (hovered) hovered.userData.press = 1; });
-  addEventListener('keydown', e => {
-    if (e.metaKey || e.ctrlKey || e.altKey) return;
-    const lit = caps.filter(c => c.userData.label);
-    if (lit.length) lit[(Math.random()*lit.length) | 0].userData.press = 1;
-  });
-
-  /* render loop — section lerp + cap-press decay (no vertical float by design) */
-  const clock = new THREE.Clock();
-  let revealed = false;
-  function tick(){
-    const dt = Math.min(clock.getDelta(), 0.05), el = clock.getElapsedTime(), t = Math.min(1, dt*5);
-    keyboard.scale.x += (target.s - keyboard.scale.x)*t; keyboard.scale.y = keyboard.scale.z = keyboard.scale.x;
-    keyboard.position.x += (target.x - keyboard.position.x)*t;
-    keyboard.position.y += (target.y - keyboard.position.y)*t;
-    keyboard.rotation.x += (target.rx - keyboard.rotation.x)*t;
-    keyboard.rotation.y += (target.ry + Math.sin(el*0.3)*0.03 - keyboard.rotation.y)*t;  // whisper of sway
-    keyboard.rotation.z += (target.rz - keyboard.rotation.z)*t;
-    for (const c of caps){
-      c.userData.press = c.userData.press > 0.001 ? c.userData.press * 0.86 : 0;
-      c.position.y = c.userData.baseY - c.userData.press*0.16;
-    }
-    renderer.render(scene, camera);
-    if (!revealed){ revealed = true; host.classList.add('ready'); }
-    requestAnimationFrame(tick);
-  }
-  requestAnimationFrame(tick);
-
-  addEventListener('resize', () => {
-    camera.aspect = vw()/vh(); camera.updateProjectionMatrix();
-    renderer.setSize(vw(), vh());
-    target = poseFor(document.body.getAttribute('data-active') || 'hero');
-  }, {passive:true});
-}
-</script>
 </body>
 </html>
