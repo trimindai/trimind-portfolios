@@ -57,6 +57,11 @@ try {
       const navClickable = await page.evaluate(()=>{ const a=document.querySelector('nav a'); if(!a) return false; return getComputedStyle(a).pointerEvents!=="none"; });
       if (navClickable) pass(`[${tag}] nav links remain clickable under overlay`);
       else fail(`[${tag}] nav lost pointer-events`);
+      // T1.4: centred section reaches near full opacity (motion mode)
+      const op = await page.evaluate(async()=>{ const s=document.getElementById("experience"); s.scrollIntoView({block:"center"}); await new Promise(r=>setTimeout(r,500)); return parseFloat(getComputedStyle(s).opacity); });
+      if (op>0.85) pass(`[${tag}] centred section near full opacity (${op.toFixed(2)})`);
+      else fail(`[${tag}] centred section opacity too low (${op.toFixed(2)})`);
+      await page.evaluate(()=>window.scrollTo(0,0)); await page.waitForTimeout(400);
       if (errors.length) fail(`[${tag}] ${errors.length} console error(s): ${errors.slice(0,3).join(" | ")}`);
       else pass(`[${tag}] zero console errors`);
       try { await page.screenshot({path:`scripts/_sj-${tag}.png`,fullPage:false,timeout:8000,animations:"disabled"}); }

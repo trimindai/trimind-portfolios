@@ -149,6 +149,9 @@ section{position:relative;z-index:1}
   .blur-in,.box-reveal{opacity:1;filter:none;transform:none;transition:none}
 }
 
+section[data-reveal]{ will-change:opacity,transform; }
+@media (prefers-reduced-motion:reduce){ section[data-reveal]{ opacity:1!important; transform:none!important; } }
+
 /* ── hero ───────────────────────────────────────────────────── */
 #hero{min-height:100svh;display:flex;align-items:center;padding:120px 0 80px;position:relative;overflow:hidden}
 #hero .wrap{position:relative}
@@ -451,7 +454,7 @@ html[dir="rtl"] .tl-item::before{left:auto;right:0}
   <a href="#contact" data-sec="contact"><i class="fa-solid fa-paper-plane"></i> <span>Contact</span></a>
 </nav>
 
-<section id="hero">
+<section id="hero" data-reveal>
   <div class="wrap">
     <div class="grid">
       <div class="hello blur-in">Hi, I'm</div>
@@ -476,11 +479,11 @@ html[dir="rtl"] .tl-item::before{left:auto;right:0}
   <div id="orb-fallback" aria-hidden="true"></div>
 </section>
 
-<section id="skills" class="stack-section">
+<section id="skills" class="stack-section" data-reveal>
     <iframe class="stack-frame" src="/demo/developer/stack/index.html" title="Tech Stack — interactive 3D keyboard" loading="lazy"></iframe>
   </section>
 
-<section id="experience">
+<section id="experience" data-reveal>
   <div class="wrap">
     <div class="sec-head">
       <div class="eyebrow">Experience</div>
@@ -536,7 +539,7 @@ html[dir="rtl"] .tl-item::before{left:auto;right:0}
   </div>
 </section>
 
-<section id="projects">
+<section id="projects" data-reveal>
   <div class="wrap">
     <div class="sec-head">
       <div class="eyebrow">Projects</div>
@@ -655,7 +658,7 @@ html[dir="rtl"] .tl-item::before{left:auto;right:0}
   </div>
 </div>
 
-<section id="contact">
+<section id="contact" data-reveal>
   <div class="wrap">
     <div class="sec-head">
       <div class="eyebrow">Contact</div>
@@ -757,6 +760,28 @@ html[dir="rtl"] .tl-item::before{left:auto;right:0}
       });
     }, {threshold:0.4});
     secs.forEach(function(s){ spy.observe(s); });
+  }
+
+  /* ── Naresh-style section reveal: opacity [0→1→1→0] + scale [0.92→1→1→0.92] by distance from centre ── */
+  if(!reduce){
+    var revSecs = Array.prototype.slice.call(document.querySelectorAll("section[data-reveal]"));
+    var revTick = false;
+    function reveal(){
+      revTick = false;
+      var vh = window.innerHeight;
+      for(var i=0;i<revSecs.length;i++){
+        var s = revSecs[i], r = s.getBoundingClientRect();
+        var centre = (r.top + r.height/2) / vh;
+        var d = Math.min(1, Math.abs(centre - 0.5) / 0.85);
+        var k = 1 - d*d;
+        s.style.opacity = k.toFixed(3);
+        s.style.transform = "scale(" + (0.92 + 0.08*k).toFixed(3) + ")";
+      }
+    }
+    function onRev(){ if(!revTick){ revTick = true; requestAnimationFrame(reveal); } }
+    window.addEventListener("scroll", onRev, {passive:true});
+    window.addEventListener("resize", onRev);
+    reveal();
   }
 
   /* ── star-field ── */
