@@ -162,7 +162,10 @@ export async function GET(
     return new Response(html, {
       headers: {
         "Content-Type": "text/html; charset=utf-8",
-        "Cache-Control": "public, max-age=3600",
+        // Short TTL so a republish (seeds:publishWadhah etc.) shows on the live
+        // QR target within ~60s. stale-while-revalidate keeps it CDN-fast for
+        // visitors: serve instantly, refresh in the background after expiry.
+        "Cache-Control": "public, max-age=60, stale-while-revalidate=86400",
       },
     });
   } catch (error) {
