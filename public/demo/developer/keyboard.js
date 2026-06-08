@@ -346,6 +346,89 @@
   }
   function playHover() { playDown(0.55); }
 
+  /* ---------- sound lab + tool label (DOM UI, created here, ported from
+     stack/index.html: SOUND on/off + SWITCH profile cycler + hovered-key
+     name/description label). All fixed-position, high z-index, clickable
+     over everything — and kept in corners / pointer-events:none so the
+     centre drag-to-rotate never gets intercepted. ---------- */
+  var labelEl, labelName, labelTag, sndBtn, swBtn;
+  (function buildUI() {
+    var PILL = "position:fixed;z-index:32;cursor:pointer;color:#cdd9e8;opacity:.85;" +
+      "font-family:ui-monospace,'SF Mono',Menlo,Consolas,monospace;font-size:12px;font-weight:700;" +
+      "letter-spacing:.5px;background:rgba(18,24,34,.55);border:1px solid rgba(166,186,208,.28);" +
+      "padding:7px 12px;border-radius:20px;-webkit-user-select:none;user-select:none;" +
+      "-webkit-tap-highlight-color:transparent;pointer-events:auto;backdrop-filter:blur(6px);";
+    /* SOUND + SWITCH pills, bottom-right corner (clear of viewport centre + nav) */
+    sndBtn = document.createElement("div");
+    sndBtn.id = "kbd-snd";
+    sndBtn.style.cssText = PILL + "right:16px;bottom:16px;";
+    sndBtn.textContent = "SOUND: " + (window.__demoSound === false ? "OFF" : "ON");
+    swBtn = document.createElement("div");
+    swBtn.id = "kbd-sw";
+    swBtn.style.cssText = PILL + "right:120px;bottom:16px;";
+    swBtn.textContent = "SWITCH: " + PROFILES[profileIdx].name;
+
+    /* tool name + description label, UPPER-LEFT (display only) */
+    labelEl = document.createElement("div");
+    labelEl.id = "kbd-label";
+    labelEl.style.cssText = "position:fixed;top:90px;left:24px;z-index:18;pointer-events:none;" +
+      "color:#eef1f5;max-width:34vw;text-align:left;opacity:0;transition:opacity .15s ease;";
+    labelName = document.createElement("div");
+    labelName.className = "kbd-label-name";
+    labelName.style.cssText = "font-family:var(--font-display),'Archivo Black',sans-serif;" +
+      "font-size:clamp(22px,2.6vw,40px);font-weight:900;line-height:.96;letter-spacing:-1px;color:#eef1f5;";
+    labelTag = document.createElement("div");
+    labelTag.className = "kbd-label-tag";
+    labelTag.style.cssText = "margin-top:9px;font-family:ui-monospace,'SF Mono',Menlo,Consolas,monospace;" +
+      "font-size:13px;font-style:italic;color:#a6bad0;opacity:.92;line-height:1.5;max-width:30ch;";
+    labelEl.appendChild(labelName); labelEl.appendChild(labelTag);
+
+    function add() {
+      if (!document.body) return;
+      document.body.appendChild(sndBtn);
+      document.body.appendChild(swBtn);
+      document.body.appendChild(labelEl);
+    }
+    if (document.body) add(); else document.addEventListener("DOMContentLoaded", add);
+
+    /* default label: show the first skill so the upper-left isn't empty on load */
+    if (SKILLS.length) {
+      labelName.textContent = SKILLS[0].label;
+      labelTag.textContent = SKILLS[0].tag || "";
+      labelEl.style.opacity = "1";
+    }
+
+    /* SOUND: toggle the shared global mute flag + persist (mirrors the old #mute) */
+    sndBtn.addEventListener("pointerdown", function (e) { e.stopPropagation(); });
+    sndBtn.addEventListener("click", function (e) {
+      e.stopPropagation();
+      window.__demoSound = (window.__demoSound === false);
+      try { localStorage.setItem("demoMute", window.__demoSound ? "0" : "1"); } catch (er) {}
+      sndBtn.textContent = "SOUND: " + (window.__demoSound ? "ON" : "OFF");
+      if (window.__demoSound) { ac(); playUp(); }
+    });
+    /* SWITCH: cycle the switch-sound profile + play a sample (forces sound on for the sample) */
+    swBtn.addEventListener("pointerdown", function (e) { e.stopPropagation(); });
+    swBtn.addEventListener("click", function (e) {
+      e.stopPropagation();
+      profileIdx = (profileIdx + 1) % PROFILES.length;
+      swBtn.textContent = "SWITCH: " + PROFILES[profileIdx].name;
+      ac();
+      var prev = window.__demoSound; window.__demoSound = true; playDown(); window.__demoSound = prev;
+    });
+  })();
+
+  /* update the upper-left label from a SKILLS entry; when nothing is hovered
+     fall back to the first skill so the upper-left always reads something */
+  function setLabel(skill) {
+    if (!labelEl) return;
+    var s = skill || (SKILLS.length ? SKILLS[0] : null);
+    if (!s) { labelEl.style.opacity = "0"; return; }
+    labelName.textContent = s.label;
+    labelTag.textContent = s.tag || "";
+    labelEl.style.opacity = "1";
+  }
+
   /* ---------- interaction ---------- */
   var ray = new THREE.Raycaster();
   var mouse = new THREE.Vector2(-2, -2);
@@ -384,7 +467,7 @@
     } else pickHover();
   }, { passive: true });
   window.addEventListener("pointerup", function () {
-    if (isDown && !dragging) { var c = hovered || downCap; if (c) { playDown(); c.userData.pressed = true; setTimeout(function () { c.userData.pressed = false; }, 220); } }
+    if (isDown && !dragging) { var c = hovered || downCap; if (c) { playDown(); setLabel(c.userData.skill); c.userData.pressed = true; setTimeout(function () { c.userData.pressed = false; }, 220); } }
     isDown = false; dragging = false; downCap = null;
   }, { passive: true });
   window.addEventListener("pointercancel", function () { isDown = false; dragging = false; downCap = null; }, { passive: true });
@@ -396,7 +479,7 @@
     var hits = ray.intersectObjects(caps.flatMap(function (c) { return c.children; }), true);
     var hit = hits.find(function (h) { return h.object.userData.cap; });
     var cap = hit ? hit.object.userData.cap : null;
-    if (cap !== hovered) { hovered = cap; if (cap) { playHover(); } }
+    if (cap !== hovered) { hovered = cap; if (cap) { playHover(); setLabel(cap.userData.skill); } else setLabel(null); }
     if (trackball) {
       var bh = ray.intersectObject(trackball, false);
       var nowHov = bh.length > 0;
@@ -428,10 +511,15 @@
      parking spot (hero/contact — clears the left-aligned hero name) and a
      centred, prominent home (skills/experience/projects). RTL mirrors sides. */
   var SECTION_IDS = ["hero", "skills", "experience", "projects", "contact"];
-  /* target X as a fraction of HALF the viewport width (LTR). 0 = centred. */
-  var SECTION_FRAC = { hero: 0.42, skills: 0.0, experience: 0.0, projects: 0.0, contact: 0.42 };
-  /* subtle scale: smaller when floated to a side, full when centred */
-  var SECTION_SCALE = { hero: 0.82, skills: 1.0, experience: 1.0, projects: 1.0, contact: 0.82 };
+  /* target X as a fraction of HALF the viewport width (LTR). 0 = centred.
+     hero/contact pushed well to the RIGHT so the LEFT ~half stays clear of the
+     hero text column (name/role/pitch). 0.66 keeps the board fully on-screen
+     (left edge well past centre) without clipping the right edge. */
+  var SECTION_FRAC = { hero: 0.74, skills: 0.0, experience: 0.0, projects: 0.0, contact: 0.74 };
+  /* subtle scale: smaller when floated to a side, full when centred.
+     0.72 floated keeps the right edge inside the viewport at the larger offset
+     and shrinks the footprint so the hero text column stays fully clear. */
+  var SECTION_SCALE = { hero: 0.72, skills: 1.0, experience: 1.0, projects: 1.0, contact: 0.72 };
   function isRTL() { return document.documentElement.getAttribute("dir") === "rtl" || document.dir === "rtl"; }
   /* latest viewport width in world units at the board's z-plane (updated each frame) */
   var vpW = 1;

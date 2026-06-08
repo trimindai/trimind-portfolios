@@ -96,13 +96,13 @@ try {
         });
         if(!pos){ fail(`[${tag}] __kbd.getPosFrac missing`); }
         else if (route.key==="en"){
-          if(pos.hero>0.15) pass(`[${tag}] hero keyboard floated right (${pos.hero.toFixed(2)})`); else fail(`[${tag}] hero keyboard not right (${pos.hero.toFixed(2)})`);
+          if(pos.hero>0.4) pass(`[${tag}] hero keyboard well to the right (${pos.hero.toFixed(2)})`); else fail(`[${tag}] hero keyboard not right enough (${pos.hero.toFixed(2)})`);
           if(Math.abs(pos.skills)<0.15) pass(`[${tag}] skills keyboard centred (${pos.skills.toFixed(2)})`); else fail(`[${tag}] skills keyboard not centred (${pos.skills.toFixed(2)})`);
-          if(pos.contact>0.15) pass(`[${tag}] contact keyboard floated right (${pos.contact.toFixed(2)})`); else fail(`[${tag}] contact keyboard not right (${pos.contact.toFixed(2)})`);
+          if(pos.contact>0.4) pass(`[${tag}] contact keyboard well to the right (${pos.contact.toFixed(2)})`); else fail(`[${tag}] contact keyboard not right enough (${pos.contact.toFixed(2)})`);
         } else { // AR mirrored
-          if(pos.hero<-0.15) pass(`[${tag}] AR hero keyboard floated left (${pos.hero.toFixed(2)})`); else fail(`[${tag}] AR hero keyboard not left (${pos.hero.toFixed(2)})`);
+          if(pos.hero<-0.4) pass(`[${tag}] AR hero keyboard well to the left (${pos.hero.toFixed(2)})`); else fail(`[${tag}] AR hero keyboard not left enough (${pos.hero.toFixed(2)})`);
           if(Math.abs(pos.skills)<0.15) pass(`[${tag}] AR skills keyboard centred (${pos.skills.toFixed(2)})`); else fail(`[${tag}] AR skills keyboard not centred (${pos.skills.toFixed(2)})`);
-          if(pos.contact<-0.15) pass(`[${tag}] AR contact keyboard floated left (${pos.contact.toFixed(2)})`); else fail(`[${tag}] AR contact keyboard not left (${pos.contact.toFixed(2)})`);
+          if(pos.contact<-0.4) pass(`[${tag}] AR contact keyboard well to the left (${pos.contact.toFixed(2)})`); else fail(`[${tag}] AR contact keyboard not left enough (${pos.contact.toFixed(2)})`);
         }
         await page.evaluate(()=>window.scrollTo(0,0)); await page.waitForTimeout(500);
       }
@@ -129,10 +129,16 @@ try {
         else fail(`[${tag}] drag leaked into scroll (scrollDelta=${rot?rot.scrollDelta:'?'})`);
         await page.evaluate(()=>window.scrollTo(0,0)); await page.waitForTimeout(400);
       }
-      // T3.3: mute toggles shared sound flag
-      const mute = await page.evaluate(()=>{ const b=document.getElementById("mute"); if(!b) return null; const before=window.__demoSound; b.click(); const after=window.__demoSound; b.click(); return {before,after}; });
-      if (mute && mute.before!==mute.after) pass(`[${tag}] mute button toggles sound`);
-      else fail(`[${tag}] mute button missing/not toggling`);
+      // F2: sound lab (SOUND pill) toggles the shared sound flag
+      const mute = await page.evaluate(()=>{ const b=document.getElementById("kbd-snd"); if(!b) return null; const before=window.__demoSound; b.click(); const after=window.__demoSound; b.click(); return {before,after}; });
+      if (mute && mute.before!==mute.after) pass(`[${tag}] SOUND pill toggles sound`);
+      else fail(`[${tag}] SOUND pill missing/not toggling`);
+      // F2: sound lab buttons + tool label exist in the DOM after load (desktop)
+      if (view.key==="desk"){
+        const ui = await page.evaluate(()=>({ snd:!!document.getElementById("kbd-snd"), sw:!!document.getElementById("kbd-sw"), label:!!document.getElementById("kbd-label") }));
+        if (ui.snd && ui.sw) pass(`[${tag}] sound lab pills present (SOUND+SWITCH)`); else fail(`[${tag}] sound lab pills missing (snd=${ui.snd} sw=${ui.sw})`);
+        if (ui.label) pass(`[${tag}] tool label present`); else fail(`[${tag}] tool label missing`);
+      }
       if (errors.length) fail(`[${tag}] ${errors.length} console error(s): ${errors.slice(0,3).join(" | ")}`);
       else pass(`[${tag}] zero console errors`);
       try { await page.screenshot({path:`scripts/_sj-${tag}.png`,fullPage:false,timeout:8000,animations:"disabled"}); }

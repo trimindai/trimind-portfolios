@@ -429,10 +429,7 @@ html[dir="rtl"] .tl-item::before{left:auto;right:0}
 /* centre content vertically inside the taller sections */
 #experience .wrap, #projects .wrap, #contact .wrap{ display:flex; flex-direction:column; justify-content:center; }
 
-/* ── mute button ─────────────────────────────────────────────── */
-#mute{ position:fixed; right:16px; bottom:16px; z-index:30; width:42px; height:42px; border-radius:50%;
-  border:1px solid var(--border); background:var(--card); color:var(--fg); cursor:pointer; font-size:18px; }
-@media (max-width:768px){ #mute{ right:12px; bottom:12px; } }
+/* (mute control now lives in keyboard.js's sound lab — SOUND pill) */
 
 /* ── Shuttle-gray surface for Experience + Projects cards ────── */
 /* Primary text #eef1f5 on #5f6b7a = ~4.8:1 (passes AA) */
@@ -735,8 +732,6 @@ html[dir="rtl"] .tl-item::before{left:auto;right:0}
   </div>
 </footer>
 </main>
-
-<button id="mute" aria-label="Toggle sound">🔊</button>
 
 <script>
 (function(){
@@ -1122,10 +1117,8 @@ html[dir="rtl"] .tl-item::before{left:auto;right:0}
     }
   })();
 
-  /* ── mute button wiring ── */
-  var muteBtn=document.getElementById("mute");
-  if(muteBtn){ muteBtn.textContent = window.__demoSound===false ? "🔇" : "🔊";
-    muteBtn.addEventListener("click",function(){ window.__demoSound=!window.__demoSound; localStorage.setItem("demoMute", window.__demoSound?"0":"1"); muteBtn.textContent= window.__demoSound?"🔊":"🔇"; }); }
+  /* (mute now owned by keyboard.js's SOUND pill; the shared __demoSound flag
+     + unlock()/AudioContext above remain so audio works before/without it) */
 
   /* ── keyboard journey (lazy 3D, progressive enhancement) ── */
   (function(){

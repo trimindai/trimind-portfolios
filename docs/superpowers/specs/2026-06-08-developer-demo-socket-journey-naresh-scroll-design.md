@@ -1,5 +1,13 @@
 # Developer demo — Socket Journey + Naresh-faithful scroll (Spec C)
 
+> **REVISION 2 (2026-06-08, after visual review) — the orb is CUT.** User rejected the orb+socket mechanic and the centered keyboard (it covered the hero name). New direction, SUPERSEDING the orb sections below:
+> - **Remove the orb + all `.orb-socket`s entirely** (delete `orb.js`, `#orb-stage`, `#orb-fallback`, the orb injection, `.orb-socket` divs + CSS, `__orbLand`). Keep the mute button + audio-unlock (now controls the keyboard's keycap sounds via `__demoSound`).
+> - **Keep the ported fixed-background interactive keyboard (`keyboard.js`/`#kbd-stage`)** — clickable keycaps, NO external tool name/description label (already stripped in the port), wheel scrolls past it (no trap).
+> - **The keyboard is now the connective thread that repositions per section (scroll-driven):** hero → floated RIGHT (name stays left, no overlap); skills → centered/prominent (its home); experience & projects → centered BEHIND the content cards (the opaque cards occlude it = ambient backdrop); contact → floated RIGHT. RTL mirrors the horizontal sides (hero/contact → LEFT). This re-introduces per-section keyboard movement that Revision 1 had removed.
+> - **Keep Phase 1** (5 sections incl. education removed, Lenis retune, pointer-events overlay, opacity/scale breathing reveal, sticky centered headings, Naresh font/layout, Soft Daylight palette) and the keyboard fixed-bg + fallback + non-trapping scroll (Phase 2). Only Phase 3 (orb/sockets) is removed and the keyboard gains per-section positioning.
+> Rest of this doc is historical (the orb design); follow this revision.
+
+
 **Date:** 2026-06-08
 **Target (DEMO ONLY):** `public/demo/developer/index.html` (EN) + `index-ar.html` (AR/RTL) + the orb (`orb.js`) + the keyboard scene (currently `stack/index.html`). **NOT** `src/templates/developer/template.hbs`, the builder, or the standalone `tech-keyboard/`. Palette stays "Soft Daylight" (unchanged).
 **Reference:** github.com/Naresh-Khatri/3d-portfolio (branch `main`) + nareshkhatri.site. Replicate his **sections (exactly 5), font, layout, and section-to-section scroll experience**; keep only OUR differences: the orb+socket mechanic, our Soft Daylight colors, our keyboard, our sound.

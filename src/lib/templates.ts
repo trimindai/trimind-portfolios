@@ -51,9 +51,15 @@ export type Template = TemplateManifest & {
 };
 
 // Templates live for every visitor.
-const AVAILABLE_IDS = new Set(["general", "engineer", "creative", "creator"]);
+const AVAILABLE_IDS = new Set([
+  "general",
+  "engineer",
+  "creative",
+  "creator",
+  "developer",
+]);
 // Templates only admins can see/use while they're still being built.
-const ADMIN_PREVIEW_IDS = new Set(["developer"]);
+const ADMIN_PREVIEW_IDS = new Set<string>([]);
 
 export const TEMPLATES: Template[] = (
   [
