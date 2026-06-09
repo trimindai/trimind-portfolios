@@ -60,6 +60,10 @@ export async function generateMetadata({ params }: PageProps) {
       "Build your professional CV and portfolio free. Pay 4.9 KD only when you publish. Choose from General, Engineer, Creative, Creator, Developer templates. Arabic & English. Kuwait & Gulf.",
     alternates: {
       canonical: `https://portfolio-trimind.com/${locale}/templates`,
+      languages: {
+        en: "https://portfolio-trimind.com/en/templates",
+        ar: "https://portfolio-trimind.com/ar/templates",
+      },
     },
   };
 }

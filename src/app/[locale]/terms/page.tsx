@@ -10,6 +10,10 @@ export async function generateMetadata({ params }: PageProps) {
     description: "Terms governing the use of Portfolio Pro.",
     alternates: {
       canonical: `https://portfolio-trimind.com/${locale}/terms`,
+      languages: {
+        en: "https://portfolio-trimind.com/en/terms",
+        ar: "https://portfolio-trimind.com/ar/terms",
+      },
     },
   };
 }

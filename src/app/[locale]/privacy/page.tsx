@@ -9,6 +9,10 @@ export async function generateMetadata({ params }: PageProps) {
     description: "How Portfolio Pro collects, uses, and protects your data.",
     alternates: {
       canonical: `https://portfolio-trimind.com/${locale}/privacy`,
+      languages: {
+        en: "https://portfolio-trimind.com/en/privacy",
+        ar: "https://portfolio-trimind.com/ar/privacy",
+      },
     },
   };
 }
