@@ -33,11 +33,13 @@
     return "/demo/developer/stack/icons/";
   })();
 
+  var TRACKBALL = (typeof window.__KBD_TRACKBALL === "string" && window.__KBD_TRACKBALL.trim()) ? window.__KBD_TRACKBALL.trim() : "Maya";
+
   /* ============================================================
      CONFIG — swap a logo = change `slug` (any simple-icons slug).
      Caps fill sockets left->right; layout = 4 rows x columns per hand.
      ============================================================ */
-  var SKILLS = [
+  var SKILLS = (window.__KBD_SKILLS && window.__KBD_SKILLS.length) ? window.__KBD_SKILLS : [
     /* col 0 — frontend core — real brand shades */
     { slug: "react",             label: "React",      tag: "component UIs, fast",           color: "#61dafb" },
     { slug: "nextdotjs",         label: "Next.js",    tag: "SSR + the app router",          color: "#000000" },
@@ -302,7 +304,7 @@
     mCtx.fillStyle = "#eef1f5";
     mCtx.font = "bold 72px sans-serif";
     mCtx.textAlign = "center"; mCtx.textBaseline = "middle";
-    mCtx.fillText("Maya", 128, 128);
+    mCtx.fillText(TRACKBALL, 128, 128);
     mCtx.strokeStyle = "#eef1f5"; mCtx.lineWidth = 4;
     mCtx.beginPath(); mCtx.arc(128, 128, 110, 0, Math.PI * 2); mCtx.stroke();
     var mTex = new THREE.CanvasTexture(mCvs);
