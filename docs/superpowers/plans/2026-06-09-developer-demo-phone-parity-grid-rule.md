@@ -568,6 +568,10 @@ Replace with:
 ```js
   var hovered = null;
   var __autoT = 0, __autoIdx = -1, __AUTO_STEP = 1.4; /* phone auto-hover spotlight */
+  /* motion-principles: the spotlight is continuous ambient motion — disable it under
+     prefers-reduced-motion (vestibular safety; mandatory). Re-read live so an OS change
+     takes effect without reload. */
+  var __reduceMotionMQ = window.matchMedia ? window.matchMedia("(prefers-reduced-motion: reduce)") : { matches: false };
 ```
 
 - [ ] **Step 4: Guard pickHover so auto-hover keeps ownership on phone**
@@ -599,7 +603,7 @@ Replace with:
     /* phone auto-hover: sweep a gentle spotlight across the caps so the board stays
        alive while scrolling; paced by real elapsed time (dt) so it's identical at
        any fps; pauses while a finger is scrubbing keys (isDown). */
-    if (isPhone && labelEnabled && !isDown && caps.length) {
+    if (isPhone && labelEnabled && !isDown && !__reduceMotionMQ.matches && caps.length) {
       __autoT += dt;
       if (__autoIdx < 0 || __autoT >= __AUTO_STEP) {
         __autoT = 0; __autoIdx = (__autoIdx + 1) % caps.length;
@@ -744,6 +748,25 @@ async function checkDesktop(path, label) {
   await ctx.close();
 }
 await checkDesktop("/demo/developer/index.html", "EN");
+
+// motion-principles (mandatory): under prefers-reduced-motion the ambient auto-hover
+// spotlight must NOT play — the label should stay put, not cycle.
+async function checkReducedMotion(path, label) {
+  console.log(`\n[reduced-motion ${label}] ${path}`);
+  const ctx = await b.newContext({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true, deviceScaleFactor: 2, reducedMotion: "reduce" });
+  const page = await ctx.newPage();
+  await page.goto(BASE + path, { waitUntil: "networkidle", timeout: 45000 });
+  await liveSkills(page);
+  const seen = new Set();
+  for (let i = 0; i < 6; i++) {
+    await page.waitForTimeout(800);
+    const name = await page.evaluate(() => document.querySelector("#kbd-label .kbd-label-name")?.textContent?.trim() || "");
+    if (name) seen.add(name);
+  }
+  ok("reduced-motion: spotlight does NOT cycle (<= 1 label)", seen.size <= 1, `distinct=${seen.size}`);
+  await ctx.close();
+}
+await checkReducedMotion("/demo/developer/index.html", "EN");
 ```
 
 - [ ] **Step 2: Run the full verification suite**
