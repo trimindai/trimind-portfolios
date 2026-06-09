@@ -8,7 +8,8 @@
 {{faviconLink basics.fullName customization.primaryColor customization.bgColor}}
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Inter:wght@100;200;300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Inter:wght@400;500;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+<noscript><link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Inter:wght@400;500;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"></noscript>
 <link rel="stylesheet" href="/demo/developer/vendor/fa/all.min.css">
 {{{personJsonLd basics portfolioUrl}}}
 <style>
@@ -746,7 +747,11 @@ html[dir="rtl"] .tl-item::before{left:auto;right:0}
     loaded = true; clearInterval(fake); setProg(100);
     setTimeout(function(){ if(pre){ pre.classList.add("done"); setTimeout(function(){ pre.style.display = "none"; }, 950); } document.body.classList.add("loaded"); }, 380);
   }
-  window.addEventListener("load", function(){ setTimeout(finishLoad, 500); });
+  /* Reveal on DOMContentLoaded, not full load: the intro still plays (~0.9s),
+     but the hero no longer waits for every image/font on slow connections. */
+  function armReveal(){ setTimeout(finishLoad, 350); }
+  if(document.readyState !== "loading") armReveal();
+  else document.addEventListener("DOMContentLoaded", armReveal);
   setTimeout(finishLoad, 6000); /* hard cap so a slow CDN never traps the page */
 
   /* ── scroll progress bar ── */
