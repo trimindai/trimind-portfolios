@@ -9,6 +9,10 @@ interface DeveloperStackStepProps {
   [key: string]: any;
 }
 
+// All curated tool names flattened for bulk-paste routing
+// (built lazily from CURATED below; declared here so BulkAdd can reference it)
+type CuratedEntry = { name: string; category: string };
+
 type SkillGroup = { category: string; items: string[] };
 type Tool = { name: string; slug: string };
 
@@ -78,7 +82,7 @@ function ToolIcon({ slug, name }: { slug: string; name: string }) {
   return (
     // eslint-disable-next-line @next/next/no-img-element
     <img
-      src={`https://cdn.jsdelivr.net/gh/devicons/devicon/icons/${slug}/${slug}-original.svg`}
+      src={`/builder/devicon/${slug}.svg`}
       alt=""
       width={20}
       height={20}
@@ -114,9 +118,67 @@ function AddOther({ onAdd, placeholder, addLabel }: { onAdd: (v: string) => void
   );
 }
 
+function BulkAdd({
+  curatedIndex,
+  onAddBulk,
+  label,
+  placeholder,
+  addLabel,
+  hint,
+}: {
+  curatedIndex: CuratedEntry[];
+  onAddBulk: (entries: { name: string; category: string }[]) => void;
+  label: string;
+  placeholder: string;
+  addLabel: string;
+  hint: string;
+}) {
+  const [v, setV] = useState("");
+  const commit = () => {
+    const raw = v.split(/[\n,]+/).map((s) => s.trim()).filter(Boolean);
+    if (!raw.length) return;
+    const entries = raw.map((name) => {
+      const match = curatedIndex.find(
+        (e) => e.name.toLowerCase() === name.toLowerCase()
+      );
+      return { name, category: match ? match.category : "Tools" };
+    });
+    onAddBulk(entries);
+    setV("");
+  };
+  return (
+    <div className="rounded-lg border border-[var(--land-border)] bg-[var(--land-surface-raised)]/20 p-4">
+      <label className="mb-1.5 block text-sm font-medium text-[var(--land-bright)]">{label}</label>
+      <div className="flex gap-2">
+        <textarea
+          value={v}
+          onChange={(e) => setV(e.target.value)}
+          placeholder={placeholder}
+          rows={3}
+          className="flex-1 rounded-lg border border-[var(--land-border)] bg-white px-3 py-2 text-sm text-[var(--land-bright)] placeholder:text-[var(--land-muted)] shadow-sm outline-none transition-colors focus:border-[var(--land-accent)] focus:ring-1 focus:ring-[var(--land-accent)] resize-none"
+        />
+        <button
+          type="button"
+          onClick={commit}
+          className="min-h-[44px] self-start rounded-lg border border-[var(--land-border)] px-4 text-sm font-medium text-[var(--land-bright)] transition-colors hover:border-[var(--land-accent)]"
+        >
+          {addLabel}
+        </button>
+      </div>
+      <p className="mt-1.5 text-xs text-[var(--land-muted)]">{hint}</p>
+    </div>
+  );
+}
+
 export function DeveloperStackStep({ data, onChange }: DeveloperStackStepProps) {
   const t = useTranslations("builder.developer");
   const skills: SkillGroup[] = Array.isArray(data.skills) ? data.skills : [];
+  const customization = data.customization || {};
+
+  // Flat index: { name, category } for all curated tools — used by BulkAdd routing
+  const curatedIndex: CuratedEntry[] = CURATED.flatMap(({ category, tools }) =>
+    tools.map((tool) => ({ name: tool.name, category }))
+  );
 
   const itemsFor = (category: string): string[] =>
     skills.find((g) => g.category === category)?.items || [];
@@ -143,6 +205,31 @@ export function DeveloperStackStep({ data, onChange }: DeveloperStackStepProps) 
     if (!cur.some((x) => x.toLowerCase() === name.toLowerCase())) setItems(category, [...cur, name]);
   };
 
+  // Bulk-add: route each entry to its curated category (or "Tools"), dedupe
+  const addBulk = (entries: { name: string; category: string }[]) => {
+    // Build a mutable snapshot of current skills grouped by category
+    const snapshot: Record<string, string[]> = {};
+    for (const g of skills) snapshot[g.category] = [...(g.items || [])];
+
+    for (const { name, category } of entries) {
+      if (!snapshot[category]) snapshot[category] = [];
+      if (!snapshot[category].some((x) => x.toLowerCase() === name.toLowerCase())) {
+        snapshot[category].push(name);
+      }
+    }
+
+    // Rebuild sorted skills array
+    const order = CURATED.map((c) => c.category);
+    const next: SkillGroup[] = Object.entries(snapshot)
+      .filter(([, items]) => items.length > 0)
+      .map(([category, items]) => ({ category, items }));
+    next.sort((a, b) => {
+      const ia = order.indexOf(a.category), ib = order.indexOf(b.category);
+      return (ia === -1 ? 99 : ia) - (ib === -1 ? 99 : ib);
+    });
+    onChange({ skills: next });
+  };
+
   const totalSelected = skills.reduce((n, g) => n + (g.items?.length || 0), 0);
 
   return (
@@ -155,6 +242,34 @@ export function DeveloperStackStep({ data, onChange }: DeveloperStackStepProps) 
       <div className="rounded-lg border border-[var(--land-accent)]/30 bg-[var(--land-surface-raised)]/30 p-4 text-sm text-[var(--land-body)]">
         {t("stackKeyboardHint")}
       </div>
+
+      {/* Trackball badge */}
+      <div>
+        <label className="mb-1.5 block text-sm font-medium text-[var(--land-bright)]">
+          {t("trackballLabel")}
+        </label>
+        <input
+          type="text"
+          value={customization.trackballLabel || ""}
+          maxLength={12}
+          onChange={(e) =>
+            onChange({ customization: { ...customization, trackballLabel: e.target.value } })
+          }
+          placeholder={t("trackballPlaceholder")}
+          className="min-h-[44px] w-full max-w-[16rem] rounded-lg border border-[var(--land-border)] bg-white px-3 py-2 text-sm text-[var(--land-bright)] placeholder:text-[var(--land-muted)] shadow-sm outline-none transition-colors focus:border-[var(--land-accent)] focus:ring-1 focus:ring-[var(--land-accent)]"
+        />
+        <p className="mt-1 text-xs text-[var(--land-muted)]">{t("trackballHint")}</p>
+      </div>
+
+      {/* Bulk paste */}
+      <BulkAdd
+        curatedIndex={curatedIndex}
+        onAddBulk={addBulk}
+        label={t("bulkLabel")}
+        placeholder={t("bulkPlaceholder")}
+        addLabel={t("bulkAdd")}
+        hint={t("bulkHint")}
+      />
 
       {CURATED.map(({ category, tools }) => {
         const selected = itemsFor(category);

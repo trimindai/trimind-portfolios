@@ -176,6 +176,13 @@
       "stackRemove": "إزالة",
       "stackCount": "{count} مُختارة",
       "stackEmptyHint": "اضغط على الأدوات التي تستخدمها — أو أضف أدواتك الخاصة.",
+      "trackballLabel": "شارة كرة التتبع",
+      "trackballPlaceholder": "مايا",
+      "trackballHint": "الكلمة المنقوشة على كرة التتبع في لوحة المفاتيح — اسمك أو أي كلمة. الافتراضي: اسمك الأول.",
+      "bulkLabel": "الصق مهاراتك دفعةً واحدة",
+      "bulkPlaceholder": "React, Node.js, PostgreSQL, Docker, Figma…",
+      "bulkAdd": "إضافة الكل",
+      "bulkHint": "افصل بفواصل أو أسطر جديدة. سنطابق كل أداة مع مفتاحها.",
       "experienceHeading": "الخبرة",
       "experienceIntro": "مسيرتك المهنية على شكل خط زمني. الأحدث أولًا — ركّز على ما أنجزته وأثره.",
       "experiencePowerWords": "أفعال قوية: بنيتُ، أطلقتُ، صمّمتُ البنية، وسّعتُ، خفّضتُ، أتمتتُ، نقلتُ، قُدتُ، حسّنتُ",
@@ -220,12 +227,7 @@
       "accentLabel": "اللون المميّز",
       "accentHint": "التمييزات الثانوية، النجوم",
       "bgLabel": "الخلفية",
-      "bgHint": "خلفية الفضاء العميق",
-      "kbdBodyHeading": "لون جسم لوحة المفاتيح",
-      "kbdBodyHint": "لون هيكل لوحة مفاتيح المهارات ثلاثية الأبعاد. تبقى المفاتيح ملوّنة بلون كل أداة.",
-      "kbdBodyBlack": "أسود",
-      "kbdBodyWhite": "أبيض",
-      "kbdBodyGray": "رمادي"
+      "bgHint": "خلفية الفضاء العميق"
     },
     "basics": {
       "fullName": "الاسم الكامل",

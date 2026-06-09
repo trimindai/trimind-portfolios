@@ -176,6 +176,13 @@
       "stackRemove": "Remove",
       "stackCount": "{count} selected",
       "stackEmptyHint": "Tap the tools you use — or add your own.",
+      "trackballLabel": "Trackball badge",
+      "trackballPlaceholder": "Maya",
+      "trackballHint": "The word engraved on the keyboard's trackball — your name, or any word. Defaults to your first name.",
+      "bulkLabel": "Paste your whole stack",
+      "bulkPlaceholder": "React, Node.js, PostgreSQL, Docker, Figma…",
+      "bulkAdd": "Add all",
+      "bulkHint": "Separate with commas or new lines. We'll match each to a keycap.",
       "experienceHeading": "Experience",
       "experienceIntro": "Your work history as a timeline. Most recent first — focus on what you shipped and the impact.",
       "experiencePowerWords": "Power verbs: Built, Shipped, Architected, Scaled, Reduced, Automated, Migrated, Led, Optimized",
@@ -220,12 +227,7 @@
       "accentLabel": "Accent",
       "accentHint": "Secondary highlights, stars",
       "bgLabel": "Background",
-      "bgHint": "Deep-space backdrop",
-      "kbdBodyHeading": "Keyboard Body Color",
-      "kbdBodyHint": "The chassis colour of your 3D skills keyboard. Keycaps stay tinted by each tool's own colour.",
-      "kbdBodyBlack": "Black",
-      "kbdBodyWhite": "White",
-      "kbdBodyGray": "Gray"
+      "bgHint": "Deep-space backdrop"
     },
     "basics": {
       "fullName": "Full Name",
