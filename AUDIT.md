@@ -50,6 +50,8 @@ Severity: CRITICAL / HIGH / MEDIUM / LOW. Status: `fixed` / `recommended` / `pen
 
 (Perf deltas of ±4 are run-to-run noise on swiftshader; the creative jump is the thumbnail fix.)
 
+**Production (post-deploy, brotli):** creative perf 91 / a11y 98; developer perf 71 / a11y 96 (remaining gap = three.js keyboard bundle, see Recommendations #2). AR builder serves native Arabic; creator game live in both locales; all 5 fresh showcase mockups serving.
+
 ### Phase 2 verified-good (no action)
 - No placeholder copy, no broken images, no horizontal overflow in any of the 10 pages (5 demos × EN/AR) at 1440/768/375 after fixes.
 - Footer/OG/hreflang all point to portfolio-trimind.com; gallery detail links resolve to live production project pages.
@@ -79,11 +81,42 @@ Severity: CRITICAL / HIGH / MEDIUM / LOW. Status: `fixed` / `recommended` / `pen
 
 | # | Item | Severity | Status |
 |---|------|----------|--------|
-| 5.1 | **ROOT CAUSE (server): the production `GEMINI_API_KEY` is an EMPTY STRING** (added to Vercel 2 days ago with no value — verified via `vercel env pull` and a direct Gemini API call). Every `/api/generate-summary` / `/api/generate-full-cv` call 500s with "AI service not configured", for every signed-in user, in every template. **No Gemini key exists anywhere on this VPS — ACTION NEEDED: create a key at aistudio.google.com and run `vercel env rm GEMINI_API_KEY production && vercel env add GEMINI_API_KEY production`, then redeploy.** | CRITICAL | **user action needed** |
+| 5.1 | Server-side key: `vercel env pull` returned an empty `GEMINI_API_KEY`, which initially looked like the root cause — but that is Vercel masking a *sensitive* env var on pull. The deployed runtime has a real key: the new `/api/ai-status` probe returns `{"available":true}` on production. Server-side AI is configured; the failures were entirely client-side rendering gates (5.2/5.3). | — | verified (false alarm, documented) |
 | 5.2 | **Root cause (client #1): zero AI affordance until name+title filled** — a first-time user saw no trace that AI exists. Fixed: a "locked" hint panel now always shows on the Basics step ("AI Fill: add your full name and professional title above to unlock", bilingual). | HIGH | fixed |
 | 5.3 | **Root cause (client #2): everything was gated on Clerk's `isLoaded`** — if clerk-js loads slowly or fails, neither the AI tools nor the sign-up CTA ever rendered (exactly reproduced locally). Fixed: the guest CTA renders regardless of Clerk load state; tools swap in when auth resolves. | HIGH | fixed |
 | 5.4 | **Graceful degradation**: new public `/api/ai-status` probe (boolean only, 5-min cache); when the server has no key, both Basics and CV steps show a friendly bilingual "AI temporarily unavailable — write manually" notice instead of buttons that would fail. Raw server error strings no longer surface to users. Verified in-browser in the live failure mode. | HIGH | fixed |
 | 5.5 | Scope note: the full AI panel lives in the general template's Basics step; all five templates share the CV Details summary AI. The deploy from 2h ago post-dates the env var, so no redeploy race — the empty value is the sole server-side cause. | — | documented |
+
+## Phase 6 — Site-wide Scan
+
+| # | Item | Severity | Status |
+|---|------|----------|--------|
+| 6.1 | hreflang en/ar alternates missing on `/templates`, `/privacy`, `/terms` (landing + pricing had them). Fixed. Canonicals, og:image, single-H1 and img alts verified OK on all 10 public routes (EN+AR). JSON-LD present on landing (SoftwareApplication + FAQPage). | MEDIUM | fixed |
+| 6.2 | Console: zero non-Clerk errors on any public route. (Clerk 400s observed locally are an artifact of running production keys on localhost.) | — | verified |
+| 6.3 | Keyboard navigation through the builder: logical tab order (brand → auth → fields → examples → optional toggle → Exit → Next), visible focus indicators everywhere, photo drop-zone keyboard-activatable. | — | verified |
+| 6.4 | Bundle: production build passes; shared JS 102KB; heaviest route `/[locale]/try/[templateId]` 213KB first-load (Clerk+Convex+builder) — healthy, no offenders worth surgery. | — | verified |
+| 6.5 | Links: landing 23/23 per locale, demos crawled in Phase 2, sitemap routes resolve. | — | verified |
+
+## Recommendations (not implemented)
+
+1. **Native-Arabic template output** (AUDIT 1.13): all 5 `template.hbs` render English section titles; AR published portfolios rely on the runtime auto-translate button. Locale-aware template copy would be the single biggest AR-quality upgrade left.
+2. **Developer demo performance**: the remaining mobile perf gap is the three.js keyboard bundle (589KB) + Font Awesome woff2s. A subsetted icon set (~10 icons used) and a poster-image fallback that defers WebGL until interaction would lift Lighthouse mobile past 85. Owned by the active dev-template workstream — coordinate before touching.
+3. **Conversion**: the landing "coming soon" waitlist is a `mailto:` — a one-field form (Convex table) would capture far more emails. The pricing section could surface the creator/developer demos ("see it play") since interactive demos are the strongest differentiator.
+4. **Builder**: drag-to-reorder for experience/projects items (DynamicList has stable keys already, dnd is a small step). Per-template AI Fill on the first step of engineer/creative/creator/developer (the shared CV-step AI exists, but the full-CV generator is only surfaced on general's Basics step).
+5. **AI usage limits** are client-state only (5 summaries / 3 full-CVs reset on reload); enforce server-side via the existing per-user rate-limiter if Gemini costs matter.
+6. **Dashboard date formatting**: `toLocaleDateString()` without a locale argument renders browser-dependent formats on AR; pass the active locale.
+
+## Commits (this sprint)
+
+| Commit | Phase | Summary |
+|---|---|---|
+| `9e33b74` | 1 | Builder fixes: uploads, lists, presets config, input semantics, self-hosted devicons |
+| `2f19c9a` | 1 | Native Arabic builder (~680 keys), toggle⇄template wiring, engineer endorsements, builder chrome |
+| `8a02b1c` | 2 | Creator game restored + responsive/a11y/perf fixes across all 5 demos |
+| `2f156cb` | 3 | All 5 templates in landing showcase + fresh live-demo WebP screenshots |
+| `8b4178d` | 4 | Dashboard: query projection, skeletons, draft CTA, icons |
+| `e992fa6` | 5 | AI assistant discoverability + graceful degradation (+ root-cause: empty GEMINI_API_KEY) |
+| `17ca1e6` | 6 | hreflang on templates/privacy/terms |
 
 ### Phase 1 verified-good (no action)
 - Step navigation: sticky mobile progress bar + desktop step pills, autosave on navigation, "Saved on this device" indicator works (guest localStorage + Convex when authed).
