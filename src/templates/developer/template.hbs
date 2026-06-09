@@ -83,6 +83,9 @@ img{display:block;max-width:100%}
   border-radius:18px; background:linear-gradient(180deg,#5a6068,#4b5056 55%,#3a3f45);
   box-shadow:0 24px 40px -16px rgba(34,40,49,.4), inset 0 2px 0 rgba(255,255,255,.15); }
 .kbd-live #kbd-fallback{ display:none; }
+/* populated SEO/a11y fallback list (template-only): quiet text chips on the placeholder board */
+.kbd-fallback-list{list-style:none;display:flex;flex-wrap:wrap;gap:8px;justify-content:center;align-content:center;height:100%;padding:18px;margin:0;overflow:hidden}
+.kbd-fallback-list li{font-family:var(--font-mono);font-size:.72rem;line-height:1.2;color:#eef1f5;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.16);border-radius:999px;padding:4px 10px}
 
 /* canvas-overlay mode: wheel/touch fall through .content to the fixed 3D canvases behind it;
    re-enable pointer events on everything interactive (Naresh's pattern). */
@@ -480,8 +483,10 @@ html[dir="rtl"] .tl-item::before{left:auto;right:0}
 
 {{!-- ░░ BACKGROUND LAYERS ░░ --}}
 <canvas id="stars"></canvas>
+{{#unless (isHidden "skills")}}{{#if skills}}<canvas id="kbd-stage" aria-hidden="true"></canvas>{{/if}}{{/unless}}
 <div id="progress"></div>
 
+<main class="content">
 {{!-- ░░ NAV ░░ --}}
 <nav aria-label="Section navigation">
   <a href="#hero" data-sec="hero" class="active"><i class="fa-solid fa-house"></i> <span>{{#if isRTL}}الرئيسية{{else}}Home{{/if}}</span></a>
@@ -514,61 +519,25 @@ html[dir="rtl"] .tl-item::before{left:auto;right:0}
       {{/if}}
       <div class="scroll-cue blur-in" data-delay="440"><span class="mouse"></span>{{#if isRTL}}مرّر{{else}}SCROLL{{/if}}</div>
     </div>
-    <img class="hero-kbd" src="/assets/hero-keyboard.png" alt="3D split mechanical keyboard" loading="eager" width="1600" height="900">
   </div>
 </section>
 
 {{!-- ░░ SKILLS / TECH STACK ░░ --}}
 {{#unless (isHidden "skills")}}
 {{#if skills}}
-<section id="skills">
+<section id="skills" data-reveal>
   <div class="wrap">
-    <div class="sec-head">
+    <div class="sec-head sticky-head">
       <div class="eyebrow">{{#if isRTL}}الأدوات{{else}}Tech Stack{{/if}}</div>
       <h2>{{#if isRTL}}المهارات التقنية{{else}}Tech Stack{{/if}}</h2>
-      <div class="kbd-toolbar">
-        <p class="kbd-hint">{{#if isRTL}}(اضغط أي مفتاح — كل مفتاح مهارة){{else}}(press a key — every key is a skill){{/if}}</p>
-        <label class="kbd-sound-wrap" for="kbd-sound"><i class="fa-solid fa-volume-high"></i>
-          <select class="kbd-sound" id="kbd-sound" aria-label="{{#if isRTL}}صوت المفاتيح{{else}}Key sound{{/if}}">
-            <option value="thocky">{{#if isRTL}}ثوكي{{else}}Thocky{{/if}}</option>
-            <option value="creamy">{{#if isRTL}}كريمي{{else}}Creamy{{/if}}</option>
-            <option value="clacky">{{#if isRTL}}كلاكي{{else}}Clacky{{/if}}</option>
-            <option value="poppy">{{#if isRTL}}بوبي{{else}}Poppy{{/if}}</option>
-            <option value="clicky">{{#if isRTL}}كليكي{{else}}Clicky{{/if}}</option>
-            <option value="lego">{{#if isRTL}}ليغو{{else}}Lego{{/if}}</option>
-            <option value="none">{{#if isRTL}}بدون صوت{{else}}No sound{{/if}}</option>
-          </select>
-        </label>
-      </div>
+      <div id="kbd-label-host"></div>
     </div>
-    <div class="kbd-wrap">
-      <div class="kbd-stage">
-        <div class="kbd-deck {{kbdBody customization.keyboardBody}}" id="kbd-deck">
-          {{#each (flattenSkills skills)}}
-          <button type="button" class="key {{cycle this.catIndex "kc-0" "kc-1" "kc-2" "kc-3" "kc-4" "kc-5"}}" data-skill="{{this.name}}" data-cat="{{this.category}}" data-desc="{{this.description}}" aria-label="{{this.name}}{{#if this.category}} — {{this.category}}{{/if}}">
-            {{#if (techIcon this.name)}}<i class="{{techIcon this.name}}"></i>{{else}}<span class="abbr">{{kbAbbr this.name}}</span>{{/if}}
-            <span class="label">{{this.name}}</span>
-          </button>
-          {{/each}}
-        </div>
-      </div>
-      <aside class="kbd-panel empty" id="kbd-panel" aria-live="polite">
-        <div class="pk-cat">{{#if isRTL}}اختر مفتاحًا{{else}}Select a key{{/if}}</div>
-        <div class="pk-name">{{#if isRTL}}المهارات التقنية{{else}}Tech Stack{{/if}}</div>
-        <div class="pk-desc">{{#if isRTL}}اضغط أي مفتاح لرؤية الأداة ووصفها.{{else}}Press any key to see the tool and what it's used for.{{/if}}</div>
-      </aside>
+    <div id="kbd-fallback" aria-hidden="false">
+      <ul class="kbd-fallback-list">
+        {{#each (flattenSkills skills)}}<li>{{this.name}}</li>{{/each}}
+      </ul>
     </div>
-    <div class="kbd-listwrap">
-      <div class="kbd-listhead">{{#if isRTL}}كل المهارات{{else}}All skills{{/if}}</div>
-      <div class="kbd-list" id="kbd-list">
-        {{#each (flattenSkills skills)}}
-        <button type="button" class="kbd-chip {{cycle this.catIndex "kc-0" "kc-1" "kc-2" "kc-3" "kc-4" "kc-5"}}" data-skill="{{this.name}}" data-cat="{{this.category}}" data-desc="{{this.description}}">
-          {{#if (techIcon this.name)}}<i class="{{techIcon this.name}}"></i>{{else}}<span class="dot"></span>{{/if}}
-          <span>{{this.name}}</span>
-        </button>
-        {{/each}}
-      </div>
-    </div>
+    <p class="kbd-hint">{{#if isRTL}}اسحب للتدوير · اضغط أي مفتاح{{else}}Drag to rotate · press a key{{/if}}</p>
   </div>
 </section>
 {{/if}}
@@ -735,6 +704,7 @@ html[dir="rtl"] .tl-item::before{left:auto;right:0}
     <div class="credit">{{#if isRTL}}تصميم مستوحى من{{else}}Design inspired by{{/if}} <a href="https://github.com/Naresh-Khatri/3d-portfolio" target="_blank" rel="noopener">Naresh Khatri's 3D Portfolio</a></div>
   </div>
 </footer>
+</main>
 
 {{!-- ░░ INTERACTIVE PAGE SCRIPT (self-contained, no external runtime) ░░ --}}
 <script>
