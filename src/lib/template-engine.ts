@@ -367,11 +367,18 @@ function pruneEmpty(node: any): any {
   return node;
 }
 
+// JSON safe to embed inside a <script> block: user data can't break out.
+export function safeScriptJson(value: any): string {
+  return JSON.stringify(value)
+    .replace(/</g, "\\u003c")
+    .replace(/\u2028/g, "\\u2028")
+    .replace(/\u2029/g, "\\u2029");
+}
+
 function ldScript(obj: Record<string, any>): Handlebars.SafeString {
   const cleaned = pruneEmpty(obj) || {};
-  const json = JSON.stringify(cleaned).replace(/</g, "\\u003c");
   return new Handlebars.SafeString(
-    `<script type="application/ld+json">${json}</script>`
+    `<script type="application/ld+json">${safeScriptJson(cleaned)}</script>`
   );
 }
 
@@ -528,11 +535,14 @@ const KBD_COLORS: Record<string, string> = {
 };
 const KBD_DEFAULT_COLOR = "#5b6478";
 
+/** Contract for window.__KBD_SKILLS consumed by public/demo/developer/keyboard.js */
+export type KbdSkillItem = { slug: string | null; label: string; tag: string; color: string };
+
 export function kbdSkillsData(
   skills: any,
-): Array<{ slug: string | null; label: string; tag: string; color: string }> {
+): KbdSkillItem[] {
   if (!Array.isArray(skills)) return [];
-  const out: Array<{ slug: string | null; label: string; tag: string; color: string }> = [];
+  const out: KbdSkillItem[] = [];
   skills.forEach((cat: any) => {
     const category = typeof cat?.category === "string" ? cat.category : "";
     const items = Array.isArray(cat?.items) ? cat.items : [];
@@ -548,7 +558,7 @@ export function kbdSkillsData(
   return out;
 }
 Handlebars.registerHelper("kbdSkillsJSON", (skills: any) =>
-  new Handlebars.SafeString(JSON.stringify(kbdSkillsData(skills))),
+  new Handlebars.SafeString(safeScriptJson(kbdSkillsData(skills))),
 );
 
 let compiledGeneralTemplate: Handlebars.TemplateDelegate | null = null;
