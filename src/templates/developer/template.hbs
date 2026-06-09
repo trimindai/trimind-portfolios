@@ -497,7 +497,7 @@ html[dir="rtl"] .tl-item::before{left:auto;right:0}
 </nav>
 
 {{!-- ░░ HERO ░░ --}}
-<section id="hero">
+<section id="hero" data-reveal>
   <div class="wrap">
     <div class="grid">
       <div class="hello blur-in">{{#if isRTL}}مرحبًا، أنا{{else}}Hi, I'm{{/if}}</div>
@@ -546,9 +546,9 @@ html[dir="rtl"] .tl-item::before{left:auto;right:0}
 {{!-- ░░ EXPERIENCE ░░ --}}
 {{#unless (isHidden "experience")}}
 {{#if experience}}
-<section id="experience">
+<section id="experience" data-reveal>
   <div class="wrap">
-    <div class="sec-head">
+    <div class="sec-head sticky-head">
       <div class="eyebrow">{{#if isRTL}}المسيرة{{else}}Experience{{/if}}</div>
       <h2>{{#if isRTL}}مسيرتي المهنية{{else}}My professional journey{{/if}}</h2>
     </div>
@@ -581,9 +581,9 @@ html[dir="rtl"] .tl-item::before{left:auto;right:0}
 {{!-- ░░ PROJECTS ░░ --}}
 {{#unless (isHidden "projects")}}
 {{#if projects}}
-<section id="projects">
+<section id="projects" data-reveal>
   <div class="wrap">
-    <div class="sec-head">
+    <div class="sec-head sticky-head">
       <div class="eyebrow">{{#if isRTL}}أعمال مختارة{{else}}Projects{{/if}}</div>
       <h2>{{#if isRTL}}مشاريع منتقاة{{else}}Selected work{{/if}}</h2>
       <p>{{#if isRTL}}اضغط على أي مشروع لعرض التفاصيل.{{else}}Click any project to dive into the details.{{/if}}</p>
@@ -665,9 +665,9 @@ html[dir="rtl"] .tl-item::before{left:auto;right:0}
 {{/if}}
 
 {{!-- ░░ CONTACT ░░ --}}
-<section id="contact">
+<section id="contact" data-reveal>
   <div class="wrap">
-    <div class="sec-head">
+    <div class="sec-head sticky-head">
       <div class="eyebrow">{{#if isRTL}}لنعمل معًا{{else}}Contact{{/if}}</div>
       <h2>{{#if isRTL}}لنبنِ شيئًا رائعًا{{else}}Let's work together{{/if}}</h2>
     </div>
@@ -680,13 +680,16 @@ html[dir="rtl"] .tl-item::before{left:auto;right:0}
           <button class="btn primary" type="submit" style="width:100%;justify-content:center">{{#if isRTL}}إرسال الرسالة{{else}}Send message{{/if}} <i class="fa-solid fa-arrow-right"></i></button>
         </form>
       </div>
-      <div class="contact-list">
-        {{#if basics.email}}<a href="mailto:{{basics.email}}"><i class="fa-solid fa-envelope"></i><div><b>Email</b>{{basics.email}}</div></a>{{/if}}
-        {{#if basics.linkedin}}<a href="{{safeUrl basics.linkedin}}" target="_blank" rel="noopener"><i class="fa-brands fa-linkedin-in"></i><div><b>LinkedIn</b>{{#if isRTL}}تواصل مهني{{else}}Let's connect{{/if}}</div></a>{{/if}}
-        {{#if basics.github}}<a href="{{safeUrl basics.github}}" target="_blank" rel="noopener"><i class="fa-brands fa-github"></i><div><b>GitHub</b>{{#if isRTL}}الأكواد{{else}}See the code{{/if}}</div></a>{{/if}}
-        {{#if basics.phone}}<a href="tel:{{basics.phone}}"><i class="fa-solid fa-phone"></i><div><b>{{#if isRTL}}الهاتف{{else}}Phone{{/if}}</b>{{basics.phone}}</div></a>{{/if}}
-        {{#if basics.location}}<a href="#" onclick="return false"><i class="fa-solid fa-location-dot"></i><div><b>{{#if isRTL}}الموقع{{else}}Location{{/if}}</b>{{basics.location}}</div></a>{{/if}}
-      </div>
+      {{!-- right column intentionally empty — the 3D keyboard occupies this space --}}
+      <div aria-hidden="true"></div>
+    </div>
+    {{!-- contact info: horizontal strip under the message box --}}
+    <div class="contact-list box-reveal" data-delay="120">
+      {{#if basics.email}}<a href="mailto:{{basics.email}}"><i class="fa-solid fa-envelope"></i><div><b>Email</b>{{basics.email}}</div></a>{{/if}}
+      {{#if basics.linkedin}}<a href="{{safeUrl basics.linkedin}}" target="_blank" rel="noopener"><i class="fa-brands fa-linkedin-in"></i><div><b>LinkedIn</b>{{#if isRTL}}تواصل مهني{{else}}Let's connect{{/if}}</div></a>{{/if}}
+      {{#if basics.github}}<a href="{{safeUrl basics.github}}" target="_blank" rel="noopener"><i class="fa-brands fa-github"></i><div><b>GitHub</b>{{#if isRTL}}الأكواد{{else}}See the code{{/if}}</div></a>{{/if}}
+      {{#if basics.phone}}<a href="tel:{{basics.phone}}"><i class="fa-solid fa-phone"></i><div><b>{{#if isRTL}}الهاتف{{else}}Phone{{/if}}</b>{{basics.phone}}</div></a>{{/if}}
+      {{#if basics.location}}<a><i class="fa-solid fa-location-dot"></i><div><b>{{#if isRTL}}الموقع{{else}}Location{{/if}}</b>{{basics.location}}</div></a>{{/if}}
     </div>
   </div>
 </section>
@@ -706,11 +709,29 @@ html[dir="rtl"] .tl-item::before{left:auto;right:0}
 </footer>
 </main>
 
-{{!-- ░░ INTERACTIVE PAGE SCRIPT (self-contained, no external runtime) ░░ --}}
+{{#unless (isHidden "skills")}}{{#if skills}}
+{{!-- keyboard data: the 3D keyboard renders the USER's skills (keyboard.js falls
+     back to the demo's hardcoded set only when these globals are absent) --}}
+<script>
+  window.__KBD_SKILLS = {{{kbdSkillsJSON skills}}};
+  window.__KBD_TRACKBALL = {{{trackballBadgeJSON customization.trackballLabel basics.fullName}}};
+</script>
+{{/if}}{{/unless}}
+
+{{!-- ░░ INTERACTIVE PAGE SCRIPT (ported 1:1 from the demo) ░░ --}}
 <script>
 (function(){
   "use strict";
   var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion:reduce)").matches;
+
+  /* ── shared demo audio: unlock on first gesture, mute toggle persisted ── */
+  (function(){
+    var AC = window.AudioContext||window.webkitAudioContext; var actx=null;
+    window.__demoSound = (localStorage.getItem("demoMute")==="1") ? false : true;
+    function ctx(){ if(!actx&&AC){ actx=new AC(); } if(actx&&actx.state==="suspended"){ actx.resume(); } return actx; }
+    function unlock(){ var a=ctx(); if(a){ var b=a.createBuffer(1,1,22050); var s=a.createBufferSource(); s.buffer=b; s.connect(a.destination); s.start(0); } window.removeEventListener("pointerdown",unlock); window.removeEventListener("keydown",unlock); window.removeEventListener("touchstart",unlock); window.removeEventListener("wheel",unlock); }
+    ["pointerdown","keydown","touchstart","wheel"].forEach(function(ev){ window.addEventListener(ev,unlock,{passive:true}); });
+  })();
 
   /* ── year ── */
   var y = document.getElementById("year"); if(y){ y.textContent = new Date().getFullYear(); }
@@ -771,6 +792,28 @@ html[dir="rtl"] .tl-item::before{left:auto;right:0}
     secs.forEach(function(s){ spy.observe(s); });
   }
 
+  /* ── Naresh-style section reveal: opacity [0→1→1→0] + scale [0.92→1→1→0.92] by distance from centre ── */
+  if(!reduce){
+    var revSecs = Array.prototype.slice.call(document.querySelectorAll("section[data-reveal]"));
+    var revTick = false;
+    function reveal(){
+      revTick = false;
+      var vh = window.innerHeight;
+      for(var i=0;i<revSecs.length;i++){
+        var s = revSecs[i], r = s.getBoundingClientRect();
+        var centre = (r.top + r.height/2) / vh;
+        var d = Math.min(1, Math.abs(centre - 0.5) / 0.85);
+        var k = 1 - d*d;
+        s.style.opacity = k.toFixed(3);
+        s.style.transform = "scale(" + (0.92 + 0.08*k).toFixed(3) + ")";
+      }
+    }
+    function onRev(){ if(!revTick){ revTick = true; requestAnimationFrame(reveal); } }
+    window.addEventListener("scroll", onRev, {passive:true});
+    window.addEventListener("resize", onRev);
+    reveal();
+  }
+
   /* ── star-field ── */
   var canvas = document.getElementById("stars");
   if(canvas && !reduce){
@@ -814,7 +857,7 @@ html[dir="rtl"] .tl-item::before{left:auto;right:0}
       requestAnimationFrame(ring);
     }
     requestAnimationFrame(ring);
-    document.querySelectorAll("a,button,[role='button'],.keycap,.proj,input,textarea").forEach(function(el){
+    document.querySelectorAll("a,button,[role='button'],.key,.kbd-chip,.proj,input,textarea").forEach(function(el){
       el.addEventListener("mouseenter", function(){ cur.classList.add("hover"); });
       el.addEventListener("mouseleave", function(){ cur.classList.remove("hover"); });
     });
@@ -848,11 +891,12 @@ html[dir="rtl"] .tl-item::before{left:auto;right:0}
   /* ── Lenis smooth scroll (progressive enhancement) ── */
   if(!reduce){
     var ls = document.createElement("script");
-    ls.src = "https://unpkg.com/lenis@1.1.14/dist/lenis.min.js";
+    ls.src = "/demo/developer/vendor/lenis.min.js";
     ls.onload = function(){
       try{
         if(!window.Lenis){ return; }
-        var lenis = new Lenis({ lerp:0.09, smoothWheel:true });
+        var lenis = new Lenis({ duration:1.2, smoothWheel:true });
+        window.__lenis = lenis;
         function raf(t){ lenis.raf(t); requestAnimationFrame(raf); }
         requestAnimationFrame(raf);
         document.querySelectorAll("a[href^='#']").forEach(function(a){
@@ -866,7 +910,7 @@ html[dir="rtl"] .tl-item::before{left:auto;right:0}
     document.head.appendChild(ls);
   }
 
-  /* ── Dygma-style split 3D keyboard: build, tint, sound, info panel ── */
+  /* ── Dygma-style split 3D keyboard: build, tint, sound, info panel (pure CSS + Web Audio, no runtime) ── */
   (function(){
     var deck = document.getElementById("kbd-deck");
     if(!deck){ return; }
@@ -1053,12 +1097,49 @@ html[dir="rtl"] .tl-item::before{left:auto;right:0}
         var r = stage.getBoundingClientRect();
         var dx = (e.clientX - r.left) / r.width - 0.5;
         var dy = (e.clientY - r.top) / r.height - 0.5;
-        deck.style.animation = "none";
         deck.style.transform = "rotateX(" + (22 - dy * 8) + "deg) rotateY(" + (dx * 10) + "deg)";
       });
-      stage.addEventListener("pointerleave", function(){ deck.style.transform = ""; deck.style.animation = ""; });
+      stage.addEventListener("pointerleave", function(){ deck.style.transform = ""; });
     }
   })();
+
+  /* (mute now owned by keyboard.js's SOUND pill; the shared __demoSound flag
+     + unlock()/AudioContext above remain so audio works before/without it) */
+
+  /* ── keyboard journey (lazy 3D, progressive enhancement) ──
+     only rendered when the portfolio actually has skills: a skill-less page
+     must never fall back to keyboard.js's hardcoded demo stack */
+  {{#unless (isHidden "skills")}}{{#if skills}}
+  (function(){
+    var lowEnd=(navigator.deviceMemory&&navigator.deviceMemory<=2)||(navigator.hardwareConcurrency&&navigator.hardwareConcurrency<=2);
+    if(reduce||lowEnd) return; /* static CSS fallbacks cover these — skip the ~600KB 3D download */
+    function inject(){
+      var t=document.createElement("script"); t.src="/demo/developer/vendor/three.min.js";
+      t.onload=function(){
+        var k=document.createElement("script"); k.src="/demo/developer/keyboard.js"; document.body.appendChild(k);
+      };
+      t.onerror=function(){};
+      document.body.appendChild(t);
+    }
+    if(document.readyState==="complete") setTimeout(inject,200);
+    else window.addEventListener("load", function(){ setTimeout(inject,200); });
+  })();
+  {{/if}}{{/unless}}
+})();
+</script>
+
+<script>
+/* project-card 3D hover tilt (desktop, motion-allowed) */
+(function(){
+  if(window.matchMedia("(prefers-reduced-motion: reduce)").matches || !window.matchMedia("(hover:hover)").matches) return;
+  document.querySelectorAll(".proj").forEach(function(card){
+    card.addEventListener("pointermove", function(e){
+      var r=card.getBoundingClientRect();
+      var dx=(e.clientX-r.left)/r.width-0.5, dy=(e.clientY-r.top)/r.height-0.5;
+      card.style.transform="perspective(820px) rotateX("+(-dy*6.5).toFixed(2)+"deg) rotateY("+(dx*8.5).toFixed(2)+"deg) translateY(-5px)";
+    });
+    card.addEventListener("pointerleave", function(){ card.style.transform=""; });
+  });
 })();
 </script>
 </body>

@@ -109,6 +109,9 @@ export interface PortfolioData {
     // Developer template: chassis colour of the 3D skills keyboard.
     // "black" (default) | "white" | "gray". Drives the kbdBody helper.
     keyboardBody?: string;
+    // Developer template: text shown on the 3D keyboard's trackball badge.
+    // Falls back to the first name, then "you" (see trackballBadgeValue).
+    trackballLabel?: string;
     // Deprecated: the Spline keyboard was replaced by the self-contained
     // CSS-3D keyboard. Retained only for backward compatibility; unused.
     skillsSplineUrl?: string;
@@ -469,6 +472,13 @@ export function trackballBadgeValue(explicit?: string | null, fullName?: string 
 }
 Handlebars.registerHelper("trackballBadge", (explicit: any, fullName: any) =>
   trackballBadgeValue(explicit, fullName),
+);
+
+// trackballBadgeJSON(explicit, fullName) → the badge label as a JSON string
+// literal safe to inject inside a <script> block (quotes preserved, no HTML
+// entities, "<" escaped so a hostile label can't close the script tag).
+Handlebars.registerHelper("trackballBadgeJSON", (explicit: any, fullName: any) =>
+  new Handlebars.SafeString(safeScriptJson(trackballBadgeValue(explicit, fullName))),
 );
 
 // ── kbdSkillsJSON helper ───────────────────────────────────────────────────

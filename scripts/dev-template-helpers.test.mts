@@ -34,6 +34,28 @@ check("truncates to 10 chars", () => {
   assert.equal(trackballBadgeValue("Supercalifragilistic", ""), "Supercalif");
 });
 
+// ── trackballBadgeJSON helper (script-context-safe JSON injection) ────────
+
+check("trackballBadgeJSON('', \"O'Brien\") → JSON string \"O'Brien\" (quotes kept, apostrophe survives)", () => {
+  const helper = (Handlebars as any).helpers["trackballBadgeJSON"];
+  const output: string = helper("", "O'Brien").toString();
+  assert.equal(output, "\"O'Brien\"");
+  assert.equal(JSON.parse(output), "O'Brien");
+});
+
+check("trackballBadgeJSON with </script>-ish label → no literal '<' in output", () => {
+  const helper = (Handlebars as any).helpers["trackballBadgeJSON"];
+  const output: string = helper("</script><b", "").toString();
+  assert.ok(!output.includes("<"), `Output still contains '<': ${output}`);
+  // 10-char cap applies before escaping
+  assert.equal(JSON.parse(output), "</script><".slice(0, 10));
+});
+
+check("trackballBadgeJSON matches safeScriptJson(trackballBadgeValue(...))", () => {
+  const helper = (Handlebars as any).helpers["trackballBadgeJSON"];
+  assert.equal(helper("Synth", "Maya Okafor").toString(), safeScriptJson(trackballBadgeValue("Synth", "Maya Okafor")));
+});
+
 // ── Task B: kbdSkillsData ──────────────────────────────────────────────────
 
 const skills = [
