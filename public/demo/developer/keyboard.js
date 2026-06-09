@@ -39,7 +39,7 @@
      CONFIG — swap a logo = change `slug` (any simple-icons slug).
      Caps fill sockets left->right; layout = 4 rows x columns per hand.
      ============================================================ */
-  var SKILLS = (window.__KBD_SKILLS && window.__KBD_SKILLS.length) ? window.__KBD_SKILLS : [
+  var SKILLS = (Array.isArray(window.__KBD_SKILLS) && window.__KBD_SKILLS.length) ? window.__KBD_SKILLS : [
     /* col 0 — frontend core — real brand shades */
     { slug: "react",             label: "React",      tag: "component UIs, fast",           color: "#61dafb" },
     { slug: "nextdotjs",         label: "Next.js",    tag: "SSR + the app router",          color: "#000000" },
@@ -296,13 +296,15 @@
     var tb = new THREE.Mesh(new THREE.SphereGeometry(R_BALL, 48, 48),
       new THREE.MeshStandardMaterial({ color: 0x6d99ce, metalness: 0.0, roughness: 0.62, envMapIntensity: 0.12 }));
     tb.position.set(cx, 0.5, ballZ);
-    /* "Maya" label on trackball */
+    /* trackball badge label */
     var mCvs = document.createElement("canvas");
     mCvs.width = 256; mCvs.height = 256;
     var mCtx = mCvs.getContext("2d");
     mCtx.fillStyle = "#2f5588"; mCtx.fillRect(0, 0, 256, 256);
     mCtx.fillStyle = "#eef1f5";
-    mCtx.font = "bold 72px sans-serif";
+    var fs = 72;
+    mCtx.font = "bold " + fs + "px sans-serif";
+    while (mCtx.measureText(TRACKBALL).width > 190 && fs > 24) { fs -= 4; mCtx.font = "bold " + fs + "px sans-serif"; }
     mCtx.textAlign = "center"; mCtx.textBaseline = "middle";
     mCtx.fillText(TRACKBALL, 128, 128);
     mCtx.strokeStyle = "#eef1f5"; mCtx.lineWidth = 4;
