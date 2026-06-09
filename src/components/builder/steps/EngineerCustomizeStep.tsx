@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { PhotoUpload } from "../fields/PhotoUpload";
 import { COLOR_PRESETS, isPresetActive, type ColorPreset } from "@/lib/color-presets";
 
@@ -27,19 +28,22 @@ const BODY_FONTS = [
 const PRESETS = COLOR_PRESETS.engineer;
 const DEFAULTS = { primary: "#18181b", accent: "#1e3a5f", bg: "#ffffff" };
 
-const SECTIONS = [
-  { id: "hero-about", label: "Hero / About" },
-  { id: "projects", label: "Projects" },
-  { id: "experience", label: "Experience" },
-  { id: "skills", label: "Skills" },
-  { id: "education", label: "Education" },
-  { id: "certifications", label: "Certifications" },
-  { id: "languages", label: "Languages" },
-];
-
 export function EngineerCustomizeStep({ data, onChange }: EngineerCustomizeStepProps) {
+  const t = useTranslations("builder.engineer");
   const customization = data.customization || {};
   const hiddenSections = customization.hiddenSections || [];
+
+  // Ids must match the isHidden gates in src/templates/engineer/template.hbs.
+  // (The hero/about section always shows, so it has no toggle.)
+  const SECTIONS = [
+    { id: "projects", label: t("custSectionProjects") },
+    { id: "experience", label: t("custSectionExperience") },
+    { id: "skills", label: t("custSectionSkills") },
+    { id: "education", label: t("custSectionEducation") },
+    { id: "certifications", label: t("custSectionCertifications") },
+    { id: "languages", label: t("custSectionLanguages") },
+    { id: "endorsements", label: t("custSectionEndorsements") },
+  ];
 
   const updateCustomization = (field: string, value: any) => {
     onChange({ customization: { ...customization, [field]: value } });
@@ -65,7 +69,7 @@ export function EngineerCustomizeStep({ data, onChange }: EngineerCustomizeStepP
 
   return (
     <div className="space-y-8">
-      <h2 className="text-xl font-semibold text-[var(--land-bright)]">Customize Your Portfolio</h2>
+      <h2 className="text-xl font-semibold text-[var(--land-bright)]">{t("custHeading")}</h2>
 
       <PhotoUpload
         value={data.basics?.photoUrl || ""}
@@ -76,8 +80,8 @@ export function EngineerCustomizeStep({ data, onChange }: EngineerCustomizeStepP
 
       {/* Colors */}
       <div>
-        <h3 className="text-lg font-medium text-[var(--land-bright)] mb-3">Color Scheme</h3>
-        <p className="text-sm text-[var(--land-body)] mb-4">Pick a preset or customize individual colors.</p>
+        <h3 className="text-lg font-medium text-[var(--land-bright)] mb-3">{t("custColorsHeading")}</h3>
+        <p className="text-sm text-[var(--land-body)] mb-4">{t("custColorsIntro")}</p>
 
         <div className="grid grid-cols-3 sm:grid-cols-6 gap-2 mb-6">
           {PRESETS.map((preset) => {
@@ -107,38 +111,38 @@ export function EngineerCustomizeStep({ data, onChange }: EngineerCustomizeStepP
 
         <div className="grid grid-cols-3 gap-6">
           <div>
-            <label className="text-sm font-medium text-[var(--land-bright)] mb-2 block">Primary</label>
+            <label className="text-sm font-medium text-[var(--land-bright)] mb-2 block">{t("custPrimaryLabel")}</label>
             <div className="flex items-center gap-3">
               <input type="color" value={customization.primaryColor || "#18181b"} onChange={(e) => updateCustomization("primaryColor", e.target.value)} className="w-12 h-12 rounded-lg border border-[var(--land-border)] cursor-pointer bg-transparent" />
               <span className="text-xs text-[var(--land-muted)] font-mono">{customization.primaryColor || "#18181b"}</span>
             </div>
-            <p className="text-xs text-[var(--land-muted)] mt-1">Headlines, text</p>
+            <p className="text-xs text-[var(--land-muted)] mt-1">{t("custPrimaryHint")}</p>
           </div>
           <div>
-            <label className="text-sm font-medium text-[var(--land-bright)] mb-2 block">Accent</label>
+            <label className="text-sm font-medium text-[var(--land-bright)] mb-2 block">{t("custAccentLabel")}</label>
             <div className="flex items-center gap-3">
               <input type="color" value={customization.accentColor || "#1e3a5f"} onChange={(e) => updateCustomization("accentColor", e.target.value)} className="w-12 h-12 rounded-lg border border-[var(--land-border)] cursor-pointer bg-transparent" />
               <span className="text-xs text-[var(--land-muted)] font-mono">{customization.accentColor || "#1e3a5f"}</span>
             </div>
-            <p className="text-xs text-[var(--land-muted)] mt-1">Skill tags, links</p>
+            <p className="text-xs text-[var(--land-muted)] mt-1">{t("custAccentHint")}</p>
           </div>
           <div>
-            <label className="text-sm font-medium text-[var(--land-bright)] mb-2 block">Background</label>
+            <label className="text-sm font-medium text-[var(--land-bright)] mb-2 block">{t("custBackgroundLabel")}</label>
             <div className="flex items-center gap-3">
               <input type="color" value={customization.bgColor || "#ffffff"} onChange={(e) => updateCustomization("bgColor", e.target.value)} className="w-12 h-12 rounded-lg border border-[var(--land-border)] cursor-pointer bg-transparent" />
               <span className="text-xs text-[var(--land-muted)] font-mono">{customization.bgColor || "#ffffff"}</span>
             </div>
-            <p className="text-xs text-[var(--land-muted)] mt-1">Page background</p>
+            <p className="text-xs text-[var(--land-muted)] mt-1">{t("custBackgroundHint")}</p>
           </div>
         </div>
       </div>
 
       {/* Fonts */}
       <div>
-        <h3 className="text-lg font-medium text-[var(--land-bright)] mb-3">Typography</h3>
+        <h3 className="text-lg font-medium text-[var(--land-bright)] mb-3">{t("custTypographyHeading")}</h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
-            <label className="text-sm font-medium text-[var(--land-bright)] mb-1.5 block">Heading Font</label>
+            <label className="text-sm font-medium text-[var(--land-bright)] mb-1.5 block">{t("custHeadingFontLabel")}</label>
             <select
               value={customization.fontFamily || "Space Grotesk"}
               onChange={(e) => updateCustomization("fontFamily", e.target.value)}
@@ -148,10 +152,10 @@ export function EngineerCustomizeStep({ data, onChange }: EngineerCustomizeStepP
                 <option key={f.value} value={f.value}>{f.label}</option>
               ))}
             </select>
-            <p className="text-xs text-[var(--land-muted)] mt-1">Name, section titles</p>
+            <p className="text-xs text-[var(--land-muted)] mt-1">{t("custHeadingFontHint")}</p>
           </div>
           <div>
-            <label className="text-sm font-medium text-[var(--land-bright)] mb-1.5 block">Body Font</label>
+            <label className="text-sm font-medium text-[var(--land-bright)] mb-1.5 block">{t("custBodyFontLabel")}</label>
             <select
               value={customization.bodyFont || "Inter"}
               onChange={(e) => updateCustomization("bodyFont", e.target.value)}
@@ -161,25 +165,25 @@ export function EngineerCustomizeStep({ data, onChange }: EngineerCustomizeStepP
                 <option key={f.value} value={f.value}>{f.label}</option>
               ))}
             </select>
-            <p className="text-xs text-[var(--land-muted)] mt-1">Paragraphs, descriptions</p>
+            <p className="text-xs text-[var(--land-muted)] mt-1">{t("custBodyFontHint")}</p>
           </div>
         </div>
         {/* Font preview */}
         <div className="mt-4 bg-[var(--land-surface-raised)]/50 border border-[var(--land-border)] rounded-lg p-4">
-          <p className="text-xs text-[var(--land-muted)] mb-2">Preview</p>
+          <p className="text-xs text-[var(--land-muted)] mb-2">{t("custPreviewLabel")}</p>
           <p style={{ fontFamily: `'${customization.fontFamily || "Space Grotesk"}', sans-serif` }} className="text-lg text-[var(--land-bright)] font-semibold">
-            {data.basics?.fullName || "Your Name Here"}
+            {data.basics?.fullName || t("custPreviewName")}
           </p>
           <p style={{ fontFamily: `'${customization.bodyFont || "Inter"}', sans-serif` }} className="text-sm text-[var(--land-body)] mt-1">
-            {data.basics?.title || "Your Engineering Discipline"}
+            {data.basics?.title || t("custPreviewTitle")}
           </p>
         </div>
       </div>
 
       {/* Section Visibility */}
       <div>
-        <h3 className="text-lg font-medium text-[var(--land-bright)] mb-3">Section Visibility</h3>
-        <p className="text-sm text-[var(--land-body)] mb-4">Uncheck sections you want to hide. Empty sections are auto-hidden anyway.</p>
+        <h3 className="text-lg font-medium text-[var(--land-bright)] mb-3">{t("custSectionsHeading")}</h3>
+        <p className="text-sm text-[var(--land-body)] mb-4">{t("custSectionsIntro")}</p>
         <div className="grid grid-cols-2 gap-1">
           {SECTIONS.map((section) => (
             <label key={section.id} className="flex items-center gap-3 py-2 px-3 rounded-lg hover:bg-[var(--land-surface-raised)]/50 cursor-pointer transition-colors">

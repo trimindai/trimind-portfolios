@@ -1,6 +1,7 @@
 "use client";
 
 import { ReactNode, useEffect, useRef, useState } from "react";
+import { useTranslations } from "next-intl";
 import { Plus, Trash2 } from "lucide-react";
 
 interface DynamicListProps<T> {
@@ -41,10 +42,14 @@ export function DynamicList<T>({
   renderItem,
   createEmpty,
   maxItems = 10,
-  addLabel = "Add Item",
-  removeLabel = "Remove",
-  confirmRemoveLabel = "Tap to confirm",
+  addLabel,
+  removeLabel,
+  confirmRemoveLabel,
 }: DynamicListProps<T>) {
+  const t = useTranslations("builder.fields");
+  const addText = addLabel ?? t("addItem");
+  const removeText = removeLabel ?? t("remove");
+  const confirmText = confirmRemoveLabel ?? t("confirmRemove");
   const keysRef = useRef<string[]>([]);
   const counterRef = useRef(0);
   // Key of the item whose removal is awaiting confirmation (null = none).
@@ -110,7 +115,7 @@ export function DynamicList<T>({
             <button
               type="button"
               onClick={() => requestRemove(index)}
-              aria-label={confirming ? confirmRemoveLabel : removeLabel}
+              aria-label={confirming ? confirmText : removeText}
               className={`absolute top-2 end-2 inline-flex min-h-[32px] items-center gap-1 rounded-md px-2 text-sm transition-colors ${
                 confirming
                   ? "bg-red-500/15 text-red-400 font-medium"
@@ -118,7 +123,7 @@ export function DynamicList<T>({
               }`}
             >
               <Trash2 className="h-3.5 w-3.5" aria-hidden />
-              {confirming ? confirmRemoveLabel : removeLabel}
+              {confirming ? confirmText : removeText}
             </button>
             {renderItem(item, index, (updates) => updateItem(index, updates), key)}
           </div>
@@ -131,7 +136,7 @@ export function DynamicList<T>({
           className="w-full inline-flex items-center justify-center gap-1.5 border border-dashed border-[var(--land-border)] hover:border-[var(--land-accent)] text-[var(--land-body)] hover:text-[var(--land-accent-hover)] rounded-lg py-3 text-sm transition-colors"
         >
           <Plus className="h-4 w-4" aria-hidden />
-          {addLabel}
+          {addText}
         </button>
       )}
     </div>

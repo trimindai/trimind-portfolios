@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { TextField } from "../fields/TextField";
 import { TextareaField } from "../fields/TextareaField";
 import { DynamicList } from "../fields/DynamicList";
@@ -10,6 +11,7 @@ interface CreativeAboutStepProps {
 }
 
 export function CreativeAboutStep({ data, onChange }: CreativeAboutStepProps) {
+  const t = useTranslations("builder.creative");
   const skills = data.skills || [];
   const experience = data.experience || [];
   const metrics = data.metrics || [];
@@ -20,28 +22,28 @@ export function CreativeAboutStep({ data, onChange }: CreativeAboutStepProps) {
     <div className="space-y-10">
       {/* Skills / mediums */}
       <div>
-        <h2 className="text-xl font-semibold text-[var(--land-bright)] mb-1">Skills &amp; Mediums</h2>
+        <h2 className="text-xl font-semibold text-[var(--land-bright)] mb-1">{t("aboutSkillsHeading")}</h2>
         <p className="text-sm text-[var(--land-body)] mb-4">
-          Grouped into categories. These appear as pills and in the scrolling marquee.
+          {t("aboutSkillsIntro")}
         </p>
         <DynamicList
           items={skills}
           onChange={(items) => onChange({ skills: items })}
           createEmpty={() => ({ category: "", items: [] as string[] })}
           maxItems={6}
-          addLabel="Add Category"
+          addLabel={t("aboutAddCategory")}
           renderItem={(item, _, update) => (
             <div className="space-y-3 pr-16">
               <TextField
-                label="Category"
+                label={t("aboutCategory")}
                 value={item.category}
                 onChange={(v) => update({ category: v })}
-                placeholder="Mediums"
-                examples={["Mediums", "Tools", "Techniques", "Software", "Disciplines"]}
+                placeholder={t("aboutCategoryPlaceholder")}
+                examples={t.raw("aboutCategoryExamples") as string[]}
               />
               <div>
                 <label className="text-sm font-medium text-[var(--land-bright)] mb-1.5 block">
-                  Items (comma-separated)
+                  {t("aboutItems")}
                 </label>
                 <input
                   value={(item.items || []).join(", ")}
@@ -50,7 +52,7 @@ export function CreativeAboutStep({ data, onChange }: CreativeAboutStepProps) {
                       items: e.target.value.split(",").map((s: string) => s.trim()).filter(Boolean),
                     })
                   }
-                  placeholder="Oil, Acrylic, Charcoal, Resin"
+                  placeholder={t("aboutItemsPlaceholder")}
                   className="w-full bg-white border border-[var(--land-border)] rounded-lg px-4 py-2.5 text-[var(--land-bright)] placeholder:text-[var(--land-muted)] shadow-sm focus:border-[var(--land-accent)] focus:ring-1 focus:ring-[var(--land-accent)] outline-none transition-colors"
                 />
               </div>
@@ -61,55 +63,50 @@ export function CreativeAboutStep({ data, onChange }: CreativeAboutStepProps) {
 
       {/* Experience / exhibitions */}
       <div>
-        <h2 className="text-xl font-semibold text-[var(--land-bright)] mb-1">Exhibitions &amp; Experience</h2>
+        <h2 className="text-xl font-semibold text-[var(--land-bright)] mb-1">{t("aboutExperienceHeading")}</h2>
         <p className="text-sm text-[var(--land-body)] mb-4">
-          Shows, residencies, roles. Listed as a timeline under &quot;Journey&quot;.
+          {t("aboutExperienceIntro")}
         </p>
         <DynamicList
           items={experience}
           onChange={(items) => onChange({ experience: items })}
           createEmpty={() => ({ title: "", company: "", startDate: "", endDate: "", description: "" })}
           maxItems={10}
-          addLabel="Add Entry"
+          addLabel={t("aboutAddEntry")}
           renderItem={(item, _, update) => (
             <div className="space-y-3 pr-16">
               <TextField
-                label="Title"
+                label={t("aboutExpTitle")}
                 value={item.title}
                 onChange={(v) => update({ title: v })}
-                placeholder="Solo Exhibition — 'Sand & Static'"
-                examples={[
-                  "Solo Exhibition — 'Title'",
-                  "Group Show — 'Title'",
-                  "Artist Residency",
-                  "Art Director",
-                ]}
+                placeholder={t("aboutExpTitlePlaceholder")}
+                examples={t.raw("aboutExpTitleExamples") as string[]}
               />
               <TextField
-                label="Venue / Organization"
+                label={t("aboutVenue")}
                 value={item.company}
                 onChange={(v) => update({ company: v })}
-                placeholder="Contemporary Art Platform, Kuwait"
+                placeholder={t("aboutVenuePlaceholder")}
               />
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <TextField
-                  label="Start / Year"
+                  label={t("aboutStart")}
                   value={item.startDate}
                   onChange={(v) => update({ startDate: v })}
-                  placeholder="2024"
+                  placeholder={t("aboutStartPlaceholder")}
                 />
                 <TextField
-                  label="End (optional)"
+                  label={t("aboutEnd")}
                   value={item.endDate || ""}
                   onChange={(v) => update({ endDate: v })}
-                  placeholder="Leave blank if ongoing"
+                  placeholder={t("aboutEndPlaceholder")}
                 />
               </div>
               <TextareaField
-                label="Description"
+                label={t("aboutExpDescription")}
                 value={item.description || ""}
                 onChange={(v) => update({ description: v })}
-                placeholder="A 30-piece show exploring desert ecology and memory."
+                placeholder={t("aboutExpDescriptionPlaceholder")}
                 rows={2}
               />
             </div>
@@ -119,36 +116,36 @@ export function CreativeAboutStep({ data, onChange }: CreativeAboutStepProps) {
 
       {/* Awards / certifications / licenses */}
       <div>
-        <h2 className="text-xl font-semibold text-[var(--land-bright)] mb-1">Awards, Certificates &amp; Licenses</h2>
+        <h2 className="text-xl font-semibold text-[var(--land-bright)] mb-1">{t("aboutAwardsHeading")}</h2>
         <p className="text-sm text-[var(--land-body)] mb-4">
-          Show off recognition — awards, certifications, licenses, or honors. Shown in their own section.
+          {t("aboutAwardsIntro")}
         </p>
         <DynamicList
           items={certifications}
           onChange={(items) => onChange({ certifications: items })}
           createEmpty={() => ({ name: "", issuer: "", year: "" })}
           maxItems={12}
-          addLabel="Add Award / Certificate"
+          addLabel={t("aboutAddAward")}
           renderItem={(item, _, update) => (
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pr-16">
               <TextField
-                label="Title"
+                label={t("aboutAwardTitle")}
                 value={item.name}
                 onChange={(v) => update({ name: v })}
-                placeholder="Best in Show"
-                examples={["Best in Show", "Adobe Certified Professional", "Interior Design License", "Gold — Dubai Lynx"]}
+                placeholder={t("aboutAwardTitlePlaceholder")}
+                examples={t.raw("aboutAwardTitleExamples") as string[]}
               />
               <TextField
-                label="Issuer"
+                label={t("aboutIssuer")}
                 value={item.issuer}
                 onChange={(v) => update({ issuer: v })}
-                placeholder="Kuwait Art Biennale"
+                placeholder={t("aboutIssuerPlaceholder")}
               />
               <TextField
-                label="Year"
+                label={t("aboutYear")}
                 value={item.year || ""}
                 onChange={(v) => update({ year: v })}
-                placeholder="2024"
+                placeholder={t("aboutYearPlaceholder")}
               />
             </div>
           )}
@@ -157,31 +154,31 @@ export function CreativeAboutStep({ data, onChange }: CreativeAboutStepProps) {
 
       {/* Metrics */}
       <div>
-        <h2 className="text-xl font-semibold text-[var(--land-bright)] mb-1">By the Numbers</h2>
+        <h2 className="text-xl font-semibold text-[var(--land-bright)] mb-1">{t("aboutMetricsHeading")}</h2>
         <p className="text-sm text-[var(--land-body)] mb-4">
-          Optional highlights shown in a scrolling strip (e.g. works, exhibitions, awards).
+          {t("aboutMetricsIntro")}
         </p>
         <DynamicList
           items={metrics}
           onChange={(items) => onChange({ metrics: items })}
           createEmpty={() => ({ value: "", label: "" })}
           maxItems={5}
-          addLabel="Add Stat"
+          addLabel={t("aboutAddStat")}
           renderItem={(item, _, update) => (
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pr-16">
               <TextField
-                label="Value"
+                label={t("aboutMetricValue")}
                 value={item.value}
                 onChange={(v) => update({ value: v })}
-                placeholder="45"
-                examples={["45", "12", "6", "10K+"]}
+                placeholder={t("aboutMetricValuePlaceholder")}
+                examples={t.raw("aboutMetricValueExamples") as string[]}
               />
               <TextField
-                label="Label"
+                label={t("aboutMetricLabel")}
                 value={item.label}
                 onChange={(v) => update({ label: v })}
-                placeholder="Works"
-                examples={["Works", "Exhibitions", "Awards", "Collections"]}
+                placeholder={t("aboutMetricLabelPlaceholder")}
+                examples={t.raw("aboutMetricLabelExamples") as string[]}
               />
             </div>
           )}
@@ -190,44 +187,44 @@ export function CreativeAboutStep({ data, onChange }: CreativeAboutStepProps) {
 
       {/* Testimonials / endorsements */}
       <div>
-        <h2 className="text-xl font-semibold text-[var(--land-bright)] mb-1">Testimonials</h2>
+        <h2 className="text-xl font-semibold text-[var(--land-bright)] mb-1">{t("aboutTestimonialsHeading")}</h2>
         <p className="text-sm text-[var(--land-body)] mb-4">
-          What collectors, curators, or clients say about your work. Shown as quoted endorsements.
+          {t("aboutTestimonialsIntro")}
         </p>
         <DynamicList
           items={endorsements}
           onChange={(items) => onChange({ endorsements: items })}
           createEmpty={() => ({ quote: "", name: "", title: "", company: "" })}
           maxItems={8}
-          addLabel="Add Testimonial"
+          addLabel={t("aboutAddTestimonial")}
           renderItem={(item, _, update) => (
             <div className="space-y-3 pr-16">
               <TextareaField
-                label="Quote"
+                label={t("aboutQuote")}
                 value={item.quote}
                 onChange={(v) => update({ quote: v })}
-                placeholder="Her work transformed our space — bold, intimate, unforgettable."
+                placeholder={t("aboutQuotePlaceholder")}
                 rows={3}
               />
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                 <TextField
-                  label="Name"
+                  label={t("aboutName")}
                   value={item.name}
                   onChange={(v) => update({ name: v })}
-                  placeholder="Sara Al-Mutairi"
+                  placeholder={t("aboutNamePlaceholder")}
                 />
                 <TextField
-                  label="Title"
+                  label={t("aboutTitleField")}
                   value={item.title}
                   onChange={(v) => update({ title: v })}
-                  placeholder="Curator"
-                  examples={["Curator", "Gallery Director", "Collector", "Art Director"]}
+                  placeholder={t("aboutTitleFieldPlaceholder")}
+                  examples={t.raw("aboutTitleFieldExamples") as string[]}
                 />
                 <TextField
-                  label="Company"
+                  label={t("aboutCompany")}
                   value={item.company}
                   onChange={(v) => update({ company: v })}
-                  placeholder="Contemporary Art Platform"
+                  placeholder={t("aboutCompanyPlaceholder")}
                 />
               </div>
             </div>

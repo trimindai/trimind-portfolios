@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { TextField } from "../fields/TextField";
 import { DynamicList } from "../fields/DynamicList";
 
@@ -11,14 +12,15 @@ interface CreatorBrandsStepProps {
 type Brand = { name: string; logoUrl?: string };
 
 export function CreatorBrandsStep({ data, onChange }: CreatorBrandsStepProps) {
+  const t = useTranslations("builder.creator");
   const brands: Brand[] = data.brands || [];
 
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-xl font-semibold text-[var(--land-bright)]">Brands you've worked with</h2>
+        <h2 className="text-xl font-semibold text-[var(--land-bright)]">{t("brandsHeading")}</h2>
         <p className="text-sm text-[var(--land-body)] mt-1">
-          Names of brands, clients or collaborators. They scroll in a marquee that signals credibility at a glance. Optional — add as many as you like.
+          {t("brandsIntro")}
         </p>
       </div>
 
@@ -27,13 +29,13 @@ export function CreatorBrandsStep({ data, onChange }: CreatorBrandsStepProps) {
         onChange={(items) => onChange({ brands: items })}
         createEmpty={() => ({ name: "" })}
         maxItems={20}
-        addLabel="Add Brand"
+        addLabel={t("brandsAdd")}
         renderItem={(item, _index, updateItem) => (
           <TextField
-            label="Brand / Client Name"
+            label={t("brandsName")}
             value={item.name}
             onChange={(v) => updateItem({ name: v })}
-            placeholder="Vélo"
+            placeholder={t("brandsNamePlaceholder")}
           />
         )}
       />

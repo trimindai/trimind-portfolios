@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { TextField } from "../fields/TextField";
 import { TextareaField } from "../fields/TextareaField";
 
@@ -10,6 +11,7 @@ interface EngineerBasicsStepProps {
 }
 
 export function EngineerBasicsStep({ data, onChange }: EngineerBasicsStepProps) {
+  const t = useTranslations("builder.engineer");
   const basics = data.basics || {};
   // Mobile: collapse optional fields so the step opens with just the 3 required
   // fields. Desktop (md+) always shows everything.
@@ -22,9 +24,9 @@ export function EngineerBasicsStep({ data, onChange }: EngineerBasicsStepProps) 
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-xl font-semibold text-[var(--land-bright)]">Basic Information</h2>
+        <h2 className="text-xl font-semibold text-[var(--land-bright)]">{t("basicsHeading")}</h2>
         <p className="text-sm text-[var(--land-body)] mt-1">
-          Your engineering identity. The published portfolio auto-hides empty fields.
+          {t("basicsIntro")}
         </p>
       </div>
 
@@ -32,39 +34,30 @@ export function EngineerBasicsStep({ data, onChange }: EngineerBasicsStepProps) 
       <div className="space-y-6">
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <TextField
-            label="Full Name" autoComplete="name"
+            label={t("basicsFullNameLabel")} autoComplete="name"
             value={basics.fullName}
             onChange={(v) => updateBasics("fullName", v)}
             required
-            placeholder="Ahmad Al-Mutairi"
-            hint="As it appears on your professional documents"
+            placeholder={t("basicsFullNamePlaceholder")}
+            hint={t("basicsFullNameHint")}
           />
           <TextField
-            label="Engineering Discipline"
+            label={t("basicsDisciplineLabel")}
             value={basics.title}
             onChange={(v) => updateBasics("title", v)}
             required
-            placeholder="Electrical Engineer"
-            hint="Your engineering specialization"
-            examples={[
-              "Electrical Engineer",
-              "Mechanical Engineer",
-              "Civil Engineer",
-              "Petroleum Engineer",
-              "Chemical Engineer",
-              "Industrial Engineer",
-              "Structural Engineer",
-              "Process Engineer",
-            ]}
+            placeholder={t("basicsDisciplinePlaceholder")}
+            hint={t("basicsDisciplineHint")}
+            examples={t.raw("basicsDisciplineExamples") as string[]}
           />
         </div>
         <TextField
-          label="Email"
+          label={t("basicsEmailLabel")}
           value={basics.email}
           onChange={(v) => updateBasics("email", v)}
           required
           type="email" autoComplete="email" inputMode="email" dir="ltr"
-          placeholder="email@example.com"
+          placeholder={t("basicsEmailPlaceholder")}
         />
       </div>
 
@@ -75,119 +68,96 @@ export function EngineerBasicsStep({ data, onChange }: EngineerBasicsStepProps) 
         className="md:hidden w-full flex items-center justify-between min-h-[48px] px-4 rounded-lg border border-[var(--land-border)] bg-[var(--land-surface)]/40 text-sm font-medium text-[var(--land-bright)]"
         aria-expanded={showOptional}
       >
-        <span>{showOptional ? "▼ " : "▶ "}Optional details</span>
-        <span className="text-xs text-[var(--land-muted)]">{showOptional ? "Hide" : "Phone, links, bio…"}</span>
+        <span>{showOptional ? "▼ " : "▶ "}{t("basicsOptionalToggle")}</span>
+        <span className="text-xs text-[var(--land-muted)]">{showOptional ? t("basicsOptionalHide") : t("basicsOptionalSummary")}</span>
       </button>
 
       {/* OPTIONAL — collapsed on mobile (unless expanded), always shown on md+ */}
       <div className={`${showOptional ? "block" : "hidden"} md:block space-y-6`}>
       <TextField
-        label="Subtitle / Tagline"
+        label={t("basicsSubtitleLabel")}
         value={basics.subtitle}
         onChange={(v) => updateBasics("subtitle", v)}
-        placeholder="Power systems and renewable energy integration"
-        hint="A one-liner about your engineering focus area"
-        examples={[
-          "Power systems and renewable energy integration",
-          "Structural design for high-rise and industrial facilities",
-          "Process optimization in oil & gas downstream operations",
-          "Embedded systems and industrial automation",
-        ]}
+        placeholder={t("basicsSubtitlePlaceholder")}
+        hint={t("basicsSubtitleHint")}
+        examples={t.raw("basicsSubtitleExamples") as string[]}
       />
 
       <TextField
-        label="Phone" type="tel" autoComplete="tel" inputMode="tel" dir="ltr"
+        label={t("basicsPhoneLabel")} type="tel" autoComplete="tel" inputMode="tel" dir="ltr"
         value={basics.phone}
         onChange={(v) => updateBasics("phone", v)}
-        placeholder="+965 1234 5678"
+        placeholder={t("basicsPhonePlaceholder")}
       />
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <TextField
-          label="Location"
+          label={t("basicsLocationLabel")}
           value={basics.location}
           onChange={(v) => updateBasics("location", v)}
-          placeholder="Kuwait City, Kuwait"
+          placeholder={t("basicsLocationPlaceholder")}
         />
         <TextField
-          label="Nationality"
+          label={t("basicsNationalityLabel")}
           value={basics.nationality}
           onChange={(v) => updateBasics("nationality", v)}
-          placeholder="Kuwaiti National"
+          placeholder={t("basicsNationalityPlaceholder")}
         />
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <TextField
-          label="LinkedIn URL" type="url" inputMode="url" dir="ltr"
+          label={t("basicsLinkedinLabel")} type="url" inputMode="url" dir="ltr"
           value={basics.linkedin}
           onChange={(v) => updateBasics("linkedin", v)}
-          placeholder="linkedin.com/in/yourname"
+          placeholder={t("basicsLinkedinPlaceholder")}
         />
         <TextField
-          label="GitHub URL" type="url" inputMode="url" dir="ltr"
+          label={t("basicsGithubLabel")} type="url" inputMode="url" dir="ltr"
           value={basics.github}
           onChange={(v) => updateBasics("github", v)}
-          placeholder="github.com/yourname"
-          hint="For code repos, simulations, or technical work"
+          placeholder={t("basicsGithubPlaceholder")}
+          hint={t("basicsGithubHint")}
         />
       </div>
 
       <TextField
-        label="Website" type="url" inputMode="url" dir="ltr"
+        label={t("basicsWebsiteLabel")} type="url" inputMode="url" dir="ltr"
         value={basics.website}
         onChange={(v) => updateBasics("website", v)}
-        placeholder="yourwebsite.com"
+        placeholder={t("basicsWebsitePlaceholder")}
       />
 
       {/* Resume — greglagana.com-style prominent download button */}
       <div className="bg-[var(--land-surface-raised)]/30 border border-[var(--land-accent)]/30 rounded-lg p-4">
         <TextField
-          label="Resume / CV URL"
+          label={t("basicsResumeUrlLabel")}
           value={basics.resumeUrl}
           onChange={(v) => updateBasics("resumeUrl", v)}
-          placeholder="https://drive.google.com/file/d/.../view"
-          hint="Link to your resume PDF. Shows as a prominent 'Resume' button on the portfolio (like greglagana.com). Upload to Google Drive, Dropbox, or your own site."
+          placeholder={t("basicsResumeUrlPlaceholder")}
+          hint={t("basicsResumeUrlHint")}
         />
       </div>
 
       <TextareaField
-        label="About Me"
+        label={t("basicsBioLabel")}
         value={basics.bio}
         onChange={(v) => updateBasics("bio", v)}
-        placeholder="Write 2-3 sentences about your engineering background and expertise..."
-        hint="Describe your technical focus, industries you've worked in, and what drives you."
+        placeholder={t("basicsBioPlaceholder")}
+        hint={t("basicsBioHint")}
         rows={4}
-        writingTips={[
-          "Lead with your discipline and years of experience",
-          "Name the industries you've worked in (oil & gas, construction, power, etc.)",
-          "Mention specific technical domains (SCADA, FEA, PLC, CFD, etc.)",
-          "Keep it factual — let your projects speak for impact",
-        ]}
-        templates={[
-          {
-            label: "Experienced",
-            text: "[Discipline] engineer with [X]+ years of experience in [industry]. Specialized in [technical domain], with hands-on project delivery spanning [scope]. Committed to engineering excellence and practical problem-solving.",
-          },
-          {
-            label: "Fresh Graduate",
-            text: "Recent [degree] graduate from [university] with strong foundations in [technical areas]. Completed [X] academic and personal projects including [notable project]. Eager to apply analytical skills to real-world engineering challenges.",
-          },
-        ]}
+        writingTips={t.raw("basicsBioWritingTips") as string[]}
+        templates={t.raw("basicsBioTemplates") as Array<{ label: string; text: string }>}
       />
 
       <TextareaField
-        label="Career Objective"
+        label={t("basicsObjectiveLabel")}
         value={basics.valueProposition}
         onChange={(v) => updateBasics("valueProposition", v)}
-        placeholder="What kind of engineering work are you seeking?"
-        hint="Optional — shown as a highlighted quote on your portfolio"
+        placeholder={t("basicsObjectivePlaceholder")}
+        hint={t("basicsObjectiveHint")}
         rows={3}
-        writingTips={[
-          "State the type of role or projects you're targeting",
-          "Mention what you bring: specific skills, certifications, domain knowledge",
-          "Keep it concise — 1-2 sentences",
-        ]}
+        writingTips={t.raw("basicsObjectiveWritingTips") as string[]}
       />
       </div>
     </div>

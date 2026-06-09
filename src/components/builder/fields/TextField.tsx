@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 
 interface TextFieldProps {
   label: string;
@@ -32,6 +33,7 @@ export function TextField({
   inputMode,
   dir,
 }: TextFieldProps) {
+  const t = useTranslations("builder.fields");
   const [showExamples, setShowExamples] = useState(false);
 
   return (
@@ -49,7 +51,7 @@ export function TextField({
             // compact underline link — desktop stays visually unchanged.
             className="inline-flex items-center min-h-[44px] px-3 rounded-lg bg-[var(--land-accent)]/10 text-xs font-medium text-[var(--land-accent)] hover:text-[var(--land-accent-hover)] transition-colors md:min-h-0 md:px-0 md:rounded-none md:bg-transparent md:underline md:underline-offset-2 md:decoration-[var(--land-accent)]/30"
           >
-            {showExamples ? "Hide examples" : "See examples +"}
+            {showExamples ? t("hideExamples") : t("seeExamples")}
           </button>
         )}
       </div>

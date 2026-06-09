@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { TextField } from "../fields/TextField";
 import { TextareaField } from "../fields/TextareaField";
 
@@ -10,6 +11,7 @@ interface CreativeProfileStepProps {
 }
 
 export function CreativeProfileStep({ data, onChange }: CreativeProfileStepProps) {
+  const t = useTranslations("builder.creative");
   const basics = data.basics || {};
   // Mobile: collapse optional fields; desktop (md+) always shows everything.
   const [showOptional, setShowOptional] = useState(false);
@@ -21,9 +23,9 @@ export function CreativeProfileStep({ data, onChange }: CreativeProfileStepProps
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-xl font-semibold text-[var(--land-bright)]">Your Profile</h2>
+        <h2 className="text-xl font-semibold text-[var(--land-bright)]">{t("profileHeading")}</h2>
         <p className="text-sm text-[var(--land-body)] mt-1">
-          The headline of your portfolio. Your initials become the monogram — no profile photo needed.
+          {t("profileIntro")}
         </p>
       </div>
 
@@ -31,38 +33,29 @@ export function CreativeProfileStep({ data, onChange }: CreativeProfileStepProps
       <div className="space-y-6">
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <TextField
-            label="Full Name" autoComplete="name"
+            label={t("fullName")} autoComplete="name"
             value={basics.fullName}
             onChange={(v) => updateBasics("fullName", v)}
             required
-            placeholder="Dalal Al-Kandari"
-            hint="Shown large in the hero and as your monogram"
+            placeholder={t("fullNamePlaceholder")}
+            hint={t("fullNameHint")}
           />
           <TextField
-            label="Title / Discipline"
+            label={t("title")}
             value={basics.title}
             onChange={(v) => updateBasics("title", v)}
             required
-            placeholder="Visual Artist"
-            examples={[
-              "Visual Artist",
-              "Photographer",
-              "Illustrator",
-              "Sculptor",
-              "Graphic Designer",
-              "Art Director",
-              "Mixed-Media Artist",
-              "Ceramicist",
-            ]}
+            placeholder={t("titlePlaceholder")}
+            examples={t.raw("titleExamples") as string[]}
           />
         </div>
         <TextField
-          label="Email"
+          label={t("email")}
           value={basics.email}
           onChange={(v) => updateBasics("email", v)}
           required
           type="email" autoComplete="email" inputMode="email" dir="ltr"
-          placeholder="you@example.com"
+          placeholder={t("emailPlaceholder")}
         />
       </div>
 
@@ -73,102 +66,83 @@ export function CreativeProfileStep({ data, onChange }: CreativeProfileStepProps
         className="md:hidden w-full flex items-center justify-between min-h-[48px] px-4 rounded-lg border border-[var(--land-border)] bg-[var(--land-surface)]/40 text-sm font-medium text-[var(--land-bright)]"
         aria-expanded={showOptional}
       >
-        <span>{showOptional ? "▼ " : "▶ "}Optional details</span>
-        <span className="text-xs text-[var(--land-muted)]">{showOptional ? "Hide" : "Tagline, links, bio…"}</span>
+        <span>{showOptional ? "▼ " : "▶ "}{t("optionalDetails")}</span>
+        <span className="text-xs text-[var(--land-muted)]">{showOptional ? t("optionalHide") : t("optionalSummary")}</span>
       </button>
 
       {/* OPTIONAL — collapsed on mobile (unless expanded), always shown on md+ */}
       <div className={`${showOptional ? "block" : "hidden"} md:block space-y-6`}>
       <TextField
-        label="Tagline"
+        label={t("tagline")}
         value={basics.subtitle}
         onChange={(v) => updateBasics("subtitle", v)}
-        placeholder="Contemporary Mixed-Media Artist"
-        hint="A short line under your name. Shown in the accent color."
-        examples={[
-          "Contemporary Mixed-Media Artist",
-          "Light, Memory & Landscape",
-          "Abstract Painter & Printmaker",
-          "Documentary Photographer",
-        ]}
+        placeholder={t("taglinePlaceholder")}
+        hint={t("taglineHint")}
+        examples={t.raw("taglineExamples") as string[]}
       />
 
       <TextField
-        label="Phone" type="tel" autoComplete="tel" inputMode="tel" dir="ltr"
+        label={t("phone")} type="tel" autoComplete="tel" inputMode="tel" dir="ltr"
         value={basics.phone}
         onChange={(v) => updateBasics("phone", v)}
-        placeholder="+965 1234 5678"
+        placeholder={t("phonePlaceholder")}
       />
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <TextField
-          label="Location"
+          label={t("location")}
           value={basics.location}
           onChange={(v) => updateBasics("location", v)}
-          placeholder="Kuwait City"
+          placeholder={t("locationPlaceholder")}
         />
         <TextField
-          label="Nationality"
+          label={t("nationality")}
           value={basics.nationality}
           onChange={(v) => updateBasics("nationality", v)}
-          placeholder="Kuwaiti"
+          placeholder={t("nationalityPlaceholder")}
         />
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <TextField
-          label="Instagram URL" type="url" inputMode="url" dir="ltr"
+          label={t("instagram")} type="url" inputMode="url" dir="ltr"
           value={basics.instagram}
           onChange={(v) => updateBasics("instagram", v)}
-          placeholder="https://instagram.com/yourhandle"
-          hint="Where most artists & designers live"
+          placeholder={t("instagramPlaceholder")}
+          hint={t("instagramHint")}
         />
         <TextField
-          label="LinkedIn URL" type="url" inputMode="url" dir="ltr"
+          label={t("linkedin")} type="url" inputMode="url" dir="ltr"
           value={basics.linkedin}
           onChange={(v) => updateBasics("linkedin", v)}
-          placeholder="https://linkedin.com/in/yourname"
+          placeholder={t("linkedinPlaceholder")}
         />
         <TextField
-          label="Website / Portfolio URL" type="url" inputMode="url" dir="ltr"
+          label={t("website")} type="url" inputMode="url" dir="ltr"
           value={basics.website}
           onChange={(v) => updateBasics("website", v)}
-          placeholder="https://yourstudio.com"
-          hint="Behance, Dribbble, or your own site"
+          placeholder={t("websitePlaceholder")}
+          hint={t("websiteHint")}
         />
       </div>
 
       <TextField
-        label="Resume / CV URL"
+        label={t("resumeUrl")}
         value={basics.resumeUrl}
         onChange={(v) => updateBasics("resumeUrl", v)}
-        placeholder="https://… link to your PDF/CV"
-        hint="A downloadable resume or CV. Shown as a link visitors can open."
+        placeholder={t("resumeUrlPlaceholder")}
+        hint={t("resumeUrlHint")}
       />
 
       <TextareaField
-        label="Artist Bio"
+        label={t("bio")}
         value={basics.bio}
         onChange={(v) => updateBasics("bio", v)}
-        placeholder="A few sentences about your practice, themes, and what drives your work..."
-        hint="Shown in the hero, beside your monogram. Keep it evocative and concise."
+        placeholder={t("bioPlaceholder")}
+        hint={t("bioHint")}
         rows={4}
-        writingTips={[
-          "Open with your medium and the themes you explore",
-          "Name what makes your perspective distinct",
-          "Mention notable shows, collections, or recognition if relevant",
-          "Keep it to 2-3 sentences — let the work speak",
-        ]}
-        templates={[
-          {
-            label: "Practice-led",
-            text: "I work across [mediums] to explore [themes]. My practice is rooted in [place/idea], translating [subject] into [form]. Recent work has been shown at [venues].",
-          },
-          {
-            label: "Emerging artist",
-            text: "[Discipline] based in [city], working primarily in [medium]. My work investigates [theme], drawing on [influence]. I am currently developing [project/series].",
-          },
-        ]}
+        writingTips={t.raw("bioWritingTips") as string[]}
+        templates={t.raw("bioTemplates") as { label: string; text: string }[]}
       />
       </div>
     </div>

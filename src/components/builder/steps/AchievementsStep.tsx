@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { TextField } from "../fields/TextField";
 import { TextareaField } from "../fields/TextareaField";
 import { DynamicList } from "../fields/DynamicList";
@@ -11,19 +12,20 @@ interface AchievementsStepProps {
 }
 
 export function AchievementsStep({ data, onChange }: AchievementsStepProps) {
+  const t = useTranslations("builder.general");
   const projects = data.projects || [];
 
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-xl font-semibold text-[var(--land-bright)]">Selected Achievements</h2>
+        <h2 className="text-xl font-semibold text-[var(--land-bright)]">{t("achHeading")}</h2>
         <p className="text-sm text-[var(--land-body)] mt-1">
-          Showcase 1-3 major impact stories. The first one marked as &quot;Featured&quot; gets a larger card.
+          {t("achIntro")}
         </p>
       </div>
 
       <div className="bg-[var(--land-surface-raised)]/30 border border-amber-900/30 rounded-lg p-4 text-sm text-amber-300/80">
-        <strong>STAR format:</strong> Situation (context) → Task (what was needed) → Action (what you did) → Result (quantified outcome). Add KPIs and tools used for maximum impact.
+        <strong>{t("achStarLabel")}</strong> {t("achStarText")}
       </div>
 
       <DynamicList
@@ -37,7 +39,7 @@ export function AchievementsStep({ data, onChange }: AchievementsStepProps) {
           isFeatured: false,
         })}
         maxItems={5}
-        addLabel="Add Achievement"
+        addLabel={t("addAchievement")}
         renderItem={(item, index, update) => (
           <div className="space-y-3 pr-16">
             <div className="flex items-center gap-3 mb-2">
@@ -48,47 +50,43 @@ export function AchievementsStep({ data, onChange }: AchievementsStepProps) {
                   onChange={(e) => update({ isFeatured: e.target.checked })}
                   className="w-4 h-4 rounded border-[var(--land-border)] text-[var(--land-accent)] focus:ring-[var(--land-accent)] bg-[var(--land-surface-raised)]"
                 />
-                <span className="text-sm text-amber-400 font-medium">Featured (large card)</span>
+                <span className="text-sm text-amber-400 font-medium">{t("achFeaturedLabel")}</span>
               </label>
             </div>
 
             <TextField
-              label="Achievement Title"
+              label={t("achTitleLabel")}
               value={item.title}
               onChange={(v) => update({ title: v })}
-              placeholder="Enterprise Risk Framework Redesign"
-              hint="A concise, impressive title"
+              placeholder={t("achTitlePlaceholder")}
+              hint={t("achTitleHint")}
             />
 
             <TextareaField
-              label="Situation / Context"
+              label={t("achSituationLabel")}
               value={item.description}
               onChange={(v) => update({ description: v })}
-              placeholder="Corporate Banking Division managing $1.2B across 200+ institutional clients..."
+              placeholder={t("achSituationPlaceholder")}
               rows={3}
-              hint="Describe the challenge or context (anonymize if needed)"
-              writingTips={[
-                "Set the scene: what was the problem or opportunity?",
-                "Include scale: team size, budget, scope",
-                "Keep it 1-2 sentences",
-              ]}
+              hint={t("achSituationHint")}
+              writingTips={t.raw("achSituationTips") as string[]}
             />
 
             <div>
               <label className="text-sm font-medium text-[var(--land-bright)] mb-1.5 block">
-                Key Metrics / KPIs
+                {t("achKpisLabel")}
               </label>
-              <p className="text-xs text-[var(--land-muted)] mb-2">Add 2-4 measurable results</p>
+              <p className="text-xs text-[var(--land-muted)] mb-2">{t("achKpisHint")}</p>
               <DynamicList
                 items={item.metrics || []}
                 onChange={(m) => update({ metrics: m })}
                 createEmpty={() => ({ value: "", label: "" })}
                 maxItems={4}
-                addLabel="Add KPI"
+                addLabel={t("addKpi")}
                 renderItem={(kpi, _, updateKpi) => (
                   <div className="grid grid-cols-2 gap-3">
-                    <TextField label="Value" value={kpi.value} onChange={(v) => updateKpi({ value: v })} placeholder="$1.2B" examples={["$1.2B", "18%", "6 mo", "40%", "150+"]} />
-                    <TextField label="Label" value={kpi.label} onChange={(v) => updateKpi({ label: v })} placeholder="Portfolio Coverage" examples={["Portfolio Coverage", "Risk Reduction", "Delivery Time", "Cost Savings", "Revenue Growth"]} />
+                    <TextField label={t("kpiValueLabel")} value={kpi.value} onChange={(v) => updateKpi({ value: v })} placeholder={t("kpiValuePlaceholder")} examples={t.raw("kpiValueExamples") as string[]} />
+                    <TextField label={t("kpiLabelLabel")} value={kpi.label} onChange={(v) => updateKpi({ label: v })} placeholder={t("kpiLabelPlaceholder")} examples={t.raw("kpiLabelExamples") as string[]} />
                   </div>
                 )}
               />
@@ -96,15 +94,15 @@ export function AchievementsStep({ data, onChange }: AchievementsStepProps) {
 
             <div>
               <label className="text-sm font-medium text-[var(--land-bright)] mb-1.5 block">
-                Tools & Technologies Used
+                {t("achToolsLabel")}
               </label>
               <input
                 value={(item.technologies || []).join(", ")}
                 onChange={(e) => update({ technologies: e.target.value.split(",").map((s: string) => s.trim()).filter(Boolean) })}
-                placeholder="Python, Bloomberg, Power BI, SQL, Risk Analytics"
+                placeholder={t("achToolsPlaceholder")}
                 className="w-full bg-white border border-[var(--land-border)] rounded-lg px-4 py-2.5 text-[var(--land-bright)] placeholder:text-[var(--land-muted)] shadow-sm focus:border-[var(--land-accent)] focus:ring-1 focus:ring-[var(--land-accent)] outline-none transition-colors"
               />
-              <p className="text-xs text-[var(--land-muted)] mt-1">Comma-separated</p>
+              <p className="text-xs text-[var(--land-muted)] mt-1">{t("commaSeparated")}</p>
             </div>
           </div>
         )}

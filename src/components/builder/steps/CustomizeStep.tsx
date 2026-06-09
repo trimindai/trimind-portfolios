@@ -1,7 +1,9 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { PhotoUpload } from "../fields/PhotoUpload";
 import { COLOR_PRESETS, isPresetActive, type ColorPreset } from "@/lib/color-presets";
+import { resolveTemplateId } from "@/lib/templates";
 
 interface CustomizeStepProps {
   data: any;
@@ -31,20 +33,36 @@ const BODY_FONTS = [
 const PRESETS = COLOR_PRESETS.general;
 const DEFAULTS = { primary: "#0F172A", accent: "#A16207", bg: "#F8FAFC" };
 
-const SECTIONS = [
-  { id: "credentials", label: "Credentials Bar" },
-  { id: "value-proposition", label: "Value Proposition" },
-  { id: "experience", label: "Career Trajectory" },
-  { id: "impact-stories", label: "Impact Stories" },
-  { id: "competencies", label: "Competencies" },
-  { id: "education", label: "Education" },
-  { id: "professional-profile", label: "Professional Profile" },
-  { id: "endorsements", label: "Endorsements" },
+// Ids must match the isHidden gates in the matching template.hbs.
+const GENERAL_SECTIONS = [
+  { id: "credentials", labelKey: "sectionCredentials" },
+  { id: "value-proposition", labelKey: "sectionValueProposition" },
+  { id: "career", labelKey: "sectionExperience" },
+  { id: "impact", labelKey: "sectionImpactStories" },
+  { id: "competencies", labelKey: "sectionCompetencies" },
+  { id: "education", labelKey: "sectionEducation" },
+  { id: "professional-profile", labelKey: "sectionProfessionalProfile" },
+  { id: "endorsements", labelKey: "sectionEndorsements" },
+];
+
+// The creator template shares this step but gates its own section ids
+// (see src/templates/creator/template.hbs).
+const CREATOR_SECTIONS = [
+  { id: "content-showcase", labelKey: "sectionContentShowcase" },
+  { id: "social-stats", labelKey: "sectionSocialStats" },
+  { id: "experience", labelKey: "sectionExperience" },
+  { id: "skills", labelKey: "sectionSkills" },
+  { id: "education", labelKey: "sectionEducation" },
+  { id: "certifications", labelKey: "sectionCertifications" },
+  { id: "endorsements", labelKey: "sectionEndorsements" },
+  { id: "languages", labelKey: "sectionLanguages" },
 ];
 
 export function CustomizeStep({ data, onChange }: CustomizeStepProps) {
+  const t = useTranslations("builder.general");
   const customization = data.customization || {};
   const hiddenSections = customization.hiddenSections || [];
+  const SECTIONS = resolveTemplateId(data.templateId || "general") === "creator" ? CREATOR_SECTIONS : GENERAL_SECTIONS;
 
   const updateCustomization = (field: string, value: any) => {
     onChange({ customization: { ...customization, [field]: value } });
@@ -70,7 +88,7 @@ export function CustomizeStep({ data, onChange }: CustomizeStepProps) {
 
   return (
     <div className="space-y-8">
-      <h2 className="text-xl font-semibold text-[var(--land-bright)]">Customize Your Portfolio</h2>
+      <h2 className="text-xl font-semibold text-[var(--land-bright)]">{t("custHeading")}</h2>
 
       <PhotoUpload
         value={data.basics?.photoUrl || ""}
@@ -81,8 +99,8 @@ export function CustomizeStep({ data, onChange }: CustomizeStepProps) {
 
       {/* Colors */}
       <div>
-        <h3 className="text-lg font-medium text-[var(--land-bright)] mb-3">Color Scheme</h3>
-        <p className="text-sm text-[var(--land-body)] mb-4">Pick a preset or customize individual colors.</p>
+        <h3 className="text-lg font-medium text-[var(--land-bright)] mb-3">{t("colorSchemeHeading")}</h3>
+        <p className="text-sm text-[var(--land-body)] mb-4">{t("colorSchemeIntro")}</p>
 
         <div className="grid grid-cols-3 sm:grid-cols-6 gap-2 mb-6">
           {PRESETS.map((preset) => {
@@ -112,38 +130,38 @@ export function CustomizeStep({ data, onChange }: CustomizeStepProps) {
 
         <div className="grid grid-cols-3 gap-6">
           <div>
-            <label className="text-sm font-medium text-[var(--land-bright)] mb-2 block">Primary</label>
+            <label className="text-sm font-medium text-[var(--land-bright)] mb-2 block">{t("primaryLabel")}</label>
             <div className="flex items-center gap-3">
               <input type="color" value={customization.primaryColor || "#0F172A"} onChange={(e) => updateCustomization("primaryColor", e.target.value)} className="w-12 h-12 rounded-lg border border-[var(--land-border)] cursor-pointer bg-transparent" />
               <span className="text-xs text-[var(--land-muted)] font-mono">{customization.primaryColor || "#0F172A"}</span>
             </div>
-            <p className="text-xs text-[var(--land-muted)] mt-1">Headlines, nav</p>
+            <p className="text-xs text-[var(--land-muted)] mt-1">{t("primaryHint")}</p>
           </div>
           <div>
-            <label className="text-sm font-medium text-[var(--land-bright)] mb-2 block">Accent</label>
+            <label className="text-sm font-medium text-[var(--land-bright)] mb-2 block">{t("accentLabel")}</label>
             <div className="flex items-center gap-3">
               <input type="color" value={customization.accentColor || "#A16207"} onChange={(e) => updateCustomization("accentColor", e.target.value)} className="w-12 h-12 rounded-lg border border-[var(--land-border)] cursor-pointer bg-transparent" />
               <span className="text-xs text-[var(--land-muted)] font-mono">{customization.accentColor || "#A16207"}</span>
             </div>
-            <p className="text-xs text-[var(--land-muted)] mt-1">Links, badges</p>
+            <p className="text-xs text-[var(--land-muted)] mt-1">{t("accentHint")}</p>
           </div>
           <div>
-            <label className="text-sm font-medium text-[var(--land-bright)] mb-2 block">Background</label>
+            <label className="text-sm font-medium text-[var(--land-bright)] mb-2 block">{t("backgroundLabel")}</label>
             <div className="flex items-center gap-3">
               <input type="color" value={customization.bgColor || "#F8FAFC"} onChange={(e) => updateCustomization("bgColor", e.target.value)} className="w-12 h-12 rounded-lg border border-[var(--land-border)] cursor-pointer bg-transparent" />
               <span className="text-xs text-[var(--land-muted)] font-mono">{customization.bgColor || "#F8FAFC"}</span>
             </div>
-            <p className="text-xs text-[var(--land-muted)] mt-1">Page background</p>
+            <p className="text-xs text-[var(--land-muted)] mt-1">{t("backgroundHint")}</p>
           </div>
         </div>
       </div>
 
       {/* Fonts */}
       <div>
-        <h3 className="text-lg font-medium text-[var(--land-bright)] mb-3">Typography</h3>
+        <h3 className="text-lg font-medium text-[var(--land-bright)] mb-3">{t("typographyHeading")}</h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
-            <label className="text-sm font-medium text-[var(--land-bright)] mb-1.5 block">Heading Font</label>
+            <label className="text-sm font-medium text-[var(--land-bright)] mb-1.5 block">{t("headingFontLabel")}</label>
             <select
               value={customization.fontFamily || "Inter"}
               onChange={(e) => updateCustomization("fontFamily", e.target.value)}
@@ -153,10 +171,10 @@ export function CustomizeStep({ data, onChange }: CustomizeStepProps) {
                 <option key={f.value} value={f.value}>{f.label}</option>
               ))}
             </select>
-            <p className="text-xs text-[var(--land-muted)] mt-1">Name, section titles</p>
+            <p className="text-xs text-[var(--land-muted)] mt-1">{t("headingFontHint")}</p>
           </div>
           <div>
-            <label className="text-sm font-medium text-[var(--land-bright)] mb-1.5 block">Body Font</label>
+            <label className="text-sm font-medium text-[var(--land-bright)] mb-1.5 block">{t("bodyFontLabel")}</label>
             <select
               value={customization.bodyFont || "Inter"}
               onChange={(e) => updateCustomization("bodyFont", e.target.value)}
@@ -166,7 +184,7 @@ export function CustomizeStep({ data, onChange }: CustomizeStepProps) {
                 <option key={f.value} value={f.value}>{f.label}</option>
               ))}
             </select>
-            <p className="text-xs text-[var(--land-muted)] mt-1">Paragraphs, descriptions</p>
+            <p className="text-xs text-[var(--land-muted)] mt-1">{t("bodyFontHint")}</p>
           </div>
         </div>
         {/* Live preview: fonts + chosen colors together */}
@@ -174,7 +192,7 @@ export function CustomizeStep({ data, onChange }: CustomizeStepProps) {
           className="mt-4 border border-[var(--land-border)] rounded-lg p-4 transition-colors"
           style={{ backgroundColor: customization.bgColor || DEFAULTS.bg }}
         >
-          <p className="text-xs text-[var(--land-muted)] mb-2">Preview</p>
+          <p className="text-xs text-[var(--land-muted)] mb-2">{t("previewLabel")}</p>
           <p
             style={{
               fontFamily: `'${customization.fontFamily || "Inter"}', sans-serif`,
@@ -182,7 +200,7 @@ export function CustomizeStep({ data, onChange }: CustomizeStepProps) {
             }}
             className="text-lg font-semibold"
           >
-            {data.basics?.fullName || "Your Name Here"}
+            {data.basics?.fullName || t("previewName")}
           </p>
           <p
             style={{
@@ -191,15 +209,15 @@ export function CustomizeStep({ data, onChange }: CustomizeStepProps) {
             }}
             className="text-sm mt-1"
           >
-            {data.basics?.title || "Your Professional Title"}
+            {data.basics?.title || t("previewTitle")}
           </p>
         </div>
       </div>
 
       {/* Section Visibility */}
       <div>
-        <h3 className="text-lg font-medium text-[var(--land-bright)] mb-3">Section Visibility</h3>
-        <p className="text-sm text-[var(--land-body)] mb-4">Uncheck sections you want to hide.</p>
+        <h3 className="text-lg font-medium text-[var(--land-bright)] mb-3">{t("sectionVisibilityHeading")}</h3>
+        <p className="text-sm text-[var(--land-body)] mb-4">{t("sectionVisibilityHint")}</p>
         <div className="grid grid-cols-2 gap-1">
           {SECTIONS.map((section) => (
             <label key={section.id} className="flex items-center gap-3 py-2 px-3 rounded-lg hover:bg-[var(--land-surface-raised)]/50 cursor-pointer transition-colors">
@@ -209,7 +227,7 @@ export function CustomizeStep({ data, onChange }: CustomizeStepProps) {
                 onChange={() => toggleSection(section.id)}
                 className="w-4 h-4 rounded border-[var(--land-border)] text-[var(--land-accent)] focus:ring-[var(--land-accent)] bg-[var(--land-surface-raised)]"
               />
-              <span className="text-sm text-[var(--land-bright)]">{section.label}</span>
+              <span className="text-sm text-[var(--land-bright)]">{t(section.labelKey)}</span>
             </label>
           ))}
         </div>

@@ -59,6 +59,7 @@ function calculateTotalYears(experience: any[]): string {
 
 export function CvFieldsStep({ data, onChange }: CvFieldsStepProps) {
   const t = useTranslations("builder.cvFields");
+  const tCv = useTranslations("builder.cv");
   // AI is sign-in-gated (spends Gemini budget); guests get a sign-in CTA.
   const { isLoaded, isSignedIn } = useAuth();
   const pathname = usePathname();
@@ -92,10 +93,10 @@ export function CvFieldsStep({ data, onChange }: CvFieldsStepProps) {
         body: JSON.stringify(context),
       });
       const result = await res.json();
-      if (!res.ok) throw new Error(result.error || "Failed to generate");
+      if (!res.ok) throw new Error(result.error || tCv("failedToGenerate"));
       setAiSuggestion(result.summary);
     } catch (e: any) {
-      setAiError(e.message || "Something went wrong");
+      setAiError(e.message || tCv("somethingWentWrong"));
     } finally {
       setGenerating(false);
     }
@@ -154,18 +155,18 @@ export function CvFieldsStep({ data, onChange }: CvFieldsStepProps) {
                 {generating ? (
                   <>
                     <span className="h-3.5 w-3.5 animate-spin rounded-full border-2 border-[var(--land-accent)] border-t-transparent" />
-                    Writing...
+                    {tCv("writing")}
                   </>
                 ) : (
                   <>
                     <svg className="h-4 w-4" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M8 2v4M6 4h4M3 8l2 6 3-4 3 4 2-6" /></svg>
-                    Write with AI
+                    {tCv("writeWithAi")}
                   </>
                 )}
               </span>
-              <span className="text-xs text-[var(--land-muted)] mt-0.5 block">Uses your name, experience &amp; skills</span>
+              <span className="text-xs text-[var(--land-muted)] mt-0.5 block">{tCv("usesYourData")}</span>
             </div>
-            {!basics.fullName && <span className="text-[10px] text-[var(--land-muted)]">Fill Basic Info first</span>}
+            {!basics.fullName && <span className="text-[10px] text-[var(--land-muted)]">{tCv("fillBasicsFirst")}</span>}
           </button>
         )}
 
@@ -178,9 +179,9 @@ export function CvFieldsStep({ data, onChange }: CvFieldsStepProps) {
             <span>
               <span className="flex items-center gap-1.5 text-sm font-medium text-[var(--land-accent)]">
                 <svg className="h-4 w-4" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M8 2v4M6 4h4M3 8l2 6 3-4 3 4 2-6" /></svg>
-                Write with AI
+                {tCv("writeWithAi")}
               </span>
-              <span className="mt-0.5 block text-xs text-[var(--land-muted)]">Sign in to unlock — your draft is saved</span>
+              <span className="mt-0.5 block text-xs text-[var(--land-muted)]">{tCv("signInToUnlock")}</span>
             </span>
             <span className="text-sm text-[var(--land-accent)]">&rarr;</span>
           </Link>
@@ -190,7 +191,7 @@ export function CvFieldsStep({ data, onChange }: CvFieldsStepProps) {
           <div className="mt-3 rounded-xl border border-[var(--land-accent)]/30 bg-[var(--land-accent)]/5 p-4">
             <p className="text-xs font-medium text-[var(--land-accent)] mb-2 flex items-center gap-1.5">
               <svg className="h-3.5 w-3.5" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M8 2v4M6 4h4M3 8l2 6 3-4 3 4 2-6" /></svg>
-              AI Suggested
+              {tCv("aiSuggested")}
             </p>
             <p className="text-sm text-[var(--land-bright)] leading-relaxed mb-3">{aiSuggestion}</p>
             <div className="flex items-center gap-2">
@@ -199,7 +200,7 @@ export function CvFieldsStep({ data, onChange }: CvFieldsStepProps) {
                 onClick={acceptSuggestion}
                 className="inline-flex items-center gap-1 rounded-lg bg-[var(--land-accent)] px-3 py-1.5 text-xs font-medium text-white hover:bg-[var(--land-accent-hover)] transition-colors"
               >
-                Use this &rarr;
+                {tCv("useThis")}
               </button>
               <button
                 type="button"
@@ -207,14 +208,14 @@ export function CvFieldsStep({ data, onChange }: CvFieldsStepProps) {
                 disabled={generating}
                 className="inline-flex items-center gap-1 rounded-lg border border-[var(--land-border)] px-3 py-1.5 text-xs text-[var(--land-body)] hover:bg-[var(--land-surface-raised)] transition-colors disabled:opacity-40"
               >
-                {generating ? "..." : "Try again ↺"}
+                {generating ? "..." : tCv("tryAgain")}
               </button>
               <button
                 type="button"
                 onClick={() => setAiSuggestion("")}
                 className="text-xs text-[var(--land-muted)] hover:text-[var(--land-bright)] ml-auto"
               >
-                Dismiss
+                {tCv("dismiss")}
               </button>
             </div>
           </div>

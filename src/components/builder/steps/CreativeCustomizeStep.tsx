@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { COLOR_PRESETS, type ColorPreset } from "@/lib/color-presets";
 
 interface CreativeCustomizeStepProps {
@@ -9,14 +10,17 @@ interface CreativeCustomizeStepProps {
 
 const PRESETS = COLOR_PRESETS.creative;
 
+// Ids must match the isHidden gates in src/templates/creative/template.hbs
+// (awards, experience, skills, testimonials — the gallery always shows).
 const SECTIONS = [
-  { id: "portfolio-showcase", label: "Gallery Grid" },
-  { id: "skills", label: "Skills & Tools" },
-  { id: "experience", label: "Experience / Journey" },
-  { id: "awards", label: "Awards & Certificates" },
-];
+  { id: "skills", labelKey: "customizeSectionSkills" },
+  { id: "experience", labelKey: "customizeSectionExperience" },
+  { id: "awards", labelKey: "customizeSectionAwards" },
+  { id: "testimonials", labelKey: "customizeSectionTestimonials" },
+] as const;
 
 export function CreativeCustomizeStep({ data, onChange }: CreativeCustomizeStepProps) {
+  const t = useTranslations("builder.creative");
   const customization = data.customization || {};
   const hiddenSections = customization.hiddenSections || [];
   const accent = customization.accentColor || "#DFFF00";
@@ -40,15 +44,15 @@ export function CreativeCustomizeStep({ data, onChange }: CreativeCustomizeStepP
   return (
     <div className="space-y-8">
       <div>
-        <h2 className="text-xl font-semibold text-[var(--land-bright)]">Look &amp; Feel</h2>
+        <h2 className="text-xl font-semibold text-[var(--land-bright)]">{t("customizeHeading")}</h2>
         <p className="text-sm text-[var(--land-body)] mt-1">
-          The creative template is dark by design. Pick an accent and background, and choose which sections to show.
+          {t("customizeIntro")}
         </p>
       </div>
 
       {/* Presets */}
       <div>
-        <h3 className="text-lg font-medium text-[var(--land-bright)] mb-3">Theme Presets</h3>
+        <h3 className="text-lg font-medium text-[var(--land-bright)] mb-3">{t("customizePresetsHeading")}</h3>
         <div className="grid grid-cols-3 sm:grid-cols-6 gap-2">
           {PRESETS.map((p) => {
             const active = accent.toLowerCase() === p.accent.toLowerCase() && bg.toLowerCase() === p.bg.toLowerCase();
@@ -76,10 +80,10 @@ export function CreativeCustomizeStep({ data, onChange }: CreativeCustomizeStepP
 
       {/* Custom colors */}
       <div>
-        <h3 className="text-lg font-medium text-[var(--land-bright)] mb-3">Custom Colors</h3>
+        <h3 className="text-lg font-medium text-[var(--land-bright)] mb-3">{t("customizeColorsHeading")}</h3>
         <div className="grid grid-cols-2 gap-6">
           <div>
-            <label className="text-sm font-medium text-[var(--land-bright)] mb-2 block">Accent</label>
+            <label className="text-sm font-medium text-[var(--land-bright)] mb-2 block">{t("customizeAccent")}</label>
             <div className="flex items-center gap-3">
               <input
                 type="color"
@@ -89,10 +93,10 @@ export function CreativeCustomizeStep({ data, onChange }: CreativeCustomizeStepP
               />
               <span className="text-xs text-[var(--land-muted)] font-mono">{accent}</span>
             </div>
-            <p className="text-xs text-[var(--land-muted)] mt-1">Highlights, links, hover states</p>
+            <p className="text-xs text-[var(--land-muted)] mt-1">{t("customizeAccentHint")}</p>
           </div>
           <div>
-            <label className="text-sm font-medium text-[var(--land-bright)] mb-2 block">Background</label>
+            <label className="text-sm font-medium text-[var(--land-bright)] mb-2 block">{t("customizeBackground")}</label>
             <div className="flex items-center gap-3">
               <input
                 type="color"
@@ -102,16 +106,16 @@ export function CreativeCustomizeStep({ data, onChange }: CreativeCustomizeStepP
               />
               <span className="text-xs text-[var(--land-muted)] font-mono">{bg}</span>
             </div>
-            <p className="text-xs text-[var(--land-muted)] mt-1">Keep it dark for best contrast</p>
+            <p className="text-xs text-[var(--land-muted)] mt-1">{t("customizeBackgroundHint")}</p>
           </div>
         </div>
       </div>
 
       {/* Section visibility */}
       <div>
-        <h3 className="text-lg font-medium text-[var(--land-bright)] mb-3">Section Visibility</h3>
+        <h3 className="text-lg font-medium text-[var(--land-bright)] mb-3">{t("customizeSectionsHeading")}</h3>
         <p className="text-sm text-[var(--land-body)] mb-4">
-          The hero and contact always show. Empty sections are auto-hidden.
+          {t("customizeSectionsHint")}
         </p>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-1">
           {SECTIONS.map((s) => (
@@ -125,7 +129,7 @@ export function CreativeCustomizeStep({ data, onChange }: CreativeCustomizeStepP
                 onChange={() => toggleSection(s.id)}
                 className="w-4 h-4 rounded border-[var(--land-border)] text-[var(--land-accent)] focus:ring-[var(--land-accent)] bg-[var(--land-surface-raised)]"
               />
-              <span className="text-sm text-[var(--land-bright)]">{s.label}</span>
+              <span className="text-sm text-[var(--land-bright)]">{t(s.labelKey)}</span>
             </label>
           ))}
         </div>

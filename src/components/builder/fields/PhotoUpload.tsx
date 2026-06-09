@@ -3,6 +3,7 @@
 import { useMutation } from "convex/react";
 import { api } from "@convex/_generated/api";
 import { useState, useRef, useEffect } from "react";
+import { useTranslations } from "next-intl";
 
 interface PhotoUploadProps {
   value: string;
@@ -37,6 +38,7 @@ function darken(hex: string, amount: number): string {
 }
 
 export function PhotoUpload({ value, onChange, name, accentColor }: PhotoUploadProps) {
+  const t = useTranslations("builder.fields");
   const generateUploadUrl = useMutation(api.storage.generateUploadUrl);
   const [uploading, setUploading] = useState(false);
   const [preview, setPreview] = useState<string>(value || "");
@@ -59,12 +61,12 @@ export function PhotoUpload({ value, onChange, name, accentColor }: PhotoUploadP
     setError("");
 
     if (!file.type.startsWith("image/")) {
-      setError("That file isn't an image. Use a JPG, PNG or WebP photo.");
+      setError(t("photoErrNotImage"));
       return;
     }
 
     if (file.size > 5 * 1024 * 1024) {
-      setError(`That photo is ${(file.size / (1024 * 1024)).toFixed(1)}MB — the limit is 5MB. Try a smaller export.`);
+      setError(t("photoErrTooLarge", { size: (file.size / (1024 * 1024)).toFixed(1) }));
       return;
     }
 
@@ -136,10 +138,10 @@ export function PhotoUpload({ value, onChange, name, accentColor }: PhotoUploadP
   return (
     <div>
       <label className="text-sm font-medium text-[var(--land-bright)] mb-1.5 block">
-        Profile Photo
+        {t("profilePhoto")}
       </label>
       <p className="text-xs text-[var(--land-muted)] mb-2">
-        Square photo works best. Max 5MB. JPG or PNG.
+        {t("photoHint")}
       </p>
       <div className="flex items-center gap-4">
         <div
@@ -150,7 +152,7 @@ export function PhotoUpload({ value, onChange, name, accentColor }: PhotoUploadP
           role="button"
           tabIndex={0}
           onKeyDown={(e) => { if ((e.key === "Enter" || e.key === " ") && !uploading) { e.preventDefault(); fileInputRef.current?.click(); } }}
-          aria-label="Upload profile photo (click, press Enter, or drop an image)"
+          aria-label={t("photoDropAria")}
           className={`group relative w-24 h-24 rounded-full border-2 border-dashed flex items-center justify-center cursor-pointer transition-colors overflow-hidden bg-[var(--land-surface-raised)] flex-shrink-0 ${
             dragActive ? "border-[var(--land-accent)] ring-2 ring-[var(--land-accent)]/40" : "border-[var(--land-border)] hover:border-[var(--land-accent)]"
           }`}
@@ -195,7 +197,7 @@ export function PhotoUpload({ value, onChange, name, accentColor }: PhotoUploadP
             disabled={uploading}
             className="text-sm text-[var(--land-accent-hover)] hover:text-[var(--land-accent-hover)] transition-colors disabled:opacity-50"
           >
-            {uploading ? "Uploading..." : preview ? "Change photo" : "Upload photo"}
+            {uploading ? t("uploading") : preview ? t("changePhoto") : t("uploadPhoto")}
           </button>
           {preview && !uploading && (
             <button
@@ -203,11 +205,11 @@ export function PhotoUpload({ value, onChange, name, accentColor }: PhotoUploadP
               onClick={handleRemove}
               className="text-sm text-red-400 hover:text-red-300 transition-colors"
             >
-              Remove
+              {t("remove")}
             </button>
           )}
           {uploading && (
-            <div className="w-28 h-1 rounded-full bg-[var(--land-border)] overflow-hidden" role="progressbar" aria-label="Uploading photo">
+            <div className="w-28 h-1 rounded-full bg-[var(--land-border)] overflow-hidden" role="progressbar" aria-label={t("uploading")}>
               <div className="h-full w-1/3 rounded-full bg-[var(--land-accent)] motion-safe:animate-[photo-upload-slide_1s_ease-in-out_infinite]" />
             </div>
           )}

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { TextField } from "../fields/TextField";
 import { TextareaField } from "../fields/TextareaField";
 import { DynamicList } from "../fields/DynamicList";
@@ -46,6 +47,7 @@ function Accordion({ title, subtitle, count, defaultOpen, children }: { title: s
 }
 
 export function EndorsementsStep({ data, onChange }: EndorsementsStepProps) {
+  const t = useTranslations("builder.general");
   const endorsements = data.endorsements || [];
   const affiliations = data.professionalAffiliations || [];
   const development = data.continuousDevelopment || [];
@@ -53,73 +55,66 @@ export function EndorsementsStep({ data, onChange }: EndorsementsStepProps) {
   return (
     <div className="space-y-4">
       <div>
-        <h2 className="text-xl font-semibold text-[var(--land-bright)] mb-2">Endorsements & Professional Profile</h2>
-        <p className="text-sm text-[var(--land-body)]">Testimonials build trust. Professional memberships show commitment.</p>
+        <h2 className="text-xl font-semibold text-[var(--land-bright)] mb-2">{t("endHeading")}</h2>
+        <p className="text-sm text-[var(--land-body)]">{t("endIntro")}</p>
       </div>
 
-      <Accordion title="Endorsements" subtitle="Quotes from colleagues or supervisors who can vouch for your work." count={endorsements.length} defaultOpen>
+      <Accordion title={t("endAccordionTitle")} subtitle={t("endAccordionSubtitle")} count={endorsements.length} defaultOpen>
         <DynamicList
           items={endorsements}
           onChange={(items) => onChange({ endorsements: items })}
           createEmpty={() => ({ quote: "", name: "", title: "", company: "" })}
           maxItems={5}
-          addLabel="Add Endorsement"
+          addLabel={t("addEndorsement")}
           renderItem={(item, _, update) => (
             <div className="space-y-3 pr-16">
               <TextareaField
-                label="Quote"
+                label={t("quoteLabel")}
                 value={item.quote}
                 onChange={(v) => update({ quote: v })}
-                placeholder="Sarah's analytical rigor and attention to detail consistently deliver exceptional results..."
+                placeholder={t("quotePlaceholder")}
                 rows={2}
-                writingTips={[
-                  "Ask your reference to focus on specific skills or projects",
-                  "Mention measurable outcomes they witnessed",
-                  "Keep it 2-3 sentences — concise and specific beats long and vague",
-                ]}
-                templates={[
-                  { label: "Skills-focused", text: "[Name]'s expertise in [skill] is exceptional. Their ability to [specific action] has consistently delivered [measurable result] for our team." },
-                  { label: "Leadership", text: "Working with [Name] has been outstanding. They led [project/initiative] with remarkable [quality], delivering results that exceeded expectations by [metric]." },
-                ]}
+                writingTips={t.raw("quoteTips") as string[]}
+                templates={t.raw("quoteTemplates") as Array<{ label: string; text: string }>}
               />
               <div className="grid grid-cols-3 gap-3">
-                <TextField label="Name" value={item.name} onChange={(v) => update({ name: v })} placeholder="Ahmad Al-Sabah" />
-                <TextField label="Title" value={item.title} onChange={(v) => update({ title: v })} placeholder="VP Corporate Banking" />
-                <TextField label="Company" value={item.company} onChange={(v) => update({ company: v })} placeholder="NBK" />
+                <TextField label={t("endNameLabel")} value={item.name} onChange={(v) => update({ name: v })} placeholder={t("endNamePlaceholder")} />
+                <TextField label={t("endTitleLabel")} value={item.title} onChange={(v) => update({ title: v })} placeholder={t("endTitlePlaceholder")} />
+                <TextField label={t("endCompanyLabel")} value={item.company} onChange={(v) => update({ company: v })} placeholder={t("endCompanyPlaceholder")} />
               </div>
             </div>
           )}
         />
       </Accordion>
 
-      <Accordion title="Professional Affiliations" subtitle="Memberships in professional bodies show industry commitment." count={affiliations.length}>
+      <Accordion title={t("affAccordionTitle")} subtitle={t("affAccordionSubtitle")} count={affiliations.length}>
         <DynamicList
           items={affiliations}
           onChange={(items) => onChange({ professionalAffiliations: items })}
           createEmpty={() => ({ name: "", role: "" })}
           maxItems={6}
-          addLabel="Add Affiliation"
+          addLabel={t("addAffiliation")}
           renderItem={(item, _, update) => (
             <div className="grid grid-cols-2 gap-3 pr-16">
-              <TextField label="Organization" value={item.name} onChange={(v) => update({ name: v })} placeholder="Kuwait CFA Society" />
-              <TextField label="Role" value={item.role || ""} onChange={(v) => update({ role: v })} placeholder="Member" examples={["Member", "Board Member", "Fellow", "Associate", "Certified Member"]} />
+              <TextField label={t("affOrgLabel")} value={item.name} onChange={(v) => update({ name: v })} placeholder={t("affOrgPlaceholder")} />
+              <TextField label={t("affRoleLabel")} value={item.role || ""} onChange={(v) => update({ role: v })} placeholder={t("affRolePlaceholder")} examples={t.raw("affRoleExamples") as string[]} />
             </div>
           )}
         />
       </Accordion>
 
-      <Accordion title="Continuous Development" subtitle="Recent courses show you stay current in your field." count={development.length}>
+      <Accordion title={t("devAccordionTitle")} subtitle={t("devAccordionSubtitle")} count={development.length}>
         <DynamicList
           items={development}
           onChange={(items) => onChange({ continuousDevelopment: items })}
           createEmpty={() => ({ name: "", provider: "", year: "" })}
           maxItems={6}
-          addLabel="Add Course / Training"
+          addLabel={t("addCourse")}
           renderItem={(item, _, update) => (
             <div className="grid grid-cols-3 gap-3 pr-16">
-              <TextField label="Name" value={item.name} onChange={(v) => update({ name: v })} placeholder="Advanced Financial Modeling" />
-              <TextField label="Provider" value={item.provider || ""} onChange={(v) => update({ provider: v })} placeholder="Wall Street Prep" />
-              <TextField label="Year" value={item.year || ""} onChange={(v) => update({ year: v })} placeholder="2024" />
+              <TextField label={t("devNameLabel")} value={item.name} onChange={(v) => update({ name: v })} placeholder={t("devNamePlaceholder")} />
+              <TextField label={t("devProviderLabel")} value={item.provider || ""} onChange={(v) => update({ provider: v })} placeholder={t("devProviderPlaceholder")} />
+              <TextField label={t("devYearLabel")} value={item.year || ""} onChange={(v) => update({ year: v })} placeholder={t("devYearPlaceholder")} />
             </div>
           )}
         />

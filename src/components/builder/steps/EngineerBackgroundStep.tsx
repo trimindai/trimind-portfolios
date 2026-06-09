@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { TextField } from "../fields/TextField";
 import { TextareaField } from "../fields/TextareaField";
 import { DynamicList } from "../fields/DynamicList";
@@ -10,30 +11,32 @@ interface EngineerBackgroundStepProps {
   onChange: (updates: any) => void;
 }
 
-type Section = "experience" | "skills" | "education" | "certifications";
-
-const SECTION_TABS: { id: Section; label: string }[] = [
-  { id: "experience", label: "Experience" },
-  { id: "skills", label: "Skills" },
-  { id: "education", label: "Education" },
-  { id: "certifications", label: "Certifications" },
-];
+type Section = "experience" | "skills" | "education" | "certifications" | "endorsements";
 
 export function EngineerBackgroundStep({ data, onChange }: EngineerBackgroundStepProps) {
+  const t = useTranslations("builder.engineer");
   const [activeSection, setActiveSection] = useState<Section>("experience");
+
+  const SECTION_TABS: { id: Section; label: string }[] = [
+    { id: "experience", label: t("bgTabExperience") },
+    { id: "skills", label: t("bgTabSkills") },
+    { id: "education", label: t("bgTabEducation") },
+    { id: "certifications", label: t("bgTabCertifications") },
+    { id: "endorsements", label: t("bgTabEndorsements") },
+  ];
 
   const experience = data.experience || [];
   const skills = data.skills || [];
   const education = data.education || [];
   const certifications = data.certifications || [];
+  const endorsements = data.endorsements || [];
 
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-xl font-semibold text-[var(--land-bright)]">Background</h2>
+        <h2 className="text-xl font-semibold text-[var(--land-bright)]">{t("bgHeading")}</h2>
         <p className="text-sm text-[var(--land-body)] mt-1">
-          Optional sections — all auto-hide when empty. Fill in what applies to you.
-          Your projects are the star; this adds professional context.
+          {t("bgIntro")}
         </p>
       </div>
 
@@ -44,7 +47,8 @@ export function EngineerBackgroundStep({ data, onChange }: EngineerBackgroundSte
             tab.id === "experience" ? experience.length :
             tab.id === "skills" ? skills.length :
             tab.id === "education" ? education.length :
-            certifications.length;
+            tab.id === "certifications" ? certifications.length :
+            endorsements.length;
 
           return (
             <button
@@ -73,33 +77,33 @@ export function EngineerBackgroundStep({ data, onChange }: EngineerBackgroundSte
       {/* Experience */}
       {activeSection === "experience" && (
         <div className="space-y-4">
-          <div className="bg-[var(--land-surface-raised)]/30 border border-amber-900/30 rounded-lg p-3 text-sm text-amber-300/80">
-            <strong>Tip:</strong> Most recent first. Focus on engineering scope, not job duties.
+          <div className="bg-amber-50 border border-amber-200 rounded-lg p-3 text-sm text-amber-800">
+            <strong>{t("bgExpTipTitle")}</strong> {t("bgExpTipBody")}
           </div>
           <DynamicList
             items={experience}
             onChange={(items) => onChange({ experience: items })}
             createEmpty={() => ({ title: "", company: "", startDate: "", endDate: "", description: "", highlights: [] as string[] })}
             maxItems={10}
-            addLabel="Add Position"
+            addLabel={t("bgAddPosition")}
             renderItem={(item, _, update) => (
               <div className="space-y-3 pr-16">
                 <div className="grid grid-cols-2 gap-3">
-                  <TextField label="Job Title" value={item.title} onChange={(v) => update({ title: v })} placeholder="Project Engineer" examples={["Project Engineer", "Design Engineer", "Field Engineer", "Process Engineer", "Maintenance Engineer"]} />
-                  <TextField label="Company" value={item.company} onChange={(v) => update({ company: v })} placeholder="Kuwait Oil Company" />
+                  <TextField label={t("bgJobTitleLabel")} value={item.title} onChange={(v) => update({ title: v })} placeholder={t("bgJobTitlePlaceholder")} examples={t.raw("bgJobTitleExamples") as string[]} />
+                  <TextField label={t("bgCompanyLabel")} value={item.company} onChange={(v) => update({ company: v })} placeholder={t("bgCompanyPlaceholder")} />
                 </div>
                 <div className="grid grid-cols-2 gap-3">
-                  <TextField label="Start Date" value={item.startDate} onChange={(v) => update({ startDate: v })} placeholder="2021" />
-                  <TextField label="End Date" value={item.endDate || ""} onChange={(v) => update({ endDate: v })} placeholder="Present" hint="Leave blank if current" />
+                  <TextField label={t("bgStartDateLabel")} value={item.startDate} onChange={(v) => update({ startDate: v })} placeholder={t("bgStartDatePlaceholder")} />
+                  <TextField label={t("bgEndDateLabel")} value={item.endDate || ""} onChange={(v) => update({ endDate: v })} placeholder={t("bgEndDatePlaceholder")} hint={t("bgEndDateHint")} />
                 </div>
-                <TextareaField label="Description" value={item.description || ""} onChange={(v) => update({ description: v })} placeholder="Brief scope: what you engineered, for whom, at what scale..." rows={2} />
+                <TextareaField label={t("bgExpDescLabel")} value={item.description || ""} onChange={(v) => update({ description: v })} placeholder={t("bgExpDescPlaceholder")} rows={2} />
                 <TextareaField
-                  label="Key Highlights (one per line)"
+                  label={t("bgHighlightsLabel")}
                   value={(item.highlights || []).join("\n")}
                   onChange={(v) => update({ highlights: v.split("\n").filter(Boolean) as string[] })}
-                  placeholder={"Designed 132kV substation layout per IEC standards\nLed commissioning of 3 gas turbine units\nReduced maintenance downtime by 22%"}
+                  placeholder={t("bgHighlightsPlaceholder")}
                   rows={3}
-                  hint="Start each line with what you did. Add numbers where possible."
+                  hint={t("bgHighlightsHint")}
                 />
               </div>
             )}
@@ -110,28 +114,28 @@ export function EngineerBackgroundStep({ data, onChange }: EngineerBackgroundSte
       {/* Skills */}
       {activeSection === "skills" && (
         <div className="space-y-4">
-          <p className="text-sm text-[var(--land-body)]">Group skills by category. Common engineering categories: Technical, Software, Tools & Equipment, Standards & Codes.</p>
+          <p className="text-sm text-[var(--land-body)]">{t("bgSkillsIntro")}</p>
           <DynamicList
             items={skills}
             onChange={(items) => onChange({ skills: items })}
             createEmpty={() => ({ category: "", items: [] as string[] })}
             maxItems={8}
-            addLabel="Add Skill Category"
+            addLabel={t("bgAddSkillCategory")}
             renderItem={(item, _, update) => (
               <div className="space-y-3 pr-16">
                 <TextField
-                  label="Category"
+                  label={t("bgCategoryLabel")}
                   value={item.category}
                   onChange={(v) => update({ category: v })}
-                  placeholder="Technical Skills"
-                  examples={["Technical Skills", "Software & Tools", "Standards & Codes", "Lab & Equipment", "Project Management"]}
+                  placeholder={t("bgCategoryPlaceholder")}
+                  examples={t.raw("bgCategoryExamples") as string[]}
                 />
                 <div>
-                  <label className="text-sm font-medium text-[var(--land-bright)] mb-1.5 block">Skills (comma-separated)</label>
+                  <label className="text-sm font-medium text-[var(--land-bright)] mb-1.5 block">{t("bgSkillsItemsLabel")}</label>
                   <input
                     value={item.items.join(", ")}
                     onChange={(e) => update({ items: e.target.value.split(",").map((s: string) => s.trim()).filter(Boolean) })}
-                    placeholder="MATLAB, AutoCAD, SolidWorks, PLC Programming, SCADA"
+                    placeholder={t("bgSkillsItemsPlaceholder")}
                     className="w-full bg-white border border-[var(--land-border)] rounded-lg px-4 py-2.5 text-[var(--land-bright)] placeholder:text-[var(--land-muted)] shadow-sm focus:border-[var(--land-accent)] focus:ring-1 focus:ring-[var(--land-accent)] outline-none transition-colors"
                   />
                 </div>
@@ -149,16 +153,16 @@ export function EngineerBackgroundStep({ data, onChange }: EngineerBackgroundSte
             onChange={(items) => onChange({ education: items })}
             createEmpty={() => ({ degree: "", institution: "", year: "", description: "" })}
             maxItems={5}
-            addLabel="Add Education"
+            addLabel={t("bgAddEducation")}
             renderItem={(item, _, update) => (
               <div className="space-y-3 pr-16">
                 <div className="grid grid-cols-2 gap-3">
-                  <TextField label="Degree" value={item.degree} onChange={(v) => update({ degree: v })} placeholder="B.Sc. Electrical Engineering" examples={["B.Sc. Electrical Engineering", "B.Sc. Mechanical Engineering", "B.Sc. Civil Engineering", "M.Sc. Petroleum Engineering", "B.Eng. Chemical Engineering"]} />
-                  <TextField label="Institution" value={item.institution} onChange={(v) => update({ institution: v })} placeholder="Kuwait University" />
+                  <TextField label={t("bgDegreeLabel")} value={item.degree} onChange={(v) => update({ degree: v })} placeholder={t("bgDegreePlaceholder")} examples={t.raw("bgDegreeExamples") as string[]} />
+                  <TextField label={t("bgEduInstitutionLabel")} value={item.institution} onChange={(v) => update({ institution: v })} placeholder={t("bgEduInstitutionPlaceholder")} />
                 </div>
                 <div className="grid grid-cols-2 gap-3">
-                  <TextField label="Year" value={item.year} onChange={(v) => update({ year: v })} placeholder="2018-2023" />
-                  <TextField label="GPA / Notes" value={item.description || ""} onChange={(v) => update({ description: v })} placeholder="GPA 3.6/4.0, Dean's List" hint="GPA, honors, or relevant coursework" />
+                  <TextField label={t("bgEduYearLabel")} value={item.year} onChange={(v) => update({ year: v })} placeholder={t("bgEduYearPlaceholder")} />
+                  <TextField label={t("bgGpaLabel")} value={item.description || ""} onChange={(v) => update({ description: v })} placeholder={t("bgGpaPlaceholder")} hint={t("bgGpaHint")} />
                 </div>
               </div>
             )}
@@ -169,18 +173,42 @@ export function EngineerBackgroundStep({ data, onChange }: EngineerBackgroundSte
       {/* Certifications */}
       {activeSection === "certifications" && (
         <div className="space-y-4">
-          <p className="text-sm text-[var(--land-body)]">Professional certifications, licenses, and technical qualifications.</p>
+          <p className="text-sm text-[var(--land-body)]">{t("bgCertsIntro")}</p>
           <DynamicList
             items={certifications}
             onChange={(items) => onChange({ certifications: items })}
             createEmpty={() => ({ name: "", issuer: "", year: "" })}
             maxItems={10}
-            addLabel="Add Certification"
+            addLabel={t("bgAddCertification")}
             renderItem={(item, _, update) => (
               <div className="grid grid-cols-3 gap-3 pr-16">
-                <TextField label="Name" value={item.name} onChange={(v) => update({ name: v })} placeholder="PE License" examples={["PE License", "PMP", "NEBOSH", "AWS CWI", "Six Sigma Green Belt", "OSHA 30"]} />
-                <TextField label="Issuer" value={item.issuer} onChange={(v) => update({ issuer: v })} placeholder="Kuwait Society of Engineers" />
-                <TextField label="Year" value={item.year || ""} onChange={(v) => update({ year: v })} placeholder="2024" />
+                <TextField label={t("bgCertNameLabel")} value={item.name} onChange={(v) => update({ name: v })} placeholder={t("bgCertNamePlaceholder")} examples={t.raw("bgCertNameExamples") as string[]} />
+                <TextField label={t("bgIssuerLabel")} value={item.issuer} onChange={(v) => update({ issuer: v })} placeholder={t("bgIssuerPlaceholder")} />
+                <TextField label={t("bgCertYearLabel")} value={item.year || ""} onChange={(v) => update({ year: v })} placeholder={t("bgCertYearPlaceholder")} />
+              </div>
+            )}
+          />
+        </div>
+      )}
+
+      {/* Endorsements */}
+      {activeSection === "endorsements" && (
+        <div className="space-y-4">
+          <p className="text-sm text-[var(--land-body)]">{t("bgEndorsementsIntro")}</p>
+          <DynamicList
+            items={endorsements}
+            onChange={(items) => onChange({ endorsements: items })}
+            createEmpty={() => ({ quote: "", name: "", title: "", company: "" })}
+            maxItems={5}
+            addLabel={t("bgAddEndorsement")}
+            renderItem={(item, _, update) => (
+              <div className="space-y-3 pr-16">
+                <TextareaField label={t("bgEndQuoteLabel")} value={item.quote} onChange={(v) => update({ quote: v })} placeholder={t("bgEndQuotePlaceholder")} rows={3} />
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                  <TextField label={t("bgEndNameLabel")} value={item.name} onChange={(v) => update({ name: v })} placeholder={t("bgEndNamePlaceholder")} />
+                  <TextField label={t("bgEndTitleLabel")} value={item.title} onChange={(v) => update({ title: v })} placeholder={t("bgEndTitlePlaceholder")} />
+                  <TextField label={t("bgEndCompanyLabel")} value={item.company} onChange={(v) => update({ company: v })} placeholder={t("bgEndCompanyPlaceholder")} />
+                </div>
               </div>
             )}
           />

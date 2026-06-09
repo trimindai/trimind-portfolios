@@ -3,6 +3,7 @@
 import { useState, useCallback, useMemo } from "react";
 import { useParams } from "next/navigation";
 import { useTranslations } from "next-intl";
+import { ArrowLeft, ArrowRight, Check, Info, Pencil, X } from "lucide-react";
 import { useMutation } from "convex/react";
 import { api } from "@convex/_generated/api";
 import { Id } from "@convex/_generated/dataModel";
@@ -43,36 +44,36 @@ type Step = {
 const GENERAL_STEPS: Step[] = [
   { name: "Basics", labelKey: "basics", requiredFields: ["basics.fullName", "basics.title", "basics.email"], component: BasicsStep },
   { name: "Experience", labelKey: "experience", requiredFields: ["experience"], component: ExperienceStep },
-  { name: "Achievements", optional: true, component: AchievementsStep },
+  { name: "Achievements", labelKey: "achievements", optional: true, component: AchievementsStep },
   { name: "Skills", labelKey: "skills", optional: true, component: SkillsStep },
   { name: "Education", labelKey: "education", optional: true, component: EducationStep },
   { name: "CV Details", labelKey: "cv", optional: true, component: CvFieldsStep },
-  { name: "Endorsements", optional: true, component: EndorsementsStep },
+  { name: "Endorsements", labelKey: "endorsements", optional: true, component: EndorsementsStep },
   { name: "Customize", labelKey: "customize", component: CustomizeStep },
 ];
 
 const ENGINEER_STEPS: Step[] = [
   { name: "About", labelKey: "basics", requiredFields: ["basics.fullName", "basics.title", "basics.email"], component: EngineerBasicsStep },
   { name: "Projects", labelKey: "projects", requiredFields: ["projects"], component: EngineerProjectsStep },
-  { name: "Background", labelKey: "education", optional: true, component: EngineerBackgroundStep },
+  { name: "Background", labelKey: "background", optional: true, component: EngineerBackgroundStep },
   { name: "CV Details", labelKey: "cv", optional: true, component: CvFieldsStep },
   { name: "Customize", labelKey: "customize", component: EngineerCustomizeStep },
 ];
 
 const CREATIVE_STEPS: Step[] = [
   { name: "Profile", labelKey: "basics", requiredFields: ["basics.fullName", "basics.title", "basics.email"], component: CreativeProfileStep },
-  { name: "Gallery", requiredFields: ["projects"], component: CreativeGalleryStep },
-  { name: "About", optional: true, component: CreativeAboutStep },
+  { name: "Gallery", labelKey: "gallery", requiredFields: ["projects"], component: CreativeGalleryStep },
+  { name: "About", labelKey: "about", optional: true, component: CreativeAboutStep },
   { name: "CV Details", labelKey: "cv", optional: true, component: CvFieldsStep },
   { name: "Customize", labelKey: "customize", component: CreativeCustomizeStep },
 ];
 
 const DEVELOPER_STEPS: Step[] = [
   { name: "About", labelKey: "basics", requiredFields: ["basics.fullName", "basics.title", "basics.email"], component: DeveloperAboutStep },
-  { name: "Stack", labelKey: "skills", optional: true, component: DeveloperStackStep },
+  { name: "Stack", labelKey: "stack", optional: true, component: DeveloperStackStep },
   { name: "Experience", labelKey: "experience", optional: true, component: DeveloperExperienceStep },
   { name: "Projects", labelKey: "projects", requiredFields: ["projects"], component: EngineerProjectsStep },
-  { name: "Background", labelKey: "education", optional: true, component: DeveloperCredentialsStep },
+  { name: "Background", labelKey: "background", optional: true, component: DeveloperCredentialsStep },
   { name: "CV Details", labelKey: "cv", optional: true, component: CvFieldsStep },
   { name: "Customize", labelKey: "customize", component: DeveloperCustomizeStep },
 ];
@@ -81,9 +82,9 @@ const DEVELOPER_STEPS: Step[] = [
 // metrics / skills / experience / certifications / endorsements), reusing those editors.
 const CREATOR_STEPS: Step[] = [
   { name: "Profile", labelKey: "basics", requiredFields: ["basics.fullName", "basics.title", "basics.email"], component: CreatorProfileStep },
-  { name: "Work", labelKey: "projects", requiredFields: ["projects"], component: CreativeGalleryStep },
-  { name: "Audience & Awards", optional: true, component: CreativeAboutStep },
-  { name: "Brands", optional: true, component: CreatorBrandsStep },
+  { name: "Work", labelKey: "work", requiredFields: ["projects"], component: CreativeGalleryStep },
+  { name: "Audience & Awards", labelKey: "audienceAwards", optional: true, component: CreativeAboutStep },
+  { name: "Brands", labelKey: "brands", optional: true, component: CreatorBrandsStep },
   { name: "CV Details", labelKey: "cv", optional: true, component: CvFieldsStep },
   { name: "Customize", labelKey: "customize", component: CustomizeStep },
 ];
@@ -181,7 +182,11 @@ export function BuilderForm({ portfolioId, initialData, guest, onPublish }: Buil
   const isRTL = locale === "ar";
   const tSteps = useTranslations("builder.steps");
   const tNav = useTranslations("builder.nav");
+  const tValidation = useTranslations("builder.validation");
   const [currentStep, setCurrentStep] = useState(0);
+  // Set when Next is pressed on a step whose required fields are empty; the
+  // second press proceeds anyway (gentle nudge, never a dead end).
+  const [requiredNudge, setRequiredNudge] = useState(false);
   // Guest mode: seed from localStorage (parse safely), falling back to initialData.
   const [formData, setFormData] = useState<any>(() => {
     if (guest && typeof window !== "undefined") {
@@ -218,7 +223,10 @@ export function BuilderForm({ portfolioId, initialData, guest, onPublish }: Buil
 
   const [pricingCollapsed, setPricingCollapsed] = useState(() => {
     if (typeof window === "undefined") return false;
-    return window.localStorage.getItem("pricing_banner_collapsed") === "1";
+    if (window.localStorage.getItem("pricing_banner_collapsed") === "1") return true;
+    // Phones: default to the compact pill after step 1 — the full banner costs
+    // ~140px of a small viewport. (Step 1 always shows the full banner.)
+    return window.matchMedia("(max-width: 767px)").matches;
   });
   const dismissPricing = () => {
     setPricingCollapsed(true);
@@ -254,7 +262,20 @@ export function BuilderForm({ portfolioId, initialData, guest, onPublish }: Buil
     setSaving(false);
   };
 
+  const stepHasMissingRequired = (step: Step) =>
+    (step.requiredFields || []).some((path) => {
+      const v = getFieldValue(formData, path);
+      if (Array.isArray(v)) return v.length === 0;
+      return !v || (typeof v === "string" && v.trim() === "");
+    });
+
   const goNext = async () => {
+    // Gentle required-field nudge: first press warns, second press proceeds.
+    if (!requiredNudge && stepHasMissingRequired(steps[currentStep])) {
+      setRequiredNudge(true);
+      return;
+    }
+    setRequiredNudge(false);
     const nextStep = currentStep + 1;
     if (!guest && nextStep > (formData.lastCompletedStep ?? 0)) {
       setFormData((prev: any) => ({ ...prev, lastCompletedStep: nextStep }));
@@ -266,6 +287,7 @@ export function BuilderForm({ portfolioId, initialData, guest, onPublish }: Buil
   };
 
   const goPrev = async () => {
+    setRequiredNudge(false);
     if (currentStep > 0) {
       await save();
       setCurrentStep(currentStep - 1);
@@ -293,7 +315,7 @@ export function BuilderForm({ portfolioId, initialData, guest, onPublish }: Buil
       {/* Paid confirmation banner */}
       {showPaidChrome && (
         <div className="mb-6 flex items-center gap-3 rounded-xl border border-emerald-600/20 bg-emerald-600/5 px-4 py-3">
-          <span className="text-emerald-500 text-lg">&#10003;</span>
+          <Check className="h-4 w-4 text-emerald-500 shrink-0" aria-hidden />
           <p className="text-sm text-[var(--land-bright)]">
             {isRTL
               ? "✓ دفعت بالفعل — عدّل بحرية وأعد التحميل في أي وقت."
@@ -313,7 +335,7 @@ export function BuilderForm({ portfolioId, initialData, guest, onPublish }: Buil
           </div>
         ) : (
           <div className="mb-6 flex items-center gap-3 rounded-xl border border-[var(--land-accent)]/20 bg-[var(--land-accent)]/5 px-4 py-3">
-            <span className="text-[var(--land-accent)] text-lg">&#9998;</span>
+            <Pencil className="h-4 w-4 text-[var(--land-accent)] shrink-0" aria-hidden />
             <div className="flex-1">
               <p className="text-sm text-[var(--land-bright)]">
                 {isRTL
@@ -331,8 +353,8 @@ export function BuilderForm({ portfolioId, initialData, guest, onPublish }: Buil
               <span className="text-xs font-medium text-[var(--land-accent)]">{stepProgress}%</span>
             </div>
             {currentStep > 0 && (
-              <button onClick={dismissPricing} className="text-[var(--land-muted)] hover:text-[var(--land-bright)] text-sm ml-1" aria-label="Collapse">
-                &times;
+              <button onClick={dismissPricing} className="text-[var(--land-muted)] hover:text-[var(--land-bright)] text-sm ms-1" aria-label="Collapse">
+                <X className="h-4 w-4" aria-hidden />
               </button>
             )}
           </div>
@@ -342,7 +364,7 @@ export function BuilderForm({ portfolioId, initialData, guest, onPublish }: Buil
       {/* "Good enough" nudge — shown after basics + experience/projects filled */}
       {hasBasicsAndExperience && currentStep >= 2 && currentStep < steps.length - 1 && showDraftChrome && (
         <div className="mb-4 flex items-center gap-3 rounded-xl border border-[var(--land-border)]/50 bg-[var(--land-surface)]/40 px-4 py-2.5">
-          <span className="text-[var(--land-accent)]">&#10003;</span>
+          <Check className="h-3.5 w-3.5 text-[var(--land-accent)] shrink-0" aria-hidden />
           <p className="text-xs text-[var(--land-body)] flex-1">
             {isRTL
               ? "بورتفوليو جاهز لـ PDF أساسي. أكمل الباقي لجعله أقوى."
@@ -356,7 +378,8 @@ export function BuilderForm({ portfolioId, initialData, guest, onPublish }: Buil
             }}
             className="text-xs text-[var(--land-accent)] hover:text-[var(--land-accent-hover)] font-medium shrink-0"
           >
-            {isRTL ? "معاينة الآن" : "Preview now"} &rarr;
+            {isRTL ? "معاينة الآن" : "Preview now"}
+            <ArrowRight className="ms-1 inline h-3 w-3 rtl:rotate-180" aria-hidden />
           </button>
         </div>
       )}
@@ -393,7 +416,7 @@ export function BuilderForm({ portfolioId, initialData, guest, onPublish }: Buil
             {steps.map((step, i) => (
               <button
                 key={i}
-                onClick={async () => { await save(); setCurrentStep(i); }}
+                onClick={async () => { setRequiredNudge(false); await save(); setCurrentStep(i); }}
                 className={`flex items-center gap-1.5 px-3 py-2 min-h-[44px] rounded-lg text-sm transition-all duration-300 ${
                   i === currentStep
                     ? "bg-[var(--land-accent)] text-white"
@@ -422,7 +445,7 @@ export function BuilderForm({ portfolioId, initialData, guest, onPublish }: Buil
       {/* Optional step hint banner */}
       {currentStepDef.optional && (
         <div className="mb-4 flex items-center gap-2 text-xs text-[var(--land-muted)]">
-          <span className="text-[var(--land-body)]">&#9432;</span>
+          <Info className="h-3.5 w-3.5 text-[var(--land-body)] shrink-0" aria-hidden />
           {isRTL
             ? "هذه الخطوة اختيارية — يمكنك تخطيها والعودة لاحقًا."
             : "This step is optional — you can skip it and come back later."}
@@ -440,6 +463,16 @@ export function BuilderForm({ portfolioId, initialData, guest, onPublish }: Buil
         <div className="h-px -mx-4 sm:-mx-8 -mt-4 sm:-mt-8 mb-6 sm:mb-8 bg-gradient-to-r from-transparent via-[var(--land-accent)]/30 to-transparent" />
         <StepComponent data={formData} onChange={handleChange} />
       </div>
+
+      {/* Required-fields nudge: first Next press on an incomplete required step */}
+      {requiredNudge && (
+        <div className="mb-2 flex items-center gap-2 rounded-lg border border-amber-500/30 bg-amber-500/10 px-3 py-2 text-xs text-amber-600" role="status">
+          <Info className="h-3.5 w-3.5 shrink-0" aria-hidden />
+          <span>
+            {tValidation("requiredMissing")} {tValidation("requiredMissingContinue")}
+          </span>
+        </div>
+      )}
 
       {/* Auto-save status — above content, not competing with buttons */}
       <div className={`flex items-center justify-end gap-1 mb-2 text-xs text-[var(--land-muted)] ${saving ? "animate-pulse" : ""}`}>
@@ -463,8 +496,9 @@ export function BuilderForm({ portfolioId, initialData, guest, onPublish }: Buil
             disabled={currentStep === 0}
             className="inline-flex min-h-[44px] min-w-[44px] items-center justify-center rounded-lg border border-[var(--land-border)] px-3 py-2.5 text-sm text-[var(--land-bright)] hover:bg-[var(--land-surface-raised)] transition-colors disabled:opacity-30"
             title={isRTL ? "السابق" : "Previous"}
+            aria-label={isRTL ? "السابق" : "Previous"}
           >
-            <span aria-hidden className="rtl:rotate-180">&larr;</span>
+            <ArrowLeft className="h-4 w-4 rtl:rotate-180" aria-hidden />
           </button>
           <button
             onClick={async () => {
@@ -475,7 +509,7 @@ export function BuilderForm({ portfolioId, initialData, guest, onPublish }: Buil
             className="inline-flex min-h-[44px] items-center justify-center gap-1.5 rounded-lg border border-[var(--land-border)] px-3 py-2.5 text-xs text-[var(--land-muted)] hover:text-[var(--land-bright)] hover:bg-[var(--land-surface-raised)] transition-colors"
             title={guest ? (isRTL ? "خروج" : "Exit") : (isRTL ? "حفظ وخروج" : "Save & exit")}
           >
-            <span>&times;</span>
+            <X className="h-3.5 w-3.5" aria-hidden />
             <span>
               {guest ? (isRTL ? "خروج" : "Exit") : (isRTL ? "حفظ" : "Exit")}
             </span>
@@ -496,7 +530,7 @@ export function BuilderForm({ portfolioId, initialData, guest, onPublish }: Buil
               className="inline-flex min-h-[44px] items-center justify-center gap-1.5 rounded-lg bg-[var(--land-accent)] px-5 sm:px-6 py-2.5 text-sm font-medium text-white hover:bg-[var(--land-accent-hover)] transition-colors active:scale-[0.98]"
             >
               <span>{tNav("next")}</span>
-              <span aria-hidden className="rtl:rotate-180">&rarr;</span>
+              <ArrowRight className="h-4 w-4 rtl:rotate-180" aria-hidden />
             </button>
           ) : guest ? (
             <button
@@ -504,7 +538,7 @@ export function BuilderForm({ portfolioId, initialData, guest, onPublish }: Buil
               className="inline-flex min-h-[44px] items-center justify-center gap-1.5 rounded-lg bg-[var(--land-accent)] px-5 sm:px-6 py-2.5 text-sm font-semibold text-white hover:bg-[var(--land-accent-hover)] transition-colors active:scale-[0.98]"
             >
               <span>{isRTL ? "سجّل لنشر ملفك" : "Sign up to publish"}</span>
-              <span aria-hidden className="rtl:rotate-180">&rarr;</span>
+              <ArrowRight className="h-4 w-4 rtl:rotate-180" aria-hidden />
             </button>
           ) : (
             <button
@@ -512,7 +546,7 @@ export function BuilderForm({ portfolioId, initialData, guest, onPublish }: Buil
               className="inline-flex min-h-[44px] items-center justify-center gap-1.5 rounded-lg bg-[var(--land-accent)] px-5 sm:px-6 py-2.5 text-sm font-semibold text-white hover:bg-[var(--land-accent-hover)] transition-colors active:scale-[0.98]"
             >
               <span>{tNav("preview")}</span>
-              <span aria-hidden className="rtl:rotate-180">&rarr;</span>
+              <ArrowRight className="h-4 w-4 rtl:rotate-180" aria-hidden />
             </button>
           )}
         </div>

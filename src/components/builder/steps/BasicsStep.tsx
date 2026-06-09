@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import { useTranslations } from "next-intl";
 import { useAuth } from "@clerk/nextjs";
 import { usePathname } from "next/navigation";
 import { Link } from "@/i18n/navigation";
@@ -14,18 +15,12 @@ interface BasicsStepProps {
   [key: string]: any;
 }
 
-const PROGRESS_STEPS = [
-  "Writing your summary",
-  "Building your experience",
-  "Adding your skills",
-  "Creating achievements",
-  "Finishing up",
-];
-
 const FULL_CV_LIMIT = 3;
 const SUMMARY_LIMIT = 5;
 
 export function BasicsStep({ data, onChange }: BasicsStepProps) {
+  const t = useTranslations("builder.general");
+  const progressSteps = t.raw("progressSteps") as string[];
   const basics = data.basics || {};
   const metrics = data.metrics || [];
   const [showOptional, setShowOptional] = useState(false);
@@ -69,7 +64,7 @@ export function BasicsStep({ data, onChange }: BasicsStepProps) {
       setProgress((p) => (p < 90 ? p + 1 : p));
     }, 100);
     stepInterval.current = setInterval(() => {
-      setCurrentStep((s) => (s < PROGRESS_STEPS.length - 1 ? s + 1 : s));
+      setCurrentStep((s) => (s < progressSteps.length - 1 ? s + 1 : s));
     }, 1500);
   }
 
@@ -83,7 +78,7 @@ export function BasicsStep({ data, onChange }: BasicsStepProps) {
       stepInterval.current = null;
     }
     setProgress(100);
-    setCurrentStep(PROGRESS_STEPS.length - 1);
+    setCurrentStep(progressSteps.length - 1);
   }
 
   async function generateFullCv() {
@@ -104,7 +99,7 @@ export function BasicsStep({ data, onChange }: BasicsStepProps) {
         }),
       });
       const result = await res.json();
-      if (!res.ok) throw new Error(result.error || "Failed to generate");
+      if (!res.ok) throw new Error(result.error || t("failedToGenerate"));
       const cv = result.cv;
       stopProgress();
       onChange({
@@ -124,7 +119,7 @@ export function BasicsStep({ data, onChange }: BasicsStepProps) {
       setFullCvUses((n) => n + 1);
     } catch (e: any) {
       stopProgress();
-      setFillError(e.message || "Something went wrong");
+      setFillError(e.message || t("somethingWentWrong"));
     } finally {
       setFillGenerating(false);
     }
@@ -152,11 +147,11 @@ export function BasicsStep({ data, onChange }: BasicsStepProps) {
         }),
       });
       const result = await res.json();
-      if (!res.ok) throw new Error(result.error || "Failed to generate");
+      if (!res.ok) throw new Error(result.error || t("failedToGenerate"));
       setAiSuggestion(result.summary);
       setSummaryUses((n) => n + 1);
     } catch (e: any) {
-      setAiError(e.message || "Something went wrong");
+      setAiError(e.message || t("somethingWentWrong"));
     } finally {
       setAiGenerating(false);
     }
@@ -176,17 +171,17 @@ export function BasicsStep({ data, onChange }: BasicsStepProps) {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-xl font-semibold text-[var(--land-bright)]">Basic Information</h2>
-        <p className="text-sm text-[var(--land-body)] mt-1">Fill in your core professional identity. The published portfolio will have an auto-translate button for Arabic.</p>
+        <h2 className="text-xl font-semibold text-[var(--land-bright)]">{t("basicsHeading")}</h2>
+        <p className="text-sm text-[var(--land-body)] mt-1">{t("basicsIntro")}</p>
       </div>
 
       {/* REQUIRED — always visible (the 3 fields needed to proceed) */}
       <div className="space-y-6">
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <TextField label="Full Name" autoComplete="name" value={basics.fullName} onChange={(v) => updateBasics("fullName", v)} required placeholder="Sarah Al-Rashidi" hint="As it appears on your official documents" />
-          <TextField label="Professional Title" value={basics.title} onChange={(v) => updateBasics("title", v)} required placeholder="Senior Financial Analyst" hint="Your current or target role" examples={["Senior Financial Analyst", "Software Engineer", "Marketing Director", "UX Designer", "Project Manager"]} />
+          <TextField label={t("fullNameLabel")} autoComplete="name" value={basics.fullName} onChange={(v) => updateBasics("fullName", v)} required placeholder={t("fullNamePlaceholder")} hint={t("fullNameHint")} />
+          <TextField label={t("titleLabel")} value={basics.title} onChange={(v) => updateBasics("title", v)} required placeholder={t("titlePlaceholder")} hint={t("titleHint")} examples={t.raw("titleExamples") as string[]} />
         </div>
-        <TextField label="Email" value={basics.email} onChange={(v) => updateBasics("email", v)} required type="email" autoComplete="email" inputMode="email" dir="ltr" placeholder="email@example.com" />
+        <TextField label={t("emailLabel")} value={basics.email} onChange={(v) => updateBasics("email", v)} required type="email" autoComplete="email" inputMode="email" dir="ltr" placeholder={t("emailPlaceholder")} />
       </div>
 
       {/* AI Section — only when name + title are filled AND the user is signed
@@ -197,7 +192,7 @@ export function BasicsStep({ data, onChange }: BasicsStepProps) {
           {fillGenerating && (
             <div className="rounded-xl border border-emerald-600/30 bg-emerald-600/5 p-5 space-y-4">
               <div className="space-y-2">
-                {PROGRESS_STEPS.map((step, i) => (
+                {progressSteps.map((step, i) => (
                   <div key={step} className="flex items-center gap-2.5">
                     {i < currentStep ? (
                       <svg className="h-4 w-4 text-emerald-600 shrink-0" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M2 6l3 3 5-5" /></svg>
@@ -220,7 +215,7 @@ export function BasicsStep({ data, onChange }: BasicsStepProps) {
                   style={{ width: `${progress}%` }}
                 />
               </div>
-              <p className="text-xs text-[var(--land-muted)] text-center">{progress}% complete</p>
+              <p className="text-xs text-[var(--land-muted)] text-center">{t("percentComplete", { progress })}</p>
             </div>
           )}
 
@@ -229,31 +224,31 @@ export function BasicsStep({ data, onChange }: BasicsStepProps) {
             <div className="rounded-xl border border-emerald-600/30 bg-emerald-600/5 p-5 space-y-3">
               <p className="text-sm font-medium text-emerald-600 flex items-center gap-1.5">
                 <svg className="h-4 w-4" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M2 6l3 3 5-5" /></svg>
-                CV filled! Review each step and edit as needed.
+                {t("cvFilledSuccess")}
               </p>
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                 {fillResult.experience?.length > 0 && (
                   <div className="text-center p-2 rounded-lg bg-[var(--land-surface)]/50">
                     <p className="text-lg font-semibold text-[var(--land-bright)]">{fillResult.experience.length}</p>
-                    <p className="text-[10px] text-[var(--land-muted)] uppercase tracking-wider">Experience</p>
+                    <p className="text-[10px] text-[var(--land-muted)] uppercase tracking-wider">{t("statExperience")}</p>
                   </div>
                 )}
                 {fillResult.skills?.length > 0 && (
                   <div className="text-center p-2 rounded-lg bg-[var(--land-surface)]/50">
                     <p className="text-lg font-semibold text-[var(--land-bright)]">{fillResult.skills.reduce((a: number, s: any) => a + (s.items?.length || 0), 0)}</p>
-                    <p className="text-[10px] text-[var(--land-muted)] uppercase tracking-wider">Skills</p>
+                    <p className="text-[10px] text-[var(--land-muted)] uppercase tracking-wider">{t("statSkills")}</p>
                   </div>
                 )}
                 {fillResult.education?.length > 0 && (
                   <div className="text-center p-2 rounded-lg bg-[var(--land-surface)]/50">
                     <p className="text-lg font-semibold text-[var(--land-bright)]">{fillResult.education.length}</p>
-                    <p className="text-[10px] text-[var(--land-muted)] uppercase tracking-wider">Education</p>
+                    <p className="text-[10px] text-[var(--land-muted)] uppercase tracking-wider">{t("statEducation")}</p>
                   </div>
                 )}
                 {fillResult.certifications?.length > 0 && (
                   <div className="text-center p-2 rounded-lg bg-[var(--land-surface)]/50">
                     <p className="text-lg font-semibold text-[var(--land-bright)]">{fillResult.certifications.length}</p>
-                    <p className="text-[10px] text-[var(--land-muted)] uppercase tracking-wider">Certifications</p>
+                    <p className="text-[10px] text-[var(--land-muted)] uppercase tracking-wider">{t("statCertifications")}</p>
                   </div>
                 )}
               </div>
@@ -264,7 +259,7 @@ export function BasicsStep({ data, onChange }: BasicsStepProps) {
                   disabled={fillGenerating}
                   className="text-xs text-emerald-600/70 hover:text-emerald-600 underline underline-offset-2"
                 >
-                  Regenerate everything ({fullCvUses}/{FULL_CV_LIMIT} used)
+                  {t("regenerateEverything", { used: fullCvUses, limit: FULL_CV_LIMIT })}
                 </button>
               )}
             </div>
@@ -278,7 +273,7 @@ export function BasicsStep({ data, onChange }: BasicsStepProps) {
               className="bg-emerald-600 hover:bg-emerald-700 text-white w-full rounded-xl py-4 font-semibold text-sm transition-colors flex items-center justify-center gap-2"
             >
               <svg className="h-4 w-4" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M8 2v4M6 4h4M3 8l2 6 3-4 3 4 2-6" /></svg>
-              {fullCvUses > 0 ? `Regenerate entire CV (${fullCvUses}/${FULL_CV_LIMIT})` : "Fill my entire CV with AI"}
+              {fullCvUses > 0 ? t("regenerateCv", { used: fullCvUses, limit: FULL_CV_LIMIT }) : t("fillCvButton")}
             </button>
           )}
 
@@ -288,7 +283,7 @@ export function BasicsStep({ data, onChange }: BasicsStepProps) {
           {!fillGenerating && (
             <div className="flex items-center gap-3 py-1">
               <div className="flex-1 h-px bg-[var(--land-border)]" />
-              <span className="text-xs text-[var(--land-muted)]">&mdash; or just the summary &mdash;</span>
+              <span className="text-xs text-[var(--land-muted)]">{t("orJustSummary")}</span>
               <div className="flex-1 h-px bg-[var(--land-border)]" />
             </div>
           )}
@@ -304,12 +299,12 @@ export function BasicsStep({ data, onChange }: BasicsStepProps) {
               {aiGenerating ? (
                 <>
                   <span className="h-3.5 w-3.5 animate-spin rounded-full border-2 border-emerald-600 border-t-transparent" />
-                  Writing your summary...
+                  {t("writingSummary")}
                 </>
               ) : (
                 <>
                   <svg className="h-4 w-4" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M8 2v4M6 4h4M3 8l2 6 3-4 3 4 2-6" /></svg>
-                  {summaryUses > 0 ? `Regenerate summary (${summaryUses}/${SUMMARY_LIMIT})` : "Generate my CV summary"}
+                  {summaryUses > 0 ? t("regenerateSummary", { used: summaryUses, limit: SUMMARY_LIMIT }) : t("generateSummaryButton")}
                 </>
               )}
             </button>
@@ -320,9 +315,9 @@ export function BasicsStep({ data, onChange }: BasicsStepProps) {
             <div className="rounded-xl border border-emerald-600/30 bg-emerald-600/5 p-4">
               <p className="text-xs font-medium text-emerald-600 mb-1 flex items-center gap-1.5">
                 <svg className="h-3.5 w-3.5" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M8 2v4M6 4h4M3 8l2 6 3-4 3 4 2-6" /></svg>
-                AI Suggested
+                {t("aiSuggested")}
               </p>
-              <p className="text-xs text-[var(--land-muted)] mb-2">Based on: {basics.fullName} &middot; {basics.title}</p>
+              <p className="text-xs text-[var(--land-muted)] mb-2">{t("basedOn", { name: basics.fullName, title: basics.title })}</p>
               <p className="text-sm text-[var(--land-bright)] leading-relaxed mb-3">{aiSuggestion}</p>
               <div className="flex items-center gap-2">
                 <button
@@ -330,7 +325,7 @@ export function BasicsStep({ data, onChange }: BasicsStepProps) {
                   onClick={acceptSuggestion}
                   className="inline-flex items-center gap-1 rounded-lg bg-emerald-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-emerald-700 transition-colors"
                 >
-                  Use this &rarr;
+                  {t("useThis")}
                 </button>
                 {summaryUses < SUMMARY_LIMIT && (
                   <button
@@ -339,7 +334,7 @@ export function BasicsStep({ data, onChange }: BasicsStepProps) {
                     disabled={aiGenerating}
                     className="inline-flex items-center gap-1 rounded-lg border border-[var(--land-border)] px-3 py-1.5 text-xs text-[var(--land-body)] hover:bg-[var(--land-surface-raised)] transition-colors disabled:opacity-40"
                   >
-                    {aiGenerating ? "..." : "Try again"}
+                    {aiGenerating ? "..." : t("tryAgain")}
                   </button>
                 )}
                 <button
@@ -347,7 +342,7 @@ export function BasicsStep({ data, onChange }: BasicsStepProps) {
                   onClick={() => setAiSuggestion("")}
                   className="text-xs text-[var(--land-muted)] hover:text-[var(--land-bright)] ml-auto"
                 >
-                  Dismiss
+                  {t("dismiss")}
                 </button>
               </div>
             </div>
@@ -357,7 +352,7 @@ export function BasicsStep({ data, onChange }: BasicsStepProps) {
 
           {basics.summary && !aiSuggestion && !fillGenerating && (
             <div className="rounded-lg border border-[var(--land-border)]/50 bg-[var(--land-surface)]/30 px-4 py-2.5">
-              <p className="text-[10px] uppercase tracking-wider text-[var(--land-muted)] mb-1">Your CV Summary</p>
+              <p className="text-[10px] uppercase tracking-wider text-[var(--land-muted)] mb-1">{t("yourCvSummary")}</p>
               <p className="text-xs text-[var(--land-body)] line-clamp-2">{basics.summary}</p>
             </div>
           )}
@@ -371,16 +366,16 @@ export function BasicsStep({ data, onChange }: BasicsStepProps) {
         <div className="rounded-xl border border-emerald-600/30 bg-emerald-600/5 p-5 text-center space-y-2">
           <p className="flex items-center justify-center gap-1.5 text-sm font-medium text-[var(--land-bright)]">
             <svg className="h-4 w-4 text-emerald-600" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M8 2v4M6 4h4M3 8l2 6 3-4 3 4 2-6" /></svg>
-            Write your CV with AI
+            {t("aiCtaHeading")}
           </p>
           <p className="text-xs text-[var(--land-muted)]">
-            Create a free account to let AI write your summary and fill your CV. Your draft is saved.
+            {t("aiCtaBody")}
           </p>
           <Link
             href={`/sign-up?redirect_url=${encodeURIComponent(pathname)}`}
             className="inline-flex items-center justify-center gap-1.5 rounded-lg bg-emerald-600 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-emerald-700"
           >
-            Sign in to use AI &rarr;
+            {t("aiCtaButton")}
           </Link>
         </div>
       )}
@@ -392,76 +387,64 @@ export function BasicsStep({ data, onChange }: BasicsStepProps) {
         className="md:hidden w-full flex items-center justify-between min-h-[48px] px-4 rounded-lg border border-[var(--land-border)] bg-[var(--land-surface)]/40 text-sm font-medium text-[var(--land-bright)]"
         aria-expanded={showOptional}
       >
-        <span>{showOptional ? "▼ " : "▶ "}Optional details</span>
+        <span>{showOptional ? "▼ " : "▶ "}{t("optionalDetails")}</span>
         <span className="text-xs text-[var(--land-muted)]">
-          {showOptional ? "Hide" : "Phone, location, summary…"}
+          {showOptional ? t("optionalHide") : t("optionalSummaryShort")}
         </span>
       </button>
 
       {/* OPTIONAL fields — collapsed on mobile (unless expanded), always shown on md+ */}
       <div className={`${showOptional ? "block" : "hidden"} md:block space-y-6`}>
-        <TextField label="Subtitle / Tagline" value={basics.subtitle} onChange={(v) => updateBasics("subtitle", v)} placeholder="Transforming data into strategic insights" hint="A one-liner that captures your professional brand" examples={["Transforming complex data into actionable insights", "Building scalable solutions for enterprise challenges", "Driving growth through strategic innovation"]} />
+        <TextField label={t("subtitleLabel")} value={basics.subtitle} onChange={(v) => updateBasics("subtitle", v)} placeholder={t("subtitlePlaceholder")} hint={t("subtitleHint")} examples={t.raw("subtitleExamples") as string[]} />
 
-        <TextField label="Phone" type="tel" autoComplete="tel" inputMode="tel" dir="ltr" value={basics.phone} onChange={(v) => updateBasics("phone", v)} placeholder="+965 1234 5678" />
+        <TextField label={t("phoneLabel")} type="tel" autoComplete="tel" inputMode="tel" dir="ltr" value={basics.phone} onChange={(v) => updateBasics("phone", v)} placeholder={t("phonePlaceholder")} />
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <TextField label="Location" value={basics.location} onChange={(v) => updateBasics("location", v)} placeholder="Kuwait City, Kuwait" />
-          <TextField label="Nationality" value={basics.nationality} onChange={(v) => updateBasics("nationality", v)} placeholder="Kuwaiti National" />
+          <TextField label={t("locationLabel")} value={basics.location} onChange={(v) => updateBasics("location", v)} placeholder={t("locationPlaceholder")} />
+          <TextField label={t("nationalityLabel")} value={basics.nationality} onChange={(v) => updateBasics("nationality", v)} placeholder={t("nationalityPlaceholder")} />
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <TextField label="LinkedIn URL" type="url" inputMode="url" dir="ltr" value={basics.linkedin} onChange={(v) => updateBasics("linkedin", v)} placeholder="linkedin.com/in/yourname" />
-          <TextField label="Website" type="url" inputMode="url" dir="ltr" value={basics.website} onChange={(v) => updateBasics("website", v)} placeholder="yourwebsite.com" />
+          <TextField label={t("linkedinLabel")} type="url" inputMode="url" dir="ltr" value={basics.linkedin} onChange={(v) => updateBasics("linkedin", v)} placeholder={t("linkedinPlaceholder")} />
+          <TextField label={t("websiteLabel")} type="url" inputMode="url" dir="ltr" value={basics.website} onChange={(v) => updateBasics("website", v)} placeholder={t("websitePlaceholder")} />
         </div>
 
         <TextareaField
-          label="Professional Summary"
+          label={t("summaryLabel")}
           value={basics.bio}
           onChange={(v) => updateBasics("bio", v)}
-          placeholder="Write 2-3 sentences about your expertise and career highlights..."
-          hint="Focus on achievements and impact, not just job duties."
+          placeholder={t("summaryPlaceholder")}
+          hint={t("summaryHint")}
           rows={3}
-          writingTips={[
-            "Start with your years of experience and core expertise",
-            "Mention 2-3 specific achievements with numbers",
-            "Use strong verbs: led, delivered, transformed, optimized",
-          ]}
-          templates={[
-            { label: "Finance", text: "Results-driven financial analyst with [X]+ years of experience in corporate finance, investment analysis, and risk management. Proven track record of delivering data-driven insights that have influenced over $[X] in strategic decisions." },
-            { label: "Tech", text: "Full-stack engineer with [X]+ years building scalable applications. Led teams of [X] and delivered solutions serving [X]+ users." },
-            { label: "General", text: "Accomplished professional with [X]+ years of experience in [field]. Known for [key strength] and delivering measurable results including [achievement]." },
-          ]}
+          writingTips={t.raw("summaryTips") as string[]}
+          templates={t.raw("summaryTemplates") as Array<{ label: string; text: string }>}
         />
 
         <TextareaField
-          label="Value Proposition"
+          label={t("valuePropLabel")}
           value={basics.valueProposition}
           onChange={(v) => updateBasics("valueProposition", v)}
-          placeholder="What unique value do you bring to employers?"
-          hint="Your elevator pitch — why should they hire YOU?"
+          placeholder={t("valuePropPlaceholder")}
+          hint={t("valuePropHint")}
           rows={4}
-          writingTips={[
-            "Answer: What problem do you solve better than anyone?",
-            "Include your unique combination of skills",
-            "Quantify your impact where possible",
-          ]}
+          writingTips={t.raw("valuePropTips") as string[]}
         />
 
         <div>
           <div className="flex items-center justify-between mb-3">
-            <h3 className="text-lg font-medium text-[var(--land-bright)]">Key Metrics</h3>
-            <span className="text-xs text-[var(--land-muted)]">Numbers that prove impact</span>
+            <h3 className="text-lg font-medium text-[var(--land-bright)]">{t("keyMetricsHeading")}</h3>
+            <span className="text-xs text-[var(--land-muted)]">{t("keyMetricsHint")}</span>
           </div>
           <DynamicList
             items={metrics}
             onChange={(items) => onChange({ metrics: items })}
             createEmpty={() => ({ value: "", label: "" })}
             maxItems={4}
-            addLabel="Add Metric"
+            addLabel={t("addMetric")}
             renderItem={(item, _, update) => (
               <div className="grid grid-cols-2 gap-3">
-                <TextField label="Value" value={item.value} onChange={(v) => update({ value: v })} placeholder="10+" examples={["10+", "$2.4B", "35+", "6", "98%"]} />
-                <TextField label="Label" value={item.label} onChange={(v) => update({ label: v })} placeholder="Years Experience" examples={["Years Experience", "Projects Delivered", "Clients Served", "Certifications"]} />
+                <TextField label={t("metricValueLabel")} value={item.value} onChange={(v) => update({ value: v })} placeholder={t("metricValuePlaceholder")} examples={t.raw("metricValueExamples") as string[]} />
+                <TextField label={t("metricLabelLabel")} value={item.label} onChange={(v) => update({ label: v })} placeholder={t("metricLabelPlaceholder")} examples={t.raw("metricLabelExamples") as string[]} />
               </div>
             )}
           />

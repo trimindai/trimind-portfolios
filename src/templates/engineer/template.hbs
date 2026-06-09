@@ -98,6 +98,11 @@ a:focus-visible, button:focus-visible {
 /* ═══ CONTAINER ═══ */
 .section { max-width: 1200px; margin: 0 auto; padding: 80px 40px; }
 .section-sm { padding: 48px 40px; }
+.endorsements-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(400px, 100%), 1fr)); gap: 24px; }
+.endorsement { background: var(--bg-card); border: 1px solid var(--border); padding: 32px; }
+.endorsement blockquote { font-size: 1rem; color: var(--text-secondary); line-height: 1.8; font-style: italic; margin-bottom: 16px; }
+.endorsement .endorse-author { font-family: var(--font-head); font-size: 0.85rem; font-weight: 600; }
+.endorsement .endorse-role { font-size: 0.78rem; color: var(--text-muted); }
 
 /* ═══ SECTION HEADINGS ═══ */
 .section-title {
@@ -545,6 +550,7 @@ a:focus-visible, button:focus-visible {
 </section>
 
 <!-- ═══ PROJECTS ═══ -->
+{{#unless (isHidden "projects")}}
 {{#if projects}}
 <div class="divider"></div>
 <section class="section" id="projects">
@@ -586,8 +592,10 @@ a:focus-visible, button:focus-visible {
   </div>
 </section>
 {{/if}}
+{{/unless}}
 
 <!-- ═══ EXPERIENCE ═══ -->
+{{#unless (isHidden "experience")}}
 {{#if experience}}
 <div class="divider"></div>
 <section class="section" id="experience">
@@ -611,8 +619,10 @@ a:focus-visible, button:focus-visible {
   </div>
 </section>
 {{/if}}
+{{/unless}}
 
 <!-- ═══ SKILLS ═══ -->
+{{#unless (isHidden "skills")}}
 {{#if skills}}
 <div class="divider"></div>
 <section class="section" id="skills">
@@ -629,8 +639,10 @@ a:focus-visible, button:focus-visible {
   </div>
 </section>
 {{/if}}
+{{/unless}}
 
 <!-- ═══ EDUCATION ═══ -->
+{{#unless (isHidden "education")}}
 {{#if education}}
 <div class="divider"></div>
 <section class="section" id="education">
@@ -649,8 +661,10 @@ a:focus-visible, button:focus-visible {
   </div>
 </section>
 {{/if}}
+{{/unless}}
 
 <!-- ═══ CERTIFICATIONS ═══ -->
+{{#unless (isHidden "certifications")}}
 {{#if certifications}}
 <div class="divider"></div>
 <section class="section section-sm" id="certifications">
@@ -666,8 +680,10 @@ a:focus-visible, button:focus-visible {
   </div>
 </section>
 {{/if}}
+{{/unless}}
 
 <!-- ═══ LANGUAGES ═══ -->
+{{#unless (isHidden "languages")}}
 {{#if languages}}
 <div class="divider"></div>
 <section class="section section-sm" id="languages">
@@ -682,6 +698,26 @@ a:focus-visible, button:focus-visible {
   </div>
 </section>
 {{/if}}
+{{/unless}}
+
+<!-- ═══ ENDORSEMENTS ═══ -->
+{{#unless (isHidden "endorsements")}}
+{{#if endorsements}}
+<div class="divider"></div>
+<section class="section" id="endorsements">
+  <h2 class="section-title rv">Endorsements</h2>
+  <div class="endorsements-grid">
+    {{#each endorsements}}
+    <div class="endorsement rv">
+      <blockquote>&ldquo;{{quote}}&rdquo;</blockquote>
+      <div class="endorse-author">{{name}}</div>
+      <div class="endorse-role">{{title}}{{#if company}} &mdash; {{company}}{{/if}}</div>
+    </div>
+    {{/each}}
+  </div>
+</section>
+{{/if}}
+{{/unless}}
 
 <!-- ═══ FOOTER ═══ -->
 <footer class="footer">

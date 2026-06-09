@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { TextField } from "../fields/TextField";
 import { TextareaField } from "../fields/TextareaField";
 
@@ -10,6 +11,7 @@ interface CreatorProfileStepProps {
 }
 
 export function CreatorProfileStep({ data, onChange }: CreatorProfileStepProps) {
+  const t = useTranslations("builder.creator");
   const basics = data.basics || {};
   // Mobile: collapse optional fields; desktop (md+) always shows everything.
   const [showOptional, setShowOptional] = useState(false);
@@ -19,9 +21,9 @@ export function CreatorProfileStep({ data, onChange }: CreatorProfileStepProps) 
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-xl font-semibold text-[var(--land-bright)]">Your Profile</h2>
+        <h2 className="text-xl font-semibold text-[var(--land-bright)]">{t("profileHeading")}</h2>
         <p className="text-sm text-[var(--land-body)] mt-1">
-          The headline of your portfolio. Your initials become the monogram — no profile photo needed.
+          {t("profileIntro")}
         </p>
       </div>
 
@@ -29,37 +31,30 @@ export function CreatorProfileStep({ data, onChange }: CreatorProfileStepProps) 
       <div className="space-y-6">
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <TextField
-            label="Full Name" autoComplete="name"
+            label={t("fullName")} autoComplete="name"
             value={basics.fullName}
             onChange={(v) => set("fullName", v)}
             required
-            placeholder="Remi Vance"
-            hint="Shown large in the hero and as your monogram"
+            placeholder={t("fullNamePlaceholder")}
+            hint={t("fullNameHint")}
           />
           <TextField
-            label="Title"
+            label={t("title")}
             value={basics.title}
             onChange={(v) => set("title", v)}
             required
-            placeholder="Content Creator"
-            hint="The small label above your name"
-            examples={[
-              "Content Creator",
-              "YouTuber",
-              "Filmmaker",
-              "Podcast Host",
-              "Brand Storyteller",
-              "Digital Creator",
-            ]}
+            placeholder={t("titlePlaceholder")}
+            hint={t("titleHint")}
+            examples={t.raw("titleExamples") as string[]}
           />
         </div>
         <TextField
-          label="Email"
+          label={t("email")}
           value={basics.email}
           onChange={(v) => set("email", v)}
           required
           type="email" autoComplete="email" inputMode="email" dir="ltr"
-          placeholder="hello@yourname.com"
+          placeholder={t("emailPlaceholder")}
         />
       </div>
 
@@ -70,83 +65,79 @@ export function CreatorProfileStep({ data, onChange }: CreatorProfileStepProps) 
         className="md:hidden w-full flex items-center justify-between min-h-[48px] px-4 rounded-lg border border-[var(--land-border)] bg-[var(--land-surface)]/40 text-sm font-medium text-[var(--land-bright)]"
         aria-expanded={showOptional}
       >
-        <span>{showOptional ? "▼ " : "▶ "}Optional details</span>
-        <span className="text-xs text-[var(--land-muted)]">{showOptional ? "Hide" : "Tagline, channels…"}</span>
+        <span>{showOptional ? "▼ " : "▶ "}{t("optionalDetails")}</span>
+        <span className="text-xs text-[var(--land-muted)]">{showOptional ? t("optionalHide") : t("optionalSummary")}</span>
       </button>
 
       {/* OPTIONAL — collapsed on mobile (unless expanded), always shown on md+ */}
       <div className={`${showOptional ? "block" : "hidden"} md:block space-y-6`}>
       <TextField
-        label="Tagline"
+        label={t("tagline")}
         value={basics.subtitle}
         onChange={(v) => set("subtitle", v)}
-        placeholder="Brand Storyteller & Short-form Specialist"
-        hint="The line under your name, in the accent color"
+        placeholder={t("taglinePlaceholder")}
+        hint={t("taglineHint")}
       />
 
       <TextareaField
-        label="Intro"
+        label={t("intro")}
         value={basics.valueProposition}
         onChange={(v) => set("valueProposition", v)}
-        placeholder="I turn brands into stories people want to watch — cinematic short-form, vlogs and campaigns across YouTube, Instagram and TikTok."
-        hint="One or two sentences about what you make and who it's for. Shown in the hero."
+        placeholder={t("introPlaceholder")}
+        hint={t("introHint")}
         rows={3}
-        writingTips={[
-          "Lead with what you create and the platforms you create it for",
-          "Name the outcome brands get (reach, engagement, audience)",
-          "Keep it to 1-2 punchy sentences",
-        ]}
+        writingTips={t.raw("introWritingTips") as string[]}
       />
 
       <TextField
-        label="Phone" type="tel" autoComplete="tel" inputMode="tel" dir="ltr"
+        label={t("phone")} type="tel" autoComplete="tel" inputMode="tel" dir="ltr"
         value={basics.phone}
         onChange={(v) => set("phone", v)}
-        placeholder="+965 1234 5678"
+        placeholder={t("phonePlaceholder")}
       />
 
       <TextField
-        label="Location"
+        label={t("location")}
         value={basics.location}
         onChange={(v) => set("location", v)}
-        placeholder="Kuwait City"
+        placeholder={t("locationPlaceholder")}
       />
 
       <div>
-        <h3 className="text-sm font-semibold text-[var(--land-bright)] mb-1">Channels</h3>
+        <h3 className="text-sm font-semibold text-[var(--land-bright)] mb-1">{t("channelsHeading")}</h3>
         <p className="text-xs text-[var(--land-body)] mb-3">
-          Each one you add becomes a contact button. Leave blank to hide it.
+          {t("channelsHint")}
         </p>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <TextField
-            label="Instagram URL" type="url" inputMode="url" dir="ltr"
+            label={t("instagram")} type="url" inputMode="url" dir="ltr"
             value={basics.instagram}
             onChange={(v) => set("instagram", v)}
-            placeholder="https://instagram.com/yourhandle"
+            placeholder={t("instagramPlaceholder")}
           />
           <TextField
-            label="YouTube URL" type="url" inputMode="url" dir="ltr"
+            label={t("youtube")} type="url" inputMode="url" dir="ltr"
             value={basics.youtube}
             onChange={(v) => set("youtube", v)}
-            placeholder="https://youtube.com/@yourchannel"
+            placeholder={t("youtubePlaceholder")}
           />
           <TextField
-            label="TikTok URL" type="url" inputMode="url" dir="ltr"
+            label={t("tiktok")} type="url" inputMode="url" dir="ltr"
             value={basics.tiktok}
             onChange={(v) => set("tiktok", v)}
-            placeholder="https://tiktok.com/@yourhandle"
+            placeholder={t("tiktokPlaceholder")}
           />
           <TextField
-            label="Website URL" type="url" inputMode="url" dir="ltr"
+            label={t("website")} type="url" inputMode="url" dir="ltr"
             value={basics.website}
             onChange={(v) => set("website", v)}
-            placeholder="https://yoursite.com"
+            placeholder={t("websitePlaceholder")}
           />
           <TextField
-            label="LinkedIn URL" type="url" inputMode="url" dir="ltr"
+            label={t("linkedin")} type="url" inputMode="url" dir="ltr"
             value={basics.linkedin}
             onChange={(v) => set("linkedin", v)}
-            placeholder="https://linkedin.com/in/yourname"
+            placeholder={t("linkedinPlaceholder")}
           />
         </div>
       </div>
