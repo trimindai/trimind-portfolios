@@ -86,6 +86,16 @@ async function checkPhone(path, label) {
   }
   ok("in-flow label never overlaps the heading across scroll", worstOverlap <= 2, `worstOverlap=${Math.round(worstOverlap)}px`);
 
+  // --- auto-hover spotlight: the label must cycle across multiple skills while idle ---
+  await page.evaluate(() => document.getElementById("skills")?.scrollIntoView({ behavior: "instant", block: "center" }));
+  const seen = new Set();
+  for (let i = 0; i < 8; i++) {
+    await page.waitForTimeout(800);
+    const name = await page.evaluate(() => document.querySelector("#kbd-label .kbd-label-name")?.textContent?.trim() || "");
+    if (name) seen.add(name);
+  }
+  ok("auto-hover spotlight cycles the label across >= 3 skills", seen.size >= 3, `distinct=${seen.size} [${[...seen].join(", ")}]`);
+
   await ctx.close();
 }
 

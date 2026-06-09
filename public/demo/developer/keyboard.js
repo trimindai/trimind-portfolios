@@ -503,6 +503,11 @@
   var ray = new THREE.Raycaster();
   var mouse = new THREE.Vector2(-2, -2);
   var hovered = null;
+  var __autoT = 0, __autoIdx = -1, __AUTO_STEP = 1.4; /* phone auto-hover spotlight */
+  /* motion-principles: the spotlight is continuous ambient motion — disable it under
+     prefers-reduced-motion (vestibular safety; mandatory). Re-read live so an OS change
+     takes effect without reload. */
+  var __reduceMotionMQ = window.matchMedia ? window.matchMedia("(prefers-reduced-motion: reduce)") : { matches: false };
 
   function setMouse(e) { var t = e.touches ? e.touches[0] : e; mouse.x = (t.clientX / window.innerWidth) * 2 - 1; mouse.y = -(t.clientY / window.innerHeight) * 2 + 1; }
   var isDown = false, dragging = false, downX = 0, downY = 0, lastX = 0, lastY = 0, downCap = null;
@@ -628,7 +633,7 @@
     requestAnimationFrame(animate);
     running = true;
     t += 0.016;
-    if (!isDown) pickHover();
+    if (!isDown && !(isPhone && labelEnabled)) pickHover();
     /* R2: glide the board horizontally to the active section's parking spot.
        viewport size in world units at the board's z-plane (board.position.z≈0): */
     var vpH = 2 * Math.tan((camera.fov * Math.PI / 180) / 2) * Math.abs(camera.position.z - board.position.z);
@@ -655,6 +660,17 @@
     var dt = Math.min(0.25, Math.max(0, (now - lastNow) / 1000)); lastNow = now;
     var k = 7; // smoothing rate (per second); higher = snappier, still glides
     var sm = 1 - Math.exp(-k * dt);
+    /* phone auto-hover: sweep a gentle spotlight across the caps so the board stays
+       alive while scrolling; paced by real elapsed time (dt) so it's identical at
+       any fps; pauses while a finger is scrubbing keys (isDown); disabled under
+       prefers-reduced-motion. */
+    if (isPhone && labelEnabled && !isDown && !__reduceMotionMQ.matches && caps.length) {
+      __autoT += dt;
+      if (__autoIdx < 0 || __autoT >= __AUTO_STEP) {
+        __autoT = 0; __autoIdx = (__autoIdx + 1) % caps.length;
+        hovered = caps[__autoIdx]; setLabel(hovered.userData.skill);
+      }
+    }
     board.position.x += (targetX - board.position.x) * sm;
     /* R4: on phone multiply the section scale by 0.52 — clearly smaller, reads as backdrop */
     var ts = isPhone ? (phoneText ? PHONE_SCALE_TEXT : PHONE_SCALE_SHOW) : (SECTION_SCALE[sid] || 1.0);
