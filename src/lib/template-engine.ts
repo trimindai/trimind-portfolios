@@ -464,6 +464,93 @@ Handlebars.registerHelper("trackballBadge", (explicit: any, fullName: any) =>
   trackballBadgeValue(explicit, fullName),
 );
 
+// ── kbdSkillsJSON helper ───────────────────────────────────────────────────
+// Maps user skills → keyboard keycap data (slug, label, tag, color).
+// Slug is one of the 19 SVG icons that exist in public/demo/developer/stack/icons/;
+// unknown tools get slug: null (keyboard.js renders a 3-letter text cap).
+// normalizeTech strips all non-alphanumeric chars and lowercases, so:
+//   "Next.js" → "nextjs", "Node.js" → "nodejs", "Three.js" → "threejs", etc.
+const KBD_SLUGS: Record<string, string> = {
+  react: "react",
+  reactjs: "react",
+  next: "nextdotjs",
+  nextjs: "nextdotjs",
+  typescript: "typescript",
+  ts: "typescript",
+  javascript: "javascript",
+  js: "javascript",
+  tailwind: "tailwindcss",
+  tailwindcss: "tailwindcss",
+  three: "threedotjs",
+  threejs: "threedotjs",
+  webgl: "webgl",
+  framer: "framer",
+  framermotion: "framer",
+  node: "nodedotjs",
+  nodejs: "nodedotjs",
+  python: "python",
+  graphql: "graphql",
+  postgres: "postgresql",
+  postgresql: "postgresql",
+  redis: "redis",
+  aws: "amazonwebservices",
+  amazonwebservices: "amazonwebservices",
+  docker: "docker",
+  kubernetes: "kubernetes",
+  k8s: "kubernetes",
+  githubactions: "githubactions",
+  actions: "githubactions",
+  git: "git",
+  figma: "figma",
+};
+
+// Brand colors keyed by icon slug (near-black tools get a readable dark-slate).
+const KBD_COLORS: Record<string, string> = {
+  react: "#61dafb",
+  nextdotjs: "#cfd6e4",
+  typescript: "#3178c6",
+  javascript: "#f7df1e",
+  tailwindcss: "#06b6d4",
+  threedotjs: "#cfd6e4",
+  webgl: "#990000",
+  framer: "#0055ff",
+  nodedotjs: "#5fa04e",
+  python: "#3776ab",
+  graphql: "#e10098",
+  postgresql: "#4169e1",
+  redis: "#ff4438",
+  amazonwebservices: "#ff9900",
+  docker: "#2496ed",
+  kubernetes: "#326ce5",
+  githubactions: "#2088ff",
+  git: "#f05032",
+  figma: "#f24e1e",
+};
+const KBD_DEFAULT_COLOR = "#5b6478";
+
+export function kbdSkillsData(
+  skills: any,
+): Array<{ slug: string | null; label: string; tag: string; color: string }> {
+  if (!Array.isArray(skills)) return [];
+  const out: Array<{ slug: string | null; label: string; tag: string; color: string }> = [];
+  skills.forEach((cat: any) => {
+    const category = typeof cat?.category === "string" ? cat.category : "";
+    const items = Array.isArray(cat?.items) ? cat.items : [];
+    items.forEach((it: any) => {
+      const label = (typeof it === "string" ? it : String(it?.name ?? it ?? "")).trim();
+      if (!label) return;
+      const desc = typeof it === "object" && it ? String(it.description ?? "").trim() : "";
+      const slug = KBD_SLUGS[normalizeTech(label)] ?? null;
+      const color = (slug && KBD_COLORS[slug]) || KBD_DEFAULT_COLOR;
+      out.push({ slug, label, tag: desc || category, color });
+    });
+  });
+  return out;
+}
+Handlebars.registerHelper("kbdSkillsJSON", (skills: any) =>
+  new Handlebars.SafeString(JSON.stringify(kbdSkillsData(skills))),
+);
+
 let compiledGeneralTemplate: Handlebars.TemplateDelegate | null = null;
 let compiledEngineerTemplate: Handlebars.TemplateDelegate | null = null;
 let compiledEngineerProjectDetail: Handlebars.TemplateDelegate | null = null;
