@@ -450,6 +450,20 @@ Handlebars.registerHelper(
   }
 );
 
+// ── trackballBadge helper ──────────────────────────────────────────────────
+// Returns the text shown on the trackball: explicit label if provided,
+// else the first word of the full name, else "you". Capped at 10 chars.
+export function trackballBadgeValue(explicit?: string | null, fullName?: string | null): string {
+  const e = String(explicit ?? "").trim();
+  if (e) return e.slice(0, 10);
+  const first = String(fullName ?? "").trim().split(/\s+/)[0] || "";
+  if (first) return first.slice(0, 10);
+  return "you";
+}
+Handlebars.registerHelper("trackballBadge", (explicit: any, fullName: any) =>
+  trackballBadgeValue(explicit, fullName),
+);
+
 let compiledGeneralTemplate: Handlebars.TemplateDelegate | null = null;
 let compiledEngineerTemplate: Handlebars.TemplateDelegate | null = null;
 let compiledEngineerProjectDetail: Handlebars.TemplateDelegate | null = null;
