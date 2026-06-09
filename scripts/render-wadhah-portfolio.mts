@@ -80,70 +80,6 @@ if (!kbd.includes('label: "Pentest"')) throw new Error("KBD SKILLS swap failed")
 kbd = kbd.replace('mCtx.fillText("Maya", 128, 128);', 'mCtx.fillText("WA", 128, 128);');
 if (kbd.includes('fillText("Maya"')) throw new Error("KBD badge swap failed");
 
-/* ── PHONE keyboard sizing (Wadhah-only — the shared demo file is untouched) ──
-   On a 390px portrait screen the default 4-row grid becomes ceil(34/4)=9 columns
-   wide and runs off BOTH edges (only ~5 caps visible). For her 34-tool stack we:
-   - go to 5 rows on phone → ceil(34/5)=7 columns (narrower, more portrait-shaped),
-     while desktop keeps its 4-row framing,
-   - zoom the phone camera out so the WHOLE keyboard is visible (no side-clipping). */
-function kbdRep(label: string, from: string, to: string) {
-  if (!kbd.includes(from)) throw new Error(`KBD REPLACE FAILED [${label}]: anchor not found`);
-  kbd = kbd.replace(from, to);
-}
-// 5 rows on phone, 4 on desktop (board is built once, so read the media query at init)
-kbdRep("rows-phone",
-  "var ROWS_H = 4;",
-  'var ROWS_H = (window.matchMedia && window.matchMedia("(max-width:760px)").matches) ? 5 : 4;');
-// zoom the portrait camera out so the full 7-wide grid fits inside 390px
-kbdRep("phone-camera",
-  "if (portrait) { camera.fov = 58; camera.position.set(0, 7.6, 10.0); camera.lookAt(0, 0.0, 1.7); }",
-  "if (portrait) { camera.fov = 60; camera.position.set(0, 9.4, 13.8); camera.lookAt(0, 0.1, 1.5); }");
-// full showcase scale — the zoomed-out camera already keeps the 7-wide grid inside 390px
-kbdRep("phone-scale", "var PHONE_SCALE_SHOW = 0.92;", "var PHONE_SCALE_SHOW = 1.0;");
-// raise the keyboard toward the centred label so there's no dead gap above it
-kbdRep("phone-y-show", "var PHONE_Y_SHOW = 0.22;", "var PHONE_Y_SHOW = 0.12;");
-// phone: while a touch is interacting with the keyboard (scrubbing keys or
-// rotating the board) stop the page from ALSO scrolling — otherwise dragging on
-// the caps scrolls the section and the heading/label visibly jump and overlap the
-// keyboard. Empty-space touches keep isDown=false, so they still scroll the page.
-kbdRep("touch-no-scroll",
-  '  window.addEventListener("pointercancel", function () { isDown = false; dragging = false; downCap = null; }, { passive: true });',
-  '  window.addEventListener("pointercancel", function () { isDown = false; dragging = false; downCap = null; }, { passive: true });\n' +
-  '  window.addEventListener("touchmove", function (e) { if (isDown && e.cancelable) e.preventDefault(); }, { passive: false });');
-
-// phone: append the name/description label INTO the skills sticky-head (in-flow)
-// so it travels with the heading; desktop keeps the fixed top-left float
-kbdRep("label-host-append",
-  "document.body.appendChild(labelEl);",
-  'var __lh = (window.matchMedia && window.matchMedia("(max-width:760px)").matches) ? document.getElementById("kbd-label-host") : null; (__lh || document.body).appendChild(labelEl);');
-
-/* ── PHONE: auto-hover spotlight ──
-   Touch has no mouse-hover, so the keyboard sat flat/dead while you scrolled past
-   it. Sweep the desktop hover-lift across the caps automatically while the skills
-   section is active (lift + glow + label, same as a real hover), so the board
-   stays alive during scroll. Pauses the moment you touch/scrub a key. */
-kbdRep("auto-hover-state",
-  "var hovered = null;",
-  "var hovered = null;\n  var __autoT = 0, __autoIdx = -1, __AUTO_STEP = 1.4; /* phone auto-hover */");
-// phone: don't let pickHover() null-out hovered while auto-hover owns it
-kbdRep("auto-hover-pickhover",
-  "    if (!isDown) pickHover();",
-  "    if (!isDown && !(isPhone && labelEnabled)) pickHover();");
-// drive the auto-hover off REAL elapsed time (dt), not frame count, so the pace
-// is identical at 30/60/120fps. Tick right after dt is computed in the loop.
-kbdRep("auto-hover-tick",
-  "    var sm = 1 - Math.exp(-k * dt);",
-  "    var sm = 1 - Math.exp(-k * dt);\n" +
-  "    /* phone auto-hover: sweep a gentle spotlight across the caps so the board\n" +
-  "       stays alive while scrolling; pauses while a finger is scrubbing keys. */\n" +
-  "    if (isPhone && labelEnabled && !isDown && caps.length) {\n" +
-  "      __autoT += dt;\n" +
-  "      if (__autoIdx < 0 || __autoT >= __AUTO_STEP) {\n" +
-  "        __autoT = 0; __autoIdx = (__autoIdx + 1) % caps.length;\n" +
-  "        hovered = caps[__autoIdx]; setLabel(hovered.userData.skill);\n" +
-  "      }\n" +
-  "    }");
-
 /* ── HEAD ── */
 rep("title",
   "<title>Maya Okafor — Full-Stack Engineer</title>",
@@ -289,22 +225,6 @@ rep("footer-socials",
       <a href="mailto:w.baazm@gmail.com" aria-label="Email"><i class="fa-solid fa-envelope"></i></a>
     </div>`);
 
-/* ── PHONE: host the keyboard's name/description label INSIDE the skills
-   sticky-head, so it scrolls + sticks WITH the heading as one unit instead of
-   floating fixed (which made the scrolling heading collide with the fixed label
-   on every scroll through the section). keyboard.js appends the label here on
-   phone (see kbdRep "label-host-append" above). ── */
-rep("skills-label-host",
-  `    <div class="sec-head sticky-head">
-      <div class="eyebrow">Tech Stack</div>
-      <h2>Tech Stack</h2>
-    </div>`,
-  `    <div class="sec-head sticky-head">
-      <div class="eyebrow">Tech Stack</div>
-      <h2>Tech Stack</h2>
-      <div id="kbd-label-host"></div>
-    </div>`);
-
 /* ── INLINE the keyboard (it's injected dynamically via k.src) ── */
 const kbdLiteral = JSON.stringify(kbd).replace(/<\/(script)/gi, "<\\/$1");
 rep("kbd-inject",
@@ -320,18 +240,6 @@ repAll("Maya Okafor", "Wadhah Almutairi");
 // no longer overflows/overlaps the 3D keyboard on the right.
 rep("hero-name-fit", "</head>",
   '<style>#hero h1{font-size:clamp(2.2rem,6vw,4.6rem)!important;line-height:.96!important}@media(min-width:900px){#hero .grid{max-width:520px}}' +
-  /* PHONE: the name/description label lives INSIDE the skills sticky-head
-     (#kbd-label-host). Make it a normal in-flow, centred block under the heading
-     so it sticks/scrolls WITH "Tech Stack" as one unit — it can no longer overlap
-     the heading the way the old position:fixed label did on every scroll. */
-  '@media(max-width:760px){' +
-    '#kbd-label-host{width:100%}' +
-    '#kbd-label{position:static!important;top:auto!important;left:auto!important;right:auto!important;' +
-      'bottom:auto!important;transform:none!important;max-width:100%!important;width:auto!important;' +
-      'margin:10px auto 0!important;text-align:center!important;pointer-events:none}' +
-    '#kbd-label .kbd-label-name{font-size:24px!important;line-height:1.05!important}' +
-    '#kbd-label .kbd-label-tag{max-width:90vw!important;margin:6px auto 0!important}' +
-  '}' +
   '</style></head>');
 
 writeFileSync("/tmp/wadhah-portfolio.html", html);
