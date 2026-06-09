@@ -11,6 +11,12 @@ interface TextFieldProps {
   type?: string;
   hint?: string;
   examples?: string[];
+  /** Browser autofill hint, e.g. "name", "email", "tel", "url". Defaults to off. */
+  autoComplete?: string;
+  /** Mobile keyboard hint, e.g. "tel", "email", "url". */
+  inputMode?: React.HTMLAttributes<HTMLInputElement>["inputMode"];
+  /** Force text direction for the value, e.g. "ltr" for emails/URLs/phones inside the RTL builder. */
+  dir?: "ltr" | "rtl" | "auto";
 }
 
 export function TextField({
@@ -22,6 +28,9 @@ export function TextField({
   type = "text",
   hint,
   examples,
+  autoComplete = "off",
+  inputMode,
+  dir,
 }: TextFieldProps) {
   const [showExamples, setShowExamples] = useState(false);
 
@@ -65,7 +74,9 @@ export function TextField({
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
         spellCheck={true}
-        autoComplete="off"
+        autoComplete={autoComplete}
+        inputMode={inputMode}
+        dir={dir}
         className="w-full bg-white border border-[var(--land-border)] rounded-lg px-4 py-2.5 text-[var(--land-bright)] placeholder:text-[var(--land-muted)] focus:border-[var(--land-accent)] focus:ring-1 focus:ring-[var(--land-accent)] outline-none transition-colors shadow-sm"
       />
     </div>

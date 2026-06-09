@@ -29,7 +29,7 @@ export function CreatorProfileStep({ data, onChange }: CreatorProfileStepProps) 
       <div className="space-y-6">
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <TextField
-            label="Full Name"
+            label="Full Name" autoComplete="name"
             value={basics.fullName}
             onChange={(v) => set("fullName", v)}
             required
@@ -58,7 +58,7 @@ export function CreatorProfileStep({ data, onChange }: CreatorProfileStepProps) 
           value={basics.email}
           onChange={(v) => set("email", v)}
           required
-          type="email"
+          type="email" autoComplete="email" inputMode="email" dir="ltr"
           placeholder="hello@yourname.com"
         />
       </div>
@@ -99,7 +99,7 @@ export function CreatorProfileStep({ data, onChange }: CreatorProfileStepProps) 
       />
 
       <TextField
-        label="Phone"
+        label="Phone" type="tel" autoComplete="tel" inputMode="tel" dir="ltr"
         value={basics.phone}
         onChange={(v) => set("phone", v)}
         placeholder="+965 1234 5678"
@@ -119,31 +119,31 @@ export function CreatorProfileStep({ data, onChange }: CreatorProfileStepProps) 
         </p>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <TextField
-            label="Instagram URL"
+            label="Instagram URL" type="url" inputMode="url" dir="ltr"
             value={basics.instagram}
             onChange={(v) => set("instagram", v)}
             placeholder="https://instagram.com/yourhandle"
           />
           <TextField
-            label="YouTube URL"
+            label="YouTube URL" type="url" inputMode="url" dir="ltr"
             value={basics.youtube}
             onChange={(v) => set("youtube", v)}
             placeholder="https://youtube.com/@yourchannel"
           />
           <TextField
-            label="TikTok URL"
+            label="TikTok URL" type="url" inputMode="url" dir="ltr"
             value={basics.tiktok}
             onChange={(v) => set("tiktok", v)}
             placeholder="https://tiktok.com/@yourhandle"
           />
           <TextField
-            label="Website URL"
+            label="Website URL" type="url" inputMode="url" dir="ltr"
             value={basics.website}
             onChange={(v) => set("website", v)}
             placeholder="https://yoursite.com"
           />
           <TextField
-            label="LinkedIn URL"
+            label="LinkedIn URL" type="url" inputMode="url" dir="ltr"
             value={basics.linkedin}
             onChange={(v) => set("linkedin", v)}
             placeholder="https://linkedin.com/in/yourname"

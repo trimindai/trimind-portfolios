@@ -1,6 +1,7 @@
 "use client";
 
 import { PhotoUpload } from "../fields/PhotoUpload";
+import { COLOR_PRESETS, isPresetActive, type ColorPreset } from "@/lib/color-presets";
 
 interface CustomizeStepProps {
   data: any;
@@ -27,14 +28,8 @@ const BODY_FONTS = [
   { value: "Lora", label: "Lora" },
 ];
 
-const COLOR_PRESETS = [
-  { name: "Corporate Navy", primary: "#0F172A", accent: "#A16207", bg: "#F8FAFC" },
-  { name: "Ocean Blue", primary: "#1E3A5F", accent: "#0891B2", bg: "#F0F9FF" },
-  { name: "Forest Green", primary: "#14532D", accent: "#CA8A04", bg: "#F0FDF4" },
-  { name: "Royal Purple", primary: "#3B0764", accent: "#A855F7", bg: "#FAF5FF" },
-  { name: "Warm Charcoal", primary: "#292524", accent: "#DC2626", bg: "#FAFAF9" },
-  { name: "Midnight", primary: "#0C0A09", accent: "#F59E0B", bg: "#FFFFFF" },
-];
+const PRESETS = COLOR_PRESETS.general;
+const DEFAULTS = { primary: "#0F172A", accent: "#A16207", bg: "#F8FAFC" };
 
 const SECTIONS = [
   { id: "credentials", label: "Credentials Bar" },
@@ -55,7 +50,7 @@ export function CustomizeStep({ data, onChange }: CustomizeStepProps) {
     onChange({ customization: { ...customization, [field]: value } });
   };
 
-  const applyPreset = (preset: typeof COLOR_PRESETS[0]) => {
+  const applyPreset = (preset: ColorPreset) => {
     onChange({
       customization: {
         ...customization,
@@ -90,21 +85,29 @@ export function CustomizeStep({ data, onChange }: CustomizeStepProps) {
         <p className="text-sm text-[var(--land-body)] mb-4">Pick a preset or customize individual colors.</p>
 
         <div className="grid grid-cols-3 sm:grid-cols-6 gap-2 mb-6">
-          {COLOR_PRESETS.map((preset) => (
-            <button
-              key={preset.name}
-              type="button"
-              onClick={() => applyPreset(preset)}
-              className="group rounded-lg border border-[var(--land-border)] hover:border-[var(--land-accent-hover)] p-2 transition-colors text-center"
-            >
-              <div className="flex gap-1 justify-center mb-1.5">
-                <div className="w-4 h-4 rounded-full border border-[var(--land-border)]" style={{ backgroundColor: preset.primary }} />
-                <div className="w-4 h-4 rounded-full border border-[var(--land-border)]" style={{ backgroundColor: preset.accent }} />
-                <div className="w-4 h-4 rounded-full border border-[var(--land-border)]" style={{ backgroundColor: preset.bg }} />
-              </div>
-              <span className="text-[10px] text-[var(--land-muted)] group-hover:text-[var(--land-bright)]">{preset.name}</span>
-            </button>
-          ))}
+          {PRESETS.map((preset) => {
+            const active = isPresetActive(preset, customization, DEFAULTS);
+            return (
+              <button
+                key={preset.name}
+                type="button"
+                onClick={() => applyPreset(preset)}
+                aria-pressed={active}
+                className={`group rounded-lg border p-2 transition-colors text-center ${
+                  active
+                    ? "border-[var(--land-accent)] ring-1 ring-[var(--land-accent)] bg-[var(--land-surface-raised)]/50"
+                    : "border-[var(--land-border)] hover:border-[var(--land-accent-hover)]"
+                }`}
+              >
+                <div className="flex gap-1 justify-center mb-1.5">
+                  <div className="w-4 h-4 rounded-full border border-[var(--land-border)]" style={{ backgroundColor: preset.primary }} />
+                  <div className="w-4 h-4 rounded-full border border-[var(--land-border)]" style={{ backgroundColor: preset.accent }} />
+                  <div className="w-4 h-4 rounded-full border border-[var(--land-border)]" style={{ backgroundColor: preset.bg }} />
+                </div>
+                <span className={`text-[10px] ${active ? "text-[var(--land-accent)] font-medium" : "text-[var(--land-muted)] group-hover:text-[var(--land-bright)]"}`}>{preset.name}</span>
+              </button>
+            );
+          })}
         </div>
 
         <div className="grid grid-cols-3 gap-6">
@@ -166,13 +169,28 @@ export function CustomizeStep({ data, onChange }: CustomizeStepProps) {
             <p className="text-xs text-[var(--land-muted)] mt-1">Paragraphs, descriptions</p>
           </div>
         </div>
-        {/* Font preview */}
-        <div className="mt-4 bg-[var(--land-surface-raised)]/50 border border-[var(--land-border)] rounded-lg p-4">
+        {/* Live preview: fonts + chosen colors together */}
+        <div
+          className="mt-4 border border-[var(--land-border)] rounded-lg p-4 transition-colors"
+          style={{ backgroundColor: customization.bgColor || DEFAULTS.bg }}
+        >
           <p className="text-xs text-[var(--land-muted)] mb-2">Preview</p>
-          <p style={{ fontFamily: `'${customization.fontFamily || "Inter"}', sans-serif` }} className="text-lg text-[var(--land-bright)] font-semibold">
+          <p
+            style={{
+              fontFamily: `'${customization.fontFamily || "Inter"}', sans-serif`,
+              color: customization.primaryColor || DEFAULTS.primary,
+            }}
+            className="text-lg font-semibold"
+          >
             {data.basics?.fullName || "Your Name Here"}
           </p>
-          <p style={{ fontFamily: `'${customization.bodyFont || "Inter"}', sans-serif` }} className="text-sm text-[var(--land-body)] mt-1">
+          <p
+            style={{
+              fontFamily: `'${customization.bodyFont || "Inter"}', sans-serif`,
+              color: customization.accentColor || DEFAULTS.accent,
+            }}
+            className="text-sm mt-1"
+          >
             {data.basics?.title || "Your Professional Title"}
           </p>
         </div>

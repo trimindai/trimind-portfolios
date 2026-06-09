@@ -1,6 +1,7 @@
 "use client";
 
 import { PhotoUpload } from "../fields/PhotoUpload";
+import { COLOR_PRESETS, isPresetActive, type ColorPreset } from "@/lib/color-presets";
 
 interface EngineerCustomizeStepProps {
   data: any;
@@ -23,14 +24,8 @@ const BODY_FONTS = [
   { value: "IBM Plex Sans", label: "IBM Plex Sans" },
 ];
 
-const COLOR_PRESETS = [
-  { name: "Deep Steel", primary: "#18181b", accent: "#1e3a5f", bg: "#ffffff" },
-  { name: "Clean White", primary: "#0f172a", accent: "#0369a1", bg: "#ffffff" },
-  { name: "Warm Gray", primary: "#1c1917", accent: "#92400e", bg: "#fafaf9" },
-  { name: "Dark Mode", primary: "#f4f4f5", accent: "#3b82f6", bg: "#18181b" },
-  { name: "Petrol", primary: "#0f172a", accent: "#0d9488", bg: "#f0fdfa" },
-  { name: "Industrial", primary: "#292524", accent: "#dc2626", bg: "#fafaf9" },
-];
+const PRESETS = COLOR_PRESETS.engineer;
+const DEFAULTS = { primary: "#18181b", accent: "#1e3a5f", bg: "#ffffff" };
 
 const SECTIONS = [
   { id: "hero-about", label: "Hero / About" },
@@ -50,7 +45,7 @@ export function EngineerCustomizeStep({ data, onChange }: EngineerCustomizeStepP
     onChange({ customization: { ...customization, [field]: value } });
   };
 
-  const applyPreset = (preset: typeof COLOR_PRESETS[0]) => {
+  const applyPreset = (preset: ColorPreset) => {
     onChange({
       customization: {
         ...customization,
@@ -85,21 +80,29 @@ export function EngineerCustomizeStep({ data, onChange }: EngineerCustomizeStepP
         <p className="text-sm text-[var(--land-body)] mb-4">Pick a preset or customize individual colors.</p>
 
         <div className="grid grid-cols-3 sm:grid-cols-6 gap-2 mb-6">
-          {COLOR_PRESETS.map((preset) => (
-            <button
-              key={preset.name}
-              type="button"
-              onClick={() => applyPreset(preset)}
-              className="group rounded-lg border border-[var(--land-border)] hover:border-[var(--land-accent-hover)] p-2 transition-colors text-center"
-            >
-              <div className="flex gap-1 justify-center mb-1.5">
-                <div className="w-4 h-4 rounded-full border border-[var(--land-border)]" style={{ backgroundColor: preset.primary }} />
-                <div className="w-4 h-4 rounded-full border border-[var(--land-border)]" style={{ backgroundColor: preset.accent }} />
-                <div className="w-4 h-4 rounded-full border border-[var(--land-border)]" style={{ backgroundColor: preset.bg }} />
-              </div>
-              <span className="text-[10px] text-[var(--land-muted)] group-hover:text-[var(--land-bright)]">{preset.name}</span>
-            </button>
-          ))}
+          {PRESETS.map((preset) => {
+            const active = isPresetActive(preset, customization, DEFAULTS);
+            return (
+              <button
+                key={preset.name}
+                type="button"
+                onClick={() => applyPreset(preset)}
+                aria-pressed={active}
+                className={`group rounded-lg border p-2 transition-colors text-center ${
+                  active
+                    ? "border-[var(--land-accent)] ring-1 ring-[var(--land-accent)] bg-[var(--land-surface-raised)]/50"
+                    : "border-[var(--land-border)] hover:border-[var(--land-accent-hover)]"
+                }`}
+              >
+                <div className="flex gap-1 justify-center mb-1.5">
+                  <div className="w-4 h-4 rounded-full border border-[var(--land-border)]" style={{ backgroundColor: preset.primary }} />
+                  <div className="w-4 h-4 rounded-full border border-[var(--land-border)]" style={{ backgroundColor: preset.accent }} />
+                  <div className="w-4 h-4 rounded-full border border-[var(--land-border)]" style={{ backgroundColor: preset.bg }} />
+                </div>
+                <span className={`text-[10px] ${active ? "text-[var(--land-accent)] font-medium" : "text-[var(--land-muted)] group-hover:text-[var(--land-bright)]"}`}>{preset.name}</span>
+              </button>
+            );
+          })}
         </div>
 
         <div className="grid grid-cols-3 gap-6">

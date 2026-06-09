@@ -32,7 +32,7 @@ export function EngineerBasicsStep({ data, onChange }: EngineerBasicsStepProps) 
       <div className="space-y-6">
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <TextField
-            label="Full Name"
+            label="Full Name" autoComplete="name"
             value={basics.fullName}
             onChange={(v) => updateBasics("fullName", v)}
             required
@@ -63,7 +63,7 @@ export function EngineerBasicsStep({ data, onChange }: EngineerBasicsStepProps) 
           value={basics.email}
           onChange={(v) => updateBasics("email", v)}
           required
-          type="email"
+          type="email" autoComplete="email" inputMode="email" dir="ltr"
           placeholder="email@example.com"
         />
       </div>
@@ -96,7 +96,7 @@ export function EngineerBasicsStep({ data, onChange }: EngineerBasicsStepProps) 
       />
 
       <TextField
-        label="Phone"
+        label="Phone" type="tel" autoComplete="tel" inputMode="tel" dir="ltr"
         value={basics.phone}
         onChange={(v) => updateBasics("phone", v)}
         placeholder="+965 1234 5678"
@@ -119,13 +119,13 @@ export function EngineerBasicsStep({ data, onChange }: EngineerBasicsStepProps) 
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <TextField
-          label="LinkedIn URL"
+          label="LinkedIn URL" type="url" inputMode="url" dir="ltr"
           value={basics.linkedin}
           onChange={(v) => updateBasics("linkedin", v)}
           placeholder="linkedin.com/in/yourname"
         />
         <TextField
-          label="GitHub URL"
+          label="GitHub URL" type="url" inputMode="url" dir="ltr"
           value={basics.github}
           onChange={(v) => updateBasics("github", v)}
           placeholder="github.com/yourname"
@@ -134,7 +134,7 @@ export function EngineerBasicsStep({ data, onChange }: EngineerBasicsStepProps) 
       </div>
 
       <TextField
-        label="Website"
+        label="Website" type="url" inputMode="url" dir="ltr"
         value={basics.website}
         onChange={(v) => updateBasics("website", v)}
         placeholder="yourwebsite.com"

@@ -183,10 +183,10 @@ export function BasicsStep({ data, onChange }: BasicsStepProps) {
       {/* REQUIRED — always visible (the 3 fields needed to proceed) */}
       <div className="space-y-6">
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <TextField label="Full Name" value={basics.fullName} onChange={(v) => updateBasics("fullName", v)} required placeholder="Sarah Al-Rashidi" hint="As it appears on your official documents" />
+          <TextField label="Full Name" autoComplete="name" value={basics.fullName} onChange={(v) => updateBasics("fullName", v)} required placeholder="Sarah Al-Rashidi" hint="As it appears on your official documents" />
           <TextField label="Professional Title" value={basics.title} onChange={(v) => updateBasics("title", v)} required placeholder="Senior Financial Analyst" hint="Your current or target role" examples={["Senior Financial Analyst", "Software Engineer", "Marketing Director", "UX Designer", "Project Manager"]} />
         </div>
-        <TextField label="Email" value={basics.email} onChange={(v) => updateBasics("email", v)} required type="email" placeholder="email@example.com" />
+        <TextField label="Email" value={basics.email} onChange={(v) => updateBasics("email", v)} required type="email" autoComplete="email" inputMode="email" dir="ltr" placeholder="email@example.com" />
       </div>
 
       {/* AI Section — only when name + title are filled AND the user is signed
@@ -402,7 +402,7 @@ export function BasicsStep({ data, onChange }: BasicsStepProps) {
       <div className={`${showOptional ? "block" : "hidden"} md:block space-y-6`}>
         <TextField label="Subtitle / Tagline" value={basics.subtitle} onChange={(v) => updateBasics("subtitle", v)} placeholder="Transforming data into strategic insights" hint="A one-liner that captures your professional brand" examples={["Transforming complex data into actionable insights", "Building scalable solutions for enterprise challenges", "Driving growth through strategic innovation"]} />
 
-        <TextField label="Phone" value={basics.phone} onChange={(v) => updateBasics("phone", v)} placeholder="+965 1234 5678" />
+        <TextField label="Phone" type="tel" autoComplete="tel" inputMode="tel" dir="ltr" value={basics.phone} onChange={(v) => updateBasics("phone", v)} placeholder="+965 1234 5678" />
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <TextField label="Location" value={basics.location} onChange={(v) => updateBasics("location", v)} placeholder="Kuwait City, Kuwait" />
@@ -410,8 +410,8 @@ export function BasicsStep({ data, onChange }: BasicsStepProps) {
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <TextField label="LinkedIn URL" value={basics.linkedin} onChange={(v) => updateBasics("linkedin", v)} placeholder="linkedin.com/in/yourname" />
-          <TextField label="Website" value={basics.website} onChange={(v) => updateBasics("website", v)} placeholder="yourwebsite.com" />
+          <TextField label="LinkedIn URL" type="url" inputMode="url" dir="ltr" value={basics.linkedin} onChange={(v) => updateBasics("linkedin", v)} placeholder="linkedin.com/in/yourname" />
+          <TextField label="Website" type="url" inputMode="url" dir="ltr" value={basics.website} onChange={(v) => updateBasics("website", v)} placeholder="yourwebsite.com" />
         </div>
 
         <TextareaField

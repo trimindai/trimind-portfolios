@@ -40,6 +40,8 @@ export function PhotoUpload({ value, onChange, name, accentColor }: PhotoUploadP
   const generateUploadUrl = useMutation(api.storage.generateUploadUrl);
   const [uploading, setUploading] = useState(false);
   const [preview, setPreview] = useState<string>(value || "");
+  const [error, setError] = useState<string>("");
+  const [dragActive, setDragActive] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const blobUrlRef = useRef<string | null>(null);
 
@@ -53,17 +55,16 @@ export function PhotoUpload({ value, onChange, name, accentColor }: PhotoUploadP
     };
   }, []);
 
-  const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
+  const processFile = async (file: File) => {
+    setError("");
 
-    if (file.size > 5 * 1024 * 1024) {
-      alert("File must be less than 5MB");
+    if (!file.type.startsWith("image/")) {
+      setError("That file isn't an image. Use a JPG, PNG or WebP photo.");
       return;
     }
 
-    if (!file.type.startsWith("image/")) {
-      alert("Please upload an image file");
+    if (file.size > 5 * 1024 * 1024) {
+      setError(`That photo is ${(file.size / (1024 * 1024)).toFixed(1)}MB — the limit is 5MB. Try a smaller export.`);
       return;
     }
 
@@ -112,6 +113,19 @@ export function PhotoUpload({ value, onChange, name, accentColor }: PhotoUploadP
     }
   };
 
+  const handleUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) processFile(file);
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    setDragActive(false);
+    if (uploading) return;
+    const file = e.dataTransfer.files?.[0];
+    if (file) processFile(file);
+  };
+
   const handleRemove = () => {
     if (blobUrlRef.current) { URL.revokeObjectURL(blobUrlRef.current); blobUrlRef.current = null; }
     onChange("");
@@ -130,7 +144,16 @@ export function PhotoUpload({ value, onChange, name, accentColor }: PhotoUploadP
       <div className="flex items-center gap-4">
         <div
           onClick={() => !uploading && fileInputRef.current?.click()}
-          className="group relative w-24 h-24 rounded-full border-2 border-dashed border-[var(--land-border)] hover:border-[var(--land-accent)] flex items-center justify-center cursor-pointer transition-colors overflow-hidden bg-[var(--land-surface-raised)] flex-shrink-0"
+          onDragOver={(e) => { e.preventDefault(); if (!uploading) setDragActive(true); }}
+          onDragLeave={() => setDragActive(false)}
+          onDrop={handleDrop}
+          role="button"
+          tabIndex={0}
+          onKeyDown={(e) => { if ((e.key === "Enter" || e.key === " ") && !uploading) { e.preventDefault(); fileInputRef.current?.click(); } }}
+          aria-label="Upload profile photo (click, press Enter, or drop an image)"
+          className={`group relative w-24 h-24 rounded-full border-2 border-dashed flex items-center justify-center cursor-pointer transition-colors overflow-hidden bg-[var(--land-surface-raised)] flex-shrink-0 ${
+            dragActive ? "border-[var(--land-accent)] ring-2 ring-[var(--land-accent)]/40" : "border-[var(--land-border)] hover:border-[var(--land-accent)]"
+          }`}
         >
           {preview ? (
             <img
@@ -183,8 +206,18 @@ export function PhotoUpload({ value, onChange, name, accentColor }: PhotoUploadP
               Remove
             </button>
           )}
+          {uploading && (
+            <div className="w-28 h-1 rounded-full bg-[var(--land-border)] overflow-hidden" role="progressbar" aria-label="Uploading photo">
+              <div className="h-full w-1/3 rounded-full bg-[var(--land-accent)] motion-safe:animate-[photo-upload-slide_1s_ease-in-out_infinite]" />
+            </div>
+          )}
         </div>
       </div>
+      {error && (
+        <p className="mt-2 text-sm text-red-400" role="alert" aria-live="polite">
+          {error}
+        </p>
+      )}
       <input
         ref={fileInputRef}
         type="file"

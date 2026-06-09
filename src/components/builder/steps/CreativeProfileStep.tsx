@@ -31,7 +31,7 @@ export function CreativeProfileStep({ data, onChange }: CreativeProfileStepProps
       <div className="space-y-6">
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <TextField
-            label="Full Name"
+            label="Full Name" autoComplete="name"
             value={basics.fullName}
             onChange={(v) => updateBasics("fullName", v)}
             required
@@ -61,7 +61,7 @@ export function CreativeProfileStep({ data, onChange }: CreativeProfileStepProps
           value={basics.email}
           onChange={(v) => updateBasics("email", v)}
           required
-          type="email"
+          type="email" autoComplete="email" inputMode="email" dir="ltr"
           placeholder="you@example.com"
         />
       </div>
@@ -94,7 +94,7 @@ export function CreativeProfileStep({ data, onChange }: CreativeProfileStepProps
       />
 
       <TextField
-        label="Phone"
+        label="Phone" type="tel" autoComplete="tel" inputMode="tel" dir="ltr"
         value={basics.phone}
         onChange={(v) => updateBasics("phone", v)}
         placeholder="+965 1234 5678"
@@ -117,20 +117,20 @@ export function CreativeProfileStep({ data, onChange }: CreativeProfileStepProps
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <TextField
-          label="Instagram URL"
+          label="Instagram URL" type="url" inputMode="url" dir="ltr"
           value={basics.instagram}
           onChange={(v) => updateBasics("instagram", v)}
           placeholder="https://instagram.com/yourhandle"
           hint="Where most artists & designers live"
         />
         <TextField
-          label="LinkedIn URL"
+          label="LinkedIn URL" type="url" inputMode="url" dir="ltr"
           value={basics.linkedin}
           onChange={(v) => updateBasics("linkedin", v)}
           placeholder="https://linkedin.com/in/yourname"
         />
         <TextField
-          label="Website / Portfolio URL"
+          label="Website / Portfolio URL" type="url" inputMode="url" dir="ltr"
           value={basics.website}
           onChange={(v) => updateBasics("website", v)}
           placeholder="https://yourstudio.com"

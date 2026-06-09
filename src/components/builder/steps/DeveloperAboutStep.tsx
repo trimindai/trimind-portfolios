@@ -65,7 +65,7 @@ export function DeveloperAboutStep({ data, onChange }: DeveloperAboutStepProps) 
           value={basics.email}
           onChange={(v) => updateBasics("email", v)}
           required
-          type="email"
+          type="email" autoComplete="email" inputMode="email" dir="ltr"
           placeholder="maya@okafor.dev"
         />
       </div>

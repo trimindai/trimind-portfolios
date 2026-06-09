@@ -1,18 +1,13 @@
 "use client";
 
+import { COLOR_PRESETS, type ColorPreset } from "@/lib/color-presets";
+
 interface CreativeCustomizeStepProps {
   data: any;
   onChange: (updates: any) => void;
 }
 
-const PRESETS = [
-  { name: "Lime Noir", accent: "#DFFF00", bg: "#1b1b1b" },
-  { name: "Electric Cyan", accent: "#00E5FF", bg: "#0d0d0f" },
-  { name: "Coral", accent: "#FF6B5B", bg: "#1a1413" },
-  { name: "Violet", accent: "#B794F6", bg: "#15131c" },
-  { name: "Mono", accent: "#FFFFFF", bg: "#111111" },
-  { name: "Gold", accent: "#E8C547", bg: "#161310" },
-];
+const PRESETS = COLOR_PRESETS.creative;
 
 const SECTIONS = [
   { id: "portfolio-showcase", label: "Gallery Grid" },
@@ -31,7 +26,7 @@ export function CreativeCustomizeStep({ data, onChange }: CreativeCustomizeStepP
     onChange({ customization: { ...customization, [field]: value } });
   };
 
-  const applyPreset = (p: typeof PRESETS[0]) => {
+  const applyPreset = (p: ColorPreset) => {
     onChange({ customization: { ...customization, accentColor: p.accent, bgColor: p.bg } });
   };
 
@@ -62,8 +57,9 @@ export function CreativeCustomizeStep({ data, onChange }: CreativeCustomizeStepP
                 key={p.name}
                 type="button"
                 onClick={() => applyPreset(p)}
+                aria-pressed={active}
                 className={`group rounded-lg border p-3 transition-colors text-center ${
-                  active ? "border-[var(--land-accent)]" : "border-[var(--land-border)] hover:border-[var(--land-accent-hover)]"
+                  active ? "border-[var(--land-accent)] ring-1 ring-[var(--land-accent)]" : "border-[var(--land-border)] hover:border-[var(--land-accent-hover)]"
                 }`}
               >
                 <div className="flex items-center justify-center mb-2">
