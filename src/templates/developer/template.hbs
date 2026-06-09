@@ -18,13 +18,11 @@
    3D keycap logos drawn to canvas. */
 
 /* ═══════════════════════════════════════════════════════════════
-   DEVELOPER — "Spacebar"
-   A space-dark developer portfolio: a real 3D keyboard floating in a
-   star-field, thin gradient display type, blur-in reveals, a timeline
-   of experience, screenshot project cards with a modal, an elastic
-   cursor, and buttery smooth scroll.
-   Design language adapted from Naresh Khatri's open-source 3D
-   portfolio (free to use — credited in the footer).
+   DEVELOPER template — CSS + scripts ported 1:1 from
+   public/demo/developer/index.html (the canonical design source)
+   with Handlebars bindings re-applied. When the demo changes,
+   re-port here. Only the :root binding vars, the gated keyboard
+   regions, and the contact-email binding deviate from verbatim.
    ═══════════════════════════════════════════════════════════════ */
 :root{
   --bg:{{#if customization.bgColor}}{{safeColor customization.bgColor "#ccd1da"}}{{else}}#ccd1da{{/if}};

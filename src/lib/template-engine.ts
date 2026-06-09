@@ -556,6 +556,15 @@ export function kbdSkillsData(
   skills.forEach((cat: any) => {
     const category = typeof cat?.category === "string" ? cat.category : "";
     const items = Array.isArray(cat?.items) ? cat.items : [];
+    if (!items.length) {
+      // Mirror flattenSkills: a non-empty category name with zero valid items
+      // still yields one keycap so it is never silently dropped from the keyboard.
+      // A blank/whitespace-only category name is treated as absent (yields nothing).
+      if (category.trim()) {
+        out.push({ slug: null, label: category, tag: "", color: KBD_DEFAULT_COLOR });
+      }
+      return;
+    }
     items.forEach((it: any) => {
       const label = (typeof it === "string" ? it : String(it?.name ?? it ?? "")).trim();
       if (!label) return;

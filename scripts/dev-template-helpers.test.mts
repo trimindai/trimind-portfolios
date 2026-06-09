@@ -146,5 +146,18 @@ check("empty/whitespace-only labels are skipped", () => {
   assert.equal(items[0].label, "React");
 });
 
+// ── Fix: empty-items category parity with flattenSkills ───────────────────
+
+check("empty-items category with non-empty name yields one category keycap (slug null, tag '', default color)", () => {
+  const items = kbdSkillsData([{ category: "DevOps", items: [] }]);
+  assert.equal(items.length, 1, "expected exactly 1 keycap");
+  assert.deepEqual(items[0], { slug: null, label: "DevOps", tag: "", color: "#5b6478" });
+});
+
+check("[{category:'',items:[]}] yields [] (blank category name treated as absent, parity with flattenSkills)", () => {
+  const items = kbdSkillsData([{ category: "", items: [] }]);
+  assert.deepEqual(items, []);
+});
+
 console.log(fails ? `\nHELPERS: ${fails} failing` : "\nHELPERS: all passing");
 process.exit(fails ? 1 : 0);
