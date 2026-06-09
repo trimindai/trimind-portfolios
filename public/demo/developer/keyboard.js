@@ -540,6 +540,11 @@
     isDown = false; dragging = false; downCap = null;
   }, { passive: true });
   window.addEventListener("pointercancel", function () { isDown = false; dragging = false; downCap = null; }, { passive: true });
+  /* phone: while a touch is interacting with the keyboard (isDown — the touch
+     started on a cap/board) stop the page from ALSO scrolling, so dragging the
+     caps doesn't jolt the heading. Empty-space touches keep isDown=false and
+     scroll normally. */
+  window.addEventListener("touchmove", function (e) { if (isDown && e.cancelable) e.preventDefault(); }, { passive: false });
 
   function orbit(e) { var dx = (e.clientX - lastX) / window.innerWidth, dy = (e.clientY - lastY) / window.innerHeight; board.rotation.y += dx * 2.4; board.rotation.x = Math.max(-1.45, Math.min(0.4, board.rotation.x + dy * 1.8)); lastX = e.clientX; lastY = e.clientY; }
 
