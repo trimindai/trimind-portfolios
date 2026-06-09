@@ -102,6 +102,15 @@ kbdRep("phone-camera",
 kbdRep("phone-scale", "var PHONE_SCALE_SHOW = 0.92;", "var PHONE_SCALE_SHOW = 1.0;");
 // raise the keyboard toward the centred label so there's no dead gap above it
 kbdRep("phone-y-show", "var PHONE_Y_SHOW = 0.22;", "var PHONE_Y_SHOW = 0.12;");
+// phone: while a touch is interacting with the keyboard (scrubbing keys or
+// rotating the board) stop the page from ALSO scrolling — otherwise dragging on
+// the caps scrolls the section and the heading/label visibly jump and overlap the
+// keyboard. Empty-space touches keep isDown=false, so they still scroll the page.
+kbdRep("touch-no-scroll",
+  '  window.addEventListener("pointercancel", function () { isDown = false; dragging = false; downCap = null; }, { passive: true });',
+  '  window.addEventListener("pointercancel", function () { isDown = false; dragging = false; downCap = null; }, { passive: true });\n' +
+  '  window.addEventListener("touchmove", function (e) { if (isDown && e.cancelable) e.preventDefault(); }, { passive: false });');
+
 // phone: append the name/description label INTO the skills sticky-head (in-flow)
 // so it travels with the heading; desktop keeps the fixed top-left float
 kbdRep("label-host-append",
