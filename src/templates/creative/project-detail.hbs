@@ -22,6 +22,9 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700;800;900&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+{{#if isRTL}}
+<link href="https://fonts.googleapis.com/css2?family=Noto+Kufi+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
+{{/if}}
 <style>
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 :root {
@@ -110,27 +113,35 @@ figure figcaption { font-family: var(--font-mono); font-size: 10px; text-transfo
 .lb-ctrl button:hover { color: var(--accent); }
 .lb-ctrl .pct { font-family: var(--font-mono); font-size: 11px; color: var(--text-muted); }
 </style>
+{{#if isRTL}}
+<style>
+:root {
+  --font-head: 'Noto Kufi Arabic', 'Geist', system-ui, sans-serif;
+  --font-mono: 'Noto Kufi Arabic', 'Geist Mono', ui-monospace, monospace;
+}
+</style>
+{{/if}}
 </head>
 <body>
 
 <header class="nav">
   <a href="{{portfolioUrl}}" class="nav-brand">{{basics.fullName}}</a>
-  <a href="{{portfolioUrl}}#work" class="nav-back">[ All Work ]</a>
+  <a href="{{portfolioUrl}}#work" class="nav-back">[ {{#if isRTL}}كل الأعمال{{else}}All Work{{/if}} ]</a>
 </header>
 
 <div class="wrap">
-  <a href="{{portfolioUrl}}#work" class="back"><span>&larr;</span><span>Back to Gallery</span></a>
+  <a href="{{portfolioUrl}}#work" class="back"><span>{{#if isRTL}}&rarr;{{else}}&larr;{{/if}}</span><span>{{#if isRTL}}العودة إلى المعرض{{else}}Back to Gallery{{/if}}</span></a>
 
   {{#if project.meta.type}}<p class="phase">{{project.meta.type}}{{#if project.meta.year}} &middot; {{project.meta.year}}{{/if}}</p>{{else}}{{#if project.technologies.[0]}}<p class="phase">{{project.technologies.[0]}}{{#if project.meta.year}} &middot; {{project.meta.year}}{{/if}}</p>{{/if}}{{/if}}
   <h1 class="title">{{project.title}}</h1>
   {{#if project.tagline}}<p class="tagline">{{project.tagline}}</p>{{/if}}
 
   {{#if project.coverUrl}}
-  <button type="button" class="hero-img" id="zoomBtn" aria-label="Zoom image">
+  <button type="button" class="hero-img" id="zoomBtn" aria-label="{{#if isRTL}}تكبير الصورة{{else}}Zoom image{{/if}}">
     <span class="cross ic-tl"></span><span class="cross ic-tr"></span>
     <span class="cross ic-bl"></span><span class="cross ic-br"></span>
     <img src="{{safeUrl project.coverUrl}}" alt="{{project.title}}" id="heroImg" decoding="async">
-    <span class="zoom-hint">Click to Zoom</span>
+    <span class="zoom-hint">{{#if isRTL}}انقر للتكبير{{else}}Click to Zoom{{/if}}</span>
   </button>
   {{/if}}
 
@@ -138,14 +149,14 @@ figure figcaption { font-family: var(--font-mono); font-size: 10px; text-transfo
 
   {{#if (or project.meta.medium project.meta.dimensions project.meta.year project.meta.series project.meta.role project.meta.duration project.meta.institution project.meta.teamSize)}}
   <div class="metabox">
-    {{#if project.meta.medium}}<div><p class="k">Medium</p><p class="v">{{project.meta.medium}}</p></div>{{/if}}
-    {{#if project.meta.dimensions}}<div><p class="k">Dimensions</p><p class="v">{{project.meta.dimensions}}</p></div>{{/if}}
-    {{#if project.meta.year}}<div><p class="k">Year</p><p class="v">{{project.meta.year}}</p></div>{{/if}}
-    {{#if project.meta.series}}<div><p class="k">Series</p><p class="v">{{project.meta.series}}</p></div>{{/if}}
-    {{#if project.meta.role}}<div><p class="k">Role</p><p class="v">{{project.meta.role}}</p></div>{{/if}}
-    {{#if project.meta.duration}}<div><p class="k">Duration</p><p class="v">{{project.meta.duration}}</p></div>{{/if}}
-    {{#if project.meta.institution}}<div><p class="k">For</p><p class="v">{{project.meta.institution}}</p></div>{{/if}}
-    {{#if project.meta.teamSize}}<div><p class="k">Team</p><p class="v">{{project.meta.teamSize}}</p></div>{{/if}}
+    {{#if project.meta.medium}}<div><p class="k">{{#if isRTL}}الوسيط{{else}}Medium{{/if}}</p><p class="v">{{project.meta.medium}}</p></div>{{/if}}
+    {{#if project.meta.dimensions}}<div><p class="k">{{#if isRTL}}الأبعاد{{else}}Dimensions{{/if}}</p><p class="v">{{project.meta.dimensions}}</p></div>{{/if}}
+    {{#if project.meta.year}}<div><p class="k">{{#if isRTL}}السنة{{else}}Year{{/if}}</p><p class="v">{{project.meta.year}}</p></div>{{/if}}
+    {{#if project.meta.series}}<div><p class="k">{{#if isRTL}}السلسلة{{else}}Series{{/if}}</p><p class="v">{{project.meta.series}}</p></div>{{/if}}
+    {{#if project.meta.role}}<div><p class="k">{{#if isRTL}}الدور{{else}}Role{{/if}}</p><p class="v">{{project.meta.role}}</p></div>{{/if}}
+    {{#if project.meta.duration}}<div><p class="k">{{#if isRTL}}المدة{{else}}Duration{{/if}}</p><p class="v">{{project.meta.duration}}</p></div>{{/if}}
+    {{#if project.meta.institution}}<div><p class="k">{{#if isRTL}}لصالح{{else}}For{{/if}}</p><p class="v">{{project.meta.institution}}</p></div>{{/if}}
+    {{#if project.meta.teamSize}}<div><p class="k">{{#if isRTL}}الفريق{{else}}Team{{/if}}</p><p class="v">{{project.meta.teamSize}}</p></div>{{/if}}
   </div>
   {{/if}}
 
@@ -158,48 +169,48 @@ figure figcaption { font-family: var(--font-mono); font-size: 10px; text-transfo
     {{#each project.blocks}}
       {{#ifEq this.kind "paragraph"}}{{#if this.body}}<p class="blk-text">{{this.body}}</p>{{/if}}{{/ifEq}}
       {{#ifEq this.kind "image"}}{{#if this.url}}<figure class="blk-img{{#if this.fullBleed}} full{{/if}}"><img src="{{safeUrl this.url}}" alt="{{#if this.caption}}{{this.caption}}{{else}}{{../project.title}}{{/if}}" loading="lazy" decoding="async">{{#if this.caption}}<figcaption>{{this.caption}}</figcaption>{{/if}}</figure>{{/if}}{{/ifEq}}
-      {{#ifEq this.kind "imageGrid"}}{{#if this.images}}<div class="blk-grid">{{#each this.images}}{{#if this.url}}<figure><img src="{{safeUrl this.url}}" alt="{{#if this.caption}}{{this.caption}}{{else}}image{{/if}}" loading="lazy" decoding="async">{{#if this.caption}}<figcaption>{{this.caption}}</figcaption>{{/if}}</figure>{{/if}}{{/each}}</div>{{/if}}{{/ifEq}}
+      {{#ifEq this.kind "imageGrid"}}{{#if this.images}}<div class="blk-grid">{{#each this.images}}{{#if this.url}}<figure><img src="{{safeUrl this.url}}" alt="{{#if this.caption}}{{this.caption}}{{else}}{{#if ../../isRTL}}صورة{{else}}image{{/if}}{{/if}}" loading="lazy" decoding="async">{{#if this.caption}}<figcaption>{{this.caption}}</figcaption>{{/if}}</figure>{{/if}}{{/each}}</div>{{/if}}{{/ifEq}}
       {{#ifEq this.kind "video"}}{{#if this.url}}<figure class="blk-video">{{videoEmbed this.url}}{{#if this.caption}}<figcaption>{{this.caption}}</figcaption>{{/if}}</figure>{{/if}}{{/ifEq}}
     {{/each}}
   </div>
   {{/if}}
 
   {{#if project.links}}
-  <div class="links">{{#each project.links}}<a href="{{safeUrl this.url}}" target="_blank" rel="noopener" class="lnk">{{this.label}} <span>&rarr;</span></a>{{/each}}</div>
-  {{else}}{{#if project.link}}<div class="links"><a href="{{safeUrl project.link}}" target="_blank" rel="noopener" class="lnk">View Project <span>&rarr;</span></a></div>{{/if}}{{/if}}
+  <div class="links">{{#each project.links}}<a href="{{safeUrl this.url}}" target="_blank" rel="noopener" class="lnk">{{this.label}} <span>{{#if ../isRTL}}&larr;{{else}}&rarr;{{/if}}</span></a>{{/each}}</div>
+  {{else}}{{#if project.link}}<div class="links"><a href="{{safeUrl project.link}}" target="_blank" rel="noopener" class="lnk">{{#if isRTL}}عرض المشروع{{else}}View Project{{/if}} <span>{{#if isRTL}}&larr;{{else}}&rarr;{{/if}}</span></a></div>{{/if}}{{/if}}
 
   {{#if (or prevProject nextProject)}}
   <div class="pnav">
     {{#if prevProject}}
     <a class="pnav-item prev" href="{{portfolioUrl}}/projects/{{prevProject.slug}}">
       <span class="cross"></span>
-      <span><span class="pn-lbl">Previous</span><br><span class="pn-ttl">{{prevProject.title}}</span></span>
+      <span><span class="pn-lbl">{{#if isRTL}}السابق{{else}}Previous{{/if}}</span><br><span class="pn-ttl">{{prevProject.title}}</span></span>
     </a>
     {{else}}<span></span>{{/if}}
     {{#if nextProject}}
     <a class="pnav-item next" href="{{portfolioUrl}}/projects/{{nextProject.slug}}">
       <span class="cross"></span>
-      <span><span class="pn-lbl">Next</span><br><span class="pn-ttl">{{nextProject.title}}</span></span>
+      <span><span class="pn-lbl">{{#if isRTL}}التالي{{else}}Next{{/if}}</span><br><span class="pn-ttl">{{nextProject.title}}</span></span>
     </a>
     {{else}}<span></span>{{/if}}
   </div>
   {{/if}}
 </div>
 
-<footer class="footer">&copy; {{basics.fullName}} &middot; <a href="{{portfolioUrl}}">Back to Portfolio</a></footer>
+<footer class="footer">&copy; {{basics.fullName}} &middot; <a href="{{portfolioUrl}}">{{#if isRTL}}العودة إلى الرئيسية{{else}}Back to Portfolio{{/if}}</a></footer>
 
 {{#if project.coverUrl}}
 <div class="lb" id="lb">
   <span class="cross lc-tl"></span><span class="cross lc-tr"></span>
   <span class="cross lc-bl"></span><span class="cross lc-br"></span>
-  <button class="lb-close" id="lbClose">[ Close &times; ]</button>
+  <button class="lb-close" id="lbClose">[ {{#if isRTL}}إغلاق{{else}}Close{{/if}} &times; ]</button>
   <div class="lb-stage" id="lbStage">
     <img src="{{safeUrl project.coverUrl}}" alt="{{project.title}}" id="lbImg" draggable="false">
   </div>
   <div class="lb-ctrl">
-    <button id="zOut" aria-label="Zoom out">[ &minus; ]</button>
+    <button id="zOut" aria-label="{{#if isRTL}}تصغير{{else}}Zoom out{{/if}}">[ &minus; ]</button>
     <span class="pct" id="zPct">100%</span>
-    <button id="zIn" aria-label="Zoom in">[ + ]</button>
+    <button id="zIn" aria-label="{{#if isRTL}}تكبير{{else}}Zoom in{{/if}}">[ + ]</button>
   </div>
 </div>
 <script>

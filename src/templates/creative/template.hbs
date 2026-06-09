@@ -22,6 +22,9 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700;800;900&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+{{#if isRTL}}
+<link href="https://fonts.googleapis.com/css2?family=Noto+Kufi+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
+{{/if}}
 <style>
 /* ══════════════════════════════════════════════════════
    CREATIVE PORTFOLIO — "Atelier" Warm Editorial Theme
@@ -356,19 +359,27 @@ a { color: inherit; text-decoration: none; }
 .lb-ctrl button:hover { color: var(--accent); }
 .lb-ctrl .pct { font-family: var(--font-mono); font-size: 11px; color: var(--text-muted); }
 </style>
+{{#if isRTL}}
+<style>
+:root {
+  --font-head: 'Noto Kufi Arabic', 'Geist', system-ui, sans-serif;
+  --font-mono: 'Noto Kufi Arabic', 'Geist Mono', ui-monospace, monospace;
+}
+</style>
+{{/if}}
 </head>
 <body>
 
 <!-- Navbar -->
 <header class="nav">
   <a href="#top" class="nav-brand">{{titleCase basics.fullName}}</a>
-  <button class="nav-toggle" id="navToggle" aria-label="Open menu" aria-expanded="false" aria-controls="navLinks"><span></span><span></span><span></span></button>
+  <button class="nav-toggle" id="navToggle" aria-label="{{#if isRTL}}فتح القائمة{{else}}Open menu{{/if}}" aria-expanded="false" aria-controls="navLinks"><span></span><span></span><span></span></button>
   <nav class="nav-links" id="navLinks">
-    {{#if projects}}<a href="#" class="nav-link" data-open-gallery><span class="bk">[</span> Gallery <span class="bk">]</span></a>{{/if}}
-    {{#if skills}}<a href="#skills" class="nav-link"><span class="bk">[</span> Skills <span class="bk">]</span></a>{{/if}}
-    {{#if certifications}}<a href="#awards" class="nav-link"><span class="bk">[</span> Awards <span class="bk">]</span></a>{{/if}}
-    {{#if endorsements}}<a href="#testimonials" class="nav-link"><span class="bk">[</span> Words <span class="bk">]</span></a>{{/if}}
-    <a href="#contact" class="nav-link"><span class="bk">[</span> Contact <span class="bk">]</span></a>
+    {{#if projects}}<a href="#" class="nav-link" data-open-gallery><span class="bk">[</span> {{#if isRTL}}المعرض{{else}}Gallery{{/if}} <span class="bk">]</span></a>{{/if}}
+    {{#if skills}}<a href="#skills" class="nav-link"><span class="bk">[</span> {{#if isRTL}}المهارات{{else}}Skills{{/if}} <span class="bk">]</span></a>{{/if}}
+    {{#if certifications}}<a href="#awards" class="nav-link"><span class="bk">[</span> {{#if isRTL}}الجوائز{{else}}Awards{{/if}} <span class="bk">]</span></a>{{/if}}
+    {{#if endorsements}}<a href="#testimonials" class="nav-link"><span class="bk">[</span> {{#if isRTL}}آراء{{else}}Words{{/if}} <span class="bk">]</span></a>{{/if}}
+    <a href="#contact" class="nav-link"><span class="bk">[</span> {{#if isRTL}}تواصل{{else}}Contact{{/if}} <span class="bk">]</span></a>
   </nav>
 </header>
 
@@ -393,9 +404,9 @@ a { color: inherit; text-decoration: none; }
     {{#if basics.location}}<p class="hero-loc">{{basics.location}}{{#if basics.nationality}} &middot; {{basics.nationality}}{{/if}}</p>{{/if}}
     {{#if basics.bio}}<p class="hero-bio">{{basics.bio}}</p>{{else}}{{#if basics.valueProposition}}<p class="hero-bio">{{basics.valueProposition}}</p>{{/if}}{{/if}}
     <div class="hero-actions">
-      {{#if basics.email}}<a href="mailto:{{basics.email}}" class="cta">Get in Touch <span>&rarr;</span></a>{{/if}}
-      {{#if projects}}<a href="#" class="cta cta-ghost" data-open-gallery>View Work <span>&rarr;</span></a>{{/if}}
-      {{#if basics.resumeUrl}}<a href="{{safeUrl basics.resumeUrl}}" target="_blank" rel="noopener" class="cta cta-ghost">Download CV <span>&darr;</span></a>{{/if}}
+      {{#if basics.email}}<a href="mailto:{{basics.email}}" class="cta">{{#if isRTL}}تواصل معي{{else}}Get in Touch{{/if}} <span>{{#if isRTL}}&larr;{{else}}&rarr;{{/if}}</span></a>{{/if}}
+      {{#if projects}}<a href="#" class="cta cta-ghost" data-open-gallery>{{#if isRTL}}عرض الأعمال{{else}}View Work{{/if}} <span>{{#if isRTL}}&larr;{{else}}&rarr;{{/if}}</span></a>{{/if}}
+      {{#if basics.resumeUrl}}<a href="{{safeUrl basics.resumeUrl}}" target="_blank" rel="noopener" class="cta cta-ghost">{{#if isRTL}}تحميل السيرة الذاتية{{else}}Download CV{{/if}} <span>&darr;</span></a>{{/if}}
     </div>
   </div>
   <div class="hero-right" id="work">
@@ -409,7 +420,7 @@ a { color: inherit; text-decoration: none; }
             <img src="{{safeUrl this.coverUrl}}" alt="{{this.title}}" loading="lazy" decoding="async" width="148" height="197">
             <div class="overlay"></div>
             <div class="info">
-              <div class="info-cat">{{#if this.meta.type}}{{this.meta.type}}{{else}}{{#if this.technologies.[0]}}{{this.technologies.[0]}}{{else}}Work{{/if}}{{/if}}</div>
+              <div class="info-cat">{{#if this.meta.type}}{{this.meta.type}}{{else}}{{#if this.technologies.[0]}}{{this.technologies.[0]}}{{else}}{{#if ../isRTL}}عمل{{else}}Work{{/if}}{{/if}}{{/if}}</div>
               <div class="info-title">{{this.title}}</div>
             </div>
           </a>
@@ -417,10 +428,10 @@ a { color: inherit; text-decoration: none; }
           {{/each}}
         </div>
       </div>
-      <div class="cone-hint">Drag to explore</div>
+      <div class="cone-hint">{{#if isRTL}}اسحب للاستكشاف{{else}}Drag to explore{{/if}}</div>
     </div>
-    <div class="cube-stack" id="cubeStack" aria-label="Selected works">
-      <div class="cube-hint">Tap a piece &middot; <a href="#" data-open-gallery>view all {{projects.length}} &rarr;</a></div>
+    <div class="cube-stack" id="cubeStack" aria-label="{{#if isRTL}}أعمال مختارة{{else}}Selected works{{/if}}">
+      <div class="cube-hint">{{#if isRTL}}انقر على عمل{{else}}Tap a piece{{/if}} &middot; <a href="#" data-open-gallery>{{#if isRTL}}عرض الأعمال الـ{{projects.length}} &larr;{{else}}view all {{projects.length}} &rarr;{{/if}}</a></div>
     </div>
     {{/if}}
   </div>
@@ -441,7 +452,7 @@ a { color: inherit; text-decoration: none; }
 <!-- Skills -->
 <section class="section" id="skills">
   <div class="container">
-    <div class="sec-head"><span class="section-label">Skills &amp; Tools</span><span class="line"></span></div>
+    <div class="sec-head"><span class="section-label">{{#if isRTL}}المهارات والأدوات{{else}}Skills &amp; Tools{{/if}}</span><span class="line"></span></div>
     <div class="skills-wrap">
       {{#each skills}}
       <div class="skill-group">
@@ -460,11 +471,11 @@ a { color: inherit; text-decoration: none; }
 <!-- Experience -->
 <section class="section" id="experience" style="background: var(--bg-alt);">
   <div class="container">
-    <div class="sec-head"><span class="section-label">Journey</span><span class="line"></span></div>
+    <div class="sec-head"><span class="section-label">{{#if isRTL}}المسيرة{{else}}Journey{{/if}}</span><span class="line"></span></div>
     {{#each experience}}
     <div class="xp-item">
       <h4>{{this.title}}</h4>
-      <div class="xp-meta">{{this.company}}{{#if this.startDate}} &middot; {{this.startDate}}{{#if this.endDate}} – {{this.endDate}}{{else}} – Present{{/if}}{{/if}}</div>
+      <div class="xp-meta">{{this.company}}{{#if this.startDate}} &middot; {{this.startDate}}{{#if this.endDate}} – {{this.endDate}}{{else}} – {{#if ../isRTL}}الآن{{else}}Present{{/if}}{{/if}}{{/if}}</div>
       {{#if this.description}}<p>{{this.description}}</p>{{/if}}
     </div>
     {{/each}}
@@ -478,8 +489,8 @@ a { color: inherit; text-decoration: none; }
 <!-- Awards & Certifications -->
 <section class="section" id="awards">
   <div class="container">
-    <div class="sec-head"><span class="section-label">Recognition</span><span class="line"></span></div>
-    <h2 class="sec-title" style="margin-bottom: 40px;">Awards &amp; Certifications</h2>
+    <div class="sec-head"><span class="section-label">{{#if isRTL}}تقدير{{else}}Recognition{{/if}}</span><span class="line"></span></div>
+    <h2 class="sec-title" style="margin-bottom: 40px;">{{#if isRTL}}الجوائز والشهادات{{else}}Awards &amp; Certifications{{/if}}</h2>
     <div class="awards-grid">
       {{#each certifications}}
       <div class="award-item">
@@ -498,8 +509,8 @@ a { color: inherit; text-decoration: none; }
 <!-- Testimonials -->
 <section class="section" id="testimonials" style="background: var(--bg-alt);">
   <div class="container">
-    <div class="sec-head"><span class="section-label">Kind Words</span><span class="line"></span></div>
-    <h2 class="sec-title" style="margin-bottom: 40px;">Testimonials</h2>
+    <div class="sec-head"><span class="section-label">{{#if isRTL}}كلمات طيبة{{else}}Kind Words{{/if}}</span><span class="line"></span></div>
+    <h2 class="sec-title" style="margin-bottom: 40px;">{{#if isRTL}}التوصيات{{else}}Testimonials{{/if}}</h2>
     <div class="quotes-grid">
       {{#each endorsements}}
       <figure class="quote-card">
@@ -530,20 +541,20 @@ a { color: inherit; text-decoration: none; }
 <!-- Contact -->
 <section class="section" id="contact">
   <div class="container">
-    <h2 class="sec-title" style="margin-bottom: 12px;">Let's create something together</h2>
-    <p class="mono" style="font-size:11px;text-transform:uppercase;letter-spacing:1.5px;color:var(--sand);margin-bottom:48px;">Open for work</p>
+    <h2 class="sec-title" style="margin-bottom: 12px;">{{#if isRTL}}لنبتكر شيئًا معًا{{else}}Let's create something together{{/if}}</h2>
+    <p class="mono" style="font-size:11px;text-transform:uppercase;letter-spacing:1.5px;color:var(--sand);margin-bottom:48px;">{{#if isRTL}}متاح للعمل{{else}}Open for work{{/if}}</p>
     <div class="contact-grid">
-      {{#if basics.email}}<div><p class="lbl">Email</p><a href="mailto:{{basics.email}}">{{basics.email}}</a></div>{{/if}}
-      {{#if basics.phone}}<div><p class="lbl">Phone</p><a href="tel:{{basics.phone}}">{{basics.phone}}</a></div>{{/if}}
+      {{#if basics.email}}<div><p class="lbl">{{#if isRTL}}البريد الإلكتروني{{else}}Email{{/if}}</p><a href="mailto:{{basics.email}}">{{basics.email}}</a></div>{{/if}}
+      {{#if basics.phone}}<div><p class="lbl">{{#if isRTL}}الهاتف{{else}}Phone{{/if}}</p><a href="tel:{{basics.phone}}">{{basics.phone}}</a></div>{{/if}}
       {{#if (or basics.instagram basics.linkedin basics.github basics.website)}}
-      <div><p class="lbl">Social</p><div class="contact-flex">
-        {{#if basics.instagram}}<a href="{{safeUrl basics.instagram}}" target="_blank" rel="noopener">Instagram</a>{{/if}}
-        {{#if basics.linkedin}}<a href="{{safeUrl basics.linkedin}}" target="_blank" rel="noopener">LinkedIn</a>{{/if}}
-        {{#if basics.github}}<a href="{{safeUrl basics.github}}" target="_blank" rel="noopener">GitHub</a>{{/if}}
-        {{#if basics.website}}<a href="{{safeUrl basics.website}}" target="_blank" rel="noopener">Website</a>{{/if}}
+      <div><p class="lbl">{{#if isRTL}}التواصل الاجتماعي{{else}}Social{{/if}}</p><div class="contact-flex">
+        {{#if basics.instagram}}<a href="{{safeUrl basics.instagram}}" target="_blank" rel="noopener">{{#if isRTL}}إنستغرام{{else}}Instagram{{/if}}</a>{{/if}}
+        {{#if basics.linkedin}}<a href="{{safeUrl basics.linkedin}}" target="_blank" rel="noopener">{{#if isRTL}}لينكدإن{{else}}LinkedIn{{/if}}</a>{{/if}}
+        {{#if basics.github}}<a href="{{safeUrl basics.github}}" target="_blank" rel="noopener">{{#if isRTL}}جيت هاب{{else}}GitHub{{/if}}</a>{{/if}}
+        {{#if basics.website}}<a href="{{safeUrl basics.website}}" target="_blank" rel="noopener">{{#if isRTL}}الموقع الإلكتروني{{else}}Website{{/if}}</a>{{/if}}
       </div></div>
       {{/if}}
-      {{#if basics.location}}<div><p class="lbl">Location</p><p>{{basics.location}}</p></div>{{/if}}
+      {{#if basics.location}}<div><p class="lbl">{{#if isRTL}}الموقع{{else}}Location{{/if}}</p><p>{{basics.location}}</p></div>{{/if}}
     </div>
   </div>
 </section>
@@ -600,7 +611,7 @@ a { color: inherit; text-decoration: none; }
       cube.style.setProperty('--delay', (-i * 2.3).toFixed(2) + 's');
       cube.style.setProperty('--dur', (15 + (i % 4) * 2.5).toFixed(2) + 's');
       cube.style.zIndex = s[2];
-      cube.setAttribute('aria-label', title || 'Artwork');
+      cube.setAttribute('aria-label', title || '{{#if isRTL}}عمل فني{{else}}Artwork{{/if}}');
       // Two artworks per cube: art1 on front/left, art2 on right/back.
       var a1 = src ? '<img src="' + src + '" alt="' + esc + '">' : '';
       var a2 = side ? '<img src="' + side + '" alt="">' : a1;
@@ -689,10 +700,10 @@ a { color: inherit; text-decoration: none; }
 </script>
 
 <!-- Full collection overlay (opened by the Gallery button) -->
-<div class="gallery-modal" id="galleryModal" aria-hidden="true" role="dialog" aria-label="The Collection">
+<div class="gallery-modal" id="galleryModal" aria-hidden="true" role="dialog" aria-label="{{#if isRTL}}المجموعة{{else}}The Collection{{/if}}">
   <div class="gm-head">
-    <span class="gm-title">The Collection <span class="gm-count">{{projects.length}} works</span></span>
-    <button class="gm-close" id="gmClose" aria-label="Close gallery">[ Close &times; ]</button>
+    <span class="gm-title">{{#if isRTL}}المجموعة{{else}}The Collection{{/if}} <span class="gm-count">{{projects.length}} {{#if isRTL}}عملًا{{else}}works{{/if}}</span></span>
+    <button class="gm-close" id="gmClose" aria-label="{{#if isRTL}}إغلاق المعرض{{else}}Close gallery{{/if}}">[ {{#if isRTL}}إغلاق{{else}}Close{{/if}} &times; ]</button>
   </div>
   <div class="gm-scroll">
     <div class="gm-grid">
@@ -700,7 +711,7 @@ a { color: inherit; text-decoration: none; }
       {{#if this.coverUrl}}
       <a class="gm-card"{{#if this.slug}} href="{{../portfolioUrl}}/projects/{{this.slug}}"{{else}}{{#if this.link}} href="{{safeUrl this.link}}" target="_blank" rel="noopener"{{else}} href="#" data-full="{{safeUrl this.coverUrl}}" data-cap="{{this.title}}"{{/if}}{{/if}}>
         <div class="gm-ph"><img src="{{safeUrl this.coverUrl}}" alt="{{this.title}}" loading="lazy" decoding="async"></div>
-        <div class="gm-meta"><span class="gm-cat">{{#if this.meta.type}}{{this.meta.type}}{{else}}Work{{/if}}</span><span class="gm-ttl">{{this.title}}</span></div>
+        <div class="gm-meta"><span class="gm-cat">{{#if this.meta.type}}{{this.meta.type}}{{else}}{{#if ../isRTL}}عمل{{else}}Work{{/if}}{{/if}}</span><span class="gm-ttl">{{this.title}}</span></div>
       </a>
       {{/if}}
       {{/each}}
@@ -713,12 +724,12 @@ a { color: inherit; text-decoration: none; }
   <span class="lcross lc-tl"></span><span class="lcross lc-tr"></span>
   <span class="lcross lc-bl"></span><span class="lcross lc-br"></span>
   <span class="lb-cap" id="galCap"></span>
-  <button class="lb-close" id="galClose" aria-label="Close">[ Close &times; ]</button>
+  <button class="lb-close" id="galClose" aria-label="{{#if isRTL}}إغلاق{{else}}Close{{/if}}">[ {{#if isRTL}}إغلاق{{else}}Close{{/if}} &times; ]</button>
   <div class="lb-stage" id="galStage"><img src="" alt="" id="galImg" draggable="false"></div>
   <div class="lb-ctrl">
-    <button id="galOut" aria-label="Zoom out">[ &minus; ]</button>
+    <button id="galOut" aria-label="{{#if isRTL}}تصغير{{else}}Zoom out{{/if}}">[ &minus; ]</button>
     <span class="pct" id="galPct">100%</span>
-    <button id="galIn" aria-label="Zoom in">[ + ]</button>
+    <button id="galIn" aria-label="{{#if isRTL}}تكبير{{else}}Zoom in{{/if}}">[ + ]</button>
   </div>
 </div>
 <script>

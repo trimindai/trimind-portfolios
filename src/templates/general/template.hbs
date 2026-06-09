@@ -12,6 +12,9 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700{{#if customization.fontFamily}}&family={{customization.fontFamily}}:wght@400;500;600;700;800{{/if}}{{#if customization.bodyFont}}&family={{customization.bodyFont}}:wght@300;400;500;600;700{{/if}}&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&family=DM+Sans:wght@400;500;600;700&family=Lora:wght@400;500;600;700&family=Merriweather:wght@400;700&family=Raleway:wght@400;500;600;700&family=Source+Sans+3:wght@400;500;600;700&display=swap" rel="stylesheet">
+{{#if isRTL}}
+<link href="https://fonts.googleapis.com/css2?family=Noto+Kufi+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
+{{/if}}
 <style>
 /* ══════════════════════════════════════════════════════
    THE INSTITUTIONAL PROSPECTUS
@@ -1051,6 +1054,14 @@ footer a:hover { border-color: var(--gold-warm); }
     .nav-links { direction: ltr; }
 }
 </style>
+{{#if isRTL}}
+<style>
+:root {
+    --font-head: 'Playfair Display', 'Noto Kufi Arabic', Georgia, serif;
+    --font-body: 'DM Sans', 'Noto Kufi Arabic', system-ui, sans-serif;
+}
+</style>
+{{/if}}
 {{#if customization}}
 <style>
 {{#if customization.primaryColor}}
@@ -1092,14 +1103,14 @@ footer a:hover { border-color: var(--gold-warm); }
 
 <!-- Nav -->
 <nav class="nav" id="nav">
-    <a href="#" class="nav-brand">{{titleCase basics.fullName}} <span>Portfolio</span></a>
+    <a href="#" class="nav-brand">{{titleCase basics.fullName}} <span>{{#if isRTL}}أعمالي{{else}}Portfolio{{/if}}</span></a>
     <div class="nav-links">
-        {{#if experience}}<a href="#career">Experience</a>{{/if}}
-        {{#if projects}}<a href="#impact">Impact</a>{{/if}}
-        {{#if certifications}}<a href="#credentials">Credentials</a>{{/if}}
-        <a href="#contact" class="nav-cta">Contact</a>
+        {{#if experience}}<a href="#career">{{#if isRTL}}الخبرة{{else}}Experience{{/if}}</a>{{/if}}
+        {{#if projects}}<a href="#impact">{{#if isRTL}}الأثر{{else}}Impact{{/if}}</a>{{/if}}
+        {{#if certifications}}<a href="#credentials">{{#if isRTL}}الاعتمادات{{else}}Credentials{{/if}}</a>{{/if}}
+        <a href="#contact" class="nav-cta">{{#if isRTL}}تواصل{{else}}Contact{{/if}}</a>
     </div>
-    <button class="nav-toggle" aria-label="Menu">
+    <button class="nav-toggle" aria-label="{{#if isRTL}}القائمة{{else}}Menu{{/if}}">
         <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"/></svg>
     </button>
 </nav>
@@ -1133,19 +1144,19 @@ footer a:hover { border-color: var(--gold-warm); }
                     {{#if basics.linkedin}}
                     <a href="{{basics.linkedin}}" target="_blank" rel="noopener">
                         <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M13.19 8.688a4.5 4.5 0 0 1 1.242 7.244l-4.5 4.5a4.5 4.5 0 0 1-6.364-6.364l1.757-1.757m13.35-.622 1.757-1.757a4.5 4.5 0 0 0-6.364-6.364l-4.5 4.5a4.5 4.5 0 0 0 1.242 7.244"/></svg>
-                        LinkedIn
+                        {{#if isRTL}}لينكدإن{{else}}LinkedIn{{/if}}
                     </a>
                     {{/if}}
                     {{#if basics.github}}
                     <a href="{{basics.github}}" target="_blank" rel="noopener">
                         <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M17.25 6.75 22.5 12l-5.25 5.25m-10.5 0L1.5 12l5.25-5.25m7.5-3-4.5 16.5"/></svg>
-                        GitHub
+                        {{#if isRTL}}جيت هب{{else}}GitHub{{/if}}
                     </a>
                     {{/if}}
                     {{#if basics.website}}
                     <a href="{{basics.website}}" target="_blank" rel="noopener">
                         <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 21a9.004 9.004 0 0 0 8.716-6.747M12 21a9.004 9.004 0 0 1-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 0 1 7.843 4.582M12 3a8.997 8.997 0 0 0-7.843 4.582m15.686 0A11.953 11.953 0 0 1 12 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0 1 21 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0 1 12 16.5c-3.162 0-6.133-.815-8.716-2.247m0 0A9.015 9.015 0 0 1 3 12c0-1.605.42-3.113 1.157-4.418"/></svg>
-                        Website
+                        {{#if isRTL}}الموقع الإلكتروني{{else}}Website{{/if}}
                     </a>
                     {{/if}}
                 </div>
@@ -1200,7 +1211,7 @@ footer a:hover { border-color: var(--gold-warm); }
 <section class="section value-prop">
     <div class="container">
         <div class="value-prop-inner">
-            <div class="section-label rv" style="justify-content: center;">Professional Summary</div>
+            <div class="section-label rv" style="justify-content: center;">{{#if isRTL}}الملخّص المهني{{else}}Professional Summary{{/if}}</div>
             <p class="value-prop-text rv rv-d1">
                 {{{basics.valueProposition}}}
             </p>
@@ -1218,7 +1229,7 @@ footer a:hover { border-color: var(--gold-warm); }
 <section class="section value-prop">
     <div class="container">
         <div class="value-prop-inner">
-            <div class="section-label rv" style="justify-content: center;">Professional Summary</div>
+            <div class="section-label rv" style="justify-content: center;">{{#if isRTL}}الملخّص المهني{{else}}Professional Summary{{/if}}</div>
             <p class="value-prop-text rv rv-d1">
                 {{{basics.bio}}}
             </p>
@@ -1235,8 +1246,8 @@ footer a:hover { border-color: var(--gold-warm); }
 {{#unless (isHidden "career")}}
 <section id="career" class="section career">
     <div class="container">
-        <div class="section-label rv">Career Trajectory</div>
-        <div class="section-title rv rv-d1">Where I've <em>delivered</em></div>
+        <div class="section-label rv">{{#if isRTL}}المسار المهني{{else}}Career Trajectory{{/if}}</div>
+        <div class="section-title rv rv-d1">{{#if isRTL}}حيث <em>أنجزت</em>{{else}}Where I've <em>delivered</em>{{/if}}</div>
 
         <div class="timeline">
             {{#each experience}}
@@ -1245,7 +1256,7 @@ footer a:hover { border-color: var(--gold-warm); }
                     <div class="tl-top">
                         <div class="tl-company">{{this.company}}</div>
                         <div class="tl-period-wrap">
-                            <span class="tl-period">{{this.startDate}} &mdash; {{#if this.endDate}}{{this.endDate}}{{else}}Present{{/if}}</span>
+                            <span class="tl-period">{{this.startDate}} &mdash; {{#if this.endDate}}{{this.endDate}}{{else}}{{#if ../isRTL}}حتى الآن{{else}}Present{{/if}}{{/if}}</span>
                         </div>
                     </div>
                     <div class="tl-role">{{this.title}}</div>
@@ -1276,8 +1287,8 @@ footer a:hover { border-color: var(--gold-warm); }
 {{#unless (isHidden "impact")}}
 <section id="impact" class="section impact">
     <div class="container">
-        <div class="section-label rv">Selected Achievements</div>
-        <div class="section-title rv rv-d1">Impact that <em>speaks in numbers</em></div>
+        <div class="section-label rv">{{#if isRTL}}إنجازات مختارة{{else}}Selected Achievements{{/if}}</div>
+        <div class="section-title rv rv-d1">{{#if isRTL}}أثرٌ <em>تنطق به الأرقام</em>{{else}}Impact that <em>speaks in numbers</em>{{/if}}</div>
 
         {{#each projects}}
         {{#if this.isFeatured}}
@@ -1344,8 +1355,8 @@ footer a:hover { border-color: var(--gold-warm); }
 {{#unless (isHidden "competencies")}}
 <section class="section competencies">
     <div class="container">
-        <div class="section-label rv">Core Competencies</div>
-        <div class="section-title rv rv-d1">Skills & <em>expertise</em></div>
+        <div class="section-label rv">{{#if isRTL}}الكفاءات الأساسية{{else}}Core Competencies{{/if}}</div>
+        <div class="section-title rv rv-d1">{{#if isRTL}}المهارات <em>والخبرات</em>{{else}}Skills & <em>expertise</em>{{/if}}</div>
 
         <div class="comp-grid">
             {{#each skills}}
@@ -1374,8 +1385,8 @@ footer a:hover { border-color: var(--gold-warm); }
 {{#unless (isHidden "education")}}
 <section class="section education">
     <div class="container">
-        <div class="section-label rv">Education</div>
-        <div class="section-title rv rv-d1">Academic <em>foundation</em></div>
+        <div class="section-label rv">{{#if isRTL}}التعليم{{else}}Education{{/if}}</div>
+        <div class="section-title rv rv-d1">{{#if isRTL}}الأساس <em>الأكاديمي</em>{{else}}Academic <em>foundation</em>{{/if}}</div>
 
         <div class="edu-list">
             {{#each education}}
@@ -1401,13 +1412,13 @@ footer a:hover { border-color: var(--gold-warm); }
 {{#if (or languages professionalAffiliations continuousDevelopment)}}
 <section class="section profile">
     <div class="container">
-        <div class="section-label rv">Professional Profile</div>
-        <div class="section-title rv rv-d1">Beyond the <em>credentials</em></div>
+        <div class="section-label rv">{{#if isRTL}}الملف المهني{{else}}Professional Profile{{/if}}</div>
+        <div class="section-title rv rv-d1">{{#if isRTL}}ما وراء <em>الشهادات</em>{{else}}Beyond the <em>credentials</em>{{/if}}</div>
 
         <div class="profile-grid">
             {{#if languages}}
             <div class="profile-col rv">
-                <div class="profile-heading">Languages</div>
+                <div class="profile-heading">{{#if isRTL}}اللغات{{else}}Languages{{/if}}</div>
                 <div class="lang-list">
                     {{#each languages}}
                     <div class="lang-item">
@@ -1424,7 +1435,7 @@ footer a:hover { border-color: var(--gold-warm); }
 
             {{#if professionalAffiliations}}
             <div class="profile-col rv rv-d1">
-                <div class="profile-heading">Professional Affiliations</div>
+                <div class="profile-heading">{{#if isRTL}}العضويات المهنية{{else}}Professional Affiliations{{/if}}</div>
                 <div class="profile-list">
                     {{#each professionalAffiliations}}
                     <div class="profile-item"><strong>{{this.name}}</strong>{{#if this.role}}<span class="meta">{{this.role}}</span>{{/if}}</div>
@@ -1435,7 +1446,7 @@ footer a:hover { border-color: var(--gold-warm); }
 
             {{#if continuousDevelopment}}
             <div class="profile-col rv rv-d2">
-                <div class="profile-heading">Continuous Development</div>
+                <div class="profile-heading">{{#if isRTL}}التطوير المستمر{{else}}Continuous Development{{/if}}</div>
                 <div class="profile-list">
                     {{#each continuousDevelopment}}
                     <div class="profile-item"><strong>{{this.name}}</strong>{{#if this.provider}}<span class="meta">{{this.provider}}{{#if this.year}} &middot; {{this.year}}{{/if}}</span>{{/if}}</div>
@@ -1454,13 +1465,13 @@ footer a:hover { border-color: var(--gold-warm); }
 {{#unless (isHidden "endorsements")}}
 <section class="section endorsements">
     <div class="container">
-        <div class="section-label rv">What Colleagues Say</div>
-        <div class="section-title rv rv-d1">Professional <em>endorsements</em></div>
+        <div class="section-label rv">{{#if isRTL}}آراء الزملاء{{else}}What Colleagues Say{{/if}}</div>
+        <div class="section-title rv rv-d1">{{#if isRTL}}توصيات <em>مهنية</em>{{else}}Professional <em>endorsements</em>{{/if}}</div>
 
         <div class="endorsement-grid">
             {{#each endorsements}}
             <div class="endorsement-card rv">
-                <div class="endorsement-quote-mark">&ldquo;</div>
+                <div class="endorsement-quote-mark">{{#if ../isRTL}}&rdquo;{{else}}&ldquo;{{/if}}</div>
                 <p class="endorsement-text">{{this.quote}}</p>
                 <div class="endorsement-author">
                     <div class="endorsement-avatar" aria-label="{{this.name}}">{{initials this.name}}</div>
@@ -1481,35 +1492,35 @@ footer a:hover { border-color: var(--gold-warm); }
 {{#unless (isHidden "contact")}}
 <section id="contact" class="section contact">
     <div class="container">
-        <div class="section-label rv">Get in Touch</div>
-        <div class="section-title rv rv-d1">Ready to discuss how I can <em>contribute</em>?</div>
+        <div class="section-label rv">{{#if isRTL}}تواصل{{else}}Get in Touch{{/if}}</div>
+        <div class="section-title rv rv-d1">{{#if isRTL}}مستعدّ لمناقشة ما يمكنني <em>الإسهام به</em>؟{{else}}Ready to discuss how I can <em>contribute</em>?{{/if}}</div>
 
         <div class="contact-grid rv rv-d2">
             {{#if basics.email}}
             <a href="mailto:{{basics.email}}" class="contact-cell">
                 <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75"/></svg>
-                <h4>Email</h4>
+                <h4>{{#if isRTL}}البريد الإلكتروني{{else}}Email{{/if}}</h4>
                 <p>{{basics.email}}</p>
             </a>
             {{/if}}
             {{#if basics.phone}}
             <a href="tel:{{basics.phone}}" class="contact-cell">
                 <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 0 0 2.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 0 1-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 0 0-1.091-.852H4.5A2.25 2.25 0 0 0 2.25 4.5v2.25Z"/></svg>
-                <h4>Phone</h4>
+                <h4>{{#if isRTL}}الهاتف{{else}}Phone{{/if}}</h4>
                 <p>{{basics.phone}}</p>
             </a>
             {{/if}}
             {{#if basics.linkedin}}
             <a href="{{basics.linkedin}}" class="contact-cell" target="_blank" rel="noopener">
                 <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M13.19 8.688a4.5 4.5 0 0 1 1.242 7.244l-4.5 4.5a4.5 4.5 0 0 1-6.364-6.364l1.757-1.757m13.35-.622 1.757-1.757a4.5 4.5 0 0 0-6.364-6.364l-4.5 4.5a4.5 4.5 0 0 0 1.242 7.244"/></svg>
-                <h4>LinkedIn</h4>
-                <p>LinkedIn Profile</p>
+                <h4>{{#if isRTL}}لينكدإن{{else}}LinkedIn{{/if}}</h4>
+                <p>{{#if isRTL}}الملف الشخصي على لينكدإن{{else}}LinkedIn Profile{{/if}}</p>
             </a>
             {{/if}}
             {{#if basics.location}}
             <div class="contact-cell">
                 <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 0 1 15 0Z"/></svg>
-                <h4>Location</h4>
+                <h4>{{#if isRTL}}الموقع{{else}}Location{{/if}}</h4>
                 <p>{{basics.location}}</p>
             </div>
             {{/if}}
@@ -1520,15 +1531,15 @@ footer a:hover { border-color: var(--gold-warm); }
 
 <!-- QR (print only) -->
 <div class="qr-print">
-    <img src="{{qrDataUrl}}" alt="QR Code" width="150" height="150">
-    <p>Scan to view online portfolio</p>
+    <img src="{{qrDataUrl}}" alt="{{#if isRTL}}رمز الاستجابة السريعة{{else}}QR Code{{/if}}" width="150" height="150">
+    <p>{{#if isRTL}}امسح الرمز لعرض الملف على الإنترنت{{else}}Scan to view online portfolio{{/if}}</p>
 </div>
 
 
 <!-- Language Toggle -->
 <div class="lang-float no-print">
     <button class="lang-btn" id="langToggle" onclick="switchToArabic()">
-        عربي
+        {{#if isRTL}}English{{else}}عربي{{/if}}
     </button>
 </div>
 
@@ -1537,7 +1548,7 @@ footer a:hover { border-color: var(--gold-warm); }
 
 <footer>
     <div class="container">
-        <p>Built with <a href="https://portfolio-trimind.com" target="_blank" rel="noopener">Portfolio TriMind</a></p>
+        <p>{{#if isRTL}}صُنع باستخدام{{else}}Built with{{/if}} <a href="https://portfolio-trimind.com" target="_blank" rel="noopener">Portfolio TriMind</a></p>
     </div>
 </footer>
 
@@ -1624,7 +1635,7 @@ var isArabic = false;
 
 function googleTranslateElementInit() {
     new google.translate.TranslateElement({
-        pageLanguage: 'en',
+        pageLanguage: '{{#if isRTL}}ar{{else}}en{{/if}}',
         includedLanguages: 'en,ar',
         layout: google.translate.TranslateElement.InlineLayout.NONE,
         autoDisplay: false
@@ -1637,11 +1648,11 @@ function switchToArabic() {
         // Trigger Google Translate to Arabic
         var sel = document.querySelector('.goog-te-combo');
         if (sel) {
-            sel.value = 'ar';
+            sel.value = '{{#if isRTL}}en{{else}}ar{{/if}}';
             sel.dispatchEvent(new Event('change'));
         }
-        document.documentElement.dir = 'rtl';
-        btn.textContent = 'English';
+        document.documentElement.dir = '{{#if isRTL}}ltr{{else}}rtl{{/if}}';
+        btn.textContent = '{{#if isRTL}}عربي{{else}}English{{/if}}';
         isArabic = true;
     } else {
         // Switch back to English
@@ -1654,13 +1665,13 @@ function switchToArabic() {
         // Also try the cookie method
         document.cookie = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
         document.cookie = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=.' + location.hostname;
-        document.documentElement.dir = 'ltr';
-        btn.textContent = 'عربي';
+        document.documentElement.dir = '{{#if isRTL}}rtl{{else}}ltr{{/if}}';
+        btn.textContent = '{{#if isRTL}}English{{else}}عربي{{/if}}';
         isArabic = false;
         // Reload to fully restore English
         if (document.querySelector('.goog-te-combo')) {
             var sel = document.querySelector('.goog-te-combo');
-            sel.value = 'en';
+            sel.value = '{{#if isRTL}}ar{{else}}en{{/if}}';
             sel.dispatchEvent(new Event('change'));
         }
     }

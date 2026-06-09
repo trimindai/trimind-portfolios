@@ -684,7 +684,7 @@ html[dir="rtl"] .tl-item::before{left:auto;right:0}
     </div>
     {{!-- contact info: horizontal strip under the message box --}}
     <div class="contact-list box-reveal" data-delay="120">
-      {{#if basics.email}}<a href="mailto:{{basics.email}}"><i class="fa-solid fa-envelope"></i><div><b>Email</b>{{basics.email}}</div></a>{{/if}}
+      {{#if basics.email}}<a href="mailto:{{basics.email}}"><i class="fa-solid fa-envelope"></i><div><b>{{#if isRTL}}البريد الإلكتروني{{else}}Email{{/if}}</b>{{basics.email}}</div></a>{{/if}}
       {{#if basics.linkedin}}<a href="{{safeUrl basics.linkedin}}" target="_blank" rel="noopener"><i class="fa-brands fa-linkedin-in"></i><div><b>LinkedIn</b>{{#if isRTL}}تواصل مهني{{else}}Let's connect{{/if}}</div></a>{{/if}}
       {{#if basics.github}}<a href="{{safeUrl basics.github}}" target="_blank" rel="noopener"><i class="fa-brands fa-github"></i><div><b>GitHub</b>{{#if isRTL}}الأكواد{{else}}See the code{{/if}}</div></a>{{/if}}
       {{#if basics.phone}}<a href="tel:{{basics.phone}}"><i class="fa-solid fa-phone"></i><div><b>{{#if isRTL}}الهاتف{{else}}Phone{{/if}}</b>{{basics.phone}}</div></a>{{/if}}

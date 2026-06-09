@@ -12,7 +12,7 @@
 {{#if project.coverUrl}}<meta property="og:image" content="{{project.coverUrl}}">{{/if}}
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">{{#if isRTL}}<link href="https://fonts.googleapis.com/css2?family=Noto+Kufi+Arabic:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">{{/if}}
 <style>
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -293,7 +293,9 @@ a:focus-visible, button:focus-visible {
   .block-challenge { padding: 20px 24px; }
   .footer-inner { grid-template-columns: 1fr; gap: 24px; }
 }
-</style>
+</style>{{#if isRTL}}<style>
+:root { --font-head: 'Noto Kufi Arabic', 'Space Grotesk', sans-serif; --font-body: 'Noto Kufi Arabic', 'Inter', sans-serif; }
+</style>{{/if}}
 </head>
 <body>
 
@@ -301,17 +303,17 @@ a:focus-visible, button:focus-visible {
   <div class="header-inner">
     <a href="/p/{{portfolioSlug}}" class="header-brand">{{basics.fullName}}</a>
     <nav class="header-nav">
-      <a href="/p/{{portfolioSlug}}#about">Home</a>
-      <a href="/p/{{portfolioSlug}}#projects">Projects</a>
+      <a href="/p/{{portfolioSlug}}#about">{{#if isRTL}}الرئيسية{{else}}Home{{/if}}</a>
+      <a href="/p/{{portfolioSlug}}#projects">{{#if isRTL}}المشاريع{{else}}Projects{{/if}}</a>
     </nav>
     <div class="header-social">
       {{#if basics.linkedin}}
-      <a href="{{basics.linkedin}}" target="_blank" rel="noopener" aria-label="LinkedIn">
+      <a href="{{basics.linkedin}}" target="_blank" rel="noopener" aria-label="{{#if isRTL}}لينكد إن{{else}}LinkedIn{{/if}}">
         <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
       </a>
       {{/if}}
       {{#if basics.github}}
-      <a href="{{basics.github}}" target="_blank" rel="noopener" aria-label="GitHub">
+      <a href="{{basics.github}}" target="_blank" rel="noopener" aria-label="{{#if isRTL}}جيت هاب{{else}}GitHub{{/if}}">
         <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
       </a>
       {{/if}}
@@ -324,7 +326,7 @@ a:focus-visible, button:focus-visible {
     <div class="container">
       <a href="/p/{{portfolioSlug}}#projects" class="back-link">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
-        All projects
+        {{#if isRTL}}جميع المشاريع{{else}}All projects{{/if}}
       </a>
 
       {{#if project.meta}}
@@ -334,7 +336,7 @@ a:focus-visible, button:focus-visible {
         {{#if project.meta.institution}}<span>{{project.meta.institution}}</span>{{/if}}
         {{#if project.meta.courseCode}}<span>{{project.meta.courseCode}}</span>{{/if}}
         {{#if project.meta.duration}}<span>{{project.meta.duration}}</span>{{/if}}
-        {{#if project.meta.teamSize}}<span>Team of {{project.meta.teamSize}}</span>{{/if}}
+        {{#if project.meta.teamSize}}<span>{{#if isRTL}}فريق من {{else}}Team of {{/if}}{{project.meta.teamSize}}</span>{{/if}}
       </div>
       {{/if}}
 
@@ -366,7 +368,7 @@ a:focus-visible, button:focus-visible {
         {{#ifEq this.kind "image"}}
         <div class="block block-image{{#if this.fullBleed}} full-bleed{{/if}}">
           <figure>
-            <img src="{{this.url}}" alt="{{#if this.caption}}{{this.caption}}{{else}}Project image{{/if}}" loading="lazy">
+            <img src="{{this.url}}" alt="{{#if this.caption}}{{this.caption}}{{else}}{{#if ../isRTL}}صورة المشروع{{else}}Project image{{/if}}{{/if}}" loading="lazy">
             {{#if this.caption}}<figcaption>{{this.caption}}</figcaption>{{/if}}
           </figure>
         </div>
@@ -376,7 +378,7 @@ a:focus-visible, button:focus-visible {
         <div class="block block-image-grid">
           {{#each this.images}}
           <figure>
-            <img src="{{this.url}}" alt="{{#if this.caption}}{{this.caption}}{{else}}Project image{{/if}}" loading="lazy">
+            <img src="{{this.url}}" alt="{{#if this.caption}}{{this.caption}}{{else}}{{#if ../../isRTL}}صورة المشروع{{else}}Project image{{/if}}{{/if}}" loading="lazy">
             {{#if this.caption}}<figcaption>{{this.caption}}</figcaption>{{/if}}
           </figure>
           {{/each}}
@@ -396,7 +398,7 @@ a:focus-visible, button:focus-visible {
 
         {{#ifEq this.kind "standards"}}
         <div class="block block-standards">
-          <div class="block-standards-title">Engineering Standards</div>
+          <div class="block-standards-title">{{#if ../isRTL}}المعايير الهندسية{{else}}Engineering Standards{{/if}}</div>
           <ul>
             {{#each this.items}}<li>{{this.label}}{{#if this.value}} — {{this.value}}{{/if}}</li>{{/each}}
           </ul>
@@ -406,11 +408,11 @@ a:focus-visible, button:focus-visible {
         {{#ifEq this.kind "challenge"}}
         <div class="block block-challenge">
           {{#if this.problem}}
-          <div class="block-challenge-label">Challenge</div>
+          <div class="block-challenge-label">{{#if ../isRTL}}التحدي{{else}}Challenge{{/if}}</div>
           <p>{{this.problem}}</p>
           {{/if}}
           {{#if this.solution}}
-          <div class="block-challenge-label">Solution</div>
+          <div class="block-challenge-label">{{#if ../isRTL}}الحل{{else}}Solution{{/if}}</div>
           <p>{{this.solution}}</p>
           {{/if}}
         </div>
@@ -436,9 +438,9 @@ a:focus-visible, button:focus-visible {
 
   {{#if nextProject}}
   <section class="container">
-    <nav class="project-nav" aria-label="Next project">
+    <nav class="project-nav" aria-label="{{#if isRTL}}المشروع التالي{{else}}Next project{{/if}}">
       <a href="/p/{{portfolioSlug}}/projects/{{nextProject.slug}}" class="next-link">
-        <span class="next-link-label">Next /</span>
+        <span class="next-link-label">{{#if isRTL}}التالي /{{else}}Next /{{/if}}</span>
         <span class="next-link-title">{{nextProject.title}}</span>
       </a>
     </nav>
@@ -450,19 +452,19 @@ a:focus-visible, button:focus-visible {
   <div class="footer-inner">
     {{#if basics.location}}
     <div class="footer-col">
-      <h4>Location</h4>
+      <h4>{{#if isRTL}}الموقع{{else}}Location{{/if}}</h4>
       <p>{{basics.location}}</p>
     </div>
     {{/if}}
     <div class="footer-col">
-      <h4>Contact</h4>
+      <h4>{{#if isRTL}}التواصل{{else}}Contact{{/if}}</h4>
       {{#if basics.email}}<p><a href="mailto:{{basics.email}}">{{basics.email}}</a></p>{{/if}}
       {{#if basics.phone}}<p><a href="tel:{{basics.phone}}">{{basics.phone}}</a></p>{{/if}}
     </div>
     <div class="footer-col">
-      <h4>Connect</h4>
-      {{#if basics.linkedin}}<p><a href="{{basics.linkedin}}" target="_blank" rel="noopener">LinkedIn</a></p>{{/if}}
-      {{#if basics.github}}<p><a href="{{basics.github}}" target="_blank" rel="noopener">GitHub</a></p>{{/if}}
+      <h4>{{#if isRTL}}تواصل{{else}}Connect{{/if}}</h4>
+      {{#if basics.linkedin}}<p><a href="{{basics.linkedin}}" target="_blank" rel="noopener">{{#if isRTL}}لينكد إن{{else}}LinkedIn{{/if}}</a></p>{{/if}}
+      {{#if basics.github}}<p><a href="{{basics.github}}" target="_blank" rel="noopener">{{#if isRTL}}جيت هاب{{else}}GitHub{{/if}}</a></p>{{/if}}
     </div>
   </div>
   <div class="footer-bottom">
