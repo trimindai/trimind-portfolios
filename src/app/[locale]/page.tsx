@@ -249,7 +249,7 @@ export default async function LandingPage({
                   }}
                 >
                   <Image
-                    src="/landing/mockup-engineer-2026a.jpg"
+                    src="/landing/mockup-engineer-2026b.webp"
                     alt=""
                     width={1200}
                     height={800}
@@ -269,7 +269,7 @@ export default async function LandingPage({
                   }}
                 >
                   <Image
-                    src="/landing/mockup-corporate-2026a.jpg"
+                    src="/landing/mockup-corporate-2026b.webp"
                     alt="Corporate portfolio template preview"
                     width={1200}
                     height={800}
@@ -287,7 +287,7 @@ export default async function LandingPage({
               {/* Mobile: single image */}
               <div className="lg:hidden rounded-xl overflow-hidden border border-[var(--land-border)]">
                 <Image
-                  src="/landing/mockup-corporate-2026a.jpg"
+                  src="/landing/mockup-corporate-2026b.webp"
                   alt="Corporate portfolio template preview"
                   width={1200}
                   height={800}
@@ -318,7 +318,7 @@ export default async function LandingPage({
             className="group block rounded-xl border border-[var(--land-border)] overflow-hidden shadow-sm hover:shadow-md transition-shadow"
           >
             <Image
-              src="/landing/mockup-corporate-2026a.jpg"
+              src="/landing/mockup-corporate-2026b.webp"
               alt={isRTL ? "سيرة ذاتية احترافية — عرض مباشر" : "Professional CV — live demo"}
               width={1200}
               height={800}
@@ -389,7 +389,7 @@ export default async function LandingPage({
               <div className="group">
                 <div className="relative rounded-xl overflow-hidden border border-[var(--land-border)] transition-all duration-500 group-hover:translate-y-[-2px] group-hover:border-[var(--land-accent)]/30">
                   <Image
-                    src="/landing/mockup-corporate-2026a.jpg"
+                    src="/landing/mockup-corporate-2026b.webp"
                     alt="Corporate portfolio template"
                     width={1200}
                     height={800}
@@ -440,7 +440,7 @@ export default async function LandingPage({
               <div className="group h-full">
                 <div className="relative rounded-xl overflow-hidden border border-[var(--land-border)] transition-all duration-500 group-hover:translate-y-[-2px] group-hover:border-[var(--land-accent)]/30">
                   <Image
-                    src="/landing/mockup-engineer-2026a.jpg"
+                    src="/landing/mockup-engineer-2026b.webp"
                     alt="Engineer portfolio template"
                     width={1200}
                     height={800}
@@ -492,7 +492,7 @@ export default async function LandingPage({
               <div className="group h-full">
                 <div className="relative rounded-xl overflow-hidden border border-[var(--land-border)] transition-all duration-500 group-hover:translate-y-[-2px] group-hover:border-[var(--land-accent)]/30">
                   <Image
-                    src="/landing/mockup-creative-2026a.jpg"
+                    src="/landing/mockup-creative-2026b.webp"
                     alt="Creative portfolio template"
                     width={1200}
                     height={800}
@@ -539,8 +539,112 @@ export default async function LandingPage({
               </div>
             </ScrollReveal>
 
+            {/* Creator template */}
+            <ScrollReveal>
+              <div className="group h-full">
+                <div className="relative rounded-xl overflow-hidden border border-[var(--land-border)] transition-all duration-500 group-hover:translate-y-[-2px] group-hover:border-[var(--land-accent)]/30">
+                  <Image
+                    src="/landing/mockup-creator-2026b.webp"
+                    alt="Creator portfolio template"
+                    width={1200}
+                    height={800}
+                    sizes="(min-width: 1024px) 400px, (min-width: 640px) 50vw, 100vw"
+                    className="w-full h-auto"
+                    quality={90}
+                  />
+                  <span className="absolute top-3 start-3 z-10 rounded-full border border-[var(--land-accent)]/30 bg-[var(--land-bg)]/80 px-2.5 py-1 text-[10px] font-medium uppercase tracking-wider text-[var(--land-accent)] backdrop-blur">
+                    {isRTL ? "صانع محتوى" : "Creator"}
+                  </span>
+                  <div className="absolute inset-0 flex items-center justify-center bg-black/0 transition-all duration-300 group-hover:bg-black/40">
+                    <span className="flex items-center gap-2 text-sm font-medium text-white opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+                      <Eye className="h-4 w-4" />
+                      {isRTL ? "عرض مباشر" : "View live demo"}
+                    </span>
+                  </div>
+                </div>
+                <div className="mt-6">
+                  <h3 className="text-xl font-semibold">
+                    {isRTL ? "بورتفوليو صانع المحتوى" : "Creator Portfolio"}
+                  </h3>
+                  <p className="mt-2 text-sm text-[var(--land-body)] max-w-md">
+                    {isRTL
+                      ? "بورتفوليو يُلعب. لعبة بطاقات اختيارية تكشف أعمالك، إحصائيات الجمهور، وشريط العلامات التجارية — أو الانتقال مباشرة إلى الأعمال."
+                      : "A portfolio you can play. An optional match-card game reveals your work, audience stats, and brand marquee — or skip straight to the work."}
+                  </p>
+                  <div className="mt-4 flex flex-wrap items-center gap-3">
+                    <a
+                      href="/demo/creator"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-sm text-[var(--land-accent)] hover:text-[var(--land-accent-hover)] transition-colors"
+                    >
+                      {isRTL ? "عرض مباشر ←" : "View live demo →"}
+                    </a>
+                    <UseTemplateButton
+                      template="creator"
+                      locale={locale}
+                      label={isRTL ? "استخدم هذا القالب" : "Use this template"}
+                      className="rounded-lg border border-[var(--land-accent)]/50 px-4 py-2 text-sm font-medium text-[var(--land-accent)] transition-colors hover:bg-[var(--land-accent)]/10"
+                    />
+                  </div>
+                </div>
+              </div>
+            </ScrollReveal>
+
+            {/* Developer template */}
+            <ScrollReveal delay={150}>
+              <div className="group h-full">
+                <div className="relative rounded-xl overflow-hidden border border-[var(--land-border)] transition-all duration-500 group-hover:translate-y-[-2px] group-hover:border-[var(--land-accent)]/30">
+                  <Image
+                    src="/landing/mockup-developer-2026b.webp"
+                    alt="Developer portfolio template"
+                    width={1200}
+                    height={800}
+                    sizes="(min-width: 1024px) 400px, (min-width: 640px) 50vw, 100vw"
+                    className="w-full h-auto"
+                    quality={90}
+                  />
+                  <span className="absolute top-3 start-3 z-10 rounded-full border border-[var(--land-accent)]/30 bg-[var(--land-bg)]/80 px-2.5 py-1 text-[10px] font-medium uppercase tracking-wider text-[var(--land-accent)] backdrop-blur">
+                    {isRTL ? "مطوّر" : "Developer"}
+                  </span>
+                  <div className="absolute inset-0 flex items-center justify-center bg-black/0 transition-all duration-300 group-hover:bg-black/40">
+                    <span className="flex items-center gap-2 text-sm font-medium text-white opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+                      <Eye className="h-4 w-4" />
+                      {isRTL ? "عرض مباشر" : "View live demo"}
+                    </span>
+                  </div>
+                </div>
+                <div className="mt-6">
+                  <h3 className="text-xl font-semibold">
+                    {isRTL ? "بورتفوليو مطوّر" : "Developer Portfolio"}
+                  </h3>
+                  <p className="mt-2 text-sm text-[var(--land-body)] max-w-md">
+                    {isRTL
+                      ? "تصميم تفاعلي مع لوحة مفاتيح ثلاثية الأبعاد لأدواتك — كل تقنية تضيء زرًا حقيقيًا. مشاريع، خط زمني للخبرات، وروابط GitHub."
+                      : "Interactive design with a 3D keyboard of your stack — every tool lights up a real key. Projects, experience timeline, and GitHub links."}
+                  </p>
+                  <div className="mt-4 flex flex-wrap items-center gap-3">
+                    <a
+                      href="/demo/developer"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-sm text-[var(--land-accent)] hover:text-[var(--land-accent-hover)] transition-colors"
+                    >
+                      {isRTL ? "عرض مباشر ←" : "View live demo →"}
+                    </a>
+                    <UseTemplateButton
+                      template="developer"
+                      locale={locale}
+                      label={isRTL ? "استخدم هذا القالب" : "Use this template"}
+                      className="rounded-lg border border-[var(--land-accent)]/50 px-4 py-2 text-sm font-medium text-[var(--land-accent)] transition-colors hover:bg-[var(--land-accent)]/10"
+                    />
+                  </div>
+                </div>
+              </div>
+            </ScrollReveal>
+
             {/* More templates coming soon */}
-            <ScrollReveal delay={400}>
+            <ScrollReveal delay={300}>
               <div className="flex h-full flex-col items-center justify-center rounded-xl border border-dashed border-[var(--land-border)] bg-[var(--land-surface)]/40 p-8 text-center">
                 <span className="flex h-12 w-12 items-center justify-center rounded-full border border-[var(--land-border)] text-[var(--land-muted)]">
                   <Plus className="h-6 w-6" />

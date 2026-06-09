@@ -55,6 +55,16 @@ Severity: CRITICAL / HIGH / MEDIUM / LOW. Status: `fixed` / `recommended` / `pen
 - Footer/OG/hreflang all point to portfolio-trimind.com; gallery detail links resolve to live production project pages.
 - Zero console errors across all demo pages (favicon 404 under the local static server is an artifact).
 
+## Phase 3 — Landing / Home Page
+
+| # | Item | Severity | Status |
+|---|------|----------|--------|
+| 3.1 | **Template showcase missing 2 of 5 live templates** — only Corporate/Engineer/Creative had cards; Creator and Developer (both sellable, both with live demos) were absent from the landing entirely. Fixed: added both cards (bilingual copy, demo links, Use-this-template CTAs) in the existing card pattern; grid is now a clean 3+3 with the coming-soon cell. | HIGH | fixed |
+| 3.2 | **Showcase screenshots were stale** (mockup-*-2026a.jpg, June 6 — before the demo redesigns and the creator-game restore). Fixed: regenerated all 5 from the current live demos via Playwright at a consistent 1200×800@2x viewport (developer captured after the 3D keyboard goes live), optimized as WebP (31–146KB); hero mockups updated to the same files. | HIGH | fixed |
+| 3.3 | Click-test EN + AR: all 23 unique links per locale resolve (routes 200, anchors exist, externals legit). No dead ends. | — | verified |
+| 3.4 | Hero → TryItForm → `/templates?prefill=1` → guest builder flow works; templates picker lists all 5 templates; pricing CTA → /templates. 4.900 KD price consistent (landing, pricing, builder banner, JSON-LD). | — | verified |
+| 3.5 | Responsive: zero horizontal overflow at 375px on EN and AR; ScrollReveal respects `prefers-reduced-motion`; animations are transform/opacity only (no layout-property animation). | — | verified |
+
 ### Phase 1 verified-good (no action)
 - Step navigation: sticky mobile progress bar + desktop step pills, autosave on navigation, "Saved on this device" indicator works (guest localStorage + Convex when authed).
 - Inputs are controlled but stable — no focus loss or lag while typing (verified char-by-char).
