@@ -80,6 +80,29 @@ if (!kbd.includes('label: "Pentest"')) throw new Error("KBD SKILLS swap failed")
 kbd = kbd.replace('mCtx.fillText("Maya", 128, 128);', 'mCtx.fillText("WA", 128, 128);');
 if (kbd.includes('fillText("Maya"')) throw new Error("KBD badge swap failed");
 
+/* ── PHONE keyboard sizing (Wadhah-only — the shared demo file is untouched) ──
+   On a 390px portrait screen the default 4-row grid becomes ceil(34/4)=9 columns
+   wide and runs off BOTH edges (only ~5 caps visible). For her 34-tool stack we:
+   - go to 5 rows on phone → ceil(34/5)=7 columns (narrower, more portrait-shaped),
+     while desktop keeps its 4-row framing,
+   - zoom the phone camera out so the WHOLE keyboard is visible (no side-clipping). */
+function kbdRep(label: string, from: string, to: string) {
+  if (!kbd.includes(from)) throw new Error(`KBD REPLACE FAILED [${label}]: anchor not found`);
+  kbd = kbd.replace(from, to);
+}
+// 5 rows on phone, 4 on desktop (board is built once, so read the media query at init)
+kbdRep("rows-phone",
+  "var ROWS_H = 4;",
+  'var ROWS_H = (window.matchMedia && window.matchMedia("(max-width:760px)").matches) ? 5 : 4;');
+// zoom the portrait camera out so the full 7-wide grid fits inside 390px
+kbdRep("phone-camera",
+  "if (portrait) { camera.fov = 58; camera.position.set(0, 7.6, 10.0); camera.lookAt(0, 0.0, 1.7); }",
+  "if (portrait) { camera.fov = 60; camera.position.set(0, 9.4, 13.8); camera.lookAt(0, 0.1, 1.5); }");
+// full showcase scale — the zoomed-out camera already keeps the 7-wide grid inside 390px
+kbdRep("phone-scale", "var PHONE_SCALE_SHOW = 0.92;", "var PHONE_SCALE_SHOW = 1.0;");
+// raise the keyboard toward the centred label so there's no dead gap above it
+kbdRep("phone-y-show", "var PHONE_Y_SHOW = 0.22;", "var PHONE_Y_SHOW = 0.12;");
+
 /* ── HEAD ── */
 rep("title",
   "<title>Maya Okafor — Full-Stack Engineer</title>",
@@ -239,7 +262,17 @@ repAll("Maya Okafor", "Wadhah Almutairi");
 // the user wants), but shrink it so her longer name fits the 440px text column and
 // no longer overflows/overlaps the 3D keyboard on the right.
 rep("hero-name-fit", "</head>",
-  '<style>#hero h1{font-size:clamp(2.2rem,6vw,4.6rem)!important;line-height:.96!important}@media(min-width:900px){#hero .grid{max-width:520px}}</style></head>');
+  '<style>#hero h1{font-size:clamp(2.2rem,6vw,4.6rem)!important;line-height:.96!important}@media(min-width:900px){#hero .grid{max-width:520px}}' +
+  /* PHONE: the keyboard is always centred, so center its name/description label
+     directly above it (instead of the desktop top-left float) — the readout now
+     tracks the centred keyboard as you scrub keys, instead of sitting in the corner. */
+  '@media(max-width:760px){' +
+    '#kbd-label{left:50%!important;right:auto!important;transform:translateX(-50%)!important;' +
+      'text-align:center!important;max-width:92vw!important;width:max-content;top:150px!important;bottom:auto!important}' +
+    '#kbd-label .kbd-label-name{font-size:30px!important;line-height:1!important}' +
+    '#kbd-label .kbd-label-tag{max-width:88vw!important;margin-left:auto!important;margin-right:auto!important}' +
+  '}' +
+  '</style></head>');
 
 writeFileSync("/tmp/wadhah-portfolio.html", html);
 writeFileSync("/tmp/wadhah-publish.json", JSON.stringify({ generatedHtml: html }));
