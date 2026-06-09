@@ -65,6 +65,27 @@ async function checkPhone(path, label) {
   const emptyDrag = await dragDelta(40, 120);
   ok("empty-area drag still scrolls the page (delta > 40px)", emptyDrag > 40, `delta=${emptyDrag}`);
 
+  // --- label hosting + no overlap with the heading on scroll ---
+  const hostId = await page.evaluate(() => document.getElementById("kbd-label")?.parentElement?.id || "");
+  ok("skill label is hosted inside #kbd-label-host on phone", hostId === "kbd-label-host", `parent=#${hostId}`);
+
+  // sweep the skills section through the viewport; the in-flow label must never
+  // vertically overlap the section heading.
+  let worstOverlap = -1e9;
+  const skillsTop = await page.evaluate(() => { const s = document.getElementById("skills"); return s.getBoundingClientRect().top + window.scrollY; });
+  for (let off = -120; off <= 640; off += 160) {
+    await page.evaluate((y) => window.scrollTo(0, y), skillsTop + off);
+    await page.waitForTimeout(450);
+    const o = await page.evaluate(() => {
+      const h = document.querySelector("#skills h2"), l = document.getElementById("kbd-label");
+      if (!h || !l || getComputedStyle(l).opacity === "0") return -1e9;
+      const hr = h.getBoundingClientRect(), lr = l.getBoundingClientRect();
+      return Math.min(hr.bottom, lr.bottom) - Math.max(hr.top, lr.top); // >0 means overlap
+    });
+    worstOverlap = Math.max(worstOverlap, o);
+  }
+  ok("in-flow label never overlaps the heading across scroll", worstOverlap <= 2, `worstOverlap=${Math.round(worstOverlap)}px`);
+
   await ctx.close();
 }
 

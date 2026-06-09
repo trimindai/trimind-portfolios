@@ -209,7 +209,8 @@ section[data-reveal]{ will-change:opacity,transform; }
 /* phone: drop the label below the centred "drag" hint so it no longer
    collides with it, and widen it so the description doesn't wrap cramped. */
 @media(max-width:760px){
-  #kbd-label{top:158px!important;right:20px!important;left:auto!important;max-width:72vw!important;text-align:right!important}
+  #kbd-label-host{width:100%}
+  #kbd-label{position:static!important;top:auto!important;left:auto!important;right:auto!important;bottom:auto!important;transform:none!important;max-width:100%!important;width:auto!important;margin:10px auto 0!important;text-align:center!important;pointer-events:none}
   #kbd-label .kbd-label-name{font-size:23px!important}
   #kbd-label .kbd-label-tag{font-size:12.5px!important;margin-top:7px!important;margin-inline-start:auto!important}
   /* lift the sound-lab pills clear of the fixed bottom nav dock (bottom:22px) */
@@ -522,6 +523,7 @@ html[dir="rtl"] .tl-item::before{left:auto;right:0}
     <div class="sec-head sticky-head">
       <div class="eyebrow">التقنيات</div>
       <h2>التقنيات</h2>
+      <div id="kbd-label-host"></div>
     </div>
     <div id="kbd-fallback" aria-hidden="true"></div>
     <p class="kbd-hint">اسحب للتدوير · اضغط مفتاحاً</p>

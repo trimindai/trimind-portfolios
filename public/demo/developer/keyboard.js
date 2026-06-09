@@ -431,7 +431,8 @@
       if (!document.body) return;
       document.body.appendChild(sndBtn);
       document.body.appendChild(swBtn);
-      document.body.appendChild(labelEl);
+      var __lh = (window.matchMedia && window.matchMedia("(max-width:760px)").matches) ? document.getElementById("kbd-label-host") : null;
+      (__lh || document.body).appendChild(labelEl);
     }
     if (document.body) add(); else document.addEventListener("DOMContentLoaded", add);
 
