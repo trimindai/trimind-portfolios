@@ -223,8 +223,17 @@
   var skillIdx = 0;
 
   /* ---------- geometry layout ---------- */
-  var ROWS_H = 4;                                   /* 4 vertical keycaps (fixed) */
-  var COLS_H = Math.max(1, Math.ceil(SKILLS.length / ROWS_H)); /* horizontal keycaps scale with the stack */
+  /*__KBD_GRID_START__*/
+  /* Skills-driven grid: 4 rows while columns fit in 4..7; once a stack would need
+     an 8th column (>28 skills) lock columns at 7 and grow rows instead. */
+  function kbdGrid(n) {
+    if (Math.ceil(n / 4) <= 7) return { rows: 4, cols: Math.max(4, Math.ceil(n / 4)) };
+    return { rows: Math.ceil(n / 7), cols: 7 };
+  }
+  /*__KBD_GRID_END__*/
+  var __grid = kbdGrid(SKILLS.length);
+  var ROWS_H = __grid.rows;   /* vertical keycaps */
+  var COLS_H = __grid.cols;   /* horizontal keycaps */
   var CG = 1.0, RG = 1.0;
 
   function placeCap(parent, x, z) {
