@@ -31,6 +31,21 @@ const b = await chromium.launch({ channel: "chrome", headless: true, args: ["--n
 let fails = 0;
 const ok = (n, c, extra = "") => { console.log(`  ${c ? "ok  " : "FAIL"}- ${n}${extra ? "  " + extra : ""}`); if (!c) fails++; };
 
+// Project every cap's world position with the live camera and return the
+// screen-space horizontal extent in CSS pixels.
+async function capScreenExtent(page) {
+  return await page.evaluate(() => {
+    const k = window.__kbd; if (!k || !k.caps?.length || !window.THREE) return null;
+    const v = new window.THREE.Vector3(); let minX = Infinity, maxX = -Infinity;
+    for (const cap of k.caps) {
+      cap.getWorldPosition(v); v.project(k.camera);
+      const x = (v.x * 0.5 + 0.5) * window.innerWidth;
+      if (x < minX) minX = x; if (x > maxX) maxX = x;
+    }
+    return { minX, maxX, w: window.innerWidth, cols: k.cols, rows: k.rows };
+  });
+}
+
 async function liveSkills(page) {
   await page.waitForFunction(() => document.documentElement.classList.contains("kbd-live"), { timeout: 25000 });
   await page.evaluate(() => document.getElementById("skills")?.scrollIntoView({ behavior: "instant", block: "center" }));
@@ -96,12 +111,53 @@ async function checkPhone(path, label) {
   }
   ok("auto-hover spotlight cycles the label across >= 3 skills", seen.size >= 3, `distinct=${seen.size} [${[...seen].join(", ")}]`);
 
+  await page.evaluate(() => document.getElementById("skills")?.scrollIntoView({ behavior: "instant", block: "center" }));
+  await page.waitForTimeout(700);
+  const ext = await capScreenExtent(page);
+  ok("keyboard does not clip the phone viewport (caps within 0..width)", !!ext && ext.minX >= 0 && ext.maxX <= ext.w,
+     ext ? `minX=${Math.round(ext.minX)} maxX=${Math.round(ext.maxX)} w=${ext.w} grid=${ext.rows}x${ext.cols}` : "no __kbd");
+
+  await ctx.close();
+}
+
+async function checkDesktop(path, label) {
+  console.log(`\n[desktop ${label}] ${path}`);
+  const ctx = await b.newContext({ viewport: { width: 1440, height: 900 }, deviceScaleFactor: 1 });
+  const page = await ctx.newPage();
+  await page.goto(BASE + path, { waitUntil: "networkidle", timeout: 45000 });
+  await liveSkills(page);
+  const ext = await capScreenExtent(page);
+  ok("desktop: grid is 4x5 for Maya (rule no-op)", !!ext && ext.rows === 4 && ext.cols === 5, ext ? `grid=${ext.rows}x${ext.cols}` : "no __kbd");
+  ok("desktop: keyboard does not clip", !!ext && ext.minX >= 0 && ext.maxX <= ext.w, ext ? `minX=${Math.round(ext.minX)} maxX=${Math.round(ext.maxX)} w=${ext.w}` : "no __kbd");
+  const parent = await page.evaluate(() => document.getElementById("kbd-label")?.parentElement?.id || "body");
+  ok("desktop: label is NOT in #kbd-label-host (stays floating)", parent !== "kbd-label-host", `parent=${parent}`);
+  await ctx.close();
+}
+async function checkReducedMotion(path, label) {
+  console.log(`\n[reduced-motion ${label}] ${path}`);
+  const ctx = await b.newContext({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true, deviceScaleFactor: 2, reducedMotion: "reduce" });
+  const page = await ctx.newPage();
+  await page.goto(BASE + path, { waitUntil: "networkidle", timeout: 45000 });
+  // Under prefers-reduced-motion the page intentionally skips loading Three.js +
+  // keyboard.js entirely (line ~1140 of index.html: `if(reduce||lowEnd) return`).
+  // kbd-live is never set — wait for the page to settle instead of liveSkills().
+  await page.evaluate(() => document.getElementById("skills")?.scrollIntoView({ behavior: "instant", block: "center" }));
+  await page.waitForTimeout(1200);
+  const seen = new Set();
+  for (let i = 0; i < 6; i++) {
+    await page.waitForTimeout(800);
+    const name = await page.evaluate(() => document.querySelector("#kbd-label .kbd-label-name")?.textContent?.trim() || "");
+    if (name) seen.add(name);
+  }
+  ok("reduced-motion: spotlight does NOT cycle (<= 1 label)", seen.size <= 1, `distinct=${seen.size}`);
   await ctx.close();
 }
 
 try {
   await checkPhone("/demo/developer/index.html", "EN");
   await checkPhone("/demo/developer/index-ar.html", "AR");
+  await checkDesktop("/demo/developer/index.html", "EN");
+  await checkReducedMotion("/demo/developer/index.html", "EN");
 } finally {
   await b.close();
   server.close();
