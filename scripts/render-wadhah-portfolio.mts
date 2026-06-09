@@ -245,7 +245,12 @@ rep("hero-name-fit", "</head>",
 writeFileSync("/tmp/wadhah-portfolio.html", html);
 writeFileSync("/tmp/wadhah-publish.json", JSON.stringify({ generatedHtml: html }));
 
-const leftover = (html.match(/Maya|okafor|Lisbon|Nebula|Orbit|Pixel|Aurora|Stargazer|Switchboard|Quietbox/gi) || []).length;
+// Exclude JS <script> blocks — they contain legitimate tokens like devicePixelRatio /
+// orbit() / code comments that collide with the persona regex but are never
+// user-visible. Keep <script type="application/ld+json"> in scope as a backstop for
+// real JSON-LD leaks; strip everything else.
+const visibleHtml = html.replace(/<script(?!\s+type="application\/ld\+json")[\s\S]*?<\/script>/gi, "");
+const leftover = (visibleHtml.match(/Maya|okafor|Lisbon|Nebula|Orbit|Pixel|Aurora|Stargazer|Switchboard|Quietbox/gi) || []).length;
 console.log(`rendered: portfolio ${html.length}b → /tmp/wadhah-portfolio.html`);
 console.log(`leftover demo-persona refs (should be 0): ${leftover}`);
 console.log(`phone on page (should be 0): ${(html.match(/99252378|\+351/g) || []).length}`);
