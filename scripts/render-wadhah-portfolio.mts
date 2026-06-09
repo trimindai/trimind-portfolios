@@ -108,6 +108,33 @@ kbdRep("label-host-append",
   "document.body.appendChild(labelEl);",
   'var __lh = (window.matchMedia && window.matchMedia("(max-width:760px)").matches) ? document.getElementById("kbd-label-host") : null; (__lh || document.body).appendChild(labelEl);');
 
+/* ── PHONE: auto-hover spotlight ──
+   Touch has no mouse-hover, so the keyboard sat flat/dead while you scrolled past
+   it. Sweep the desktop hover-lift across the caps automatically while the skills
+   section is active (lift + glow + label, same as a real hover), so the board
+   stays alive during scroll. Pauses the moment you touch/scrub a key. */
+kbdRep("auto-hover-state",
+  "var hovered = null;",
+  "var hovered = null;\n  var __autoT = 0, __autoIdx = -1, __AUTO_STEP = 1.4; /* phone auto-hover */");
+// phone: don't let pickHover() null-out hovered while auto-hover owns it
+kbdRep("auto-hover-pickhover",
+  "    if (!isDown) pickHover();",
+  "    if (!isDown && !(isPhone && labelEnabled)) pickHover();");
+// drive the auto-hover off REAL elapsed time (dt), not frame count, so the pace
+// is identical at 30/60/120fps. Tick right after dt is computed in the loop.
+kbdRep("auto-hover-tick",
+  "    var sm = 1 - Math.exp(-k * dt);",
+  "    var sm = 1 - Math.exp(-k * dt);\n" +
+  "    /* phone auto-hover: sweep a gentle spotlight across the caps so the board\n" +
+  "       stays alive while scrolling; pauses while a finger is scrubbing keys. */\n" +
+  "    if (isPhone && labelEnabled && !isDown && caps.length) {\n" +
+  "      __autoT += dt;\n" +
+  "      if (__autoIdx < 0 || __autoT >= __AUTO_STEP) {\n" +
+  "        __autoT = 0; __autoIdx = (__autoIdx + 1) % caps.length;\n" +
+  "        hovered = caps[__autoIdx]; setLabel(hovered.userData.skill);\n" +
+  "      }\n" +
+  "    }");
+
 /* ── HEAD ── */
 rep("title",
   "<title>Maya Okafor — Full-Stack Engineer</title>",
