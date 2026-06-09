@@ -50,7 +50,7 @@ Severity: CRITICAL / HIGH / MEDIUM / LOW. Status: `fixed` / `recommended` / `pen
 
 (Perf deltas of ±4 are run-to-run noise on swiftshader; the creative jump is the thumbnail fix.)
 
-**Production (post-deploy, brotli):** creative perf 91 / a11y 98; developer perf 71 / a11y 96 (remaining gap = three.js keyboard bundle, see Recommendations #2). AR builder serves native Arabic; creator game live in both locales; all 5 fresh showcase mockups serving.
+**Production (post-deploy, brotli):** creative perf 91 / a11y 98; developer perf 74 / a11y 96 after `5a03026` (preloader reveals on DOMContentLoaded — verified DCL+733ms on prod vs full-load+880ms before; Google Fonts async behind the preloader; Inter 9→5 weights). The remaining lab gap is Lighthouse's 4× CPU simulation of the page's inline init scripts (real TBT 30ms) — see Recommendations #2. AR builder serves native Arabic; creator game live in both locales; all 5 fresh showcase mockups serving.
 
 ### Phase 2 verified-good (no action)
 - No placeholder copy, no broken images, no horizontal overflow in any of the 10 pages (5 demos × EN/AR) at 1440/768/375 after fixes.
