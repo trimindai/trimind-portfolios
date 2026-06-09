@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 import { useAuth } from "@clerk/nextjs";
 import { usePathname } from "next/navigation";
@@ -67,6 +67,17 @@ export function CvFieldsStep({ data, onChange }: CvFieldsStepProps) {
   const [generating, setGenerating] = useState(false);
   const [aiSuggestion, setAiSuggestion] = useState("");
   const [aiError, setAiError] = useState("");
+
+  // Server-side AI availability (e.g. GEMINI_API_KEY unset/empty in the deploy).
+  const [aiAvailable, setAiAvailable] = useState<boolean | null>(null);
+  useEffect(() => {
+    let alive = true;
+    fetch("/api/ai-status")
+      .then((r) => r.json())
+      .then((d) => { if (alive) setAiAvailable(Boolean(d.available)); })
+      .catch(() => {});
+    return () => { alive = false; };
+  }, []);
 
   async function generateSummary() {
     setGenerating(true);
@@ -143,7 +154,12 @@ export function CvFieldsStep({ data, onChange }: CvFieldsStepProps) {
           hint={t("summaryHint")}
           rows={4}
         />
-        {!aiSuggestion && isSignedIn && (
+        {aiAvailable === false && !aiSuggestion && (
+          <p className="mt-3 rounded-xl border border-dashed border-[var(--land-border)] bg-[var(--land-surface)]/40 px-4 py-3 text-xs text-[var(--land-muted)]">
+            {tCv("aiUnavailable")}
+          </p>
+        )}
+        {aiAvailable !== false && !aiSuggestion && isSignedIn && (
           <button
             type="button"
             onClick={generateSummary}
@@ -171,7 +187,7 @@ export function CvFieldsStep({ data, onChange }: CvFieldsStepProps) {
         )}
 
         {/* Guests: AI is sign-in-gated, so offer sign-in instead of a 401 button. */}
-        {!aiSuggestion && isLoaded && !isSignedIn && (
+        {aiAvailable !== false && !aiSuggestion && !isSignedIn && (
           <Link
             href={`/sign-up?redirect_url=${encodeURIComponent(pathname)}`}
             className="mt-3 flex w-full items-center justify-between rounded-xl border border-[var(--land-accent)]/20 bg-[var(--land-accent)]/5 px-4 py-3 text-start transition-colors hover:bg-[var(--land-accent)]/10"

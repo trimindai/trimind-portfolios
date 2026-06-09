@@ -30,6 +30,18 @@ export function BasicsStep({ data, onChange }: BasicsStepProps) {
   const { isLoaded, isSignedIn } = useAuth();
   const pathname = usePathname();
 
+  // Server-side AI availability (e.g. GEMINI_API_KEY unset/empty in the deploy).
+  // null = unknown (assume available so the UI never flashes a false warning).
+  const [aiAvailable, setAiAvailable] = useState<boolean | null>(null);
+  useEffect(() => {
+    let alive = true;
+    fetch("/api/ai-status")
+      .then((r) => r.json())
+      .then((d) => { if (alive) setAiAvailable(Boolean(d.available)); })
+      .catch(() => { /* probe failure: keep null, don't block the tools */ });
+    return () => { alive = false; };
+  }, []);
+
   // Summary AI state
   const [aiGenerating, setAiGenerating] = useState(false);
   const [aiSuggestion, setAiSuggestion] = useState("");
@@ -99,7 +111,7 @@ export function BasicsStep({ data, onChange }: BasicsStepProps) {
         }),
       });
       const result = await res.json();
-      if (!res.ok) throw new Error(result.error || t("failedToGenerate"));
+      if (!res.ok) throw new Error(t("failedToGenerate"));
       const cv = result.cv;
       stopProgress();
       onChange({
@@ -147,7 +159,7 @@ export function BasicsStep({ data, onChange }: BasicsStepProps) {
         }),
       });
       const result = await res.json();
-      if (!res.ok) throw new Error(result.error || t("failedToGenerate"));
+      if (!res.ok) throw new Error(t("failedToGenerate"));
       setAiSuggestion(result.summary);
       setSummaryUses((n) => n + 1);
     } catch (e: any) {
@@ -184,9 +196,24 @@ export function BasicsStep({ data, onChange }: BasicsStepProps) {
         <TextField label={t("emailLabel")} value={basics.email} onChange={(v) => updateBasics("email", v)} required type="email" autoComplete="email" inputMode="email" dir="ltr" placeholder={t("emailPlaceholder")} />
       </div>
 
-      {/* AI Section — only when name + title are filled AND the user is signed
-          in (the AI endpoints require auth). */}
-      {canShowAi && isSignedIn && (
+      {/* AI assistant. Three states so the feature is always discoverable:
+          1) name/title empty  -> locked hint
+          2) guest             -> sign-up CTA (below)
+          3) signed in         -> the tools
+          Deliberately not gated on Clerk's isLoaded: if clerk-js stalls or
+          fails, the guest CTA still renders instead of nothing. */}
+      {aiAvailable === false ? (
+        <div className="flex items-center gap-2 rounded-xl border border-dashed border-[var(--land-border)] bg-[var(--land-surface)]/40 px-4 py-3">
+          <svg className="h-4 w-4 shrink-0 text-[var(--land-muted)]" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M8 2v4M6 4h4M3 8l2 6 3-4 3 4 2-6" /></svg>
+          <p className="text-xs text-[var(--land-muted)]">{t("aiUnavailableHint")}</p>
+        </div>
+      ) : !canShowAi ? (
+        <div className="flex items-center gap-2 rounded-xl border border-dashed border-emerald-600/30 bg-emerald-600/5 px-4 py-3">
+          <svg className="h-4 w-4 shrink-0 text-emerald-600" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M8 2v4M6 4h4M3 8l2 6 3-4 3 4 2-6" /></svg>
+          <p className="text-xs text-[var(--land-body)]">{t("aiLockedHint")}</p>
+        </div>
+      ) : null}
+      {aiAvailable !== false && canShowAi && isSignedIn && (
         <div className="space-y-3">
           {/* Progress UI during generation */}
           {fillGenerating && (
@@ -362,7 +389,7 @@ export function BasicsStep({ data, onChange }: BasicsStepProps) {
       {/* Guest equivalent: AI is sign-in-gated, so show a sign-in CTA in place
           of the AI tools rather than a button that would 401. redirect_url
           returns them here (their draft lives in localStorage) with AI unlocked. */}
-      {canShowAi && isLoaded && !isSignedIn && (
+      {aiAvailable !== false && canShowAi && !isSignedIn && (
         <div className="rounded-xl border border-emerald-600/30 bg-emerald-600/5 p-5 text-center space-y-2">
           <p className="flex items-center justify-center gap-1.5 text-sm font-medium text-[var(--land-bright)]">
             <svg className="h-4 w-4 text-emerald-600" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M8 2v4M6 4h4M3 8l2 6 3-4 3 4 2-6" /></svg>

@@ -613,7 +613,9 @@
       "sectionSocialStats": "إحصائيات الجمهور",
       "sectionSkills": "المهارات",
       "sectionCertifications": "الشهادات",
-      "sectionLanguages": "اللغات"
+      "sectionLanguages": "اللغات",
+      "aiLockedHint": "التعبئة الذكية: أضف اسمك الكامل ومسماك الوظيفي أعلاه لتفعيل المساعد الذكي.",
+      "aiUnavailableHint": "المساعد الذكي غير متاح مؤقتًا — يمكنك تعبئة كل شيء يدويًا."
     },
     "cv": {
       "writing": "جارٍ الكتابة...",
@@ -626,7 +628,8 @@
       "tryAgain": "حاول مرة أخرى ↺",
       "dismiss": "تجاهل",
       "failedToGenerate": "فشل التوليد",
-      "somethingWentWrong": "حدث خطأ ما"
+      "somethingWentWrong": "حدث خطأ ما",
+      "aiUnavailable": "الكتابة الذكية غير متاحة مؤقتًا — اكتب ملخصك يدويًا أو حاول لاحقًا."
     },
     "engineer": {
       "basicsHeading": "المعلومات الأساسية",

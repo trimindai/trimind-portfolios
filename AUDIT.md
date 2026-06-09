@@ -75,6 +75,16 @@ Severity: CRITICAL / HIGH / MEDIUM / LOW. Status: `fixed` / `recommended` / `pen
 | 4.4 | Icon consistency: ⧉ / × glyphs and 📋✏️🚀 emoji replaced with lucide (Copy, X, LayoutGrid, PenLine, Rocket, Check) + aria-labels on icon-only buttons. | LOW | fixed |
 | 4.5 | Verified good: status system (draft/paid/published with action hints), two-step delete confirm, duplicate, view counts, bilingual empty state with pricing, responsive 1/2/3-column grid. | — | verified |
 
+## Phase 5 — AI Generation Button
+
+| # | Item | Severity | Status |
+|---|------|----------|--------|
+| 5.1 | **ROOT CAUSE (server): the production `GEMINI_API_KEY` is an EMPTY STRING** (added to Vercel 2 days ago with no value — verified via `vercel env pull` and a direct Gemini API call). Every `/api/generate-summary` / `/api/generate-full-cv` call 500s with "AI service not configured", for every signed-in user, in every template. **No Gemini key exists anywhere on this VPS — ACTION NEEDED: create a key at aistudio.google.com and run `vercel env rm GEMINI_API_KEY production && vercel env add GEMINI_API_KEY production`, then redeploy.** | CRITICAL | **user action needed** |
+| 5.2 | **Root cause (client #1): zero AI affordance until name+title filled** — a first-time user saw no trace that AI exists. Fixed: a "locked" hint panel now always shows on the Basics step ("AI Fill: add your full name and professional title above to unlock", bilingual). | HIGH | fixed |
+| 5.3 | **Root cause (client #2): everything was gated on Clerk's `isLoaded`** — if clerk-js loads slowly or fails, neither the AI tools nor the sign-up CTA ever rendered (exactly reproduced locally). Fixed: the guest CTA renders regardless of Clerk load state; tools swap in when auth resolves. | HIGH | fixed |
+| 5.4 | **Graceful degradation**: new public `/api/ai-status` probe (boolean only, 5-min cache); when the server has no key, both Basics and CV steps show a friendly bilingual "AI temporarily unavailable — write manually" notice instead of buttons that would fail. Raw server error strings no longer surface to users. Verified in-browser in the live failure mode. | HIGH | fixed |
+| 5.5 | Scope note: the full AI panel lives in the general template's Basics step; all five templates share the CV Details summary AI. The deploy from 2h ago post-dates the env var, so no redeploy race — the empty value is the sole server-side cause. | — | documented |
+
 ### Phase 1 verified-good (no action)
 - Step navigation: sticky mobile progress bar + desktop step pills, autosave on navigation, "Saved on this device" indicator works (guest localStorage + Convex when authed).
 - Inputs are controlled but stable — no focus loss or lag while typing (verified char-by-char).

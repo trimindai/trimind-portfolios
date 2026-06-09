@@ -613,7 +613,9 @@
       "sectionSocialStats": "Audience Stats",
       "sectionSkills": "Skills",
       "sectionCertifications": "Certifications",
-      "sectionLanguages": "Languages"
+      "sectionLanguages": "Languages",
+      "aiLockedHint": "AI Fill: add your full name and professional title above to unlock the AI assistant.",
+      "aiUnavailableHint": "The AI assistant is temporarily unavailable — you can fill everything manually."
     },
     "cv": {
       "writing": "Writing...",
@@ -626,7 +628,8 @@
       "tryAgain": "Try again ↺",
       "dismiss": "Dismiss",
       "failedToGenerate": "Failed to generate",
-      "somethingWentWrong": "Something went wrong"
+      "somethingWentWrong": "Something went wrong",
+      "aiUnavailable": "AI writing is temporarily unavailable — write your summary manually, or try again later."
     },
     "engineer": {
       "basicsHeading": "Basic Information",
