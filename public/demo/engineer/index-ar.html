@@ -16,7 +16,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=DM+Sans:wght@300;400;500;600;700&family=Noto+Kufi+Arabic:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
-:root{--font-head:'Manrope','Noto Kufi Arabic',sans-serif;--font-body:'Noto Kufi Arabic','DM Sans',sans-serif;--text:#18181b;--text-secondary:#52525b;--text-muted:#a1a1aa;--bg:#fff;--bg-warm:#f0fdfa;--bg-card:#f0fdfa;--border:#d1d5db;--accent:#0f766e;--accent-hover:#0d9488;--accent-glow:rgba(15,118,110,0.07)}
+:root{--font-head:'Manrope','Noto Kufi Arabic',sans-serif;--font-body:'Noto Kufi Arabic','DM Sans',sans-serif;--text:#18181b;--text-secondary:#52525b;--text-muted:#71717a;--bg:#fff;--bg-warm:#f0fdfa;--bg-card:#f0fdfa;--border:#d1d5db;--accent:#0f766e;--accent-hover:#0d9488;--accent-glow:rgba(15,118,110,0.07)}
 html{scroll-behavior:smooth;font-size:16px}
 body{font-family:var(--font-body);background:var(--bg);color:var(--text);line-height:1.7;-webkit-font-smoothing:antialiased}
 a{text-decoration:none;color:inherit}img{max-width:100%;display:block}
@@ -51,12 +51,12 @@ a:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 .btn svg{width:14px;height:14px}
 
 .skills-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:40px}
-.skill-group h4{font-family:var(--font-head);font-size:0.78rem;font-weight:600;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:16px;color:var(--accent)}
+.skill-group h3{font-family:var(--font-head);font-size:0.78rem;font-weight:600;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:16px;color:var(--accent)}
 .skill-group ul{list-style:none}.skill-group li{font-size:0.9rem;color:var(--text-secondary);padding:5px 0}
 
 .footer{background:var(--bg-warm);border-top:1px solid var(--border);padding:60px 40px 40px}
 .footer-inner{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr 1fr;gap:40px}
-.footer-col h4{font-family:var(--font-head);font-size:0.75rem;font-weight:600;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:12px;color:var(--text-muted)}
+.footer-col h3{font-family:var(--font-head);font-size:0.75rem;font-weight:600;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:12px;color:var(--text-muted)}
 .footer-col p,.footer-col a{font-size:0.9rem;color:var(--text-secondary);line-height:1.8}
 .footer-col a:hover{color:var(--accent)}
 .footer-bottom{max-width:1200px;margin:40px auto 0;padding-top:20px;border-top:1px solid var(--border);font-size:0.78rem;color:var(--text-muted)}
@@ -66,7 +66,7 @@ a:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 .rv-d1{transition-delay:0.08s}.rv-d2{transition-delay:0.16s}.rv-d3{transition-delay:0.24s}
 
 @media(max-width:900px){.hero-grid{grid-template-columns:1fr;gap:32px}.hero-left h1{font-size:2.2rem}}
-@media(max-width:640px){.header-inner{padding:14px 20px}.header-nav{display:none}.section{padding:48px 20px}.hero{padding-top:72px;padding-bottom:48px}.hero-left h1{font-size:1.8rem}.hero-actions{flex-direction:column}.footer-inner{grid-template-columns:1fr;gap:24px}}
+@media(max-width:640px){.hero-grid>*{min-width:0}.header-inner{padding:14px 20px}.header-nav{display:none}.section{padding:48px 20px}.hero{padding-top:72px;padding-bottom:48px}.hero-left h1{font-size:1.8rem}.hero-actions{flex-direction:column}.footer-inner{grid-template-columns:1fr;gap:24px}}
 
 @media print{
   @page{margin:0.5in;size:A4}
@@ -97,6 +97,7 @@ a:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
     </nav>
   </div>
 </header>
+<main>
 
 <section class="section hero" id="about">
   <div class="hero-grid">
@@ -127,17 +128,18 @@ a:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 <section class="section" id="skills">
   <h2 class="section-title rv">المهارات</h2>
   <div class="skills-grid">
-    <div class="skill-group rv"><h4>الهندسة</h4><ul><li>تصميم وتحليل الدوائر الكهربائية</li><li>الأنظمة الذكية والأتمتة</li><li>دمج الحساسات وتكييف الإشارة</li><li>أساسيات أنظمة القدرة</li></ul></div>
-    <div class="skill-group rv rv-d1"><h4>العتاد والنماذج الأولية</h4><ul><li>تطوير Arduino و ESP32</li><li>مشاريع Raspberry Pi</li><li>تصميم لوحات PCB واللحام</li><li>برمجة المتحكمات الدقيقة</li></ul></div>
-    <div class="skill-group rv rv-d2"><h4>الأدوات والبرمجيات</h4><ul><li>MATLAB و Simulink</li><li>AutoCAD Electrical</li><li>Arduino IDE و PlatformIO</li><li>برمجة Python</li></ul></div>
+    <div class="skill-group rv"><h3 class="h4like">الهندسة</h3><ul><li>تصميم وتحليل الدوائر الكهربائية</li><li>الأنظمة الذكية والأتمتة</li><li>دمج الحساسات وتكييف الإشارة</li><li>أساسيات أنظمة القدرة</li></ul></div>
+    <div class="skill-group rv rv-d1"><h3 class="h4like">العتاد والنماذج الأولية</h3><ul><li>تطوير Arduino و ESP32</li><li>مشاريع Raspberry Pi</li><li>تصميم لوحات PCB واللحام</li><li>برمجة المتحكمات الدقيقة</li></ul></div>
+    <div class="skill-group rv rv-d2"><h3 class="h4like">الأدوات والبرمجيات</h3><ul><li>MATLAB و Simulink</li><li>AutoCAD Electrical</li><li>Arduino IDE و PlatformIO</li><li>برمجة Python</li></ul></div>
   </div>
 </section>
 
+</main>
 <footer class="footer">
   <div class="footer-inner">
-    <div class="footer-col"><h4>الموقع</h4><p>مدينة الكويت، الكويت</p></div>
-    <div class="footer-col"><h4>التواصل</h4><p><a href="mailto:aak22xq8@gmail.com">aak22xq8@gmail.com</a></p><p><a href="tel:55502344">55502344</a></p></div>
-    <div class="footer-col"><h4>القالب</h4><p>قالب المهندس من <a href="https://portfolio-trimind.com" target="_blank">Portfolio Pro</a></p></div>
+    <div class="footer-col"><h3 class="h4like">الموقع</h3><p>مدينة الكويت، الكويت</p></div>
+    <div class="footer-col"><h3 class="h4like">التواصل</h3><p><a href="mailto:aak22xq8@gmail.com">aak22xq8@gmail.com</a></p><p><a href="tel:55502344">55502344</a></p></div>
+    <div class="footer-col"><h3 class="h4like">القالب</h3><p>قالب المهندس من <a href="https://portfolio-trimind.com" target="_blank">Portfolio Pro</a></p></div>
   </div>
   <div class="footer-bottom">&copy; عبدالرحمن الكندري &mdash; مهندس كهربائي</div>
 </footer>

@@ -39,7 +39,7 @@
     --bg-white: #FFFFFF;
     --text: #020617;
     --text-sub: #475569;
-    --text-dim: #94A3B8;
+    --text-dim: #5D6981;
     --text-on-dark: #E2E8F0;
     --text-on-dark-dim: #94A3B8;
     --border: #E2E8F0;
@@ -445,7 +445,7 @@ a { text-decoration: none; color: inherit; }
     margin-bottom: 10px;
 }
 
-.impact-card h3 {
+.impact-card h3, .impact-card .impact-h {
     font-family: var(--font-head);
     font-size: 1.05rem; font-weight: 600;
     color: var(--navy); margin-bottom: 10px;
@@ -724,6 +724,12 @@ footer a:hover { border-color: var(--gold-warm); }
 }
 
 @media (max-width: 768px) {
+    footer a, header a, .hero-contact a { display: inline-flex; align-items: center; min-height: 44px; }
+
+    .impact-card { padding: 24px 20px; min-width: 0; }
+    .impact-card * { overflow-wrap: break-word; min-width: 0; }
+    .footer a, .contact a { display: inline-block; padding: 6px 0; }
+
     .nav { padding: 12px 20px; }
     .nav-links a:not(.nav-cta) { display: none; }
     .nav-toggle { display: block; }
@@ -899,7 +905,7 @@ footer a:hover { border-color: var(--gold-warm); }
     /* Impact cards compact */
     .impact-card { padding: 10px 14px; }
     .impact-situation { font-size: 6pt; margin-bottom: 4px; }
-    .impact-card h3 { font-size: 9pt; margin-bottom: 4px; }
+    .impact-card h3, .impact-card .impact-h { font-size: 9pt; margin-bottom: 4px; }
     .impact-card > p { font-size: 7.5pt; line-height: 1.5; margin-bottom: 8px; }
     .impact-kpis { padding: 6px 0; margin-bottom: 6px; gap: 16px; }
     .kpi-val { font-size: 10pt; }
@@ -1027,6 +1033,7 @@ footer a:hover { border-color: var(--gold-warm); }
         <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"/></svg>
     </button>
 </nav>
+<main>
 
 <!-- ═══════ 1. HERO ═══════ -->
 <section class="hero">
@@ -1138,7 +1145,7 @@ footer a:hover { border-color: var(--gold-warm); }
 <section id="career" class="section career">
     <div class="container">
         <div class="section-label rv">المسار المهني</div>
-        <div class="section-title rv rv-d1">حيث <em>أنجزت</em></div>
+        <h2 class="section-title rv rv-d1">حيث <em>أنجزت</em></h2>
 
         <div class="timeline">
             <div class="tl-item rv">
@@ -1203,7 +1210,7 @@ footer a:hover { border-color: var(--gold-warm); }
 <section id="impact" class="section impact">
     <div class="container">
         <div class="section-label rv">إنجازات مختارة</div>
-        <div class="section-title rv rv-d1">أثرٌ <em>تنطق به الأرقام</em></div>
+        <h2 class="section-title rv rv-d1">أثرٌ <em>تنطق به الأرقام</em></h2>
 
         <div class="impact-grid">
             <div class="impact-card primary rv">
@@ -1266,7 +1273,7 @@ footer a:hover { border-color: var(--gold-warm); }
 <section class="section competencies">
     <div class="container">
         <div class="section-label rv">الكفاءات الأساسية</div>
-        <div class="section-title rv rv-d1">المهارات <em>والخبرات</em></div>
+        <h2 class="section-title rv rv-d1">المهارات <em>والخبرات</em></h2>
 
         <div class="comp-grid">
             <div class="comp-group rv">
@@ -1324,7 +1331,7 @@ footer a:hover { border-color: var(--gold-warm); }
 <section class="section education">
     <div class="container">
         <div class="section-label rv">التعليم</div>
-        <div class="section-title rv rv-d1">الأساس <em>الأكاديمي</em></div>
+        <h2 class="section-title rv rv-d1">الأساس <em>الأكاديمي</em></h2>
 
         <div class="edu-list">
             <div class="edu-card rv">
@@ -1347,7 +1354,7 @@ footer a:hover { border-color: var(--gold-warm); }
 <section class="section profile">
     <div class="container">
         <div class="section-label rv">الملف المهني</div>
-        <div class="section-title rv rv-d1">ما وراء <em>الشهادات</em></div>
+        <h2 class="section-title rv rv-d1">ما وراء <em>الشهادات</em></h2>
 
         <div class="profile-grid">
             <div class="profile-col rv">
@@ -1402,7 +1409,7 @@ footer a:hover { border-color: var(--gold-warm); }
 <section class="section endorsements">
     <div class="container">
         <div class="section-label rv">آراء الزملاء</div>
-        <div class="section-title rv rv-d1">توصيات <em>مهنية</em></div>
+        <h2 class="section-title rv rv-d1">توصيات <em>مهنية</em></h2>
 
         <div class="endorsement-grid">
             <div class="endorsement-card rv">
@@ -1439,7 +1446,7 @@ footer a:hover { border-color: var(--gold-warm); }
 <section id="contact" class="section contact">
     <div class="container">
         <div class="section-label rv">تواصل</div>
-        <div class="section-title rv rv-d1">مستعدّة لمناقشة ما يمكنني <em>الإسهام به</em>؟</div>
+        <h2 class="section-title rv rv-d1">مستعدّة لمناقشة ما يمكنني <em>الإسهام به</em>؟</h2>
 
         <div class="contact-grid rv rv-d2">
             <a href="mailto:sarah.alrashidi@email.com" class="contact-cell">
@@ -1472,6 +1479,7 @@ footer a:hover { border-color: var(--gold-warm); }
     <p>امسح الرمز لعرض الملف على الإنترنت</p>
 </div>
 
+</main>
 <footer>
     <div class="container">
         <p>صُنع باستخدام <a href="https://portfolio-trimind.com" target="_blank" rel="noopener">Portfolio Pro</a></p>
@@ -1479,7 +1487,7 @@ footer a:hover { border-color: var(--gold-warm); }
 </footer>
 
 <!-- PDF Button -->
-<button class="pdf-btn" onclick="window.print()" aria-label="حفظ بصيغة PDF">
+<button class="pdf-btn" onclick="window.print()">
     <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3"/></svg>
     حفظ PDF
 </button>

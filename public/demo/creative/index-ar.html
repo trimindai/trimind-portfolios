@@ -41,9 +41,9 @@
   --sand: #EBBEAA;          /* Desert Sand — frames, dividers, cube tops */
   --text: #1E2A44;          /* deep slate ink (Blue Slate hue, darkened) */
   --text-dim: #4C587A;      /* mid slate */
-  --text-muted: #8B8473;    /* warm taupe — mono labels */
+  --text-muted: #675F4F;    /* warm taupe — mono labels */
   --border: #D8C7AE;        /* sand-tinted hairline */
-  --accent: #B86F52;  /* Cinnamon Wood — actions/labels */
+  --accent: #8F4F33;  /* Cinnamon Wood — actions/labels */
   --accent-dim: rgba(184,111,82,.14);
   --link: #496AB1;          /* Blue Slate — headings, structure, nav, links */
   --blue-band: #3A5489;     /* deep Blue Slate — inverted bands (contact/footer) */
@@ -164,6 +164,11 @@ a { color: inherit; text-decoration: none; }
 /* ── Phone photo-cube cluster (replaces the cone < 768px) ── */
 .cube-stack { display: none; }
 @media (max-width: 767px) {
+  a[href^="mailto"], a[href^="tel"], a[href*="instagram"], a[href*="linkedin"], header a { display: inline-block; padding: 10px 2px; }
+
+  .cta, .cube-hint a, .hero-links a { display: inline-flex; align-items: center; min-height: 44px; }
+  footer a, .contact a, .sv-contact a { display: inline-block; padding: 8px 0; }
+
   .cone-wrap { display: none !important; }
   .cube-stack {
     display: block; position: relative;
@@ -251,7 +256,7 @@ a { color: inherit; text-decoration: none; }
 .skills-wrap { display: flex; flex-direction: column; gap: 32px; }
 @media (min-width: 1024px) { .skills-wrap { flex-direction: row; flex-wrap: wrap; gap: 48px; } }
 .skill-group { flex: 1; min-width: 240px; }
-.skill-group h4 { font-family: var(--font-mono); font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px; color: var(--text-muted); margin-bottom: 16px; }
+.skill-group h3 { font-family: var(--font-mono); font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px; color: var(--text-muted); margin-bottom: 16px; }
 .pill-row { display: flex; flex-wrap: wrap; gap: 10px; }
 .pill { padding: 8px 16px; font-family: var(--font-mono); font-size: 12px; text-transform: uppercase; letter-spacing: 1px; color: var(--text-dim); border: 1px solid var(--border); border-radius: 2px; transition: all .25s; }
 .pill:hover { border-color: var(--accent); color: var(--accent); }
@@ -287,9 +292,9 @@ a { color: inherit; text-decoration: none; }
 #contact { background: var(--blue-band); color: #E7E9F0; }
 #contact .sec-title { color: #F2EFE8; }
 #contact .contact-grid a, #contact .contact-grid p { color: #E9EAF1; }
-#contact .contact-grid .lbl { color: var(--sand); }
+#contact .contact-grid .lbl { color: #F3D8C8; }
 #contact .contact-grid a:hover { color: var(--sand); }
-.footer.footer { background: var(--blue-band); color: rgba(242,239,232,0.6); border-top-color: rgba(255,255,255,0.14); }
+.footer.footer { background: var(--blue-band); color: rgba(242,239,232,0.85); border-top-color: rgba(255,255,255,0.14); }
 
 /* ── Testimonials ── */
 .quotes-grid { display: grid; grid-template-columns: 1fr; gap: 20px; }
@@ -368,6 +373,7 @@ a { color: inherit; text-decoration: none; }
     <a href="#contact" class="nav-link"><span class="bk">[</span> تواصل <span class="bk">]</span></a>
   </nav>
 </header>
+<main>
 
 <!-- Hero -->
 <section class="hero" id="top">
@@ -387,7 +393,7 @@ a { color: inherit; text-decoration: none; }
       <div class="cone-tilt" id="cone-tilt">
         <div class="cone-spin" id="cone-spin">
           <a class="cone-card" href="https://portfolio-trimind.com/ar/demo/creative/projects/purple-bouquet">
-            <img src="/demo/creative/artworks/ornaments_1_digital.webp" alt="باقة أرجوانية" loading="lazy" decoding="async" width="148" height="197">
+            <img src="/demo/creative/artworks/thumbs/ornaments_1_digital.webp" alt="باقة أرجوانية" loading="lazy" decoding="async" width="148" height="197">
             <div class="overlay"></div>
             <div class="info">
               <div class="info-cat">زخرفة زهرية</div>
@@ -395,7 +401,7 @@ a { color: inherit; text-decoration: none; }
             </div>
           </a>
           <a class="cone-card" href="https://portfolio-trimind.com/ar/demo/creative/projects/geometric-hearts">
-            <img src="/demo/creative/artworks/ornaments_2_digital.webp" alt="قلوب هندسية" loading="lazy" decoding="async" width="148" height="197">
+            <img src="/demo/creative/artworks/thumbs/ornaments_2_digital.webp" alt="قلوب هندسية" loading="lazy" decoding="async" width="148" height="197">
             <div class="overlay"></div>
             <div class="info">
               <div class="info-cat">تجريد هندسي</div>
@@ -403,7 +409,7 @@ a { color: inherit; text-decoration: none; }
             </div>
           </a>
           <a class="cone-card" href="https://portfolio-trimind.com/ar/demo/creative/projects/cloud-garden">
-            <img src="/demo/creative/artworks/ornaments_3_digital.webp" alt="حديقة الغيوم" loading="lazy" decoding="async" width="148" height="197">
+            <img src="/demo/creative/artworks/thumbs/ornaments_3_digital.webp" alt="حديقة الغيوم" loading="lazy" decoding="async" width="148" height="197">
             <div class="overlay"></div>
             <div class="info">
               <div class="info-cat">خيال زهري</div>
@@ -411,7 +417,7 @@ a { color: inherit; text-decoration: none; }
             </div>
           </a>
           <a class="cone-card" href="https://portfolio-trimind.com/ar/demo/creative/projects/golden-vessel">
-            <img src="/demo/creative/artworks/ornaments_4_digital.webp" alt="الإناء الذهبي" loading="lazy" decoding="async" width="148" height="197">
+            <img src="/demo/creative/artworks/thumbs/ornaments_4_digital.webp" alt="الإناء الذهبي" loading="lazy" decoding="async" width="148" height="197">
             <div class="overlay"></div>
             <div class="info">
               <div class="info-cat">آرت نوفو</div>
@@ -419,7 +425,7 @@ a { color: inherit; text-decoration: none; }
             </div>
           </a>
           <a class="cone-card" href="https://portfolio-trimind.com/ar/demo/creative/projects/autumn-bouquet">
-            <img src="/demo/creative/artworks/ornaments_5_digital.webp" alt="باقة الخريف" loading="lazy" decoding="async" width="148" height="197">
+            <img src="/demo/creative/artworks/thumbs/ornaments_5_digital.webp" alt="باقة الخريف" loading="lazy" decoding="async" width="148" height="197">
             <div class="overlay"></div>
             <div class="info">
               <div class="info-cat">زخرفة زهرية</div>
@@ -427,7 +433,7 @@ a { color: inherit; text-decoration: none; }
             </div>
           </a>
           <a class="cone-card" href="https://portfolio-trimind.com/ar/demo/creative/projects/city-maze">
-            <img src="/demo/creative/artworks/ornaments_6_digital.webp" alt="متاهة المدينة" loading="lazy" decoding="async" width="148" height="197">
+            <img src="/demo/creative/artworks/thumbs/ornaments_6_digital.webp" alt="متاهة المدينة" loading="lazy" decoding="async" width="148" height="197">
             <div class="overlay"></div>
             <div class="info">
               <div class="info-cat">تجريد هندسي</div>
@@ -435,7 +441,7 @@ a { color: inherit; text-decoration: none; }
             </div>
           </a>
           <a class="cone-card" href="https://portfolio-trimind.com/ar/demo/creative/projects/purple-mandala">
-            <img src="/demo/creative/artworks/ornaments_7_digital.webp" alt="ماندالا أرجوانية" loading="lazy" decoding="async" width="148" height="197">
+            <img src="/demo/creative/artworks/thumbs/ornaments_7_digital.webp" alt="ماندالا أرجوانية" loading="lazy" decoding="async" width="148" height="197">
             <div class="overlay"></div>
             <div class="info">
               <div class="info-cat">ماندالا</div>
@@ -443,7 +449,7 @@ a { color: inherit; text-decoration: none; }
             </div>
           </a>
           <a class="cone-card" href="https://portfolio-trimind.com/ar/demo/creative/projects/cosmic-spiral">
-            <img src="/demo/creative/artworks/ornaments_8_digital.webp" alt="حلزون كوني" loading="lazy" decoding="async" width="148" height="197">
+            <img src="/demo/creative/artworks/thumbs/ornaments_8_digital.webp" alt="حلزون كوني" loading="lazy" decoding="async" width="148" height="197">
             <div class="overlay"></div>
             <div class="info">
               <div class="info-cat">خيال شخصيات</div>
@@ -451,7 +457,7 @@ a { color: inherit; text-decoration: none; }
             </div>
           </a>
           <a class="cone-card" href="https://portfolio-trimind.com/ar/demo/creative/projects/red-construct">
-            <img src="/demo/creative/artworks/ornaments_9_digital.webp" alt="بناء أحمر" loading="lazy" decoding="async" width="148" height="197">
+            <img src="/demo/creative/artworks/thumbs/ornaments_9_digital.webp" alt="بناء أحمر" loading="lazy" decoding="async" width="148" height="197">
             <div class="overlay"></div>
             <div class="info">
               <div class="info-cat">تجريد هندسي</div>
@@ -459,7 +465,7 @@ a { color: inherit; text-decoration: none; }
             </div>
           </a>
           <a class="cone-card" href="https://portfolio-trimind.com/ar/demo/creative/projects/fruit-bowl">
-            <img src="/demo/creative/artworks/ornaments_10_digital.webp" alt="سلة الفاكهة" loading="lazy" decoding="async" width="148" height="197">
+            <img src="/demo/creative/artworks/thumbs/ornaments_10_digital.webp" alt="سلة الفاكهة" loading="lazy" decoding="async" width="148" height="197">
             <div class="overlay"></div>
             <div class="info">
               <div class="info-cat">بوب زهري</div>
@@ -467,7 +473,7 @@ a { color: inherit; text-decoration: none; }
             </div>
           </a>
           <a class="cone-card" href="https://portfolio-trimind.com/ar/demo/creative/projects/blue-dreamer">
-            <img src="/demo/creative/artworks/ornaments_11_digital.webp" alt="الحالم الأزرق" loading="lazy" decoding="async" width="148" height="197">
+            <img src="/demo/creative/artworks/thumbs/ornaments_11_digital.webp" alt="الحالم الأزرق" loading="lazy" decoding="async" width="148" height="197">
             <div class="overlay"></div>
             <div class="info">
               <div class="info-cat">خيال شخصيات</div>
@@ -475,7 +481,7 @@ a { color: inherit; text-decoration: none; }
             </div>
           </a>
           <a class="cone-card" href="https://portfolio-trimind.com/ar/demo/creative/projects/star-flower">
-            <img src="/demo/creative/artworks/ornaments_12_digital.webp" alt="زهرة النجمة" loading="lazy" decoding="async" width="148" height="197">
+            <img src="/demo/creative/artworks/thumbs/ornaments_12_digital.webp" alt="زهرة النجمة" loading="lazy" decoding="async" width="148" height="197">
             <div class="overlay"></div>
             <div class="info">
               <div class="info-cat">زهري جريء</div>
@@ -483,7 +489,7 @@ a { color: inherit; text-decoration: none; }
             </div>
           </a>
           <a class="cone-card" href="https://portfolio-trimind.com/ar/demo/creative/projects/love-tree">
-            <img src="/demo/creative/artworks/ornaments_13_digital.webp" alt="شجرة الحب" loading="lazy" decoding="async" width="148" height="197">
+            <img src="/demo/creative/artworks/thumbs/ornaments_13_digital.webp" alt="شجرة الحب" loading="lazy" decoding="async" width="148" height="197">
             <div class="overlay"></div>
             <div class="info">
               <div class="info-cat">شجرة الحياة</div>
@@ -491,7 +497,7 @@ a { color: inherit; text-decoration: none; }
             </div>
           </a>
           <a class="cone-card" href="https://portfolio-trimind.com/ar/demo/creative/projects/framed-bloom">
-            <img src="/demo/creative/artworks/ornaments_14_digital.webp" alt="زهرة مؤطّرة" loading="lazy" decoding="async" width="148" height="197">
+            <img src="/demo/creative/artworks/thumbs/ornaments_14_digital.webp" alt="زهرة مؤطّرة" loading="lazy" decoding="async" width="148" height="197">
             <div class="overlay"></div>
             <div class="info">
               <div class="info-cat">فنّ شعبي</div>
@@ -499,7 +505,7 @@ a { color: inherit; text-decoration: none; }
             </div>
           </a>
           <a class="cone-card" href="https://portfolio-trimind.com/ar/demo/creative/projects/lotus-reflection">
-            <img src="/demo/creative/artworks/ornaments_15_digital.webp" alt="انعكاس اللوتس" loading="lazy" decoding="async" width="148" height="197">
+            <img src="/demo/creative/artworks/thumbs/ornaments_15_digital.webp" alt="انعكاس اللوتس" loading="lazy" decoding="async" width="148" height="197">
             <div class="overlay"></div>
             <div class="info">
               <div class="info-cat">زهري هادئ</div>
@@ -507,7 +513,7 @@ a { color: inherit; text-decoration: none; }
             </div>
           </a>
           <a class="cone-card" href="https://portfolio-trimind.com/ar/demo/creative/projects/silver-garden">
-            <img src="/demo/creative/artworks/ornaments_16_digital.webp" alt="الحديقة الفضية" loading="lazy" decoding="async" width="148" height="197">
+            <img src="/demo/creative/artworks/thumbs/ornaments_16_digital.webp" alt="الحديقة الفضية" loading="lazy" decoding="async" width="148" height="197">
             <div class="overlay"></div>
             <div class="info">
               <div class="info-cat">معماري</div>
@@ -515,7 +521,7 @@ a { color: inherit; text-decoration: none; }
             </div>
           </a>
           <a class="cone-card" href="https://portfolio-trimind.com/ar/demo/creative/projects/crystal-beacon">
-            <img src="/demo/creative/artworks/ornaments_17_digital.webp" alt="منارة بلّورية" loading="lazy" decoding="async" width="148" height="197">
+            <img src="/demo/creative/artworks/thumbs/ornaments_17_digital.webp" alt="منارة بلّورية" loading="lazy" decoding="async" width="148" height="197">
             <div class="overlay"></div>
             <div class="info">
               <div class="info-cat">زخرفة هندسية</div>
@@ -523,7 +529,7 @@ a { color: inherit; text-decoration: none; }
             </div>
           </a>
           <a class="cone-card" href="https://portfolio-trimind.com/ar/demo/creative/projects/desert-sun">
-            <img src="/demo/creative/artworks/ornaments_18_digital.webp" alt="شمس الصحراء" loading="lazy" decoding="async" width="148" height="197">
+            <img src="/demo/creative/artworks/thumbs/ornaments_18_digital.webp" alt="شمس الصحراء" loading="lazy" decoding="async" width="148" height="197">
             <div class="overlay"></div>
             <div class="info">
               <div class="info-cat">منظر رمزي</div>
@@ -531,7 +537,7 @@ a { color: inherit; text-decoration: none; }
             </div>
           </a>
           <a class="cone-card" href="https://portfolio-trimind.com/ar/demo/creative/projects/sun-totem">
-            <img src="/demo/creative/artworks/ornaments_19_digital.webp" alt="طوطم الشمس" loading="lazy" decoding="async" width="148" height="197">
+            <img src="/demo/creative/artworks/thumbs/ornaments_19_digital.webp" alt="طوطم الشمس" loading="lazy" decoding="async" width="148" height="197">
             <div class="overlay"></div>
             <div class="info">
               <div class="info-cat">طوطمي</div>
@@ -539,7 +545,7 @@ a { color: inherit; text-decoration: none; }
             </div>
           </a>
           <a class="cone-card" href="https://portfolio-trimind.com/ar/demo/creative/projects/pastel-cloud">
-            <img src="/demo/creative/artworks/ornaments_20_digital.webp" alt="غيمة باستيل" loading="lazy" decoding="async" width="148" height="197">
+            <img src="/demo/creative/artworks/thumbs/ornaments_20_digital.webp" alt="غيمة باستيل" loading="lazy" decoding="async" width="148" height="197">
             <div class="overlay"></div>
             <div class="info">
               <div class="info-cat">زهري ناعم</div>
@@ -547,7 +553,7 @@ a { color: inherit; text-decoration: none; }
             </div>
           </a>
           <a class="cone-card" href="https://portfolio-trimind.com/ar/demo/creative/projects/heart-clown">
-            <img src="/demo/creative/artworks/ornaments_21_digital.webp" alt="مهرّج القلب" loading="lazy" decoding="async" width="148" height="197">
+            <img src="/demo/creative/artworks/thumbs/ornaments_21_digital.webp" alt="مهرّج القلب" loading="lazy" decoding="async" width="148" height="197">
             <div class="overlay"></div>
             <div class="info">
               <div class="info-cat">خيال شخصيات</div>
@@ -555,7 +561,7 @@ a { color: inherit; text-decoration: none; }
             </div>
           </a>
           <a class="cone-card" href="https://portfolio-trimind.com/ar/demo/creative/projects/rainbow-arch">
-            <img src="/demo/creative/artworks/ornaments_22_digital.webp" alt="قوس قزح" loading="lazy" decoding="async" width="148" height="197">
+            <img src="/demo/creative/artworks/thumbs/ornaments_22_digital.webp" alt="قوس قزح" loading="lazy" decoding="async" width="148" height="197">
             <div class="overlay"></div>
             <div class="info">
               <div class="info-cat">طبيعة هندسية</div>
@@ -563,7 +569,7 @@ a { color: inherit; text-decoration: none; }
             </div>
           </a>
           <a class="cone-card" href="https://portfolio-trimind.com/ar/demo/creative/projects/ocean-stars">
-            <img src="/demo/creative/artworks/ornaments_23_digital.webp" alt="نجوم المحيط" loading="lazy" decoding="async" width="148" height="197">
+            <img src="/demo/creative/artworks/thumbs/ornaments_23_digital.webp" alt="نجوم المحيط" loading="lazy" decoding="async" width="148" height="197">
             <div class="overlay"></div>
             <div class="info">
               <div class="info-cat">زخرفة بحرية</div>
@@ -571,7 +577,7 @@ a { color: inherit; text-decoration: none; }
             </div>
           </a>
           <a class="cone-card" href="https://portfolio-trimind.com/ar/demo/creative/projects/geometric-butterflies">
-            <img src="/demo/creative/artworks/ornaments_24_digital.webp" alt="فراشات هندسية" loading="lazy" decoding="async" width="148" height="197">
+            <img src="/demo/creative/artworks/thumbs/ornaments_24_digital.webp" alt="فراشات هندسية" loading="lazy" decoding="async" width="148" height="197">
             <div class="overlay"></div>
             <div class="info">
               <div class="info-cat">هندسة الطبيعة</div>
@@ -579,7 +585,7 @@ a { color: inherit; text-decoration: none; }
             </div>
           </a>
           <a class="cone-card" href="https://portfolio-trimind.com/ar/demo/creative/projects/caterpillar-dream">
-            <img src="/demo/creative/artworks/ornaments_25_digital.webp" alt="حلم اليرقة" loading="lazy" decoding="async" width="148" height="197">
+            <img src="/demo/creative/artworks/thumbs/ornaments_25_digital.webp" alt="حلم اليرقة" loading="lazy" decoding="async" width="148" height="197">
             <div class="overlay"></div>
             <div class="info">
               <div class="info-cat">زخرفة خيالية</div>
@@ -587,7 +593,7 @@ a { color: inherit; text-decoration: none; }
             </div>
           </a>
           <a class="cone-card" href="https://portfolio-trimind.com/ar/demo/creative/projects/horned-heart">
-            <img src="/demo/creative/artworks/ornaments_26_digital.webp" alt="قلب ذو قرون" loading="lazy" decoding="async" width="148" height="197">
+            <img src="/demo/creative/artworks/thumbs/ornaments_26_digital.webp" alt="قلب ذو قرون" loading="lazy" decoding="async" width="148" height="197">
             <div class="overlay"></div>
             <div class="info">
               <div class="info-cat">خيال المخلوقات</div>
@@ -595,7 +601,7 @@ a { color: inherit; text-decoration: none; }
             </div>
           </a>
           <a class="cone-card" href="https://portfolio-trimind.com/ar/demo/creative/projects/golden-mandala">
-            <img src="/demo/creative/artworks/ornaments_27_digital.webp" alt="ماندالا ذهبية" loading="lazy" decoding="async" width="148" height="197">
+            <img src="/demo/creative/artworks/thumbs/ornaments_27_digital.webp" alt="ماندالا ذهبية" loading="lazy" decoding="async" width="148" height="197">
             <div class="overlay"></div>
             <div class="info">
               <div class="info-cat">ماندالا</div>
@@ -603,7 +609,7 @@ a { color: inherit; text-decoration: none; }
             </div>
           </a>
           <a class="cone-card" href="https://portfolio-trimind.com/ar/demo/creative/projects/electric-flower">
-            <img src="/demo/creative/artworks/ornaments_28_digital.webp" alt="زهرة كهربائية" loading="lazy" decoding="async" width="148" height="197">
+            <img src="/demo/creative/artworks/thumbs/ornaments_28_digital.webp" alt="زهرة كهربائية" loading="lazy" decoding="async" width="148" height="197">
             <div class="overlay"></div>
             <div class="info">
               <div class="info-cat">بوب زهري</div>
@@ -611,7 +617,7 @@ a { color: inherit; text-decoration: none; }
             </div>
           </a>
           <a class="cone-card" href="https://portfolio-trimind.com/ar/demo/creative/projects/heart-burst">
-            <img src="/demo/creative/artworks/ornaments_29_digital.webp" alt="انفجار القلوب" loading="lazy" decoding="async" width="148" height="197">
+            <img src="/demo/creative/artworks/thumbs/ornaments_29_digital.webp" alt="انفجار القلوب" loading="lazy" decoding="async" width="148" height="197">
             <div class="overlay"></div>
             <div class="info">
               <div class="info-cat">زخرفة القلب</div>
@@ -619,7 +625,7 @@ a { color: inherit; text-decoration: none; }
             </div>
           </a>
           <a class="cone-card" href="https://portfolio-trimind.com/ar/demo/creative/projects/geometric-still-life">
-            <img src="/demo/creative/artworks/ornaments_30_digital.webp" alt="طبيعة صامتة هندسية" loading="lazy" decoding="async" width="148" height="197">
+            <img src="/demo/creative/artworks/thumbs/ornaments_30_digital.webp" alt="طبيعة صامتة هندسية" loading="lazy" decoding="async" width="148" height="197">
             <div class="overlay"></div>
             <div class="info">
               <div class="info-cat">طبيعة صامتة تجريدية</div>
@@ -627,7 +633,7 @@ a { color: inherit; text-decoration: none; }
             </div>
           </a>
           <a class="cone-card" href="https://portfolio-trimind.com/ar/demo/creative/projects/tropical-bouquet">
-            <img src="/demo/creative/artworks/ornaments_31_digital.webp" alt="باقة استوائية" loading="lazy" decoding="async" width="148" height="197">
+            <img src="/demo/creative/artworks/thumbs/ornaments_31_digital.webp" alt="باقة استوائية" loading="lazy" decoding="async" width="148" height="197">
             <div class="overlay"></div>
             <div class="info">
               <div class="info-cat">زهري استوائي</div>
@@ -635,7 +641,7 @@ a { color: inherit; text-decoration: none; }
             </div>
           </a>
           <a class="cone-card" href="https://portfolio-trimind.com/ar/demo/creative/projects/patterned-butterfly">
-            <img src="/demo/creative/artworks/ornaments_32_digital.webp" alt="فراشة منقوشة" loading="lazy" decoding="async" width="148" height="197">
+            <img src="/demo/creative/artworks/thumbs/ornaments_32_digital.webp" alt="فراشة منقوشة" loading="lazy" decoding="async" width="148" height="197">
             <div class="overlay"></div>
             <div class="info">
               <div class="info-cat">فنّ الفراشات</div>
@@ -643,7 +649,7 @@ a { color: inherit; text-decoration: none; }
             </div>
           </a>
           <a class="cone-card" href="https://portfolio-trimind.com/ar/demo/creative/projects/heart-flower-tree">
-            <img src="/demo/creative/artworks/ornaments_33_digital.webp" alt="شجرة زهور القلوب" loading="lazy" decoding="async" width="148" height="197">
+            <img src="/demo/creative/artworks/thumbs/ornaments_33_digital.webp" alt="شجرة زهور القلوب" loading="lazy" decoding="async" width="148" height="197">
             <div class="overlay"></div>
             <div class="info">
               <div class="info-cat">زخرفة القلب</div>
@@ -651,7 +657,7 @@ a { color: inherit; text-decoration: none; }
             </div>
           </a>
           <a class="cone-card" href="https://portfolio-trimind.com/ar/demo/creative/projects/tropical-abstract">
-            <img src="/demo/creative/artworks/ornaments_34_digital.webp" alt="تجريد استوائي" loading="lazy" decoding="async" width="148" height="197">
+            <img src="/demo/creative/artworks/thumbs/ornaments_34_digital.webp" alt="تجريد استوائي" loading="lazy" decoding="async" width="148" height="197">
             <div class="overlay"></div>
             <div class="info">
               <div class="info-cat">تجريد استوائي</div>
@@ -659,7 +665,7 @@ a { color: inherit; text-decoration: none; }
             </div>
           </a>
           <a class="cone-card" href="https://portfolio-trimind.com/ar/demo/creative/projects/celestial-flower">
-            <img src="/demo/creative/artworks/ornaments_35_digital.webp" alt="زهرة سماوية" loading="lazy" decoding="async" width="148" height="197">
+            <img src="/demo/creative/artworks/thumbs/ornaments_35_digital.webp" alt="زهرة سماوية" loading="lazy" decoding="async" width="148" height="197">
             <div class="overlay"></div>
             <div class="info">
               <div class="info-cat">زخرفة سماوية</div>
@@ -667,7 +673,7 @@ a { color: inherit; text-decoration: none; }
             </div>
           </a>
           <a class="cone-card" href="https://portfolio-trimind.com/ar/demo/creative/projects/diamond-burst">
-            <img src="/demo/creative/artworks/ornaments_36_digital.webp" alt="انفجار الماس" loading="lazy" decoding="async" width="148" height="197">
+            <img src="/demo/creative/artworks/thumbs/ornaments_36_digital.webp" alt="انفجار الماس" loading="lazy" decoding="async" width="148" height="197">
             <div class="overlay"></div>
             <div class="info">
               <div class="info-cat">هندسي سحري</div>
@@ -675,7 +681,7 @@ a { color: inherit; text-decoration: none; }
             </div>
           </a>
           <a class="cone-card" href="https://portfolio-trimind.com/ar/demo/creative/projects/pink-abstract-garden">
-            <img src="/demo/creative/artworks/ornaments_37_digital.webp" alt="حديقة وردية تجريدية" loading="lazy" decoding="async" width="148" height="197">
+            <img src="/demo/creative/artworks/thumbs/ornaments_37_digital.webp" alt="حديقة وردية تجريدية" loading="lazy" decoding="async" width="148" height="197">
             <div class="overlay"></div>
             <div class="info">
               <div class="info-cat">زهري تجريدي</div>
@@ -683,7 +689,7 @@ a { color: inherit; text-decoration: none; }
             </div>
           </a>
           <a class="cone-card" href="https://portfolio-trimind.com/ar/demo/creative/projects/geometric-explosion">
-            <img src="/demo/creative/artworks/ornaments_38_digital.webp" alt="انفجار هندسي" loading="lazy" decoding="async" width="148" height="197">
+            <img src="/demo/creative/artworks/thumbs/ornaments_38_digital.webp" alt="انفجار هندسي" loading="lazy" decoding="async" width="148" height="197">
             <div class="overlay"></div>
             <div class="info">
               <div class="info-cat">Abstract Geometric</div>
@@ -691,7 +697,7 @@ a { color: inherit; text-decoration: none; }
             </div>
           </a>
           <a class="cone-card" href="https://portfolio-trimind.com/ar/demo/creative/projects/blue-cross-mandala">
-            <img src="/demo/creative/artworks/ornaments_39_digital.webp" alt="ماندالا الصليب الأزرق" loading="lazy" decoding="async" width="148" height="197">
+            <img src="/demo/creative/artworks/thumbs/ornaments_39_digital.webp" alt="ماندالا الصليب الأزرق" loading="lazy" decoding="async" width="148" height="197">
             <div class="overlay"></div>
             <div class="info">
               <div class="info-cat">ماندالا</div>
@@ -699,7 +705,7 @@ a { color: inherit; text-decoration: none; }
             </div>
           </a>
           <a class="cone-card" href="https://portfolio-trimind.com/ar/demo/creative/projects/purple-sunburst">
-            <img src="/demo/creative/artworks/ornaments_40_digital.webp" alt="تفجّر شمسي أرجواني" loading="lazy" decoding="async" width="148" height="197">
+            <img src="/demo/creative/artworks/thumbs/ornaments_40_digital.webp" alt="تفجّر شمسي أرجواني" loading="lazy" decoding="async" width="148" height="197">
             <div class="overlay"></div>
             <div class="info">
               <div class="info-cat">تجريد شعاعي</div>
@@ -707,7 +713,7 @@ a { color: inherit; text-decoration: none; }
             </div>
           </a>
           <a class="cone-card" href="https://portfolio-trimind.com/ar/demo/creative/projects/red-creature">
-            <img src="/demo/creative/artworks/ornaments_41_digital.webp" alt="مخلوق أحمر" loading="lazy" decoding="async" width="148" height="197">
+            <img src="/demo/creative/artworks/thumbs/ornaments_41_digital.webp" alt="مخلوق أحمر" loading="lazy" decoding="async" width="148" height="197">
             <div class="overlay"></div>
             <div class="info">
               <div class="info-cat">خيال المخلوقات</div>
@@ -715,7 +721,7 @@ a { color: inherit; text-decoration: none; }
             </div>
           </a>
           <a class="cone-card" href="https://portfolio-trimind.com/ar/demo/creative/projects/geometric-totem">
-            <img src="/demo/creative/artworks/ornaments_42_digital.webp" alt="طوطم هندسي" loading="lazy" decoding="async" width="148" height="197">
+            <img src="/demo/creative/artworks/thumbs/ornaments_42_digital.webp" alt="طوطم هندسي" loading="lazy" decoding="async" width="148" height="197">
             <div class="overlay"></div>
             <div class="info">
               <div class="info-cat">طوطمي هندسي</div>
@@ -723,7 +729,7 @@ a { color: inherit; text-decoration: none; }
             </div>
           </a>
           <a class="cone-card" href="https://portfolio-trimind.com/ar/demo/creative/projects/pattern-explosion">
-            <img src="/demo/creative/artworks/ornaments_43_digital.webp" alt="انفجار النقوش" loading="lazy" decoding="async" width="148" height="197">
+            <img src="/demo/creative/artworks/thumbs/ornaments_43_digital.webp" alt="انفجار النقوش" loading="lazy" decoding="async" width="148" height="197">
             <div class="overlay"></div>
             <div class="info">
               <div class="info-cat">نقش أقصوي</div>
@@ -731,7 +737,7 @@ a { color: inherit; text-decoration: none; }
             </div>
           </a>
           <a class="cone-card" href="https://portfolio-trimind.com/ar/demo/creative/projects/geometric-windmill">
-            <img src="/demo/creative/artworks/ornaments_44_digital.webp" alt="طاحونة هندسية" loading="lazy" decoding="async" width="148" height="197">
+            <img src="/demo/creative/artworks/thumbs/ornaments_44_digital.webp" alt="طاحونة هندسية" loading="lazy" decoding="async" width="148" height="197">
             <div class="overlay"></div>
             <div class="info">
               <div class="info-cat">تجريد معماري</div>
@@ -739,7 +745,7 @@ a { color: inherit; text-decoration: none; }
             </div>
           </a>
           <a class="cone-card" href="https://portfolio-trimind.com/ar/demo/creative/projects/the-house">
-            <img src="/demo/creative/artworks/ornaments_45_digital.webp" alt="البيت" loading="lazy" decoding="async" width="148" height="197">
+            <img src="/demo/creative/artworks/thumbs/ornaments_45_digital.webp" alt="البيت" loading="lazy" decoding="async" width="148" height="197">
             <div class="overlay"></div>
             <div class="info">
               <div class="info-cat">تجريد سردي</div>
@@ -747,7 +753,7 @@ a { color: inherit; text-decoration: none; }
             </div>
           </a>
           <a class="cone-card" href="https://portfolio-trimind.com/ar/demo/creative/projects/my-eye-brain-blooms">
-            <img src="/demo/creative/artworks/ornaments_46_digital.webp" alt="إزهار عقلي البصري" loading="lazy" decoding="async" width="148" height="197">
+            <img src="/demo/creative/artworks/thumbs/ornaments_46_digital.webp" alt="إزهار عقلي البصري" loading="lazy" decoding="async" width="148" height="197">
             <div class="overlay"></div>
             <div class="info">
               <div class="info-cat">ماندالا شعاعية</div>
@@ -778,11 +784,11 @@ a { color: inherit; text-decoration: none; }
     <div class="sec-head"><span class="section-label">المهارات والأدوات</span><span class="line"></span></div>
     <div class="skills-wrap">
       <div class="skill-group">
-        <h4>الممارسة</h4>
+        <h3 class="h4like">الممارسة</h3>
         <div class="pill-row"><span class="pill">إبداع حدسي</span><span class="pill">حسّ اللون</span><span class="pill">تصميم النقوش</span><span class="pill">التكوين</span><span class="pill">المدى الشعوري</span></div>
       </div>
       <div class="skill-group">
-        <h4>الأدوات والخامات</h4>
+        <h3 class="h4like">الأدوات والخامات</h3>
         <div class="pill-row"><span class="pill">أقلام</span><span class="pill">ورق</span><span class="pill">حدس</span><span class="pill">قلب</span><span class="pill">عين</span><span class="pill">عقل</span><span class="pill">حب</span></div>
       </div>
     </div>
@@ -804,7 +810,7 @@ a { color: inherit; text-decoration: none; }
 <section class="section" id="contact">
   <div class="container">
     <h2 class="sec-title" style="margin-bottom: 12px;">لنبتكر شيئًا معًا</h2>
-    <p class="mono" style="font-size:11px;text-transform:uppercase;letter-spacing:1.5px;color:var(--sand);margin-bottom:48px;">متاحة للعمل</p>
+    <p class="mono" style="font-size:11px;text-transform:uppercase;letter-spacing:1.5px;color:#F3D8C8;margin-bottom:48px;">متاحة للعمل</p>
     <div class="contact-grid">
       <div><p class="lbl">البريد الإلكتروني</p><a href="mailto:dalal@myeyebrain.art">dalal@myeyebrain.art</a></div>
       <div><p class="lbl">الهاتف</p><a href="tel:+965 1234 5678">+965 1234 5678</a></div>
@@ -819,6 +825,7 @@ a { color: inherit; text-decoration: none; }
   </div>
 </section>
 
+</main>
 <footer class="footer">
   &copy; دلال الكندري &middot; <a href="https://portfolio-trimind.com/ar/demo/creative">https://portfolio-trimind.com/ar/demo/creative</a>
 </footer>
@@ -967,187 +974,187 @@ a { color: inherit; text-decoration: none; }
   <div class="gm-scroll">
     <div class="gm-grid">
       <a class="gm-card" href="https://portfolio-trimind.com/ar/demo/creative/projects/purple-bouquet">
-        <div class="gm-ph"><img src="/demo/creative/artworks/ornaments_1_digital.webp" alt="باقة أرجوانية" loading="lazy" decoding="async"></div>
+        <div class="gm-ph"><img src="/demo/creative/artworks/thumbs/ornaments_1_digital.webp" alt="باقة أرجوانية" loading="lazy" decoding="async"></div>
         <div class="gm-meta"><span class="gm-cat">زخرفة زهرية</span><span class="gm-ttl">باقة أرجوانية</span></div>
       </a>
       <a class="gm-card" href="https://portfolio-trimind.com/ar/demo/creative/projects/geometric-hearts">
-        <div class="gm-ph"><img src="/demo/creative/artworks/ornaments_2_digital.webp" alt="قلوب هندسية" loading="lazy" decoding="async"></div>
+        <div class="gm-ph"><img src="/demo/creative/artworks/thumbs/ornaments_2_digital.webp" alt="قلوب هندسية" loading="lazy" decoding="async"></div>
         <div class="gm-meta"><span class="gm-cat">تجريد هندسي</span><span class="gm-ttl">قلوب هندسية</span></div>
       </a>
       <a class="gm-card" href="https://portfolio-trimind.com/ar/demo/creative/projects/cloud-garden">
-        <div class="gm-ph"><img src="/demo/creative/artworks/ornaments_3_digital.webp" alt="حديقة الغيوم" loading="lazy" decoding="async"></div>
+        <div class="gm-ph"><img src="/demo/creative/artworks/thumbs/ornaments_3_digital.webp" alt="حديقة الغيوم" loading="lazy" decoding="async"></div>
         <div class="gm-meta"><span class="gm-cat">خيال زهري</span><span class="gm-ttl">حديقة الغيوم</span></div>
       </a>
       <a class="gm-card" href="https://portfolio-trimind.com/ar/demo/creative/projects/golden-vessel">
-        <div class="gm-ph"><img src="/demo/creative/artworks/ornaments_4_digital.webp" alt="الإناء الذهبي" loading="lazy" decoding="async"></div>
+        <div class="gm-ph"><img src="/demo/creative/artworks/thumbs/ornaments_4_digital.webp" alt="الإناء الذهبي" loading="lazy" decoding="async"></div>
         <div class="gm-meta"><span class="gm-cat">آرت نوفو</span><span class="gm-ttl">الإناء الذهبي</span></div>
       </a>
       <a class="gm-card" href="https://portfolio-trimind.com/ar/demo/creative/projects/autumn-bouquet">
-        <div class="gm-ph"><img src="/demo/creative/artworks/ornaments_5_digital.webp" alt="باقة الخريف" loading="lazy" decoding="async"></div>
+        <div class="gm-ph"><img src="/demo/creative/artworks/thumbs/ornaments_5_digital.webp" alt="باقة الخريف" loading="lazy" decoding="async"></div>
         <div class="gm-meta"><span class="gm-cat">زخرفة زهرية</span><span class="gm-ttl">باقة الخريف</span></div>
       </a>
       <a class="gm-card" href="https://portfolio-trimind.com/ar/demo/creative/projects/city-maze">
-        <div class="gm-ph"><img src="/demo/creative/artworks/ornaments_6_digital.webp" alt="متاهة المدينة" loading="lazy" decoding="async"></div>
+        <div class="gm-ph"><img src="/demo/creative/artworks/thumbs/ornaments_6_digital.webp" alt="متاهة المدينة" loading="lazy" decoding="async"></div>
         <div class="gm-meta"><span class="gm-cat">تجريد هندسي</span><span class="gm-ttl">متاهة المدينة</span></div>
       </a>
       <a class="gm-card" href="https://portfolio-trimind.com/ar/demo/creative/projects/purple-mandala">
-        <div class="gm-ph"><img src="/demo/creative/artworks/ornaments_7_digital.webp" alt="ماندالا أرجوانية" loading="lazy" decoding="async"></div>
+        <div class="gm-ph"><img src="/demo/creative/artworks/thumbs/ornaments_7_digital.webp" alt="ماندالا أرجوانية" loading="lazy" decoding="async"></div>
         <div class="gm-meta"><span class="gm-cat">ماندالا</span><span class="gm-ttl">ماندالا أرجوانية</span></div>
       </a>
       <a class="gm-card" href="https://portfolio-trimind.com/ar/demo/creative/projects/cosmic-spiral">
-        <div class="gm-ph"><img src="/demo/creative/artworks/ornaments_8_digital.webp" alt="حلزون كوني" loading="lazy" decoding="async"></div>
+        <div class="gm-ph"><img src="/demo/creative/artworks/thumbs/ornaments_8_digital.webp" alt="حلزون كوني" loading="lazy" decoding="async"></div>
         <div class="gm-meta"><span class="gm-cat">خيال شخصيات</span><span class="gm-ttl">حلزون كوني</span></div>
       </a>
       <a class="gm-card" href="https://portfolio-trimind.com/ar/demo/creative/projects/red-construct">
-        <div class="gm-ph"><img src="/demo/creative/artworks/ornaments_9_digital.webp" alt="بناء أحمر" loading="lazy" decoding="async"></div>
+        <div class="gm-ph"><img src="/demo/creative/artworks/thumbs/ornaments_9_digital.webp" alt="بناء أحمر" loading="lazy" decoding="async"></div>
         <div class="gm-meta"><span class="gm-cat">تجريد هندسي</span><span class="gm-ttl">بناء أحمر</span></div>
       </a>
       <a class="gm-card" href="https://portfolio-trimind.com/ar/demo/creative/projects/fruit-bowl">
-        <div class="gm-ph"><img src="/demo/creative/artworks/ornaments_10_digital.webp" alt="سلة الفاكهة" loading="lazy" decoding="async"></div>
+        <div class="gm-ph"><img src="/demo/creative/artworks/thumbs/ornaments_10_digital.webp" alt="سلة الفاكهة" loading="lazy" decoding="async"></div>
         <div class="gm-meta"><span class="gm-cat">بوب زهري</span><span class="gm-ttl">سلة الفاكهة</span></div>
       </a>
       <a class="gm-card" href="https://portfolio-trimind.com/ar/demo/creative/projects/blue-dreamer">
-        <div class="gm-ph"><img src="/demo/creative/artworks/ornaments_11_digital.webp" alt="الحالم الأزرق" loading="lazy" decoding="async"></div>
+        <div class="gm-ph"><img src="/demo/creative/artworks/thumbs/ornaments_11_digital.webp" alt="الحالم الأزرق" loading="lazy" decoding="async"></div>
         <div class="gm-meta"><span class="gm-cat">خيال شخصيات</span><span class="gm-ttl">الحالم الأزرق</span></div>
       </a>
       <a class="gm-card" href="https://portfolio-trimind.com/ar/demo/creative/projects/star-flower">
-        <div class="gm-ph"><img src="/demo/creative/artworks/ornaments_12_digital.webp" alt="زهرة النجمة" loading="lazy" decoding="async"></div>
+        <div class="gm-ph"><img src="/demo/creative/artworks/thumbs/ornaments_12_digital.webp" alt="زهرة النجمة" loading="lazy" decoding="async"></div>
         <div class="gm-meta"><span class="gm-cat">زهري جريء</span><span class="gm-ttl">زهرة النجمة</span></div>
       </a>
       <a class="gm-card" href="https://portfolio-trimind.com/ar/demo/creative/projects/love-tree">
-        <div class="gm-ph"><img src="/demo/creative/artworks/ornaments_13_digital.webp" alt="شجرة الحب" loading="lazy" decoding="async"></div>
+        <div class="gm-ph"><img src="/demo/creative/artworks/thumbs/ornaments_13_digital.webp" alt="شجرة الحب" loading="lazy" decoding="async"></div>
         <div class="gm-meta"><span class="gm-cat">شجرة الحياة</span><span class="gm-ttl">شجرة الحب</span></div>
       </a>
       <a class="gm-card" href="https://portfolio-trimind.com/ar/demo/creative/projects/framed-bloom">
-        <div class="gm-ph"><img src="/demo/creative/artworks/ornaments_14_digital.webp" alt="زهرة مؤطّرة" loading="lazy" decoding="async"></div>
+        <div class="gm-ph"><img src="/demo/creative/artworks/thumbs/ornaments_14_digital.webp" alt="زهرة مؤطّرة" loading="lazy" decoding="async"></div>
         <div class="gm-meta"><span class="gm-cat">فنّ شعبي</span><span class="gm-ttl">زهرة مؤطّرة</span></div>
       </a>
       <a class="gm-card" href="https://portfolio-trimind.com/ar/demo/creative/projects/lotus-reflection">
-        <div class="gm-ph"><img src="/demo/creative/artworks/ornaments_15_digital.webp" alt="انعكاس اللوتس" loading="lazy" decoding="async"></div>
+        <div class="gm-ph"><img src="/demo/creative/artworks/thumbs/ornaments_15_digital.webp" alt="انعكاس اللوتس" loading="lazy" decoding="async"></div>
         <div class="gm-meta"><span class="gm-cat">زهري هادئ</span><span class="gm-ttl">انعكاس اللوتس</span></div>
       </a>
       <a class="gm-card" href="https://portfolio-trimind.com/ar/demo/creative/projects/silver-garden">
-        <div class="gm-ph"><img src="/demo/creative/artworks/ornaments_16_digital.webp" alt="الحديقة الفضية" loading="lazy" decoding="async"></div>
+        <div class="gm-ph"><img src="/demo/creative/artworks/thumbs/ornaments_16_digital.webp" alt="الحديقة الفضية" loading="lazy" decoding="async"></div>
         <div class="gm-meta"><span class="gm-cat">معماري</span><span class="gm-ttl">الحديقة الفضية</span></div>
       </a>
       <a class="gm-card" href="https://portfolio-trimind.com/ar/demo/creative/projects/crystal-beacon">
-        <div class="gm-ph"><img src="/demo/creative/artworks/ornaments_17_digital.webp" alt="منارة بلّورية" loading="lazy" decoding="async"></div>
+        <div class="gm-ph"><img src="/demo/creative/artworks/thumbs/ornaments_17_digital.webp" alt="منارة بلّورية" loading="lazy" decoding="async"></div>
         <div class="gm-meta"><span class="gm-cat">زخرفة هندسية</span><span class="gm-ttl">منارة بلّورية</span></div>
       </a>
       <a class="gm-card" href="https://portfolio-trimind.com/ar/demo/creative/projects/desert-sun">
-        <div class="gm-ph"><img src="/demo/creative/artworks/ornaments_18_digital.webp" alt="شمس الصحراء" loading="lazy" decoding="async"></div>
+        <div class="gm-ph"><img src="/demo/creative/artworks/thumbs/ornaments_18_digital.webp" alt="شمس الصحراء" loading="lazy" decoding="async"></div>
         <div class="gm-meta"><span class="gm-cat">منظر رمزي</span><span class="gm-ttl">شمس الصحراء</span></div>
       </a>
       <a class="gm-card" href="https://portfolio-trimind.com/ar/demo/creative/projects/sun-totem">
-        <div class="gm-ph"><img src="/demo/creative/artworks/ornaments_19_digital.webp" alt="طوطم الشمس" loading="lazy" decoding="async"></div>
+        <div class="gm-ph"><img src="/demo/creative/artworks/thumbs/ornaments_19_digital.webp" alt="طوطم الشمس" loading="lazy" decoding="async"></div>
         <div class="gm-meta"><span class="gm-cat">طوطمي</span><span class="gm-ttl">طوطم الشمس</span></div>
       </a>
       <a class="gm-card" href="https://portfolio-trimind.com/ar/demo/creative/projects/pastel-cloud">
-        <div class="gm-ph"><img src="/demo/creative/artworks/ornaments_20_digital.webp" alt="غيمة باستيل" loading="lazy" decoding="async"></div>
+        <div class="gm-ph"><img src="/demo/creative/artworks/thumbs/ornaments_20_digital.webp" alt="غيمة باستيل" loading="lazy" decoding="async"></div>
         <div class="gm-meta"><span class="gm-cat">زهري ناعم</span><span class="gm-ttl">غيمة باستيل</span></div>
       </a>
       <a class="gm-card" href="https://portfolio-trimind.com/ar/demo/creative/projects/heart-clown">
-        <div class="gm-ph"><img src="/demo/creative/artworks/ornaments_21_digital.webp" alt="مهرّج القلب" loading="lazy" decoding="async"></div>
+        <div class="gm-ph"><img src="/demo/creative/artworks/thumbs/ornaments_21_digital.webp" alt="مهرّج القلب" loading="lazy" decoding="async"></div>
         <div class="gm-meta"><span class="gm-cat">خيال شخصيات</span><span class="gm-ttl">مهرّج القلب</span></div>
       </a>
       <a class="gm-card" href="https://portfolio-trimind.com/ar/demo/creative/projects/rainbow-arch">
-        <div class="gm-ph"><img src="/demo/creative/artworks/ornaments_22_digital.webp" alt="قوس قزح" loading="lazy" decoding="async"></div>
+        <div class="gm-ph"><img src="/demo/creative/artworks/thumbs/ornaments_22_digital.webp" alt="قوس قزح" loading="lazy" decoding="async"></div>
         <div class="gm-meta"><span class="gm-cat">طبيعة هندسية</span><span class="gm-ttl">قوس قزح</span></div>
       </a>
       <a class="gm-card" href="https://portfolio-trimind.com/ar/demo/creative/projects/ocean-stars">
-        <div class="gm-ph"><img src="/demo/creative/artworks/ornaments_23_digital.webp" alt="نجوم المحيط" loading="lazy" decoding="async"></div>
+        <div class="gm-ph"><img src="/demo/creative/artworks/thumbs/ornaments_23_digital.webp" alt="نجوم المحيط" loading="lazy" decoding="async"></div>
         <div class="gm-meta"><span class="gm-cat">زخرفة بحرية</span><span class="gm-ttl">نجوم المحيط</span></div>
       </a>
       <a class="gm-card" href="https://portfolio-trimind.com/ar/demo/creative/projects/geometric-butterflies">
-        <div class="gm-ph"><img src="/demo/creative/artworks/ornaments_24_digital.webp" alt="فراشات هندسية" loading="lazy" decoding="async"></div>
+        <div class="gm-ph"><img src="/demo/creative/artworks/thumbs/ornaments_24_digital.webp" alt="فراشات هندسية" loading="lazy" decoding="async"></div>
         <div class="gm-meta"><span class="gm-cat">هندسة الطبيعة</span><span class="gm-ttl">فراشات هندسية</span></div>
       </a>
       <a class="gm-card" href="https://portfolio-trimind.com/ar/demo/creative/projects/caterpillar-dream">
-        <div class="gm-ph"><img src="/demo/creative/artworks/ornaments_25_digital.webp" alt="حلم اليرقة" loading="lazy" decoding="async"></div>
+        <div class="gm-ph"><img src="/demo/creative/artworks/thumbs/ornaments_25_digital.webp" alt="حلم اليرقة" loading="lazy" decoding="async"></div>
         <div class="gm-meta"><span class="gm-cat">زخرفة خيالية</span><span class="gm-ttl">حلم اليرقة</span></div>
       </a>
       <a class="gm-card" href="https://portfolio-trimind.com/ar/demo/creative/projects/horned-heart">
-        <div class="gm-ph"><img src="/demo/creative/artworks/ornaments_26_digital.webp" alt="قلب ذو قرون" loading="lazy" decoding="async"></div>
+        <div class="gm-ph"><img src="/demo/creative/artworks/thumbs/ornaments_26_digital.webp" alt="قلب ذو قرون" loading="lazy" decoding="async"></div>
         <div class="gm-meta"><span class="gm-cat">خيال المخلوقات</span><span class="gm-ttl">قلب ذو قرون</span></div>
       </a>
       <a class="gm-card" href="https://portfolio-trimind.com/ar/demo/creative/projects/golden-mandala">
-        <div class="gm-ph"><img src="/demo/creative/artworks/ornaments_27_digital.webp" alt="ماندالا ذهبية" loading="lazy" decoding="async"></div>
+        <div class="gm-ph"><img src="/demo/creative/artworks/thumbs/ornaments_27_digital.webp" alt="ماندالا ذهبية" loading="lazy" decoding="async"></div>
         <div class="gm-meta"><span class="gm-cat">ماندالا</span><span class="gm-ttl">ماندالا ذهبية</span></div>
       </a>
       <a class="gm-card" href="https://portfolio-trimind.com/ar/demo/creative/projects/electric-flower">
-        <div class="gm-ph"><img src="/demo/creative/artworks/ornaments_28_digital.webp" alt="زهرة كهربائية" loading="lazy" decoding="async"></div>
+        <div class="gm-ph"><img src="/demo/creative/artworks/thumbs/ornaments_28_digital.webp" alt="زهرة كهربائية" loading="lazy" decoding="async"></div>
         <div class="gm-meta"><span class="gm-cat">بوب زهري</span><span class="gm-ttl">زهرة كهربائية</span></div>
       </a>
       <a class="gm-card" href="https://portfolio-trimind.com/ar/demo/creative/projects/heart-burst">
-        <div class="gm-ph"><img src="/demo/creative/artworks/ornaments_29_digital.webp" alt="انفجار القلوب" loading="lazy" decoding="async"></div>
+        <div class="gm-ph"><img src="/demo/creative/artworks/thumbs/ornaments_29_digital.webp" alt="انفجار القلوب" loading="lazy" decoding="async"></div>
         <div class="gm-meta"><span class="gm-cat">زخرفة القلب</span><span class="gm-ttl">انفجار القلوب</span></div>
       </a>
       <a class="gm-card" href="https://portfolio-trimind.com/ar/demo/creative/projects/geometric-still-life">
-        <div class="gm-ph"><img src="/demo/creative/artworks/ornaments_30_digital.webp" alt="طبيعة صامتة هندسية" loading="lazy" decoding="async"></div>
+        <div class="gm-ph"><img src="/demo/creative/artworks/thumbs/ornaments_30_digital.webp" alt="طبيعة صامتة هندسية" loading="lazy" decoding="async"></div>
         <div class="gm-meta"><span class="gm-cat">طبيعة صامتة تجريدية</span><span class="gm-ttl">طبيعة صامتة هندسية</span></div>
       </a>
       <a class="gm-card" href="https://portfolio-trimind.com/ar/demo/creative/projects/tropical-bouquet">
-        <div class="gm-ph"><img src="/demo/creative/artworks/ornaments_31_digital.webp" alt="باقة استوائية" loading="lazy" decoding="async"></div>
+        <div class="gm-ph"><img src="/demo/creative/artworks/thumbs/ornaments_31_digital.webp" alt="باقة استوائية" loading="lazy" decoding="async"></div>
         <div class="gm-meta"><span class="gm-cat">زهري استوائي</span><span class="gm-ttl">باقة استوائية</span></div>
       </a>
       <a class="gm-card" href="https://portfolio-trimind.com/ar/demo/creative/projects/patterned-butterfly">
-        <div class="gm-ph"><img src="/demo/creative/artworks/ornaments_32_digital.webp" alt="فراشة منقوشة" loading="lazy" decoding="async"></div>
+        <div class="gm-ph"><img src="/demo/creative/artworks/thumbs/ornaments_32_digital.webp" alt="فراشة منقوشة" loading="lazy" decoding="async"></div>
         <div class="gm-meta"><span class="gm-cat">فنّ الفراشات</span><span class="gm-ttl">فراشة منقوشة</span></div>
       </a>
       <a class="gm-card" href="https://portfolio-trimind.com/ar/demo/creative/projects/heart-flower-tree">
-        <div class="gm-ph"><img src="/demo/creative/artworks/ornaments_33_digital.webp" alt="شجرة زهور القلوب" loading="lazy" decoding="async"></div>
+        <div class="gm-ph"><img src="/demo/creative/artworks/thumbs/ornaments_33_digital.webp" alt="شجرة زهور القلوب" loading="lazy" decoding="async"></div>
         <div class="gm-meta"><span class="gm-cat">زخرفة القلب</span><span class="gm-ttl">شجرة زهور القلوب</span></div>
       </a>
       <a class="gm-card" href="https://portfolio-trimind.com/ar/demo/creative/projects/tropical-abstract">
-        <div class="gm-ph"><img src="/demo/creative/artworks/ornaments_34_digital.webp" alt="تجريد استوائي" loading="lazy" decoding="async"></div>
+        <div class="gm-ph"><img src="/demo/creative/artworks/thumbs/ornaments_34_digital.webp" alt="تجريد استوائي" loading="lazy" decoding="async"></div>
         <div class="gm-meta"><span class="gm-cat">تجريد استوائي</span><span class="gm-ttl">تجريد استوائي</span></div>
       </a>
       <a class="gm-card" href="https://portfolio-trimind.com/ar/demo/creative/projects/celestial-flower">
-        <div class="gm-ph"><img src="/demo/creative/artworks/ornaments_35_digital.webp" alt="زهرة سماوية" loading="lazy" decoding="async"></div>
+        <div class="gm-ph"><img src="/demo/creative/artworks/thumbs/ornaments_35_digital.webp" alt="زهرة سماوية" loading="lazy" decoding="async"></div>
         <div class="gm-meta"><span class="gm-cat">زخرفة سماوية</span><span class="gm-ttl">زهرة سماوية</span></div>
       </a>
       <a class="gm-card" href="https://portfolio-trimind.com/ar/demo/creative/projects/diamond-burst">
-        <div class="gm-ph"><img src="/demo/creative/artworks/ornaments_36_digital.webp" alt="انفجار الماس" loading="lazy" decoding="async"></div>
+        <div class="gm-ph"><img src="/demo/creative/artworks/thumbs/ornaments_36_digital.webp" alt="انفجار الماس" loading="lazy" decoding="async"></div>
         <div class="gm-meta"><span class="gm-cat">هندسي سحري</span><span class="gm-ttl">انفجار الماس</span></div>
       </a>
       <a class="gm-card" href="https://portfolio-trimind.com/ar/demo/creative/projects/pink-abstract-garden">
-        <div class="gm-ph"><img src="/demo/creative/artworks/ornaments_37_digital.webp" alt="حديقة وردية تجريدية" loading="lazy" decoding="async"></div>
+        <div class="gm-ph"><img src="/demo/creative/artworks/thumbs/ornaments_37_digital.webp" alt="حديقة وردية تجريدية" loading="lazy" decoding="async"></div>
         <div class="gm-meta"><span class="gm-cat">زهري تجريدي</span><span class="gm-ttl">حديقة وردية تجريدية</span></div>
       </a>
       <a class="gm-card" href="https://portfolio-trimind.com/ar/demo/creative/projects/geometric-explosion">
-        <div class="gm-ph"><img src="/demo/creative/artworks/ornaments_38_digital.webp" alt="انفجار هندسي" loading="lazy" decoding="async"></div>
+        <div class="gm-ph"><img src="/demo/creative/artworks/thumbs/ornaments_38_digital.webp" alt="انفجار هندسي" loading="lazy" decoding="async"></div>
         <div class="gm-meta"><span class="gm-cat">Abstract Geometric</span><span class="gm-ttl">انفجار هندسي</span></div>
       </a>
       <a class="gm-card" href="https://portfolio-trimind.com/ar/demo/creative/projects/blue-cross-mandala">
-        <div class="gm-ph"><img src="/demo/creative/artworks/ornaments_39_digital.webp" alt="ماندالا الصليب الأزرق" loading="lazy" decoding="async"></div>
+        <div class="gm-ph"><img src="/demo/creative/artworks/thumbs/ornaments_39_digital.webp" alt="ماندالا الصليب الأزرق" loading="lazy" decoding="async"></div>
         <div class="gm-meta"><span class="gm-cat">ماندالا</span><span class="gm-ttl">ماندالا الصليب الأزرق</span></div>
       </a>
       <a class="gm-card" href="https://portfolio-trimind.com/ar/demo/creative/projects/purple-sunburst">
-        <div class="gm-ph"><img src="/demo/creative/artworks/ornaments_40_digital.webp" alt="تفجّر شمسي أرجواني" loading="lazy" decoding="async"></div>
+        <div class="gm-ph"><img src="/demo/creative/artworks/thumbs/ornaments_40_digital.webp" alt="تفجّر شمسي أرجواني" loading="lazy" decoding="async"></div>
         <div class="gm-meta"><span class="gm-cat">تجريد شعاعي</span><span class="gm-ttl">تفجّر شمسي أرجواني</span></div>
       </a>
       <a class="gm-card" href="https://portfolio-trimind.com/ar/demo/creative/projects/red-creature">
-        <div class="gm-ph"><img src="/demo/creative/artworks/ornaments_41_digital.webp" alt="مخلوق أحمر" loading="lazy" decoding="async"></div>
+        <div class="gm-ph"><img src="/demo/creative/artworks/thumbs/ornaments_41_digital.webp" alt="مخلوق أحمر" loading="lazy" decoding="async"></div>
         <div class="gm-meta"><span class="gm-cat">خيال المخلوقات</span><span class="gm-ttl">مخلوق أحمر</span></div>
       </a>
       <a class="gm-card" href="https://portfolio-trimind.com/ar/demo/creative/projects/geometric-totem">
-        <div class="gm-ph"><img src="/demo/creative/artworks/ornaments_42_digital.webp" alt="طوطم هندسي" loading="lazy" decoding="async"></div>
+        <div class="gm-ph"><img src="/demo/creative/artworks/thumbs/ornaments_42_digital.webp" alt="طوطم هندسي" loading="lazy" decoding="async"></div>
         <div class="gm-meta"><span class="gm-cat">طوطمي هندسي</span><span class="gm-ttl">طوطم هندسي</span></div>
       </a>
       <a class="gm-card" href="https://portfolio-trimind.com/ar/demo/creative/projects/pattern-explosion">
-        <div class="gm-ph"><img src="/demo/creative/artworks/ornaments_43_digital.webp" alt="انفجار النقوش" loading="lazy" decoding="async"></div>
+        <div class="gm-ph"><img src="/demo/creative/artworks/thumbs/ornaments_43_digital.webp" alt="انفجار النقوش" loading="lazy" decoding="async"></div>
         <div class="gm-meta"><span class="gm-cat">نقش أقصوي</span><span class="gm-ttl">انفجار النقوش</span></div>
       </a>
       <a class="gm-card" href="https://portfolio-trimind.com/ar/demo/creative/projects/geometric-windmill">
-        <div class="gm-ph"><img src="/demo/creative/artworks/ornaments_44_digital.webp" alt="طاحونة هندسية" loading="lazy" decoding="async"></div>
+        <div class="gm-ph"><img src="/demo/creative/artworks/thumbs/ornaments_44_digital.webp" alt="طاحونة هندسية" loading="lazy" decoding="async"></div>
         <div class="gm-meta"><span class="gm-cat">تجريد معماري</span><span class="gm-ttl">طاحونة هندسية</span></div>
       </a>
       <a class="gm-card" href="https://portfolio-trimind.com/ar/demo/creative/projects/the-house">
-        <div class="gm-ph"><img src="/demo/creative/artworks/ornaments_45_digital.webp" alt="البيت" loading="lazy" decoding="async"></div>
+        <div class="gm-ph"><img src="/demo/creative/artworks/thumbs/ornaments_45_digital.webp" alt="البيت" loading="lazy" decoding="async"></div>
         <div class="gm-meta"><span class="gm-cat">تجريد سردي</span><span class="gm-ttl">البيت</span></div>
       </a>
       <a class="gm-card" href="https://portfolio-trimind.com/ar/demo/creative/projects/my-eye-brain-blooms">
-        <div class="gm-ph"><img src="/demo/creative/artworks/ornaments_46_digital.webp" alt="إزهار عقلي البصري" loading="lazy" decoding="async"></div>
+        <div class="gm-ph"><img src="/demo/creative/artworks/thumbs/ornaments_46_digital.webp" alt="إزهار عقلي البصري" loading="lazy" decoding="async"></div>
         <div class="gm-meta"><span class="gm-cat">ماندالا شعاعية</span><span class="gm-ttl">إزهار عقلي البصري</span></div>
       </a>
     </div>
@@ -1160,7 +1167,7 @@ a { color: inherit; text-decoration: none; }
   <span class="lcross lc-bl"></span><span class="lcross lc-br"></span>
   <span class="lb-cap" id="galCap"></span>
   <button class="lb-close" id="galClose" aria-label="إغلاق">[ إغلاق &times; ]</button>
-  <div class="lb-stage" id="galStage"><img src="" alt="" id="galImg" draggable="false"></div>
+  <div class="lb-stage" id="galStage"><img alt="" id="galImg" draggable="false"></div>
   <div class="lb-ctrl">
     <button id="galOut" aria-label="تصغير">[ &minus; ]</button>
     <span class="pct" id="galPct">100%</span>
