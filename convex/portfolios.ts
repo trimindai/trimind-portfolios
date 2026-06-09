@@ -499,11 +499,25 @@ export const listByUser = query({
   handler: async (ctx) => {
     // Always returns ONLY the caller's portfolios — never accept a userId arg.
     const user = await requireUser(ctx);
-    return await ctx.db
+    const docs = await ctx.db
       .query("portfolios")
       .withIndex("by_user", (q) => q.eq("userId", user._id))
       .order("desc")
       .collect();
+    // Project to the card fields only. Full docs carry generatedHtml /
+    // generatedProjectPages (hundreds of KB each) that the list page never reads.
+    return docs.map((p) => ({
+      _id: p._id,
+      _creationTime: p._creationTime,
+      name: p.name,
+      templateId: p.templateId,
+      status: p.status,
+      slug: p.slug,
+      basics: { fullName: p.basics?.fullName, title: p.basics?.title },
+      lastEditedAt: p.lastEditedAt,
+      createdAt: p.createdAt,
+      viewCount: p.viewCount,
+    }));
   },
 });
 

@@ -9,6 +9,7 @@ import { useParams, useRouter } from "next/navigation";
 import { Id } from "@convex/_generated/dataModel";
 import { HOSTING_ENABLED } from "@/lib/flags";
 import { useTranslations } from "next-intl";
+import { Check, Copy, LayoutGrid, PenLine, Rocket, X } from "lucide-react";
 
 const TEMPLATE_COLORS: Record<string, { primary: string; accent: string }> = {
   general: { primary: "#0F172A", accent: "#A16207" },
@@ -55,8 +56,30 @@ export default function DashboardPage() {
   };
 
   if (!userId || portfolios === undefined) {
+    // Skeleton cards matching the loaded grid — no spinner, no layout shift.
     return (
-      <div className="text-center text-[var(--land-body)] py-20">{t("common.loading")}</div>
+      <div aria-busy="true" aria-label={t("common.loading")}>
+        <div className="flex items-center justify-between mb-8">
+          <div className="h-8 w-44 rounded-lg bg-[var(--land-surface-raised)]/60 motion-safe:animate-pulse" />
+          <div className="h-9 w-36 rounded-lg bg-[var(--land-surface-raised)]/60 motion-safe:animate-pulse" />
+        </div>
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {[0, 1, 2].map((i) => (
+            <div key={i} className="rounded-xl border border-[var(--land-border)] bg-[var(--land-surface)]/50 overflow-hidden">
+              <div className="h-12 w-full bg-[var(--land-surface-raised)]/80 motion-safe:animate-pulse" />
+              <div className="p-5 space-y-3">
+                <div className="h-5 w-2/3 rounded bg-[var(--land-surface-raised)]/60 motion-safe:animate-pulse" />
+                <div className="h-3 w-1/2 rounded bg-[var(--land-surface-raised)]/50 motion-safe:animate-pulse" />
+                <div className="h-3 w-1/3 rounded bg-[var(--land-surface-raised)]/50 motion-safe:animate-pulse" />
+                <div className="flex gap-2 pt-2">
+                  <div className="h-8 flex-1 rounded-lg bg-[var(--land-surface-raised)]/60 motion-safe:animate-pulse" />
+                  <div className="h-8 flex-1 rounded-lg bg-[var(--land-surface-raised)]/60 motion-safe:animate-pulse" />
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
     );
   }
 
@@ -102,12 +125,12 @@ export default function DashboardPage() {
           {/* How it works — 3 steps */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-2xl w-full mb-10">
             {[
-              { step: "1", en: "Pick a template", ar: "اختر قالبًا", icon: "📋" },
-              { step: "2", en: "Fill your info", ar: "أدخل بياناتك", icon: "✏️" },
-              { step: "3", en: HOSTING_ENABLED ? "Get your CV PDF + QR" : "Download PDF", ar: HOSTING_ENABLED ? "احصل على سيرتك + باركود" : "حمّل PDF", icon: "🚀" },
+              { step: "1", en: "Pick a template", ar: "اختر قالبًا", Icon: LayoutGrid },
+              { step: "2", en: "Fill your info", ar: "أدخل بياناتك", Icon: PenLine },
+              { step: "3", en: HOSTING_ENABLED ? "Get your CV PDF + QR" : "Download PDF", ar: HOSTING_ENABLED ? "احصل على سيرتك + باركود" : "حمّل PDF", Icon: Rocket },
             ].map((s) => (
               <div key={s.step} className="text-center p-4 rounded-xl border border-[var(--land-border)] bg-[var(--land-surface)]/30">
-                <div className="text-2xl mb-2">{s.icon}</div>
+                <s.Icon className="mx-auto mb-2 h-6 w-6 text-[var(--land-accent)]" aria-hidden />
                 <div className="text-xs text-[var(--land-accent)] font-bold mb-1">
                   {isRTL ? `خطوة ${s.step}` : `Step ${s.step}`}
                 </div>
@@ -127,19 +150,19 @@ export default function DashboardPage() {
             </div>
             <ul className="mt-6 space-y-2 text-start text-sm text-[var(--land-bright)]">
               <li className="flex items-center gap-2">
-                <span className="text-[var(--land-accent)]">&#10003;</span>
+                <Check className="h-4 w-4 shrink-0 text-[var(--land-accent)]" aria-hidden />
                 {isRTL ? "قوالب احترافية" : "Professional templates"}
               </li>
               <li className="flex items-center gap-2">
-                <span className="text-[var(--land-accent)]">&#10003;</span>
+                <Check className="h-4 w-4 shrink-0 text-[var(--land-accent)]" aria-hidden />
                 {isRTL ? "ألوان وخطوط مخصصة" : "Custom colors & fonts"}
               </li>
               <li className="flex items-center gap-2">
-                <span className="text-[var(--land-accent)]">&#10003;</span>
+                <Check className="h-4 w-4 shrink-0 text-[var(--land-accent)]" aria-hidden />
                 {isRTL ? "عربي وإنجليزي" : "Arabic & English"}
               </li>
               <li className="flex items-center gap-2">
-                <span className="text-[var(--land-accent)]">&#10003;</span>
+                <Check className="h-4 w-4 shrink-0 text-[var(--land-accent)]" aria-hidden />
                 {HOSTING_ENABLED
                   ? (isRTL ? "سيرة ذاتية PDF + بورتفوليو حيّ بباركود QR" : "CV PDF + live portfolio via QR")
                   : (isRTL ? "تحميل PDF احترافي" : "Professional PDF download")}
@@ -220,11 +243,16 @@ export default function DashboardPage() {
                 </div>
 
                 <div className="flex gap-2 flex-wrap">
+                  {/* Drafts: continuing to edit is the primary action, not Publish */}
                   <Link
                     href={`/dashboard/${portfolio._id}/edit`}
-                    className="flex-1 text-center rounded-lg border border-[var(--land-border)] px-3 py-1.5 text-sm text-[var(--land-bright)] hover:bg-[var(--land-surface-raised)] transition-colors"
+                    className={`flex-1 text-center rounded-lg px-3 py-1.5 text-sm transition-colors ${
+                      portfolio.status === "draft"
+                        ? "bg-[var(--land-accent)] font-medium text-white hover:bg-[var(--land-accent-hover)]"
+                        : "border border-[var(--land-border)] text-[var(--land-bright)] hover:bg-[var(--land-surface-raised)]"
+                    }`}
                   >
-                    {t("common.edit")}
+                    {portfolio.status === "draft" ? (isRTL ? "متابعة التحرير" : "Continue editing") : t("common.edit")}
                   </Link>
                   <Link
                     href={`/dashboard/${portfolio._id}/preview`}
@@ -243,7 +271,11 @@ export default function DashboardPage() {
                   {portfolio.status !== "published" && (
                     <Link
                       href={`/dashboard/${portfolio._id}/publish`}
-                      className="flex-1 text-center rounded-lg bg-[var(--land-accent)] px-3 py-1.5 text-sm font-medium text-white hover:bg-[var(--land-accent-hover)] transition-colors"
+                      className={`flex-1 text-center rounded-lg px-3 py-1.5 text-sm transition-colors ${
+                        portfolio.status === "draft"
+                          ? "border border-[var(--land-accent)]/50 text-[var(--land-accent)] hover:bg-[var(--land-accent)]/10"
+                          : "bg-[var(--land-accent)] font-medium text-white hover:bg-[var(--land-accent-hover)]"
+                      }`}
                     >
                       {t("common.publish")}
                     </Link>
@@ -264,7 +296,7 @@ export default function DashboardPage() {
                     className="rounded-lg border border-[var(--land-border)] px-2 py-1.5 text-sm text-[var(--land-muted)] hover:text-[var(--land-accent)] hover:border-[var(--land-accent)]/30 transition-colors disabled:opacity-50"
                     title={isRTL ? "نسخ" : "Duplicate"}
                   >
-                    {duplicatingId === portfolio._id ? "..." : "⧉"}
+                    {duplicatingId === portfolio._id ? "..." : <Copy className="h-4 w-4" aria-hidden />}
                   </button>
                   {confirmDeleteId === portfolio._id ? (
                     <div className="flex gap-1">
@@ -287,8 +319,9 @@ export default function DashboardPage() {
                       onClick={() => setConfirmDeleteId(portfolio._id)}
                       className="rounded-lg border border-[var(--land-border)] px-2 py-1.5 text-sm text-[var(--land-muted)] hover:text-red-400 hover:border-red-400/30 transition-colors"
                       title={t("common.delete")}
+                      aria-label={t("common.delete")}
                     >
-                      &times;
+                      <X className="h-4 w-4" aria-hidden />
                     </button>
                   )}
                 </div>

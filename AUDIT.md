@@ -65,6 +65,16 @@ Severity: CRITICAL / HIGH / MEDIUM / LOW. Status: `fixed` / `recommended` / `pen
 | 3.4 | Hero → TryItForm → `/templates?prefill=1` → guest builder flow works; templates picker lists all 5 templates; pricing CTA → /templates. 4.900 KD price consistent (landing, pricing, builder banner, JSON-LD). | — | verified |
 | 3.5 | Responsive: zero horizontal overflow at 375px on EN and AR; ScrollReveal respects `prefers-reduced-motion`; animations are transform/opacity only (no layout-property animation). | — | verified |
 
+## Phase 4 — Dashboard
+
+| # | Item | Severity | Status |
+|---|------|----------|--------|
+| 4.1 | **`listByUser` over-fetch**: the dashboard list query returned full portfolio documents including `generatedHtml` / `generatedProjectPages` (hundreds of KB per portfolio) that the cards never read — slow loads and visible flicker for users with several portfolios. Fixed: server-side projection to exactly the card fields (id, name, template, status, slug, name/title, dates, viewCount). | HIGH | fixed |
+| 4.2 | Loading state was a bare "Loading..." text line. Fixed: skeleton cards matching the real grid (header + 3 cards, `motion-safe:animate-pulse`, `aria-busy`) — no spinner, no layout shift. | MEDIUM | fixed |
+| 4.3 | Draft cards pushed "Publish" as the only primary button while Edit was a ghost — for a draft the next action is finishing the content. Fixed: drafts now show a primary "Continue editing / متابعة التحرير" with Publish as outlined secondary; paid/published keep Download/Publish primary. | MEDIUM | fixed |
+| 4.4 | Icon consistency: ⧉ / × glyphs and 📋✏️🚀 emoji replaced with lucide (Copy, X, LayoutGrid, PenLine, Rocket, Check) + aria-labels on icon-only buttons. | LOW | fixed |
+| 4.5 | Verified good: status system (draft/paid/published with action hints), two-step delete confirm, duplicate, view counts, bilingual empty state with pricing, responsive 1/2/3-column grid. | — | verified |
+
 ### Phase 1 verified-good (no action)
 - Step navigation: sticky mobile progress bar + desktop step pills, autosave on navigation, "Saved on this device" indicator works (guest localStorage + Convex when authed).
 - Inputs are controlled but stable — no focus loss or lag while typing (verified char-by-char).
