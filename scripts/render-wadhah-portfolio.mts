@@ -102,6 +102,11 @@ kbdRep("phone-camera",
 kbdRep("phone-scale", "var PHONE_SCALE_SHOW = 0.92;", "var PHONE_SCALE_SHOW = 1.0;");
 // raise the keyboard toward the centred label so there's no dead gap above it
 kbdRep("phone-y-show", "var PHONE_Y_SHOW = 0.22;", "var PHONE_Y_SHOW = 0.12;");
+// phone: append the name/description label INTO the skills sticky-head (in-flow)
+// so it travels with the heading; desktop keeps the fixed top-left float
+kbdRep("label-host-append",
+  "document.body.appendChild(labelEl);",
+  'var __lh = (window.matchMedia && window.matchMedia("(max-width:760px)").matches) ? document.getElementById("kbd-label-host") : null; (__lh || document.body).appendChild(labelEl);');
 
 /* ── HEAD ── */
 rep("title",
@@ -248,6 +253,22 @@ rep("footer-socials",
       <a href="mailto:w.baazm@gmail.com" aria-label="Email"><i class="fa-solid fa-envelope"></i></a>
     </div>`);
 
+/* ── PHONE: host the keyboard's name/description label INSIDE the skills
+   sticky-head, so it scrolls + sticks WITH the heading as one unit instead of
+   floating fixed (which made the scrolling heading collide with the fixed label
+   on every scroll through the section). keyboard.js appends the label here on
+   phone (see kbdRep "label-host-append" above). ── */
+rep("skills-label-host",
+  `    <div class="sec-head sticky-head">
+      <div class="eyebrow">Tech Stack</div>
+      <h2>Tech Stack</h2>
+    </div>`,
+  `    <div class="sec-head sticky-head">
+      <div class="eyebrow">Tech Stack</div>
+      <h2>Tech Stack</h2>
+      <div id="kbd-label-host"></div>
+    </div>`);
+
 /* ── INLINE the keyboard (it's injected dynamically via k.src) ── */
 const kbdLiteral = JSON.stringify(kbd).replace(/<\/(script)/gi, "<\\/$1");
 rep("kbd-inject",
@@ -263,14 +284,17 @@ repAll("Maya Okafor", "Wadhah Almutairi");
 // no longer overflows/overlaps the 3D keyboard on the right.
 rep("hero-name-fit", "</head>",
   '<style>#hero h1{font-size:clamp(2.2rem,6vw,4.6rem)!important;line-height:.96!important}@media(min-width:900px){#hero .grid{max-width:520px}}' +
-  /* PHONE: the keyboard is always centred, so center its name/description label
-     directly above it (instead of the desktop top-left float) — the readout now
-     tracks the centred keyboard as you scrub keys, instead of sitting in the corner. */
+  /* PHONE: the name/description label lives INSIDE the skills sticky-head
+     (#kbd-label-host). Make it a normal in-flow, centred block under the heading
+     so it sticks/scrolls WITH "Tech Stack" as one unit — it can no longer overlap
+     the heading the way the old position:fixed label did on every scroll. */
   '@media(max-width:760px){' +
-    '#kbd-label{left:50%!important;right:auto!important;transform:translateX(-50%)!important;' +
-      'text-align:center!important;max-width:92vw!important;width:max-content;top:150px!important;bottom:auto!important}' +
-    '#kbd-label .kbd-label-name{font-size:30px!important;line-height:1!important}' +
-    '#kbd-label .kbd-label-tag{max-width:88vw!important;margin-left:auto!important;margin-right:auto!important}' +
+    '#kbd-label-host{width:100%}' +
+    '#kbd-label{position:static!important;top:auto!important;left:auto!important;right:auto!important;' +
+      'bottom:auto!important;transform:none!important;max-width:100%!important;width:auto!important;' +
+      'margin:10px auto 0!important;text-align:center!important;pointer-events:none}' +
+    '#kbd-label .kbd-label-name{font-size:24px!important;line-height:1.05!important}' +
+    '#kbd-label .kbd-label-tag{max-width:90vw!important;margin:6px auto 0!important}' +
   '}' +
   '</style></head>');
 
