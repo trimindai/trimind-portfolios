@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useId, useState } from "react";
 import { useTranslations } from "next-intl";
 
 interface DeveloperStackStepProps {
@@ -70,6 +70,22 @@ const CURATED: { category: string; tools: Tool[] }[] = [
   },
 ];
 
+// Flat index of { name, category } for all curated tools — used by BulkAdd routing.
+// Hoisted to module scope so it's computed once, not on every render.
+const curatedIndex: CuratedEntry[] = CURATED.flatMap(({ category, tools }) =>
+  tools.map((tool) => ({ name: tool.name, category }))
+);
+
+// Sort a SkillGroup array: curated categories first (in CURATED order), custom last.
+const _curatedOrder = CURATED.map((c) => c.category);
+function sortGroups(groups: SkillGroup[]): SkillGroup[] {
+  return [...groups].sort((a, b) => {
+    const ia = _curatedOrder.indexOf(a.category);
+    const ib = _curatedOrder.indexOf(b.category);
+    return (ia === -1 ? 99 : ia) - (ib === -1 ? 99 : ib);
+  });
+}
+
 function ToolIcon({ slug, name }: { slug: string; name: string }) {
   const [err, setErr] = useState(false);
   if (err || !slug) {
@@ -119,38 +135,45 @@ function AddOther({ onAdd, placeholder, addLabel }: { onAdd: (v: string) => void
 }
 
 function BulkAdd({
-  curatedIndex,
   onAddBulk,
   label,
   placeholder,
   addLabel,
   hint,
 }: {
-  curatedIndex: CuratedEntry[];
   onAddBulk: (entries: { name: string; category: string }[]) => void;
   label: string;
   placeholder: string;
   addLabel: string;
   hint: string;
 }) {
+  const textareaId = useId();
+  const hintId = useId();
   const [v, setV] = useState("");
   const commit = () => {
     const raw = v.split(/[\n,]+/).map((s) => s.trim()).filter(Boolean);
     if (!raw.length) return;
-    const entries = raw.map((name) => {
+    const entries = raw.map((token) => {
+      // Match case-insensitively but store the curated canonical name so that
+      // toggle() (which uses strict includes) finds the chip, and the custom-
+      // chip filter (which excludes curated-name matches) doesn't misfire.
       const match = curatedIndex.find(
-        (e) => e.name.toLowerCase() === name.toLowerCase()
+        (e) => e.name.toLowerCase() === token.toLowerCase()
       );
-      return { name, category: match ? match.category : "Tools" };
+      return match
+        ? { name: match.name, category: match.category }
+        : { name: token, category: "Tools" };
     });
     onAddBulk(entries);
     setV("");
   };
   return (
     <div className="rounded-lg border border-[var(--land-border)] bg-[var(--land-surface-raised)]/20 p-4">
-      <label className="mb-1.5 block text-sm font-medium text-[var(--land-bright)]">{label}</label>
+      <label htmlFor={textareaId} className="mb-1.5 block text-sm font-medium text-[var(--land-bright)]">{label}</label>
       <div className="flex gap-2">
         <textarea
+          id={textareaId}
+          aria-describedby={hintId}
           value={v}
           onChange={(e) => setV(e.target.value)}
           placeholder={placeholder}
@@ -165,20 +188,17 @@ function BulkAdd({
           {addLabel}
         </button>
       </div>
-      <p className="mt-1.5 text-xs text-[var(--land-muted)]">{hint}</p>
+      <p id={hintId} className="mt-1.5 text-xs text-[var(--land-muted)]">{hint}</p>
     </div>
   );
 }
 
 export function DeveloperStackStep({ data, onChange }: DeveloperStackStepProps) {
   const t = useTranslations("builder.developer");
+  const trackballInputId = useId();
+  const trackballHintId = useId();
   const skills: SkillGroup[] = Array.isArray(data.skills) ? data.skills : [];
   const customization = data.customization || {};
-
-  // Flat index: { name, category } for all curated tools — used by BulkAdd routing
-  const curatedIndex: CuratedEntry[] = CURATED.flatMap(({ category, tools }) =>
-    tools.map((tool) => ({ name: tool.name, category }))
-  );
 
   const itemsFor = (category: string): string[] =>
     skills.find((g) => g.category === category)?.items || [];
@@ -186,13 +206,7 @@ export function DeveloperStackStep({ data, onChange }: DeveloperStackStepProps) 
   const setItems = (category: string, items: string[]) => {
     const next = skills.filter((g) => g.category !== category);
     if (items.length > 0) next.push({ category, items });
-    // keep curated category order, custom categories last
-    const order = CURATED.map((c) => c.category);
-    next.sort((a, b) => {
-      const ia = order.indexOf(a.category), ib = order.indexOf(b.category);
-      return (ia === -1 ? 99 : ia) - (ib === -1 ? 99 : ib);
-    });
-    onChange({ skills: next });
+    onChange({ skills: sortGroups(next) });
   };
 
   const toggle = (category: string, name: string) => {
@@ -219,15 +233,10 @@ export function DeveloperStackStep({ data, onChange }: DeveloperStackStepProps) 
     }
 
     // Rebuild sorted skills array
-    const order = CURATED.map((c) => c.category);
     const next: SkillGroup[] = Object.entries(snapshot)
       .filter(([, items]) => items.length > 0)
       .map(([category, items]) => ({ category, items }));
-    next.sort((a, b) => {
-      const ia = order.indexOf(a.category), ib = order.indexOf(b.category);
-      return (ia === -1 ? 99 : ia) - (ib === -1 ? 99 : ib);
-    });
-    onChange({ skills: next });
+    onChange({ skills: sortGroups(next) });
   };
 
   const totalSelected = skills.reduce((n, g) => n + (g.items?.length || 0), 0);
@@ -245,25 +254,26 @@ export function DeveloperStackStep({ data, onChange }: DeveloperStackStepProps) 
 
       {/* Trackball badge */}
       <div>
-        <label className="mb-1.5 block text-sm font-medium text-[var(--land-bright)]">
+        <label htmlFor={trackballInputId} className="mb-1.5 block text-sm font-medium text-[var(--land-bright)]">
           {t("trackballLabel")}
         </label>
         <input
+          id={trackballInputId}
+          aria-describedby={trackballHintId}
           type="text"
           value={customization.trackballLabel || ""}
-          maxLength={12}
+          maxLength={10}
           onChange={(e) =>
             onChange({ customization: { ...customization, trackballLabel: e.target.value } })
           }
           placeholder={t("trackballPlaceholder")}
           className="min-h-[44px] w-full max-w-[16rem] rounded-lg border border-[var(--land-border)] bg-white px-3 py-2 text-sm text-[var(--land-bright)] placeholder:text-[var(--land-muted)] shadow-sm outline-none transition-colors focus:border-[var(--land-accent)] focus:ring-1 focus:ring-[var(--land-accent)]"
         />
-        <p className="mt-1 text-xs text-[var(--land-muted)]">{t("trackballHint")}</p>
+        <p id={trackballHintId} className="mt-1 text-xs text-[var(--land-muted)]">{t("trackballHint")}</p>
       </div>
 
       {/* Bulk paste */}
       <BulkAdd
-        curatedIndex={curatedIndex}
         onAddBulk={addBulk}
         label={t("bulkLabel")}
         placeholder={t("bulkPlaceholder")}
