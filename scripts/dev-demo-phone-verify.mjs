@@ -24,7 +24,7 @@ const server = createServer(async (req, res) => {
     res.writeHead(200, { "content-type": TYPES[extname(file)] || "application/octet-stream" }); res.end(body);
   } catch { res.writeHead(404).end("not found"); }
 });
-await new Promise((r) => server.listen(8787, r));
+await new Promise((res, rej) => { server.once("error", rej); server.listen(8787, res); });
 const BASE = "http://localhost:8787";
 
 const b = await chromium.launch({ channel: "chrome", headless: true, args: ["--no-sandbox", "--use-gl=swiftshader", "--enable-unsafe-swiftshader"] });
@@ -68,9 +68,12 @@ async function checkPhone(path, label) {
   await ctx.close();
 }
 
-await checkPhone("/demo/developer/index.html", "EN");
-await checkPhone("/demo/developer/index-ar.html", "AR");
-await b.close();
-server.close();
+try {
+  await checkPhone("/demo/developer/index.html", "EN");
+  await checkPhone("/demo/developer/index-ar.html", "AR");
+} finally {
+  await b.close();
+  server.close();
+}
 console.log(fails ? `\nVERIFY: ${fails} failing` : "\nVERIFY: all passing");
 process.exit(fails ? 1 : 0);
