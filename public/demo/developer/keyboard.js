@@ -231,6 +231,17 @@
     return { rows: Math.ceil(n / 7), cols: 7 };
   }
   /*__KBD_GRID_END__*/
+  /*__KBD_FIT_START__*/
+  /* One framing rule for phone AND desktop: cap the board scale so its footprint
+     (boardW x boardD world units) fits inside the live viewport (vpW x vpH world
+     units at the board plane) with a margin. Returns the MAX allowed scale; the
+     render loop uses min(sectionScale, fit) so it only shrinks when a wide grid
+     would otherwise clip. Tuned so a 4x5 board (Maya) is never shrunk. */
+  function kbdFitScale(boardW, boardD, vpW, vpH) {
+    var MARGIN_W = 0.92, MARGIN_H = 0.86;
+    return Math.min((vpW * MARGIN_W) / boardW, (vpH * MARGIN_H) / boardD);
+  }
+  /*__KBD_FIT_END__*/
   var __grid = kbdGrid(SKILLS.length);
   var ROWS_H = __grid.rows;   /* vertical keycaps */
   var COLS_H = __grid.cols;   /* horizontal keycaps */
@@ -557,6 +568,9 @@
     renderer.setSize(window.innerWidth, window.innerHeight);
   }
   layout();
+  /* test-only inspection hook (harmless in prod): lets the verifier project cap
+     world positions to screen-space and read the active grid. */
+  window.__kbd = { caps: caps, camera: camera, get cols() { return COLS_H; }, get rows() { return ROWS_H; } };
 
   var t = 0, rollSpeedY = 0.012, rollSpeedX = 0.004, rollTargetSpeed = 1, trackballHovered = false;
   var tmp = new THREE.Vector3();
@@ -641,6 +655,8 @@
     board.position.x += (targetX - board.position.x) * sm;
     /* R4: on phone multiply the section scale by 0.52 — clearly smaller, reads as backdrop */
     var ts = isPhone ? (phoneText ? PHONE_SCALE_TEXT : PHONE_SCALE_SHOW) : (SECTION_SCALE[sid] || 1.0);
+    /* adaptive framing: never let the board clip, on phone or desktop */
+    ts = Math.min(ts, kbdFitScale(COLS_H * CG, ROWS_H * RG, vpW, vpH));
     board.scale.x += (ts - board.scale.x) * sm;
     board.scale.y = board.scale.z = board.scale.x;
     caps.forEach(function (cap) {

@@ -49,5 +49,28 @@ check("bounds: 4<=cols<=7, rows>=4", () => {
   for (let n = 1; n <= 60; n++) { const g = kbdGrid(n); assert.ok(g.cols >= 4 && g.cols <= 7 && g.rows >= 4, `n=${n}`); }
 });
 
+const kbdFitScale = new Function(extract("KBD_FIT") + "\nreturn kbdFitScale;")();
+
+// Representative world-space viewport sizes at the board plane (from the camera
+// formula vpH = 2*tan(fov/2)*|camZ|, vpW = vpH*aspect):
+//   phone   : fov 58, camZ 10.0, aspect 390/844  -> vpH ~= 11.09, vpW ~= 5.12
+//   desktop : fov 40, camZ 11.6, aspect 1440/900 -> vpH ~=  8.44, vpW ~= 13.5
+const PH = { vpW: 5.12, vpH: 11.09 }, DK = { vpW: 13.5, vpH: 8.44 };
+const boardW = (cols) => cols * 1.0, boardD = (rows) => rows * 1.0; // CG = RG = 1.0
+
+check("fit: Maya phone (4x5) not shrunk below showcase 0.92", () =>
+  assert.ok(kbdFitScale(boardW(5), boardD(4), PH.vpW, PH.vpH) >= 0.92,
+    "fit=" + kbdFitScale(boardW(5), boardD(4), PH.vpW, PH.vpH)));
+check("fit: Maya desktop (4x5) not shrunk below 1.0", () =>
+  assert.ok(kbdFitScale(boardW(5), boardD(4), DK.vpW, DK.vpH) >= 1.0));
+check("fit: 7-col phone shrinks below 0.92", () =>
+  assert.ok(kbdFitScale(boardW(7), boardD(5), PH.vpW, PH.vpH) < 0.92));
+check("fit: monotonic decrease as columns grow (phone)", () => {
+  const a = kbdFitScale(boardW(5), boardD(4), PH.vpW, PH.vpH);
+  const b = kbdFitScale(boardW(6), boardD(4), PH.vpW, PH.vpH);
+  const c = kbdFitScale(boardW(7), boardD(5), PH.vpW, PH.vpH);
+  assert.ok(a > b && b > c, `${a} ${b} ${c}`);
+});
+
 console.log(fails ? `\nGRID: ${fails} failing` : "\nGRID: all passing");
 process.exit(fails ? 1 : 0);
