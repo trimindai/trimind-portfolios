@@ -568,9 +568,6 @@
     renderer.setSize(window.innerWidth, window.innerHeight);
   }
   layout();
-  /* test-only inspection hook (harmless in prod): lets the verifier project cap
-     world positions to screen-space and read the active grid. */
-  window.__kbd = { caps: caps, camera: camera, get cols() { return COLS_H; }, get rows() { return ROWS_H; } };
 
   var t = 0, rollSpeedY = 0.012, rollSpeedX = 0.004, rollTargetSpeed = 1, trackballHovered = false;
   var tmp = new THREE.Vector3();
@@ -693,8 +690,10 @@
   window.addEventListener("resize", layout);
   requestAnimationFrame(animate);
 
-  /* expose for tests: lets a later harness verify drag-rotate */
+  /* expose for tests: cap projection + grid + drag-rotate */
   window.__kbd = {
+    caps: caps, camera: camera,
+    get cols() { return COLS_H; }, get rows() { return ROWS_H; },
     getRotation: function () { return board.rotation.y; },
     getPosFrac: function () { return board.position.x / (vpW / 2); }  // normalized -1..1 of half-viewport
   };
