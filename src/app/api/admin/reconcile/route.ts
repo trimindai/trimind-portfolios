@@ -79,10 +79,10 @@ export async function POST(req: NextRequest) {
       }
 
       try {
-        const status = await getPaymentStatus(invoiceId);
+        const status = await getPaymentStatus(invoiceId, "InvoiceId");
 
         if (status.IsSuccess && status.Data.InvoiceStatus === "Paid") {
-          const result = await verifyAndProcessPayment(invoiceId);
+          const result = await verifyAndProcessPayment(invoiceId, "InvoiceId");
           results.push({
             paymentId: payment._id,
             invoiceId,

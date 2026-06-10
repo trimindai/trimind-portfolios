@@ -89,8 +89,11 @@ export async function sendPayment(
   return response.json();
 }
 
+export type MyFatoorahKeyType = "PaymentId" | "InvoiceId";
+
 export async function getPaymentStatus(
-  paymentId: string
+  key: string,
+  keyType: MyFatoorahKeyType = "PaymentId"
 ): Promise<PaymentStatusResponse> {
   const response = await fetch(`${MYFATOORAH_BASE_URL}/v2/GetPaymentStatus`, {
     method: "POST",
@@ -99,8 +102,11 @@ export async function getPaymentStatus(
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      Key: paymentId,
-      KeyType: "PaymentId",
+      Key: key,
+      // Callbacks/webhooks carry a PaymentId; reconciliation only has our
+      // stored InvoiceId. Sending an InvoiceId as KeyType=PaymentId makes
+      // MyFatoorah error on every row (which silently broke reconciliation).
+      KeyType: keyType,
     }),
   });
 
@@ -121,10 +127,11 @@ export type VerifyResult =
  * Used by: callback route, webhook route, and reconciliation.
  */
 export async function verifyAndProcessPayment(
-  paymentId: string
+  paymentId: string,
+  keyType: MyFatoorahKeyType = "PaymentId"
 ): Promise<VerifyResult> {
   const secret = serverSecret();
-  const status = await getPaymentStatus(paymentId);
+  const status = await getPaymentStatus(paymentId, keyType);
 
   const [portfolioId, localeRaw] = (
     status.Data?.UserDefinedField || ""

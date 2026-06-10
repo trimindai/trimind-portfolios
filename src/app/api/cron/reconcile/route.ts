@@ -27,10 +27,10 @@ export async function GET(req: NextRequest) {
   for (const payment of pending) {
     try {
       const invoiceId = payment.myfatoorahInvoiceId!;
-      const status = await getPaymentStatus(invoiceId);
+      const status = await getPaymentStatus(invoiceId, "InvoiceId");
 
       if (status.IsSuccess && status.Data.InvoiceStatus === "Paid") {
-        await verifyAndProcessPayment(invoiceId);
+        await verifyAndProcessPayment(invoiceId, "InvoiceId");
         results.push({ id: payment._id, action: "recovered" });
       } else if (
         status.Data?.InvoiceStatus === "Failed" ||
@@ -50,11 +50,17 @@ export async function GET(req: NextRequest) {
     }
   }
 
+  const errors = results.filter((r) => r.action.startsWith("error"));
   const summary = {
     total: pending.length,
     recovered: results.filter((r) => r.action === "recovered").length,
     expired: results.filter((r) => r.action === "expired").length,
     stillPending: results.filter((r) => r.action === "still_pending").length,
+    // Errors must be visible in the summary — an all-errors run previously
+    // looked like {recovered:0, expired:0, stillPending:0} (i.e. like a
+    // healthy empty run) and hid the InvoiceId/PaymentId KeyType bug.
+    errors: errors.length,
+    errorSamples: errors.slice(0, 3).map((r) => r.action),
     timestamp: new Date().toISOString(),
   };
 
