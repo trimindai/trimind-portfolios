@@ -55,7 +55,6 @@ function DynamicListItem<T>({
   children: ReactNode;
 }) {
   const controls = useDragControls();
-  const [dragging, setDragging] = useState(false);
 
   return (
     <Reorder.Item
@@ -63,16 +62,18 @@ function DynamicListItem<T>({
       value={item}
       dragListener={false}
       dragControls={controls}
-      onDragStart={() => setDragging(true)}
-      onDragEnd={() => setDragging(false)}
-      style={{ position: "relative", zIndex: dragging ? 10 : undefined }}
-      className={`rounded-lg border p-4 transition-colors ${
+      style={{ position: "relative" }}
+      // Flat-elevation drag affordance (DESIGN.md: no shadows): accent border
+      // + slight lift. whileDrag avoids React state — a re-render mid-drag is
+      // safe but pointless.
+      whileDrag={{
+        scale: 1.01,
+        zIndex: 10,
+        borderColor: "rgba(5, 150, 105, 0.55)",
+      }}
+      className={`rounded-lg border p-4 ${
         reorderable ? "ps-9" : ""
-      } ${
-        dragging
-          ? "border-[var(--land-accent)]/60 bg-[var(--land-surface-raised)]"
-          : "border-[var(--land-border)] bg-[var(--land-surface-raised)]/50"
-      }`}
+      } border-[var(--land-border)] bg-[var(--land-surface-raised)]/50`}
     >
       {reorderable && (
         <button
@@ -80,7 +81,6 @@ function DynamicListItem<T>({
           aria-label={dragLabel}
           title={dragLabel}
           onPointerDown={(e) => {
-            e.preventDefault();
             controls.start(e);
           }}
           onKeyDown={(e) => {
@@ -93,11 +93,7 @@ function DynamicListItem<T>({
             }
           }}
           style={{ touchAction: "none" }}
-          className={`absolute inset-y-0 start-0 flex w-8 cursor-grab items-center justify-center rounded-s-lg transition-colors focus-visible:outline-2 focus-visible:outline-[var(--land-accent)] ${
-            dragging
-              ? "cursor-grabbing text-[var(--land-accent)]"
-              : "text-[var(--land-muted)] hover:text-[var(--land-body)]"
-          }`}
+          className="absolute inset-y-0 start-0 flex w-8 cursor-grab items-center justify-center rounded-s-lg transition-colors focus-visible:outline-2 focus-visible:outline-[var(--land-accent)] text-[var(--land-muted)] hover:text-[var(--land-body)] active:cursor-grabbing"
         >
           <GripVertical className="h-4 w-4" aria-hidden />
         </button>
