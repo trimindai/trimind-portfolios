@@ -108,6 +108,7 @@
       "addItem": "Add Item",
       "remove": "Remove",
       "confirmRemove": "Tap to confirm",
+      "dragToReorder": "Drag to reorder, or press the arrow keys",
       "profilePhoto": "Profile Photo",
       "photoHint": "Square photo works best. Max 5MB. JPG or PNG.",
       "uploadPhoto": "Upload photo",

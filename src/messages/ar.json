@@ -108,6 +108,7 @@
       "addItem": "إضافة عنصر",
       "remove": "حذف",
       "confirmRemove": "اضغط للتأكيد",
+      "dragToReorder": "اسحب لإعادة الترتيب، أو استخدم مفاتيح الأسهم",
       "profilePhoto": "الصورة الشخصية",
       "photoHint": "الصورة المربعة هي الأفضل. الحد الأقصى 5MB. بصيغة JPG أو PNG.",
       "uploadPhoto": "رفع صورة",
