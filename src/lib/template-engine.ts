@@ -151,7 +151,18 @@ Handlebars.registerHelper("gt", function (a: number, b: number) {
 });
 
 Handlebars.registerHelper("json", function (context: any) {
-  return new Handlebars.SafeString(JSON.stringify(context || {}));
+  // safeScriptJson (defined below) escapes "<" so a "</script>" inside user
+  // data can never close a script block this lands in.
+  return new Handlebars.SafeString(safeScriptJson(context || {}));
+});
+
+// nl2br(text) → HTML-escape user text, then turn newlines into <br>.
+// The only sanctioned way to render multi-line free text (bio, summary):
+// formatting survives, markup never does.
+Handlebars.registerHelper("nl2br", function (value: any) {
+  if (value == null) return "";
+  const escaped = Handlebars.escapeExpression(String(value));
+  return new Handlebars.SafeString(escaped.replace(/\r\n|\r|\n/g, "<br>"));
 });
 
 Handlebars.registerHelper("titleCase", function (name: string) {

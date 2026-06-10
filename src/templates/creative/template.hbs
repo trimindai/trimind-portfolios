@@ -594,7 +594,6 @@ a { color: inherit; text-decoration: none; }
       var nImg = picks[(i + 3) % picks.length].querySelector('img');
       var side = nImg ? (nImg.getAttribute('src') || nImg.src) : src;
       var df = card.getAttribute('data-full');
-      var esc = title.replace(/"/g, '&quot;');
       var cube = document.createElement('a');
       cube.className = 'cube';
       if (df) {
@@ -613,17 +612,29 @@ a { color: inherit; text-decoration: none; }
       cube.style.zIndex = s[2];
       cube.setAttribute('aria-label', title || '{{#if isRTL}}عمل فني{{else}}Artwork{{/if}}');
       // Two artworks per cube: art1 on front/left, art2 on right/back.
-      var a1 = src ? '<img src="' + src + '" alt="' + esc + '">' : '';
-      var a2 = side ? '<img src="' + side + '" alt="">' : a1;
-      cube.innerHTML =
-        '<span class="shadow"></span>' +
-        '<span class="cube-inner">' +
-          '<span class="face f-top"></span>' +
-          '<span class="face f-front">' + a1 + '</span>' +
-          '<span class="face f-left">' + a1 + '</span>' +
-          '<span class="face f-right">' + a2 + '</span>' +
-          '<span class="face f-back">' + a2 + '</span>' +
-        '</span>';
+      // Built with DOM APIs — src/title come back *decoded* from getAttribute,
+      // so string-concat innerHTML here would reopen an XSS sink.
+      function mkSpan(cls) { var el = document.createElement('span'); el.className = cls; return el; }
+      function mkImg(imgSrc, alt) {
+        if (!imgSrc) return null;
+        var el = document.createElement('img');
+        el.setAttribute('src', imgSrc);
+        el.setAttribute('alt', alt || '');
+        return el;
+      }
+      var shadow = mkSpan('shadow');
+      var inner = mkSpan('cube-inner');
+      inner.appendChild(mkSpan('face f-top'));
+      [['face f-front', src, title], ['face f-left', src, title],
+       ['face f-right', side || src, ''], ['face f-back', side || src, '']]
+        .forEach(function (f) {
+          var face = mkSpan(f[0]);
+          var im = mkImg(f[1], f[2]);
+          if (im) face.appendChild(im);
+          inner.appendChild(face);
+        });
+      cube.appendChild(shadow);
+      cube.appendChild(inner);
       host.insertBefore(cube, host.firstChild);
     });
   }
