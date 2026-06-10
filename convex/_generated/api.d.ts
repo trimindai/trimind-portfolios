@@ -19,6 +19,7 @@ import type * as seedData_wadhah from "../seedData/wadhah.js";
 import type * as seeds from "../seeds.js";
 import type * as storage from "../storage.js";
 import type * as users from "../users.js";
+import type * as waitlist from "../waitlist.js";
 
 import type {
   ApiFromModules,
@@ -38,6 +39,7 @@ declare const fullApi: ApiFromModules<{
   seeds: typeof seeds;
   storage: typeof storage;
   users: typeof users;
+  waitlist: typeof waitlist;
 }>;
 
 /**

@@ -8,6 +8,7 @@ import { HOSTING_ENABLED } from "@/lib/flags";
 import { AdminLink } from "@/components/AdminLink";
 import { TryItForm } from "@/components/landing/TryItForm";
 import { UseTemplateButton } from "@/components/landing/UseTemplateButton";
+import { WaitlistForm } from "@/components/landing/WaitlistForm";
 import { NavbarAuth } from "@/components/landing/NavbarAuth";
 import { CvPreviewCard } from "@/components/landing/CvPreviewCard";
 
@@ -654,12 +655,10 @@ export default async function LandingPage({
                     ? "قوالب جديدة قريبًا — طبي، قانوني، تعليمي، والمزيد."
                     : "More templates coming soon — Medical, Legal, Education, and more."}
                 </p>
-                <a
-                  href="mailto:support@portfolio-trimind.com?subject=Template%20waitlist"
-                  className="mt-4 text-sm font-medium text-[var(--land-accent)] hover:underline"
-                >
-                  {isRTL ? "انضم لقائمة الانتظار ←" : "Join the waitlist →"}
-                </a>
+                <p className="mt-4 text-sm font-medium text-[var(--land-bright)]">
+                  {isRTL ? "انضم لقائمة الانتظار" : "Join the waitlist"}
+                </p>
+                <WaitlistForm locale={locale} source="templates" />
               </div>
             </ScrollReveal>
           </div>

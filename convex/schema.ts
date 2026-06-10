@@ -310,6 +310,16 @@ export default defineSchema({
     .index("by_invoice", ["myfatoorahInvoiceId"])
     .index("by_user", ["userId"]),
 
+  // Landing-page template waitlist (AUDIT rec: replace the mailto: link).
+  // Written only via the serverSecret-gated waitlist.join mutation, which is
+  // called from /api/waitlist after IP rate limiting + email validation.
+  waitlist: defineTable({
+    email: v.string(),
+    locale: v.union(v.literal("en"), v.literal("ar")),
+    source: v.optional(v.string()),
+    createdAt: v.number(),
+  }).index("by_email", ["email"]),
+
   // Durable, multi-instance API rate limiting (fixed-window counters).
   // One row per active key (e.g. "ai-summary:user_2abc"). Replaces the
   // per-instance in-memory counters that reset on every Vercel cold start.

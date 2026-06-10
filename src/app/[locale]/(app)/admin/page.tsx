@@ -77,6 +77,7 @@ function AdminPageInner() {
   const users = useQuery(api.admin.getAllUsers, isAdmin ? {} : "skip");
   const portfolios = useQuery(api.admin.getAllPortfolios, isAdmin ? {} : "skip");
   const payments = useQuery(api.admin.getAllPayments, isAdmin ? {} : "skip");
+  const waitlist = useQuery(api.waitlist.listAll, isAdmin ? {} : "skip");
 
   async function reconcileAll() {
     setReconciling(true);
@@ -278,6 +279,37 @@ function AdminPageInner() {
 
             {/* Duplicates Warning */}
             <DuplicatesWarning portfolios={portfolios ?? []} users={users ?? []} />
+
+            {/* Template waitlist */}
+            {waitlist && waitlist.length > 0 && (
+              <div className="bg-white border border-gray-200 rounded-xl p-5 mb-6">
+                <div className="flex items-center justify-between mb-3">
+                  <h3 className="text-sm font-semibold text-gray-900">
+                    Template waitlist{" "}
+                    <span className="text-gray-400 font-normal">({waitlist.length})</span>
+                  </h3>
+                  <button
+                    onClick={() => navigator.clipboard.writeText(waitlist.map((w) => w.email).join(", "))}
+                    className="text-xs text-emerald-600 hover:underline"
+                  >
+                    Copy all emails
+                  </button>
+                </div>
+                <ul className="divide-y divide-gray-100">
+                  {waitlist.slice(0, 10).map((w) => (
+                    <li key={w._id} className="flex items-center justify-between py-1.5 text-sm">
+                      <span className="text-gray-700">{w.email}</span>
+                      <span className="text-xs text-gray-400">
+                        {w.locale.toUpperCase()} · {new Date(w.createdAt).toLocaleDateString("en-GB")}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+                {waitlist.length > 10 && (
+                  <p className="mt-2 text-xs text-gray-400">+ {waitlist.length - 10} more — use “Copy all emails”</p>
+                )}
+              </div>
+            )}
 
             {/* Pending payments alert */}
             {pendingPaymentsCount > 0 && stats && (
