@@ -437,6 +437,7 @@
         "Certifications"
       ],
       "failedToGenerate": "Failed to generate",
+      "aiLimitReached": "Daily AI limit reached — try again tomorrow.",
       "somethingWentWrong": "Something went wrong",
       "expHeading": "Work Experience",
       "expIntro": "Most recent first. Focus on <strong>results and impact</strong>.",
@@ -629,6 +630,7 @@
       "tryAgain": "Try again ↺",
       "dismiss": "Dismiss",
       "failedToGenerate": "Failed to generate",
+      "aiLimitReached": "Daily AI limit reached — try again tomorrow.",
       "somethingWentWrong": "Something went wrong",
       "aiUnavailable": "AI writing is temporarily unavailable — write your summary manually, or try again later."
     },

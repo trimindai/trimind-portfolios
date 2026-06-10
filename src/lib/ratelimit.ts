@@ -23,6 +23,8 @@ export interface RateLimitOptions {
   limit: number;
   /** Window length in milliseconds. */
   windowMs: number;
+  /** 429 body message. Default suits short burst windows; override for daily caps. */
+  message?: string;
 }
 
 /**
@@ -36,7 +38,7 @@ export interface RateLimitOptions {
 export async function enforceUserRateLimit(
   userId: string,
   bucket: string,
-  { limit, windowMs }: RateLimitOptions
+  { limit, windowMs, message }: RateLimitOptions
 ): Promise<NextResponse | null> {
   try {
     const result = await convexClient.mutation(api.rateLimit.consume, {
@@ -49,7 +51,7 @@ export async function enforceUserRateLimit(
 
     const retryAfterSec = Math.max(1, Math.ceil(result.retryAfterMs / 1000));
     return NextResponse.json(
-      { error: "Rate limit exceeded. Try again in a minute." },
+      { error: message ?? "Rate limit exceeded. Try again in a minute." },
       {
         status: 429,
         headers: {

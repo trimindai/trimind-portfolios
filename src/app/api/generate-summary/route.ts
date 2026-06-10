@@ -35,6 +35,16 @@ export async function POST(req: NextRequest) {
   });
   if (limited) return limited;
 
+  // Product cap (AUDIT rec #5): the builder UI allows 5 summaries per session
+  // but that counter is client state and resets on reload. This durable daily
+  // cap (3x the session allowance) is what actually bounds Gemini spend.
+  const daily = await enforceUserRateLimit(userId, "ai-summary-daily", {
+    limit: 15,
+    windowMs: 24 * 60 * 60 * 1000,
+    message: "Daily AI limit reached. Try again tomorrow.",
+  });
+  if (daily) return daily;
+
   const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey) {
     console.error("GEMINI_API_KEY not set");

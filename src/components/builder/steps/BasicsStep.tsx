@@ -111,7 +111,7 @@ export function BasicsStep({ data, onChange }: BasicsStepProps) {
         }),
       });
       const result = await res.json();
-      if (!res.ok) throw new Error(t("failedToGenerate"));
+      if (!res.ok) throw new Error(res.status === 429 ? t("aiLimitReached") : t("failedToGenerate"));
       const cv = result.cv;
       stopProgress();
       onChange({
@@ -159,7 +159,7 @@ export function BasicsStep({ data, onChange }: BasicsStepProps) {
         }),
       });
       const result = await res.json();
-      if (!res.ok) throw new Error(t("failedToGenerate"));
+      if (!res.ok) throw new Error(res.status === 429 ? t("aiLimitReached") : t("failedToGenerate"));
       setAiSuggestion(result.summary);
       setSummaryUses((n) => n + 1);
     } catch (e: any) {

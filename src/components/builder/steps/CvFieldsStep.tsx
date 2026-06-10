@@ -104,7 +104,7 @@ export function CvFieldsStep({ data, onChange }: CvFieldsStepProps) {
         body: JSON.stringify(context),
       });
       const result = await res.json();
-      if (!res.ok) throw new Error(result.error || tCv("failedToGenerate"));
+      if (!res.ok) throw new Error(res.status === 429 ? tCv("aiLimitReached") : result.error || tCv("failedToGenerate"));
       setAiSuggestion(result.summary);
     } catch (e: any) {
       setAiError(e.message || tCv("somethingWentWrong"));
