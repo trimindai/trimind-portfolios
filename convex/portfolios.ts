@@ -405,15 +405,38 @@ export const get = query({
  * (but unpublished) portfolios are invisible.
  */
 export const getBySlug = query({
-  args: { slug: v.string(), serverSecret: v.string() },
+  args: { slug: v.string(), serverSecret: v.optional(v.string()) },
   handler: async (ctx, { slug, serverSecret }) => {
-    verifyServerSecret(serverSecret);
     const portfolio = await ctx.db
       .query("portfolios")
       .withIndex("by_slug", (q) => q.eq("slug", slug))
       .first();
     if (!portfolio || portfolio.status !== "published") return null;
-    return portfolio;
+
+    // Full document only for our server (route handlers pass the secret).
+    if (serverSecret) {
+      verifyServerSecret(serverSecret);
+      return portfolio;
+    }
+
+    // Anonymous callers (anyone can hit the Convex deployment URL directly)
+    // get only what a public page render needs — no email/phone/userId/
+    // paymentId/source content.
+    return {
+      _id: portfolio._id,
+      slug: portfolio.slug,
+      status: portfolio.status,
+      templateId: portfolio.templateId,
+      locale: portfolio.locale,
+      generatedHtml: portfolio.generatedHtml,
+      generatedProjectPages: portfolio.generatedProjectPages,
+      publishedAt: portfolio.publishedAt,
+      basics: {
+        fullName: portfolio.basics?.fullName,
+        title: portfolio.basics?.title,
+        bio: portfolio.basics?.bio,
+      },
+    };
   },
 });
 
