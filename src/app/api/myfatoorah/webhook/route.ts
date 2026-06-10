@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { verifyAndProcessPayment } from "@/lib/myfatoorah";
+import { secureCompare } from "@/lib/secure-compare";
 
 /**
  * MyFatoorah server-to-server webhook. Fires regardless of the user's browser.
@@ -13,10 +14,15 @@ import { verifyAndProcessPayment } from "@/lib/myfatoorah";
  *   URL: https://portfolio-trimind.com/api/myfatoorah/webhook?secret=<MYFATOORAH_WEBHOOK_SECRET>
  */
 export async function POST(req: NextRequest) {
-  const secret = req.nextUrl.searchParams.get("secret");
+  // Secret accepted from a header (preferred — query strings land in proxy/CDN
+  // logs) or the legacy ?secret= param (what the MyFatoorah dashboard URL
+  // field supports). Comparison is constant-time.
+  const secret =
+    req.headers.get("x-webhook-secret") ||
+    req.nextUrl.searchParams.get("secret");
   const expectedSecret = process.env.MYFATOORAH_WEBHOOK_SECRET;
 
-  if (!expectedSecret || secret !== expectedSecret) {
+  if (!expectedSecret || !secureCompare(secret, expectedSecret)) {
     return NextResponse.json({ error: "unauthorized" }, { status: 401 });
   }
 

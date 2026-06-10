@@ -1,5 +1,5 @@
 import { NextRequest } from "next/server";
-import { convexClient } from "@/lib/convex";
+import { convexClient, serverSecret } from "@/lib/convex";
 import { api } from "@convex/_generated/api";
 import { isHostingEnabledForSlug } from "@/lib/flags";
 
@@ -136,7 +136,10 @@ export async function GET(
   const { slug } = await params;
 
   try {
-    const portfolio = await convexClient.query(api.portfolios.getBySlug, { slug });
+    const portfolio = await convexClient.query(api.portfolios.getBySlug, {
+      slug,
+      serverSecret: serverSecret(),
+    });
 
     // Nonexistent / unpublished slug → real 404, regardless of the hosting flag.
     // Previously the !HOSTING_ENABLED gate short-circuited to the 503 "coming

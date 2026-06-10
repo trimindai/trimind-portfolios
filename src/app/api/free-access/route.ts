@@ -8,6 +8,12 @@ import {
 import { api } from "@convex/_generated/api";
 import { Id } from "@convex/_generated/dataModel";
 import { enforceUserRateLimit } from "@/lib/ratelimit";
+import { parseJsonBody } from "@/lib/api-input";
+import { z } from "zod";
+
+const FreeAccessSchema = z.object({
+  portfolioId: z.string().min(1).max(64),
+});
 
 /**
  * Server-side free-access grant. Replaces the previous frontend code path
@@ -44,14 +50,12 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Not eligible" }, { status: 403 });
     }
 
-    const body = await req.json().catch(() => ({}));
-    const portfolioId = body?.portfolioId as string | undefined;
-    if (!portfolioId) {
-      return NextResponse.json(
-        { error: "Missing portfolioId" },
-        { status: 400 }
-      );
-    }
+    const parsed = await parseJsonBody(req, {
+      schema: FreeAccessSchema,
+      maxBytes: 2 * 1024,
+    });
+    if (!parsed.ok) return parsed.response;
+    const { portfolioId } = parsed.data;
 
     // Ownership check: re-fetch as user — throws if they don't own it.
     const userClient = await convexClientForUser();
@@ -72,9 +76,12 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ ok: true });
   } catch (error) {
+    // Full detail to server logs only — raw Convex/Clerk error messages can
+    // name internal mutations and config, so the client gets a generic body.
     console.error("free-access error:", error);
-    const message =
-      error instanceof Error ? error.message : "Internal server error";
-    return NextResponse.json({ error: message }, { status: 500 });
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 }
+    );
   }
 }

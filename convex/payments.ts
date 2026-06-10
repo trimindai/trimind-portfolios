@@ -93,3 +93,41 @@ export const getByInvoice = query({
       .first();
   },
 });
+
+/**
+ * Server-only: all payments still in `pending`. Used by the cron and admin
+ * reconcilers. (The cron previously called the admin-gated getAllPayments
+ * with an anonymous client and always threw Unauthenticated.)
+ */
+export const listPending = query({
+  args: { serverSecret: v.string() },
+  handler: async (ctx, { serverSecret }) => {
+    verifyServerSecret(serverSecret);
+    const all = await ctx.db.query("payments").collect();
+    return all.filter((p) => p.status === "pending");
+  },
+});
+
+/**
+ * Server-only: status counts for /api/admin/payment-health.
+ */
+export const statusCounts = query({
+  args: { serverSecret: v.string() },
+  handler: async (ctx, { serverSecret }) => {
+    verifyServerSecret(serverSecret);
+    const all = await ctx.db.query("payments").collect();
+    const counts = { pending: 0, completed: 0, failed: 0, other: 0 };
+    let oldestPendingAt: number | null = null;
+    for (const p of all) {
+      if (p.status === "pending") {
+        counts.pending++;
+        if (oldestPendingAt === null || p.createdAt < oldestPendingAt) {
+          oldestPendingAt = p.createdAt;
+        }
+      } else if (p.status === "completed") counts.completed++;
+      else if (p.status === "failed") counts.failed++;
+      else counts.other++;
+    }
+    return { ...counts, total: all.length, oldestPendingAt };
+  },
+});

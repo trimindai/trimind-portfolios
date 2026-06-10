@@ -5,7 +5,17 @@ import { requireAdmin } from "./auth";
 export const getAllUsers = query({
   handler: async (ctx) => {
     await requireAdmin(ctx);
-    return await ctx.db.query("users").order("desc").collect();
+    const users = await ctx.db.query("users").order("desc").collect();
+    // Per-row admin flag for the dashboard badge — computed here so the
+    // client never needs the allowlist itself.
+    const allowlist = (process.env.ADMIN_EMAILS || "")
+      .split(",")
+      .map((e) => e.trim().toLowerCase())
+      .filter(Boolean);
+    return users.map((u) => ({
+      ...u,
+      isAdmin: !!u.email && allowlist.includes(u.email.toLowerCase()),
+    }));
   },
 });
 

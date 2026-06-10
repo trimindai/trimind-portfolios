@@ -18,6 +18,22 @@ import { NextResponse } from "next/server";
 import { convexClient, serverSecret } from "@/lib/convex";
 import { api } from "@convex/_generated/api";
 
+/**
+ * Trusted client IP for anonymous rate limiting. The LEFTmost x-forwarded-for
+ * entry is attacker-controlled (a client can send the header), so we prefer
+ * x-real-ip (set by Vercel from the connecting socket) and only fall back to
+ * the RIGHTmost forwarded entry (appended by the trusted proxy).
+ */
+export function clientIp(req: {
+  headers: { get(name: string): string | null };
+}): string {
+  return (
+    req.headers.get("x-real-ip")?.trim() ||
+    req.headers.get("x-forwarded-for")?.split(",").pop()?.trim() ||
+    "unknown"
+  );
+}
+
 export interface RateLimitOptions {
   /** Max requests allowed per window. */
   limit: number;

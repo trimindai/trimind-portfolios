@@ -91,6 +91,23 @@ describe("published templates neutralize hostile user content", () => {
     });
   }
 
+  it("base64 photo uploads (data:image/*) survive safeUrl; svg/data:text do not", () => {
+    const data = maliciousData("general");
+    const pngDataUrl =
+      "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==";
+    data.basics.photoUrl = pngDataUrl;
+    const html = renderGeneralTemplate(data);
+    expect(html).toContain(pngDataUrl.slice(0, 40));
+
+    data.basics.photoUrl = "data:image/svg+xml;base64,PHN2Zz48L3N2Zz4=";
+    const html2 = renderGeneralTemplate(data);
+    expect(html2).not.toContain("data:image/svg");
+
+    data.basics.photoUrl = "data:text/html;base64,PHNjcmlwdD4=";
+    const html3 = renderGeneralTemplate(data);
+    expect(html3).not.toContain("data:text/html");
+  });
+
   it("general template keeps multi-line bio formatting via <br>, escaped", () => {
     const html = renderGeneralTemplate(maliciousData("general"));
     expect(html).toContain("line1<br>line2");

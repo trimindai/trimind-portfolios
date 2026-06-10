@@ -6,7 +6,6 @@ import { api } from "@convex/_generated/api";
 import { Id } from "@convex/_generated/dataModel";
 import { useState, useMemo, useEffect, Component, type ReactNode } from "react";
 import { Link } from "@/i18n/navigation";
-import { ADMIN_EMAILS } from "@/lib/admin";
 import { useSearchParams, useRouter } from "next/navigation";
 
 const TEST_EMAILS = ["test@trimindai.com", "trimindai@trimindai.com"];
@@ -70,8 +69,9 @@ function AdminPageInner() {
   const [reconciling, setReconciling] = useState(false);
   const [reconcileResult, setReconcileResult] = useState<any>(null);
 
-  const email = user?.primaryEmailAddress?.emailAddress;
-  const isAdmin = !!email && ADMIN_EMAILS.includes(email);
+  // Boolean-only server check — keeps the admin allowlist out of the bundle.
+  // Real authorization is enforced inside every api.admin.* query anyway.
+  const isAdmin = useQuery(api.users.isAdmin) === true;
 
   const stats = useQuery(api.admin.getStats, isAdmin ? {} : "skip");
   const users = useQuery(api.admin.getAllUsers, isAdmin ? {} : "skip");
@@ -155,7 +155,7 @@ function AdminPageInner() {
             <span className="text-xs bg-red-600 text-white px-2 py-0.5 rounded-full font-medium">ADMIN</span>
           </div>
           <div className="flex items-center gap-4">
-            <span className="hidden sm:inline text-sm text-gray-500">{email}</span>
+            <span className="hidden sm:inline text-sm text-gray-500">{user?.primaryEmailAddress?.emailAddress}</span>
             <Link href="/dashboard" className="text-sm text-gray-500 hover:text-gray-900 transition-colors">Dashboard</Link>
           </div>
         </div>
@@ -628,7 +628,7 @@ function UsersTab({ users }: { users: any[] }) {
                 </td>
                 <td className="py-3 px-4 text-sm text-gray-500">{new Date(u.createdAt).toLocaleDateString()}</td>
                 <td className="py-3 px-4">
-                  {ADMIN_EMAILS.includes(u.email) && <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-purple-50 text-purple-700">admin</span>}
+                  {u.isAdmin && <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-purple-50 text-purple-700">admin</span>}
                 </td>
               </tr>
             ))}
@@ -649,7 +649,7 @@ function UsersTab({ users }: { users: any[] }) {
               </div>
               <div className="text-right">
                 <p className="text-xs text-gray-400">{new Date(u.createdAt).toLocaleDateString()}</p>
-                {ADMIN_EMAILS.includes(u.email) && <span className="text-[10px] text-purple-600 font-medium">admin</span>}
+                {u.isAdmin && <span className="text-[10px] text-purple-600 font-medium">admin</span>}
               </div>
             </div>
           </button>

@@ -179,10 +179,15 @@ Handlebars.registerHelper("initials", function (name: string) {
   return (first + last).toUpperCase();
 });
 
-// safeUrl(value) → allow only http(s)/mailto/tel/relative URLs in href/src.
-// Any other scheme (javascript:, data:, vbscript:, …) becomes "#" so a stored
-// URL on a published page cannot execute script. Output is still HTML-escaped
-// by Handlebars in the attribute context.
+// safeUrl(value) → allow only http(s)/mailto/tel/relative URLs in href/src,
+// plus raster data:image/* URIs (photo uploads are stored as base64 data
+// URLs — but NOT data:image/svg+xml, which can carry script, and no other
+// data: type). Any other scheme (javascript:, vbscript:, …) becomes "#" so a
+// stored URL on a published page cannot execute script. Output is still
+// HTML-escaped by Handlebars in the attribute context.
+const SAFE_DATA_IMAGE_RE =
+  /^data:image\/(?:png|jpeg|jpg|gif|webp|avif);base64,/i;
+
 Handlebars.registerHelper("safeUrl", function (value: any) {
   if (value == null) return "";
   let raw = "";
@@ -195,6 +200,9 @@ Handlebars.registerHelper("safeUrl", function (value: any) {
   const scheme = raw.match(/^([a-zA-Z][a-zA-Z0-9+.-]*):/);
   if (scheme) {
     const s = scheme[1].toLowerCase();
+    if (s === "data") {
+      return SAFE_DATA_IMAGE_RE.test(raw) ? raw : "#";
+    }
     if (s !== "http" && s !== "https" && s !== "mailto" && s !== "tel") {
       return "#";
     }

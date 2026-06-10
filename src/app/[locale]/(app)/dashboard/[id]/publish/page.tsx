@@ -18,8 +18,6 @@ import {
   Download,
 } from "lucide-react";
 import { useUser } from "@clerk/nextjs";
-import { toPortfolioData } from "@/lib/portfolio-data";
-import { ADMIN_EMAILS } from "@/lib/admin";
 import { HOSTING_ENABLED } from "@/lib/flags";
 import { track, GA_CURRENCY, GA_VALUE } from "@/lib/ga";
 
@@ -51,9 +49,9 @@ function HostingPublishPage() {
   const tc = useTranslations("common");
 
   const { user: clerkUser } = useUser();
-  const isAdmin = ADMIN_EMAILS.includes(
-    clerkUser?.primaryEmailAddress?.emailAddress || ""
-  );
+  // Boolean-only server check — the admin allowlist no longer ships in the
+  // client bundle. Treat "loading" (undefined) as not-admin.
+  const isAdmin = useQuery(api.users.isAdmin) === true;
 
   const portfolio = useQuery(api.portfolios.get, {
     id: id as Id<"portfolios">,
@@ -67,7 +65,6 @@ function HostingPublishPage() {
   const [error, setError] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
 
-  const publishMutation = useMutation(api.portfolios.publish);
   const reserveSlugMutation = useMutation(api.portfolios.reserveSlug);
 
   // Auto-generate slug from name
@@ -247,22 +244,26 @@ function HostingPublishPage() {
         }
       }
 
-      // Paid/free-access → generate HTML and publish
-      const portfolioData = toPortfolioData(portfolio, locale);
-      const res = await fetch("/api/generate", {
+      // Paid/free-access → server renders the HTML from stored data and
+      // publishes (the browser never supplies markup).
+      const res = await fetch("/api/publish", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(portfolioData),
+        body: JSON.stringify({ portfolioId: id, slug, locale }),
       });
 
-      if (!res.ok) throw new Error("Failed to generate portfolio. Please try again.");
-      const { html } = await res.json();
-
-      await publishMutation({
-        id: id as Id<"portfolios">,
-        slug,
-        generatedHtml: html,
-      });
+      if (!res.ok) {
+        const body = await res.json().catch(() => ({}));
+        if (body.error === "slug_taken") {
+          setError(t("takenTryAnother"));
+          setPublishing(false);
+          return;
+        }
+        if (body.error === "payment_required") {
+          throw new Error("Portfolio is not paid");
+        }
+        throw new Error("Failed to publish portfolio. Please try again.");
+      }
 
       setPublished(true);
     } catch (err) {
@@ -281,7 +282,7 @@ function HostingPublishPage() {
     } finally {
       setPublishing(false);
     }
-  }, [portfolio, slugAvailable, locale, slug, mobile, isRTL, id, publishMutation, reserveSlugMutation, isAdmin, t]);
+  }, [portfolio, slugAvailable, locale, slug, mobile, isRTL, id, reserveSlugMutation, isAdmin, t]);
 
   const handleCopyUrl = useCallback(async () => {
     try {
@@ -612,10 +613,9 @@ function PdfCheckout() {
   const isRTL = locale === "ar";
   const tc = useTranslations("common");
 
-  const { user: clerkUser } = useUser();
-  const isAdmin = ADMIN_EMAILS.includes(
-    clerkUser?.primaryEmailAddress?.emailAddress || ""
-  );
+  // Boolean-only server check — the admin allowlist no longer ships in the
+  // client bundle. Treat "loading" (undefined) as not-admin.
+  const isAdmin = useQuery(api.users.isAdmin) === true;
 
   const portfolio = useQuery(api.portfolios.get, {
     id: id as Id<"portfolios">,

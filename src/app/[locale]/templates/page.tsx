@@ -82,7 +82,7 @@ export default async function TemplatesPage({ params, searchParams }: PageProps)
   try {
     const user = await currentUser();
     signedIn = !!user;
-    const email = user?.primaryEmailAddress?.emailAddress;
+    const email = user?.primaryEmailAddress?.emailAddress?.toLowerCase();
     isAdmin = !!email && ADMIN_EMAILS.includes(email);
   } catch {
     isAdmin = false;

@@ -3,18 +3,23 @@ import { convexClient, serverSecret } from "@/lib/convex";
 import { api } from "@convex/_generated/api";
 import { getPaymentStatus, verifyAndProcessPayment } from "@/lib/myfatoorah";
 import { Id } from "@convex/_generated/dataModel";
+import { secureCompare } from "@/lib/secure-compare";
 
 export async function GET(req: NextRequest) {
   const authHeader = req.headers.get("authorization");
-  if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
+  const cronSecret = process.env.CRON_SECRET;
+  if (!cronSecret || !secureCompare(authHeader, `Bearer ${cronSecret}`)) {
     return NextResponse.json({ error: "unauthorized" }, { status: 401 });
   }
 
   const secret = serverSecret();
-  const allPayments = await convexClient.query(api.admin.getAllPayments, {});
-  const pending = allPayments.filter(
-    (p: any) => p.status === "pending" && p.myfatoorahInvoiceId
-  );
+  // listPending is server-secret-gated. (Previously this called the
+  // admin-gated getAllPayments with the anonymous client, which always threw
+  // Unauthenticated — the cron reconciler never actually worked.)
+  const pendingAll = await convexClient.query(api.payments.listPending, {
+    serverSecret: secret,
+  });
+  const pending = pendingAll.filter((p: any) => p.myfatoorahInvoiceId);
 
   const results: Array<{ id: string; action: string }> = [];
   const FORTY_EIGHT_HOURS = 48 * 60 * 60 * 1000;

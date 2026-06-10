@@ -4,8 +4,14 @@ import { convexClient, convexClientForUser, serverSecret } from "@/lib/convex";
 import { api } from "@convex/_generated/api";
 import { getPaymentStatus, verifyAndProcessPayment } from "@/lib/myfatoorah";
 import { Id } from "@convex/_generated/dataModel";
+import { parseJsonBody } from "@/lib/api-input";
+import { z } from "zod";
 
 const ADMIN_EMAILS = (process.env.ADMIN_EMAILS || "").split(",").map((e) => e.trim().toLowerCase()).filter(Boolean);
+
+const ReconcileSchema = z.object({
+  paymentDocId: z.string().min(1).max(64).optional(),
+});
 
 async function requireAdminAuth() {
   const { userId } = await auth();
@@ -29,8 +35,12 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: e.message }, { status: e.message === "Forbidden" ? 403 : 401 });
   }
 
-  const body = await req.json().catch(() => ({}));
-  const singlePaymentDocId = body?.paymentDocId as string | undefined;
+  const parsed = await parseJsonBody(req, {
+    schema: ReconcileSchema,
+    maxBytes: 2 * 1024,
+  });
+  // Admin-only route, but still cap/validate the body like everything else.
+  const singlePaymentDocId = parsed.ok ? parsed.data.paymentDocId : undefined;
 
   try {
     const secret = serverSecret();

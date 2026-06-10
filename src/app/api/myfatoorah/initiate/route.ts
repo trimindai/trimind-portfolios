@@ -10,6 +10,15 @@ import { api } from "@convex/_generated/api";
 import { Id } from "@convex/_generated/dataModel";
 import { PRICE_KWD } from "@/lib/pricing";
 import { enforceUserRateLimit } from "@/lib/ratelimit";
+import { parseJsonBody } from "@/lib/api-input";
+import { z } from "zod";
+
+const InitiateSchema = z.object({
+  portfolioId: z.string().min(1).max(64),
+  locale: z.enum(["en", "ar"]).default("en"),
+  mobile: z.string().max(24).optional(),
+  mobileCountryCode: z.string().max(8).optional(),
+});
 
 export async function POST(req: NextRequest) {
   try {
@@ -27,24 +36,20 @@ export async function POST(req: NextRequest) {
     });
     if (limited) return limited;
 
-    const body = await req.json().catch(() => ({}));
-    const portfolioId = body?.portfolioId as string | undefined;
-    const rawLocale = body?.locale as string | undefined;
-    if (!portfolioId) {
-      return NextResponse.json(
-        { error: "Missing portfolioId" },
-        { status: 400 }
-      );
-    }
-    const locale = rawLocale === "ar" ? "ar" : "en";
+    const parsed = await parseJsonBody(req, {
+      schema: InitiateSchema,
+      maxBytes: 2 * 1024,
+    });
+    if (!parsed.ok) return parsed.response;
+    const { portfolioId, locale } = parsed.data;
 
     // Customer mobile — enables MyFatoorah "ALL" (SMS + email + link) delivery.
     // Strip everything but digits; validate length if present. Defaults to the
     // Kuwait country code. If absent/invalid we omit it and SendPayment falls
     // back to "LNK" (link only) rather than failing.
-    const mobileDigits = String(body?.mobile ?? "").replace(/\D/g, "");
+    const mobileDigits = String(parsed.data.mobile ?? "").replace(/\D/g, "");
     const mobileCountryCode =
-      String(body?.mobileCountryCode ?? "+965").trim() || "+965";
+      String(parsed.data.mobileCountryCode ?? "+965").trim() || "+965";
     if (mobileDigits && (mobileDigits.length < 6 || mobileDigits.length > 15)) {
       return NextResponse.json(
         { error: "INVALID_MOBILE", message: "Please enter a valid mobile number." },

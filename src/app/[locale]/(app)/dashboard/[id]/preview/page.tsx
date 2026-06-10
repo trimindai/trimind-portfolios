@@ -8,12 +8,10 @@ import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { useState, useMemo, useRef, useEffect } from "react";
 import { Monitor, Tablet, Smartphone, ArrowLeft, Download, CheckCircle2, FileText, Globe, ZoomIn, ZoomOut, Maximize2, Maximize, Minimize } from "lucide-react";
-import { useUser } from "@clerk/nextjs";
 import PreviewFrame from "@/components/preview/PreviewFrame";
 import type { PreviewFrameHandle } from "@/components/preview/PreviewFrame";
 import { toPortfolioData } from "@/lib/portfolio-data";
 import { HOSTING_ENABLED } from "@/lib/flags";
-import { ADMIN_EMAILS } from "@/lib/admin";
 
 type DeviceMode = "desktop" | "tablet" | "mobile";
 type PreviewView = "cv" | "live";
@@ -27,7 +25,8 @@ export default function PreviewPage() {
   const previewRef = useRef<PreviewFrameHandle>(null);
   const rootRef = useRef<HTMLDivElement>(null);
   const searchParams = useSearchParams();
-  const { user: clerkUser } = useUser();
+  // Boolean-only server check — keeps the admin allowlist out of the bundle.
+  const isAdminQuery = useQuery(api.users.isAdmin);
 
   const portfolio = useQuery(api.portfolios.get, {
     id: id as Id<"portfolios">,
@@ -154,9 +153,7 @@ export default function PreviewPage() {
 
   // PDF gating (only relevant while hosting is disabled). Admins and anyone
   // who has paid (or, in the hosting era, published) can download the PDF.
-  const isAdmin = ADMIN_EMAILS.includes(
-    clerkUser?.primaryEmailAddress?.emailAddress || ""
-  );
+  const isAdmin = isAdminQuery === true;
   const canDownload =
     isAdmin ||
     portfolio.status === "paid" ||

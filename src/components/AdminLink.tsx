@@ -1,25 +1,15 @@
 "use client";
 
-import { useUser } from "@clerk/nextjs";
+import { useQuery } from "convex/react";
+import { api } from "@convex/_generated/api";
 import { Link } from "@/i18n/navigation";
-import { ADMIN_EMAILS } from "@/lib/admin";
 
 export function AdminLink() {
-  let user = null;
-  let isLoaded = false;
+  // Boolean-only admin check — keeps the admin email allowlist out of the
+  // client bundle. Renders nothing while loading or for non-admins.
+  const isAdmin = useQuery(api.users.isAdmin);
 
-  try {
-    const clerk = useUser();
-    user = clerk.user;
-    isLoaded = clerk.isLoaded;
-  } catch {
-    return null;
-  }
-
-  if (!isLoaded || !user) return null;
-
-  const email = user.primaryEmailAddress?.emailAddress;
-  if (!email || !ADMIN_EMAILS.includes(email)) return null;
+  if (!isAdmin) return null;
 
   return (
     <Link

@@ -50,3 +50,22 @@ export const getCurrent = query({
     return await getCurrentUser(ctx);
   },
 });
+
+/**
+ * Is the caller an admin? Boolean only — lets the UI gate admin links
+ * without shipping the admin email allowlist in the client bundle.
+ * Authorization itself is still enforced server-side on every admin
+ * query/mutation; this is purely presentational.
+ */
+export const isAdmin = query({
+  args: {},
+  handler: async (ctx) => {
+    const user = await getCurrentUser(ctx);
+    if (!user?.email) return false;
+    const allowlist = (process.env.ADMIN_EMAILS || "")
+      .split(",")
+      .map((e) => e.trim().toLowerCase())
+      .filter(Boolean);
+    return allowlist.includes(user.email.toLowerCase());
+  },
+});

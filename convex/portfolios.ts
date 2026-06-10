@@ -396,13 +396,18 @@ export const get = query({
 });
 
 /**
- * Public: returns a published portfolio by slug. Used by /p/[slug].
+ * Server-only: returns a published portfolio by slug. Used by the /p/[slug]
+ * route handlers, which need the full doc (generatedHtml, project pages,
+ * fallback-render content). Requires the server secret — the full document
+ * carries PII (email/phone) and internal ids, so it must not be fetchable by
+ * an anonymous browser calling the public Convex deployment URL directly.
  * Only returns portfolios that have been actually published — drafts and paid
  * (but unpublished) portfolios are invisible.
  */
 export const getBySlug = query({
-  args: { slug: v.string() },
-  handler: async (ctx, { slug }) => {
+  args: { slug: v.string(), serverSecret: v.string() },
+  handler: async (ctx, { slug, serverSecret }) => {
+    verifyServerSecret(serverSecret);
     const portfolio = await ctx.db
       .query("portfolios")
       .withIndex("by_slug", (q) => q.eq("slug", slug))
@@ -414,9 +419,12 @@ export const getBySlug = query({
 
 export const listPublishedSlugs = query({
   handler: async (ctx) => {
-    const portfolios = await ctx.db.query("portfolios").collect();
-    return portfolios
-      .filter((p) => p.status === "published" && p.slug)
+    const published = await ctx.db
+      .query("portfolios")
+      .withIndex("by_status", (q) => q.eq("status", "published"))
+      .collect();
+    return published
+      .filter((p) => p.slug)
       .map((p) => ({ slug: p.slug!, publishedAt: p.publishedAt ?? p.lastEditedAt }));
   },
 });
@@ -526,8 +534,19 @@ export const publish = mutation({
     id: v.id("portfolios"),
     slug: v.string(),
     generatedHtml: v.string(),
+    generatedProjectPages: v.optional(
+      v.array(v.object({ slug: v.string(), html: v.string() }))
+    ),
+    serverSecret: v.string(),
   },
-  handler: async (ctx, { id, slug, generatedHtml }) => {
+  handler: async (
+    ctx,
+    { id, slug, generatedHtml, generatedProjectPages, serverSecret }
+  ) => {
+    // The HTML is trusted ONLY because /api/publish rendered it server-side
+    // from stored data — the secret proves this call came from our server,
+    // not a browser hand-crafting markup to be served on our origin.
+    verifyServerSecret(serverSecret);
     // Auth + ownership (admins can publish any portfolio).
     const { portfolio, isAdmin } = await requireAdminOrOwner(ctx, id);
 
@@ -547,6 +566,7 @@ export const publish = mutation({
     await ctx.db.patch(id, {
       slug,
       generatedHtml,
+      ...(generatedProjectPages ? { generatedProjectPages } : {}),
       status: "published",
       publishedAt: Date.now(),
       lastEditedAt: Date.now(),
