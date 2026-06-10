@@ -55,11 +55,34 @@ export async function POST(req: NextRequest) {
 
     // Fetch as the caller — Convex `get` enforces owner-or-admin.
     const userClient = await convexClientForUser();
-    const portfolio = await userClient.query(api.portfolios.get, {
-      id: portfolioId as Id<"portfolios">,
-    });
+    let portfolio;
+    try {
+      portfolio = await userClient.query(api.portfolios.get, {
+        id: portfolioId as Id<"portfolios">,
+      });
+    } catch {
+      // Malformed id / not the owner — Convex masks the detail in prod.
+      return NextResponse.json({ error: "Not found" }, { status: 404 });
+    }
     if (!portfolio) {
       return NextResponse.json({ error: "Not found" }, { status: 404 });
+    }
+
+    // Pre-check the user-actionable failures HERE: Convex masks mutation
+    // error messages in production ("Server Error"), so mapping on the thrown
+    // string after the fact never works. The mutation still re-checks all of
+    // this authoritatively (it must — it's the trust boundary).
+    const isAdmin = await userClient.query(api.users.isAdmin, {});
+    if (
+      !isAdmin &&
+      portfolio.status !== "paid" &&
+      portfolio.status !== "published"
+    ) {
+      return NextResponse.json({ error: "payment_required" }, { status: 402 });
+    }
+    const taken = await userClient.query(api.portfolios.isSlugTaken, { slug });
+    if (taken && taken.ownerPortfolioId !== portfolioId) {
+      return NextResponse.json({ error: "slug_taken" }, { status: 409 });
     }
 
     // Render from STORED data (with the slug being published), never from the
