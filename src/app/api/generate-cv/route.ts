@@ -37,8 +37,10 @@ export async function POST(req: NextRequest) {
     if (limited) return limited;
 
     // Full portfolio payload → larger cap, size-only (renderer reads the whole
-    // object).
-    const parsed = await parseJsonBody(req, { maxBytes: 512 * 1024 });
+    // object). 2 MB comfortably fits an inline base64 profile photo on top of a
+    // near-1 MiB Convex doc; the old 512 KB cap rejected any portfolio with a
+    // real photo as 413 → "Generation failed" in the preview.
+    const parsed = await parseJsonBody(req, { maxBytes: 2 * 1024 * 1024 });
     if (!parsed.ok) return parsed.response;
     const data = parsed.data as any;
 

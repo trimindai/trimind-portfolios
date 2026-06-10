@@ -1,7 +1,5 @@
 "use client";
 
-import { useMutation } from "convex/react";
-import { api } from "@convex/_generated/api";
 import { useState, useRef, useEffect } from "react";
 import { useTranslations } from "next-intl";
 
@@ -37,9 +35,60 @@ function darken(hex: string, amount: number): string {
   return `#${((1 << 24) | (r << 16) | (g << 8) | b).toString(16).slice(1)}`;
 }
 
+/** Read a File as a base64 data URL (fallback path for exotic formats). */
+function fileToDataUrl(file: File): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result as string);
+    reader.onerror = () => reject(new Error("read failed"));
+    reader.readAsDataURL(file);
+  });
+}
+
+/**
+ * Downscale + recompress an image to a small base64 JPEG data URL.
+ *
+ * Why: the photo is stored INLINE in the portfolio document as base64. A raw
+ * phone photo is multiple MB, which (a) blows the Convex 1 MiB document limit
+ * on save and (b) overflows the preview API body cap — the latter surfaces to
+ * the user as "Generation failed". Profile photos render small, so 600px /
+ * JPEG q0.85 is plenty and keeps the encoded string well under ~200 KB.
+ */
+function downscaleImage(file: File, maxDim = 600, quality = 0.85): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const url = URL.createObjectURL(file);
+    const img = new Image();
+    img.onload = () => {
+      URL.revokeObjectURL(url);
+      let { width, height } = img;
+      if (!width || !height) { reject(new Error("bad dimensions")); return; }
+      if (width > maxDim || height > maxDim) {
+        if (width >= height) {
+          height = Math.round((height * maxDim) / width);
+          width = maxDim;
+        } else {
+          width = Math.round((width * maxDim) / height);
+          height = maxDim;
+        }
+      }
+      const canvas = document.createElement("canvas");
+      canvas.width = width;
+      canvas.height = height;
+      const ctx = canvas.getContext("2d");
+      if (!ctx) { reject(new Error("no 2d context")); return; }
+      // White matte so transparent PNGs don't turn black under JPEG.
+      ctx.fillStyle = "#ffffff";
+      ctx.fillRect(0, 0, width, height);
+      ctx.drawImage(img, 0, 0, width, height);
+      resolve(canvas.toDataURL("image/jpeg", quality));
+    };
+    img.onerror = () => { URL.revokeObjectURL(url); reject(new Error("decode failed")); };
+    img.src = url;
+  });
+}
+
 export function PhotoUpload({ value, onChange, name, accentColor }: PhotoUploadProps) {
   const t = useTranslations("builder.fields");
-  const generateUploadUrl = useMutation(api.storage.generateUploadUrl);
   const [uploading, setUploading] = useState(false);
   const [preview, setPreview] = useState<string>(value || "");
   const [error, setError] = useState<string>("");
@@ -79,40 +128,27 @@ export function PhotoUpload({ value, onChange, name, accentColor }: PhotoUploadP
     setPreview(localUrl);
     setUploading(true);
 
+    // Photos are stored inline as base64 in the portfolio doc, so they MUST be
+    // downscaled — a raw phone photo overflows both the Convex 1 MiB doc limit
+    // and the preview API body cap ("Generation failed"). Fall back to the raw
+    // file only if the browser can't decode it.
+    let dataUrl: string;
     try {
-      // Get upload URL from Convex
-      const uploadUrl = await generateUploadUrl();
-
-      // Upload the file
-      await fetch(uploadUrl, {
-        method: "POST",
-        headers: { "Content-Type": file.type },
-        body: file,
-      });
-
-      // Convert to base64 for reliable storage in the portfolio data
-      // (Convex storage URLs require auth, base64 works everywhere)
-      const reader = new FileReader();
-      reader.onload = () => {
-        const base64 = reader.result as string;
-        onChange(base64);
-        setPreview(base64);
-        if (blobUrlRef.current) { URL.revokeObjectURL(blobUrlRef.current); blobUrlRef.current = null; }
-        setUploading(false);
-      };
-      reader.readAsDataURL(file);
+      dataUrl = await downscaleImage(file);
     } catch {
-      // Fallback to base64 directly
-      const reader = new FileReader();
-      reader.onload = () => {
-        const base64 = reader.result as string;
-        onChange(base64);
-        setPreview(base64);
+      try {
+        dataUrl = await fileToDataUrl(file);
+      } catch {
+        setError(t("photoErrNotImage"));
         if (blobUrlRef.current) { URL.revokeObjectURL(blobUrlRef.current); blobUrlRef.current = null; }
         setUploading(false);
-      };
-      reader.readAsDataURL(file);
+        return;
+      }
     }
+    onChange(dataUrl);
+    setPreview(dataUrl);
+    if (blobUrlRef.current) { URL.revokeObjectURL(blobUrlRef.current); blobUrlRef.current = null; }
+    setUploading(false);
   };
 
   const handleUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
