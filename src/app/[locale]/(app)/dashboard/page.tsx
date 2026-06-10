@@ -43,6 +43,8 @@ export default function DashboardPage() {
   const router = useRouter();
   const locale = (params.locale as string) || "en";
   const isRTL = locale === "ar";
+  // AR UI keeps Western digits everywhere (counts, prices) — pin nu-latn so dates match.
+  const dateLocale = isRTL ? "ar-u-nu-latn" : "en";
   const t = useTranslations();
   const portfolios = useQuery(api.portfolios.listByUser, {});
   const removePortfolio = useMutation(api.portfolios.remove);
@@ -223,12 +225,12 @@ export default function DashboardPage() {
                 <div className="flex items-center gap-3 flex-wrap text-xs text-[var(--land-muted)] mb-4">
                   <span>
                     {isRTL ? "آخر تعديل" : "Last edited"}:{" "}
-                    {new Date(portfolio.lastEditedAt).toLocaleDateString()}
+                    {new Date(portfolio.lastEditedAt).toLocaleDateString(dateLocale)}
                   </span>
                   {portfolio.createdAt && (
                     <span>
                       {isRTL ? "أنشئ" : "Created"}:{" "}
-                      {new Date(portfolio.createdAt).toLocaleDateString()}
+                      {new Date(portfolio.createdAt).toLocaleDateString(dateLocale)}
                     </span>
                   )}
                   {portfolio.status === "published" && (portfolio as any).viewCount > 0 && (
