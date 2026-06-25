@@ -12,6 +12,10 @@ const intlMiddleware = createIntlMiddleware(routing);
 const isProtectedRoute = createRouteMatcher([
   "/:locale/dashboard(.*)",
   "/:locale/admin(.*)",
+  // CV Studio writes a portfolio under the signed-in user, so it must require
+  // auth — otherwise a signed-out visitor uploads and parse-cv 401s. Force
+  // sign-in first (register-first flow), then they return here authenticated.
+  "/:locale/build(.*)",
 ]);
 
 const isStaticRoute = (req: NextRequest) =>
