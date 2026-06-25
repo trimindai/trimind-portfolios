@@ -13,7 +13,7 @@
 
 import { useState, useRef, useMemo, useEffect, useCallback } from "react";
 import { useParams, useSearchParams } from "next/navigation";
-import { useQuery, useMutation } from "convex/react";
+import { useQuery, useMutation, useConvexAuth } from "convex/react";
 import { api } from "@convex/_generated/api";
 import { Id } from "@convex/_generated/dataModel";
 import { Link } from "@/i18n/navigation";
@@ -123,9 +123,13 @@ export default function StudioClient({ initialId }: { initialId?: string }) {
   const fileRef = useRef<HTMLInputElement>(null);
   const chatEndRef = useRef<HTMLDivElement>(null);
 
+  // Wait for Clerk's token to attach to Convex before querying — on a cold
+  // /build/[id] load the id is set synchronously, so an ungated query fires
+  // before auth is ready and portfolios.get (requireAdminOrOwner) throws.
+  const { isAuthenticated } = useConvexAuth();
   const portfolio = useQuery(
     api.portfolios.get,
-    portfolioId ? { id: portfolioId as Id<"portfolios"> } : "skip"
+    portfolioId && isAuthenticated ? { id: portfolioId as Id<"portfolios"> } : "skip"
   );
   const update = useMutation(api.portfolios.update);
 
