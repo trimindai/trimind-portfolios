@@ -5,7 +5,7 @@ import { api } from "@convex/_generated/api";
 import { useDashboard } from "@/contexts/DashboardContext";
 import { Link } from "@/i18n/navigation";
 import { useState } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
 import { Id } from "@convex/_generated/dataModel";
 import { HOSTING_ENABLED } from "@/lib/flags";
 import { useTranslations } from "next-intl";
@@ -40,7 +40,6 @@ const STATUS_CONFIG = {
 export default function DashboardPage() {
   const { userId } = useDashboard();
   const params = useParams();
-  const router = useRouter();
   const locale = (params.locale as string) || "en";
   const isRTL = locale === "ar";
   // AR UI keeps Western digits everywhere (counts, prices) — pin nu-latn so dates match.
@@ -52,10 +51,6 @@ export default function DashboardPage() {
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
   const [duplicatingId, setDuplicatingId] = useState<string | null>(null);
-
-  const handleNewPortfolio = () => {
-    router.push(`/${locale}/dashboard/new`);
-  };
 
   if (!userId || portfolios === undefined) {
     // Skeleton cards matching the loaded grid — no spinner, no layout shift.
@@ -110,20 +105,12 @@ export default function DashboardPage() {
     <div>
       <div className="flex items-center justify-between mb-8">
         <h1 className="text-2xl font-bold text-[var(--land-bright)]">{t("dashboard.title")}</h1>
-        <div className="flex items-center gap-2">
-          <Link
-            href="/build"
-            className="rounded-lg bg-[var(--land-accent)] px-4 py-2 text-sm font-semibold text-white hover:bg-[var(--land-accent-hover)] transition-colors"
-          >
-            ✨ {isRTL ? "ابنِ بالذكاء الاصطناعي" : "Build with AI"}
-          </Link>
-          <button
-            onClick={handleNewPortfolio}
-            className="rounded-lg border border-[var(--land-border)] px-4 py-2 text-sm font-medium text-[var(--land-bright)] hover:bg-[var(--land-surface)] transition-colors"
-          >
-            + {t("dashboard.createNew")}
-          </button>
-        </div>
+        <Link
+          href="/build"
+          className="rounded-lg bg-[var(--land-accent)] px-4 py-2 text-sm font-semibold text-white hover:bg-[var(--land-accent-hover)] transition-colors"
+        >
+          ✨ {isRTL ? "ابنِ بالذكاء الاصطناعي" : "Build with AI"}
+        </Link>
       </div>
 
       {!hasPortfolios ? (
@@ -184,12 +171,6 @@ export default function DashboardPage() {
             >
               ✨ {isRTL ? "ابنِ بالذكاء الاصطناعي" : "Build with AI"}
             </Link>
-            <button
-              onClick={handleNewPortfolio}
-              className="mt-3 w-full rounded-lg border border-[var(--land-border)] py-2.5 text-sm font-medium text-[var(--land-bright)] hover:bg-[var(--land-surface)] transition-colors"
-            >
-              {isRTL ? "أو ابدأ من الصفر" : "Or start from scratch"}
-            </button>
           </div>
         </div>
       ) : (
@@ -261,7 +242,7 @@ export default function DashboardPage() {
                 <div className="flex gap-2 flex-wrap">
                   {/* Drafts: continuing to edit is the primary action, not Publish */}
                   <Link
-                    href={`/dashboard/${portfolio._id}/edit`}
+                    href={`/build/${portfolio._id}`}
                     className={`flex-1 text-center rounded-lg px-3 py-1.5 text-sm transition-colors ${
                       portfolio.status === "draft"
                         ? "bg-[var(--land-accent)] font-medium text-white hover:bg-[var(--land-accent-hover)]"

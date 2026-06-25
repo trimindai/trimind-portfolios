@@ -209,7 +209,7 @@ export default function PreviewPage() {
       <div className="flex items-center gap-1.5 border-b border-[var(--land-border)] bg-[var(--land-surface)] px-3 py-2.5 sm:px-4">
         {/* Back to Edit — outlined button */}
         <Link
-          href={`/dashboard/${id}/edit`}
+          href={`/build/${id}`}
           title={t("backToEdit")}
           className="inline-flex min-h-[44px] shrink-0 items-center gap-1.5 rounded-lg border border-[var(--land-border)] bg-[var(--land-surface-raised)]/40 px-3 text-sm font-medium text-[var(--land-bright)] transition-colors hover:border-[var(--land-accent)]/40 hover:bg-[var(--land-surface-raised)] sm:min-h-[40px]"
         >
