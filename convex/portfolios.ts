@@ -159,6 +159,9 @@ export const duplicate = mutation({
 export const update = mutation({
   args: {
     id: v.id("portfolios"),
+    // Allow switching the template from the Studio chat (switchTemplate tool).
+    // Validated against the known ids in the handler below.
+    templateId: v.optional(v.string()),
     basics: v.optional(basicsValidator),
     brands: v.optional(
       v.array(v.object({ name: v.string(), logoUrl: v.optional(v.string()) }))
@@ -318,6 +321,15 @@ export const update = mutation({
   handler: async (ctx, { id, ...fields }) => {
     // Auth + ownership: caller must own this portfolio (admins can edit any).
     await requireAdminOrOwner(ctx, id);
+    // Guard the optional template switch against arbitrary strings.
+    if (
+      fields.templateId !== undefined &&
+      !["general", "engineer", "creative", "developer", "creator"].includes(
+        fields.templateId
+      )
+    ) {
+      throw new Error(`Invalid templateId: "${fields.templateId}".`);
+    }
     // Sanitize project slugs to prevent path-traversal-style strings
     if (fields.projects) {
       const slugPattern = /^[a-z0-9][a-z0-9-]*[a-z0-9]$/;

@@ -110,12 +110,20 @@ export default function DashboardPage() {
     <div>
       <div className="flex items-center justify-between mb-8">
         <h1 className="text-2xl font-bold text-[var(--land-bright)]">{t("dashboard.title")}</h1>
-        <button
-          onClick={handleNewPortfolio}
-          className="rounded-lg bg-[var(--land-accent)] px-4 py-2 text-sm font-medium text-white hover:bg-[var(--land-accent-hover)] transition-colors"
-        >
-          + {t("dashboard.createNew")}
-        </button>
+        <div className="flex items-center gap-2">
+          <Link
+            href="/build"
+            className="rounded-lg bg-[var(--land-accent)] px-4 py-2 text-sm font-semibold text-white hover:bg-[var(--land-accent-hover)] transition-colors"
+          >
+            ✨ {isRTL ? "ابنِ بالذكاء الاصطناعي" : "Build with AI"}
+          </Link>
+          <button
+            onClick={handleNewPortfolio}
+            className="rounded-lg border border-[var(--land-border)] px-4 py-2 text-sm font-medium text-[var(--land-bright)] hover:bg-[var(--land-surface)] transition-colors"
+          >
+            + {t("dashboard.createNew")}
+          </button>
+        </div>
       </div>
 
       {!hasPortfolios ? (
@@ -170,11 +178,17 @@ export default function DashboardPage() {
                   : (isRTL ? "تحميل PDF احترافي" : "Professional PDF download")}
               </li>
             </ul>
+            <Link
+              href="/build"
+              className="mt-6 flex w-full items-center justify-center rounded-lg bg-[var(--land-accent)] py-3 font-semibold text-white hover:bg-[var(--land-accent-hover)] transition-colors"
+            >
+              ✨ {isRTL ? "ابنِ بالذكاء الاصطناعي" : "Build with AI"}
+            </Link>
             <button
               onClick={handleNewPortfolio}
-              className="mt-6 w-full rounded-lg bg-[var(--land-accent)] py-3 font-semibold text-white hover:bg-[var(--land-accent-hover)] transition-colors"
+              className="mt-3 w-full rounded-lg border border-[var(--land-border)] py-2.5 text-sm font-medium text-[var(--land-bright)] hover:bg-[var(--land-surface)] transition-colors"
             >
-              {t("common.getStarted")}
+              {isRTL ? "أو ابدأ من الصفر" : "Or start from scratch"}
             </button>
           </div>
         </div>

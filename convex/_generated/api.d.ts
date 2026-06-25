@@ -10,7 +10,6 @@
 
 import type * as admin from "../admin.js";
 import type * as auth from "../auth.js";
-import type * as bot from "../bot.js";
 import type * as crons from "../crons.js";
 import type * as payments from "../payments.js";
 import type * as portfolios from "../portfolios.js";
@@ -31,7 +30,6 @@ import type {
 declare const fullApi: ApiFromModules<{
   admin: typeof admin;
   auth: typeof auth;
-  bot: typeof bot;
   crons: typeof crons;
   payments: typeof payments;
   portfolios: typeof portfolios;
