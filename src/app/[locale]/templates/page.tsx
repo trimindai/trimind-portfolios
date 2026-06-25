@@ -76,17 +76,13 @@ export default async function TemplatesPage({ params, searchParams }: PageProps)
 
   // Admin-only preview: work-in-progress templates are live for admins (so they
   // can finish & test them) but show as "coming soon" to everyone else.
-  // signedIn also decides the per-card CTA: guests go to the no-auth builder.
   let isAdmin = false;
-  let signedIn = false;
   try {
     const user = await currentUser();
-    signedIn = !!user;
     const email = user?.primaryEmailAddress?.emailAddress?.toLowerCase();
     isAdmin = !!email && ADMIN_EMAILS.includes(email);
   } catch {
     isAdmin = false;
-    signedIn = false;
   }
 
   const priceLabel = isAr
@@ -140,7 +136,7 @@ export default async function TemplatesPage({ params, searchParams }: PageProps)
             {isAr ? "بورتفوليو برو" : "Portfolio Pro"}
           </Link>
           <Link
-            href="/dashboard/new"
+            href="/build"
             className="rounded-lg bg-[var(--land-accent)] px-4 py-2 text-sm font-medium text-white hover:bg-[var(--land-accent-hover)] transition-colors"
           >
             {t.useNav}
@@ -296,11 +292,7 @@ export default async function TemplatesPage({ params, searchParams }: PageProps)
                 </div>
                 <div className="mt-auto pt-4 flex gap-2">
                   <Link
-                    href={
-                      signedIn
-                        ? `/dashboard/new?template=${tpl.id}`
-                        : `/try/${tpl.id}`
-                    }
+                    href="/build"
                     className="flex-1 text-center rounded-lg bg-[var(--land-accent)] px-3 py-2.5 text-sm font-semibold text-white hover:bg-[var(--land-accent-hover)] transition-colors"
                   >
                     {t.use}
@@ -418,7 +410,7 @@ export default async function TemplatesPage({ params, searchParams }: PageProps)
             </span>
           </div>
           <Link
-            href="/dashboard/new"
+            href="/build"
             className="rounded-lg bg-[var(--land-accent)] px-6 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[var(--land-accent-hover)]"
           >
             {t.useNav}

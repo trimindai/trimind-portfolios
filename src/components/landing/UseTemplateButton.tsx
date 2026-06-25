@@ -2,17 +2,11 @@
 
 import { Link } from "@/i18n/navigation";
 
-function isSignedIn(): boolean {
-  if (typeof document === "undefined") return false;
-  const m = document.cookie.match(/(?:^|;\s*)__client_uat=([^;]*)/);
-  if (!m) return false;
-  const v = parseInt(decodeURIComponent(m[1]), 10);
-  return Number.isFinite(v) && v > 0;
-}
-
+// The CV Studio (/build) is the single builder. It's auth-gated, so signed-out
+// visitors are sent to sign-in first (register-first flow), then land on /build.
+// `template` is kept in the props for call-site compatibility but no longer
+// drives the destination — the Studio builds from the uploaded CV.
 export function UseTemplateButton({
-  template,
-  locale,
   label,
   className,
 }: {
@@ -21,10 +15,8 @@ export function UseTemplateButton({
   label: string;
   className?: string;
 }) {
-  const target = isSignedIn() ? `/dashboard/new?template=${template}` : `/try/${template}`;
-
   return (
-    <Link href={target} className={className}>
+    <Link href="/build" className={className}>
       {label}
     </Link>
   );

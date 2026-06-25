@@ -213,13 +213,13 @@ export async function GET(
     <div id="demo-top" style="position:fixed;top:0;left:0;right:0;z-index:9999;background:#ffffff;border-bottom:1px solid #e2e8f0;text-align:center;padding:10px 20px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:13px;display:flex;align-items:center;justify-content:center;gap:12px;color:#64748b;">
       <span style="background:#f1f5f9;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600;color:#94a3b8;letter-spacing:0.05em;">SAMPLE</span>
       <span>This is a sample portfolio — build your own in minutes</span>
-      <a href="/en/dashboard/new?template=${templateId}" style="color:white;background:#059669;padding:6px 16px;border-radius:6px;text-decoration:none;font-weight:600;font-size:12px;">Use this template — 4.900 KD</a>
+      <a href="/en/build" style="color:white;background:#059669;padding:6px 16px;border-radius:6px;text-decoration:none;font-weight:600;font-size:12px;">Use this template — 4.900 KD</a>
     </div>`;
 
   const bottomBanner = `
     <div style="position:fixed;bottom:0;left:0;right:0;z-index:9999;background:#059669;color:white;text-align:center;padding:12px 20px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:14px;display:flex;align-items:center;justify-content:center;gap:12px;">
       <span>Ready to build yours?</span>
-      <a href="/en/dashboard/new?template=${templateId}" style="color:#059669;background:white;padding:8px 20px;border-radius:6px;text-decoration:none;font-weight:700;font-size:13px;">Start Free — 4.900 KD &rarr;</a>
+      <a href="/en/build" style="color:#059669;background:white;padding:8px 20px;border-radius:6px;text-decoration:none;font-weight:700;font-size:13px;">Start Free — 4.900 KD &rarr;</a>
     </div>`;
 
   const seoMeta = `
