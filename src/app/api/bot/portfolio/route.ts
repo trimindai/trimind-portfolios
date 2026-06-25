@@ -80,6 +80,13 @@ export async function POST(req: NextRequest) {
       }
 
       case "markPaid": {
+        // Defense-in-depth (IDOR fix): assert the caller owns this portfolio
+        // before the id-scoped markPaid, mirroring the other actions.
+        await convexClient.mutation(bot.getForBot, {
+          serverSecret: secret,
+          userId: body.userId as Id<"users">,
+          portfolioId: body.portfolioId as Id<"portfolios">,
+        });
         // MVP: real MyFatoorah flow is Clerk-gated and the bot can't drive it.
         // This confirms payment server-side via the existing id-scoped mutation.
         // NEVER markPaidByUser (it flips the wrong "latest draft" on replay).
@@ -96,6 +103,7 @@ export async function POST(req: NextRequest) {
         // never supplies markup — only the Next side renders it.
         const portfolio = await convexClient.mutation(bot.getForBot, {
           serverSecret: secret,
+          userId: body.userId as Id<"users">,
           portfolioId: body.portfolioId as Id<"portfolios">,
         });
         if (!portfolio) return NextResponse.json({ error: "not_found" }, { status: 404 });
@@ -116,6 +124,7 @@ export async function POST(req: NextRequest) {
       case "get": {
         const portfolio = await convexClient.mutation(bot.getForBot, {
           serverSecret: secret,
+          userId: body.userId as Id<"users">,
           portfolioId: body.portfolioId as Id<"portfolios">,
         });
         return NextResponse.json({ ok: true, portfolio });

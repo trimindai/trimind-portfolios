@@ -220,9 +220,10 @@ export const publishForBot = mutation({
 
 /** Full doc for the re-edit round-trip (server-secret only). */
 export const getForBot = mutation({
-  args: { serverSecret: v.string(), portfolioId: v.id("portfolios") },
-  handler: async (ctx, { serverSecret, portfolioId }) => {
+  args: { serverSecret: v.string(), userId: v.id("users"), portfolioId: v.id("portfolios") },
+  handler: async (ctx, { serverSecret, userId, portfolioId }) => {
     verifyServerSecret(serverSecret);
-    return await ctx.db.get(portfolioId);
+    // Ownership check (IDOR fix): never return a portfolio the caller doesn't own.
+    return await ownedBy(ctx, portfolioId, userId);
   },
 });
