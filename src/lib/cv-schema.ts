@@ -14,8 +14,27 @@ export const TEMPLATE_IDS = [
 ] as const;
 export type TemplateId = (typeof TEMPLATE_IDS)[number];
 
+// The model emits JSON `null` for fields a real CV doesn't have (a job with no
+// start date, a certification with no issuer, etc.). Zod's `.default()` and
+// `.nullish()` only handle `undefined`, NOT `null`, so an incomplete real CV
+// would throw a ZodError → 500. Deep-convert null → undefined before validation
+// so defaults apply and optionals pass. Structural strings below also carry a
+// `.default("")` so a missing title/company can never throw either.
+function nullsToUndefined(v: unknown): unknown {
+  if (v === null) return undefined;
+  if (Array.isArray(v)) return v.map(nullsToUndefined);
+  if (v && typeof v === "object") {
+    const out: Record<string, unknown> = {};
+    for (const [k, val] of Object.entries(v as Record<string, unknown>)) {
+      out[k] = nullsToUndefined(val);
+    }
+    return out;
+  }
+  return v;
+}
+
 const Language = z.object({
-  name: z.string(),
+  name: z.string().default(""),
   level: z.string().nullish(),
 });
 
@@ -33,8 +52,8 @@ const Basics = z.object({
 });
 
 const Experience = z.object({
-  title: z.string(),
-  company: z.string(),
+  title: z.string().default(""),
+  company: z.string().default(""),
   startDate: z.string().default(""),
   endDate: z.string().nullish(),
   description: z.string().nullish(),
@@ -42,42 +61,45 @@ const Experience = z.object({
 });
 
 const SkillGroup = z.object({
-  category: z.string(),
+  category: z.string().default(""),
   items: z.array(z.string()).default([]),
 });
 
 const Project = z.object({
-  title: z.string(),
+  title: z.string().default(""),
   description: z.string().default(""),
   technologies: z.array(z.string()).nullish(),
   link: z.string().nullish(),
 });
 
 const Education = z.object({
-  degree: z.string(),
-  institution: z.string(),
+  degree: z.string().default(""),
+  institution: z.string().default(""),
   year: z.string().default(""),
   description: z.string().nullish(),
 });
 
 const Certification = z.object({
-  name: z.string(),
+  name: z.string().default(""),
   issuer: z.string().default(""),
   year: z.string().nullish(),
 });
 
-export const CvSchema = z.object({
-  is_cv: z.boolean().default(true),
-  confidence: z.number().default(0),
-  templateId: z.enum(TEMPLATE_IDS).default("general"),
-  basics: Basics.default({ fullName: "", title: "", email: "" }),
-  experience: z.array(Experience).default([]),
-  skills: z.array(SkillGroup).default([]),
-  projects: z.array(Project).default([]),
-  education: z.array(Education).default([]),
-  certifications: z.array(Certification).default([]),
-  languages: z.array(Language).default([]),
-});
+export const CvSchema = z.preprocess(
+  nullsToUndefined,
+  z.object({
+    is_cv: z.boolean().default(true),
+    confidence: z.number().default(0),
+    templateId: z.enum(TEMPLATE_IDS).default("general"),
+    basics: Basics.default({ fullName: "", title: "", email: "" }),
+    experience: z.array(Experience).default([]),
+    skills: z.array(SkillGroup).default([]),
+    projects: z.array(Project).default([]),
+    education: z.array(Education).default([]),
+    certifications: z.array(Certification).default([]),
+    languages: z.array(Language).default([]),
+  })
+);
 
 export type Cv = z.infer<typeof CvSchema>;
 
@@ -89,7 +111,8 @@ export const PARSE_SYSTEM =
   "salary, or date of birth, even if present. (3) Pick the single best templateId: " +
   "'engineer' for engineering/oil/technical, 'developer' for software, 'creative' " +
   "for design/art/media, 'creator' for content/marketing/influencer, else 'general'. " +
-  "(4) Preserve the CV's language (Arabic stays Arabic). (5) If the input is clearly " +
+  "(4) Preserve the CV's language (Arabic stays Arabic). (5) If a field is unknown, " +
+  "OMIT it or use an empty string — never guess. (6) If the input is clearly " +
   "not a CV, set is_cv=false. Return ONLY a JSON object, no prose, no markdown fences. " +
   "Shape: {is_cv:boolean, confidence:number, templateId:string, " +
   "basics:{fullName,title,summary,location,email,phone,website,linkedin,github," +
@@ -130,8 +153,10 @@ export function toCreateBasics(
 /** Map the parsed CV → the patch body for portfolios.update (no basics/template). */
 export function toUpdatePatch(cv: Cv): Record<string, unknown> {
   const patch: Record<string, unknown> = {};
-  if (cv.experience.length) {
-    patch.experience = cv.experience.map((e) => ({
+  // Drop entirely-empty entries the model occasionally emits for sparse CVs.
+  const experience = cv.experience.filter((e) => e.title || e.company);
+  if (experience.length) {
+    patch.experience = experience.map((e) => ({
       title: e.title,
       company: e.company,
       startDate: e.startDate || "",
@@ -140,38 +165,43 @@ export function toUpdatePatch(cv: Cv): Record<string, unknown> {
       ...(e.highlights?.length ? { highlights: e.highlights } : {}),
     }));
   }
-  if (cv.skills.length) {
-    patch.skills = cv.skills.map((sk) => ({
+  const skills = cv.skills.filter((sk) => sk.category || sk.items.length);
+  if (skills.length) {
+    patch.skills = skills.map((sk) => ({
       category: sk.category,
       items: sk.items || [],
     }));
   }
-  if (cv.projects.length) {
-    patch.projects = cv.projects.map((p) => ({
+  const projects = cv.projects.filter((p) => p.title);
+  if (projects.length) {
+    patch.projects = projects.map((p) => ({
       title: p.title,
       description: p.description || "",
       ...(p.technologies?.length ? { technologies: p.technologies } : {}),
       ...(p.link ? { link: p.link } : {}),
     }));
   }
-  if (cv.education.length) {
-    patch.education = cv.education.map((ed) => ({
+  const education = cv.education.filter((ed) => ed.degree || ed.institution);
+  if (education.length) {
+    patch.education = education.map((ed) => ({
       degree: ed.degree,
       institution: ed.institution,
       year: ed.year || "",
       ...(ed.description ? { description: ed.description } : {}),
     }));
   }
-  if (cv.certifications.length) {
-    patch.certifications = cv.certifications.map((c) => ({
+  const certifications = cv.certifications.filter((c) => c.name);
+  if (certifications.length) {
+    patch.certifications = certifications.map((c) => ({
       name: c.name,
       issuer: c.issuer || "",
       ...(c.year ? { year: c.year } : {}),
     }));
   }
-  if (cv.languages.length) {
+  const languages = cv.languages.filter((l) => l.name);
+  if (languages.length) {
     // platform `languages` requires a non-optional level
-    patch.languages = cv.languages.map((l) => ({
+    patch.languages = languages.map((l) => ({
       name: l.name,
       level: l.level || "Fluent",
     }));
