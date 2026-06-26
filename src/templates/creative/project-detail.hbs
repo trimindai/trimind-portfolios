@@ -29,10 +29,11 @@
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 :root {
   --bg: {{safeColor customization.bgColor "#EFEEEA"}};
-  --bg-alt: #E6DAC6; --bg-card: #F5F0E7; --sand: #EBBEAA;
-  --text: #1E2A44; --text-dim: #4C587A; --text-muted: #8B8473; --border: #D8C7AE;
+  --text: {{textOn customization.bgColor "#EFEEEA"}};
+  --bg-alt: color-mix(in srgb, var(--bg), var(--text) 9%); --bg-card: color-mix(in srgb, var(--bg), var(--text) 5%); --sand: #EBBEAA;
+  --text-dim: color-mix(in srgb, var(--text) 68%, var(--bg)); --text-muted: color-mix(in srgb, var(--text) 48%, var(--bg)); --border: color-mix(in srgb, var(--text) 16%, var(--bg));
   --accent: {{safeColor customization.accentColor "#B86F52"}};
-  --link: #496AB1;
+  --link: color-mix(in srgb, #496AB1, var(--text) 28%);
   --font-head: 'Geist', system-ui, sans-serif; --font-mono: 'Geist Mono', ui-monospace, monospace;
 }
 body { font-family: var(--font-head); background: var(--bg); color: var(--text); min-height: 100dvh; overflow-x: hidden; -webkit-font-smoothing: antialiased; }

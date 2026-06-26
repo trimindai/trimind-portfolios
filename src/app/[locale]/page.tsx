@@ -264,7 +264,7 @@ export default async function LandingPage({
               <HeroReel
                 locale={locale}
                 poster="/landing/mockup-corporate-2026b.webp"
-                demoHref="/demo/general"
+                demoHref="/demo/corporate/index.html"
               />
               <p className="mt-3 text-center text-xs text-[var(--land-muted)]">
                 {isRTL

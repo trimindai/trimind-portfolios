@@ -565,8 +565,11 @@ export default function StudioClient({ initialId }: { initialId?: string }) {
                   preview updates live. ponytail: color input patches on every
                   change; debounce only if write volume ever matters. */}
               <div className="mt-4 border-t border-[var(--land-border)] pt-3">
-                <p className="mb-2 text-xs font-medium text-[var(--land-muted)]">
-                  {T("Custom", "مخصص")}
+                <p className="mb-0.5 text-xs font-semibold text-[var(--land-bright)]">
+                  {T("Custom colours", "ألوان مخصصة")}
+                </p>
+                <p className="mb-2 text-[11px] text-[var(--land-muted)]">
+                  {T("Pick any colour — primary, accent & background", "اختر أي لون — الأساسي والمميّز والخلفية")}
                 </p>
                 <div className="space-y-2">
                   {COLOR_FIELDS.map((f) => {

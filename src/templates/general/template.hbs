@@ -42,6 +42,7 @@
     --text-dim: #94A3B8;
     --text-on-dark: #E2E8F0;
     --text-on-dark-dim: #94A3B8;
+    --text-on-accent: #fff;
     --border: #E2E8F0;
     --border-strong: #CBD5E1;
 
@@ -301,7 +302,7 @@ a { text-decoration: none; color: inherit; }
     width: 100%; height: 100%;
     display: flex; align-items: center; justify-content: center;
     background: linear-gradient(135deg, var(--gold-warm), var(--gold));
-    color: #fff; font-weight: 700; letter-spacing: 0.04em;
+    color: var(--text-on-accent); font-weight: 700; letter-spacing: 0.04em;
     font-size: clamp(3.5rem, 12vw, 6rem); line-height: 1;
     text-transform: uppercase; user-select: none;
 }
@@ -520,7 +521,7 @@ a { text-decoration: none; color: inherit; }
     align-items: center; justify-content: center;
     margin-bottom: 16px;
 }
-.comp-icon svg { width: 20px; height: 20px; color: #fff; }
+.comp-icon svg { width: 20px; height: 20px; color: var(--text-on-dark); }
 .comp-group h3 {
     font-family: var(--font-head);
     font-size: 0.95rem; font-weight: 600;
@@ -662,7 +663,7 @@ a { text-decoration: none; color: inherit; }
     border-radius: 50%;
     display: flex; align-items: center; justify-content: center;
     background: linear-gradient(135deg, var(--gold-warm), var(--gold));
-    color: #fff; font-weight: 700; letter-spacing: 0.02em;
+    color: var(--text-on-accent); font-weight: 700; letter-spacing: 0.02em;
     font-size: 0.82rem; line-height: 1;
     text-transform: uppercase; user-select: none;
 }
@@ -680,7 +681,7 @@ a { text-decoration: none; color: inherit; }
 .contact { background: var(--navy); color: var(--text-on-dark); }
 .contact .section-label { color: var(--gold-warm); }
 .contact .section-label::before { background: var(--gold-warm); }
-.contact .section-title { color: #fff; }
+.contact .section-title { color: var(--text-on-dark); }
 .contact .section-title em { color: var(--gold-warm); }
 
 .contact-grid {
@@ -697,7 +698,7 @@ a { text-decoration: none; color: inherit; }
 .contact-cell svg { width: 22px; height: 22px; color: var(--gold-warm); margin: 0 auto 12px; display: block; }
 .contact-cell h4 {
     font-family: var(--font-head);
-    font-size: 0.8rem; font-weight: 600; color: #fff;
+    font-size: 0.8rem; font-weight: 600; color: var(--text-on-dark);
     margin-bottom: 4px;
 }
 .contact-cell p {
@@ -711,7 +712,7 @@ a { text-decoration: none; color: inherit; }
 }
 .lang-btn {
     padding: 10px 20px; border-radius: 100px;
-    background: var(--navy); color: #fff;
+    background: var(--navy); color: var(--text-on-dark);
     font-size: 0.82rem; font-weight: 600;
     font-family: var(--font-body);
     border: none; cursor: pointer;
@@ -1066,21 +1067,26 @@ footer a:hover { border-color: var(--gold-warm); }
 <style>
 {{#if customization.primaryColor}}
 :root {
-    --navy: {{customization.primaryColor}};
-    --navy-deep: {{customization.primaryColor}};
+    --navy: {{safeColor customization.primaryColor "#0F172A"}};
+    --navy-deep: {{safeColor customization.primaryColor "#0F172A"}};
+    /* readable text for the navy/dark sections, derived from the chosen primary */
+    --text-on-dark: {{textOn customization.primaryColor "#0F172A"}};
+    --text-on-dark-dim: color-mix(in srgb, {{textOn customization.primaryColor "#0F172A"}} 62%, {{safeColor customization.primaryColor "#0F172A"}});
 }
 {{/if}}
 {{#if customization.accentColor}}
 :root {
-    --gold: {{customization.accentColor}};
-    --gold-warm: {{customization.accentColor}};
-    --gold-light: {{customization.accentColor}}12;
-    --gold-border: {{customization.accentColor}}2e;
+    --gold: {{safeColor customization.accentColor "#A16207"}};
+    --gold-warm: {{safeColor customization.accentColor "#A16207"}};
+    --gold-light: color-mix(in srgb, {{safeColor customization.accentColor "#A16207"}} 7%, transparent);
+    --gold-border: color-mix(in srgb, {{safeColor customization.accentColor "#A16207"}} 18%, transparent);
+    --text-on-accent: {{textOn customization.accentColor "#A16207"}};
 }
 {{/if}}
 {{#if customization.bgColor}}
 :root {
-    --bg: {{customization.bgColor}};
+    --bg: {{safeColor customization.bgColor "#F8FAFC"}};
+    --text: {{textOn customization.bgColor "#F8FAFC"}};
 }
 {{/if}}
 {{#if customization.fontFamily}}

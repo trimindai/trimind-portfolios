@@ -21,7 +21,7 @@ const TEMPLATES: Tpl[] = [
   {
     id: "general",
     useId: "corporate",
-    demo: "/demo/general",
+    demo: "/demo/corporate/index.html",
     mockup: "/landing/mockup-corporate-2026b.webp",
     en: "Corporate",
     ar: "مؤسسي",
@@ -31,7 +31,7 @@ const TEMPLATES: Tpl[] = [
   {
     id: "engineer",
     useId: "engineer",
-    demo: "/demo/engineer",
+    demo: "/demo/engineer/index.html",
     mockup: "/landing/mockup-engineer-2026b.webp",
     en: "Engineer",
     ar: "هندسي",
@@ -41,7 +41,7 @@ const TEMPLATES: Tpl[] = [
   {
     id: "creative",
     useId: "creative",
-    demo: "/demo/creative",
+    demo: "/demo/creative/index.html",
     mockup: "/landing/mockup-creative-2026b.webp",
     en: "Creative",
     ar: "إبداعي",
@@ -51,7 +51,7 @@ const TEMPLATES: Tpl[] = [
   {
     id: "creator",
     useId: "creator",
-    demo: "/demo/creator",
+    demo: "/demo/creator/index.html",
     mockup: "/landing/mockup-creator-2026b.webp",
     en: "Creator",
     ar: "صانع محتوى",
@@ -61,7 +61,7 @@ const TEMPLATES: Tpl[] = [
   {
     id: "developer",
     useId: "developer",
-    demo: "/demo/developer",
+    demo: "/demo/developer/index.html",
     mockup: "/landing/mockup-developer-2026b.webp",
     en: "Developer",
     ar: "مطوّر",
