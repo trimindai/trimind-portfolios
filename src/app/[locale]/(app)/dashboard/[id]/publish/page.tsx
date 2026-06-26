@@ -64,6 +64,30 @@ function HostingPublishPage() {
   const [published, setPublished] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
+  // Selected bundled tier (Free Preview = the watermarked draft, not bought here).
+  const [tier, setTier] = useState<"essential" | "pro" | "pro_review">("pro");
+  const L = (en: string, ar: string) => (locale === "ar" ? ar : en);
+  const TIERS = [
+    {
+      key: "essential" as const,
+      price: "4.900",
+      name: L("CV Essential", "السيرة الأساسية"),
+      sub: L("ATS PDF, watermark off — no live page", "PDF احترافي بدون علامة — بدون صفحة"),
+    },
+    {
+      key: "pro" as const,
+      price: "9.900",
+      name: L("Portfolio Pro", "بورتفوليو برو"),
+      sub: L("PDF + live page + QR + lifetime hosting", "PDF + صفحة مباشرة + QR + استضافة دائمة"),
+      star: true,
+    },
+    {
+      key: "pro_review" as const,
+      price: "24.900",
+      name: L("Pro + Expert Review", "برو + مراجعة خبير"),
+      sub: L("Pro + human CV review (48h)", "برو + مراجعة بشرية (٤٨ ساعة)"),
+    },
+  ];
 
   const reserveSlugMutation = useMutation(api.portfolios.reserveSlug);
 
@@ -162,8 +186,13 @@ function HostingPublishPage() {
 
   const portfolioUrl = `https://portfolio-trimind.com/p/${slug}`;
 
+  // Essential = PDF only, so it never needs a public slug.
+  const essentialDraft =
+    portfolio?.status === "draft" && !isAdmin && tier === "essential";
+
   const handlePublish = useCallback(async () => {
-    if (!portfolio || !slugAvailable) return;
+    if (!portfolio) return;
+    if (!essentialDraft && !slugAvailable) return;
 
     setPublishing(true);
     setError(null);
@@ -172,7 +201,7 @@ function HostingPublishPage() {
       // Lock the name FIRST, before any slow step (payment, HTML generation),
       // so no one else can grab it — and so the user never pays for a name they
       // then lose. Already-published re-publishes keep their existing name.
-      if (portfolio.status !== "published") {
+      if (portfolio.status !== "published" && !essentialDraft) {
         try {
           await reserveSlugMutation({ id: id as Id<"portfolios">, slug });
         } catch (e) {
@@ -218,6 +247,7 @@ function HostingPublishPage() {
             body: JSON.stringify({
               portfolioId: id,
               locale,
+              tier,
               mobile: mobileDigits,
               mobileCountryCode: "+965",
             }),
@@ -282,7 +312,37 @@ function HostingPublishPage() {
     } finally {
       setPublishing(false);
     }
-  }, [portfolio, slugAvailable, locale, slug, mobile, isRTL, id, reserveSlugMutation, isAdmin, t]);
+  }, [portfolio, slugAvailable, locale, slug, mobile, isRTL, id, reserveSlugMutation, isAdmin, t, tier, essentialDraft]);
+
+  // Essential buyers can upgrade to Pro (live page + QR) for the delta price.
+  const upgradeToPro = useCallback(async () => {
+    setPublishing(true);
+    setError(null);
+    try {
+      const mobileDigits = mobile.replace(/\D/g, "");
+      const payRes = await fetch("/api/myfatoorah/initiate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          portfolioId: id,
+          locale,
+          tier: "pro",
+          mobile: mobileDigits || undefined,
+          mobileCountryCode: "+965",
+        }),
+      });
+      const payData = await payRes.json();
+      if (!payRes.ok) throw new Error(payData.message || payData.error || "Failed");
+      if (payData.paymentUrl) {
+        window.location.href = payData.paymentUrl;
+        return;
+      }
+      if (payData.alreadyPaid) window.location.reload();
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Something went wrong.");
+      setPublishing(false);
+    }
+  }, [id, locale, mobile]);
 
   const handleCopyUrl = useCallback(async () => {
     try {
@@ -311,6 +371,64 @@ function HostingPublishPage() {
     return (
       <div className="flex min-h-screen items-center justify-center bg-[var(--land-bg)]">
         <p className="text-[var(--land-body)]">Portfolio not found.</p>
+      </div>
+    );
+  }
+
+  // Essential = PDF only: after payment there's no public page to publish, so
+  // show the download + an upgrade-to-Pro path instead of the publish form.
+  const effTier =
+    portfolio.tier ??
+    (portfolio.status === "paid" || portfolio.status === "published"
+      ? "pro"
+      : null);
+  if (
+    portfolio.status === "paid" &&
+    effTier === "essential" &&
+    !isAdmin &&
+    !published
+  ) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-[var(--land-bg)] px-4">
+        <div className="w-full max-w-lg rounded-2xl border border-[var(--land-border)] bg-[var(--land-surface)] p-8 text-center">
+          <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-[var(--land-accent-subtle)]">
+            <CheckCircle2 className="h-12 w-12 text-[var(--land-accent)]" />
+          </div>
+          <h1 className="text-2xl font-bold text-[var(--land-bright)]">
+            {L("Your CV is ready", "سيرتك جاهزة")}
+          </h1>
+          <p className="mt-2 text-sm text-[var(--land-body)]">
+            {L(
+              "Paid ✓ — download your watermark-free PDF.",
+              "تم الدفع ✓ — حمّل ملف PDF بدون علامة مائية."
+            )}
+          </p>
+          <Link
+            href={`/dashboard/${id}/preview?paid=1`}
+            className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-lg bg-[var(--land-accent)] px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-[var(--land-accent-hover)]"
+          >
+            <Download className="h-4 w-4" />
+            {L("Download CV PDF", "حمّل ملف PDF")}
+          </Link>
+          <button
+            onClick={() => upgradeToPro()}
+            disabled={publishing}
+            className="mt-3 inline-flex w-full items-center justify-center gap-2 rounded-lg border border-[var(--land-border)] bg-[var(--land-surface-raised)] px-6 py-3 text-sm font-medium text-[var(--land-bright)] transition-colors hover:bg-[var(--land-border)] disabled:opacity-50"
+          >
+            {publishing ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
+            {L(
+              "Upgrade to Pro — 5.000 KWD (live page + QR)",
+              "ترقية إلى برو — ٥٫٠٠٠ د.ك (صفحة مباشرة + QR)"
+            )}
+          </button>
+          {error && <p className="mt-3 text-sm text-red-400">{error}</p>}
+          <Link
+            href="/dashboard"
+            className="mt-6 inline-block text-sm text-[var(--land-muted)] hover:text-[var(--land-bright)]"
+          >
+            {L("Back to Dashboard", "العودة للوحة")}
+          </Link>
+        </div>
       </div>
     );
   }
@@ -398,24 +516,56 @@ function HostingPublishPage() {
           <h1 className="text-2xl font-bold text-[var(--land-bright)]">{t("title")}</h1>
           <p className="mt-2 text-sm text-[var(--land-body)]">{t("chooseSlug")}</p>
 
-          {/* Price — what the one-time payment costs. Shown only to draft,
-              non-admin users (the only ones who actually pay). */}
+          {/* Choose a plan — only drafts (non-admin) actually pay. */}
           {portfolio.status === "draft" && !isAdmin && (
-            <div className="mt-6 rounded-xl border border-[var(--land-border)] bg-[var(--land-surface-raised)]/60 p-5 text-center">
+            <div className="mt-6 space-y-2">
               <p className="text-xs uppercase tracking-wider text-[var(--land-muted)]">
-                {t("priceLabel")}
+                {L("Choose your plan", "اختر باقتك")}
               </p>
-              <p className="mt-1 text-3xl font-bold text-[var(--land-bright)]">
-                {t("priceAmount")}
-              </p>
-              <p className="mt-1.5 text-xs text-[var(--land-muted)]">
-                {t("priceCaption")}
-              </p>
+              {TIERS.map((tplan) => {
+                const active = tier === tplan.key;
+                return (
+                  <button
+                    key={tplan.key}
+                    type="button"
+                    onClick={() => setTier(tplan.key)}
+                    className={`flex w-full items-center justify-between gap-3 rounded-xl border p-4 text-start transition-colors ${
+                      active
+                        ? "border-[var(--land-accent)] bg-[var(--land-accent-subtle)]/40"
+                        : "border-[var(--land-border)] bg-[var(--land-surface-raised)]/60 hover:border-[var(--land-accent)]/60"
+                    }`}
+                  >
+                    <span className="min-w-0">
+                      <span className="flex items-center gap-2">
+                        <span className="font-semibold text-[var(--land-bright)]">
+                          {tplan.name}
+                        </span>
+                        {"star" in tplan && tplan.star && (
+                          <span className="rounded-full bg-[var(--land-accent)] px-2 py-0.5 text-[10px] font-bold text-white">
+                            {L("RECOMMENDED", "موصى به")}
+                          </span>
+                        )}
+                      </span>
+                      <span className="mt-0.5 block text-xs text-[var(--land-muted)]">
+                        {tplan.sub}
+                      </span>
+                    </span>
+                    <span className="shrink-0 text-end">
+                      <span className="block text-lg font-bold text-[var(--land-bright)]">
+                        {tplan.price}
+                      </span>
+                      <span className="block text-[10px] text-[var(--land-muted)]">
+                        {L("KWD · one-time", "د.ك · مرة واحدة")}
+                      </span>
+                    </span>
+                  </button>
+                );
+              })}
             </div>
           )}
 
-          {/* Slug input */}
-          <div className="mt-6">
+          {/* Slug input — hidden for Essential (PDF only, no public page). */}
+          <div className={`mt-6 ${essentialDraft ? "hidden" : ""}`}>
             <label className="mb-2 block text-sm font-medium text-[var(--land-bright)]">
               {t("chooseSlug")}
             </label>
@@ -526,18 +676,23 @@ function HostingPublishPage() {
           {/* Publish button */}
           <button
             onClick={handlePublish}
-            disabled={publishing || !slugAvailable || slug.length < 2}
+            disabled={
+              publishing ||
+              (!essentialDraft && (!slugAvailable || slug.length < 2))
+            }
             className="mt-6 flex w-full items-center justify-center gap-2 rounded-lg bg-[var(--land-accent)] px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-[var(--land-accent-hover)] disabled:cursor-not-allowed disabled:opacity-50"
           >
             {publishing ? (
               <>
                 <Loader2 className="h-4 w-4 animate-spin" />
                 {portfolio.status === "draft" && !isAdmin
-                  ? "Redirecting to payment..."
-                  : "Publishing..."}
+                  ? L("Redirecting to payment…", "جارٍ التحويل للدفع…")
+                  : L("Publishing…", "جارٍ النشر…")}
               </>
             ) : portfolio.status === "draft" && !isAdmin ? (
-              t("payAndDownload")
+              `${L("Pay", "ادفع")} ${
+                TIERS.find((x) => x.key === tier)?.price ?? ""
+              } KWD`
             ) : (
               tc("publish")
             )}
@@ -547,6 +702,7 @@ function HostingPublishPage() {
               so — a greyed-out button with no explanation reads as "broken". */}
           {portfolio.status === "draft" &&
             !isAdmin &&
+            !essentialDraft &&
             !publishing &&
             (!slugAvailable || slug.length < 2) && (
               <p className="mt-2 text-center text-xs text-[var(--land-muted)]">
