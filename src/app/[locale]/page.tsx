@@ -2,17 +2,13 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { ScrollReveal } from "@/components/landing/ScrollReveal";
 import { Testimonials } from "@/components/landing/Testimonials";
+import { Fragment } from "react";
 import {
   Palette,
   Languages,
   FileDown,
   Globe,
-  Eye,
-  UserPlus,
-  Upload,
-  PencilLine,
   Sparkles,
-  SlidersHorizontal,
   Download,
   MessageCircle,
   Mail,
@@ -276,55 +272,57 @@ export default async function LandingPage({
         </div>
       </section>
 
-      {/* ── How it works — the 7-step journey ──────────── */}
-      <section id="how" className="scroll-mt-20 py-16 sm:py-24 px-6 border-b border-[var(--land-border)]/50">
+      {/* ── How it works — 3 simple steps ──────────── */}
+      <section id="how" className="scroll-mt-20 border-b border-[var(--land-border)]/50 px-6 py-16 sm:py-24">
         <ScrollReveal>
           <div className="mx-auto max-w-3xl text-center">
-            <p className="text-sm font-medium tracking-widest uppercase text-[var(--land-accent)]">
+            <p className="text-sm font-medium uppercase tracking-widest text-[var(--land-accent)]">
               {isRTL ? "كيف يعمل" : "How it works"}
             </p>
             <h2
               className="mt-3 font-extrabold tracking-tighter"
               style={{ fontSize: "clamp(1.75rem, 4vw, 2.75rem)" }}
             >
-              {isRTL
-                ? "من سيرتك القديمة إلى سيرة احترافية — بخطوات بسيطة"
-                : "From your old CV to a professional one — in a few simple steps"}
+              {isRTL ? "ثلاث خطوات بسيطة" : "Three simple steps"}
             </h2>
             <p className="mt-4 text-[var(--land-body)]">
               {isRTL
-                ? "بدون خبرة تصميم وبدون نماذج معقّدة. اكتب بلغتك العادية ودع الذكاء الاصطناعي يتولّى الباقي."
-                : "No design skills, no complicated forms. Write in plain language and let AI do the rest."}
+                ? "من سيرتك القديمة إلى سيرة احترافية — بدون خبرة تصميم."
+                : "From your old CV to a professional one — no design skills needed."}
             </p>
           </div>
         </ScrollReveal>
-        <div className="mx-auto mt-12 grid max-w-5xl grid-cols-2 gap-4 md:grid-cols-4">
+        <div className="mx-auto mt-12 flex max-w-5xl flex-col items-stretch gap-4 md:flex-row md:items-center md:gap-2">
           {[
-            { Icon: UserPlus, en: "Register", ar: "أنشئ حسابك", enSub: "30 seconds, free", arSub: "٣٠ ثانية، مجانًا" },
-            { Icon: Upload, en: "Drop your CV", ar: "أسقط سيرتك", enSub: "PDF, Word, or a photo", arSub: "PDF أو Word أو صورة" },
-            { Icon: PencilLine, en: "Write in plain language", ar: "اكتب بلغتك", enSub: "Tell it what you want", arSub: "قل له ماذا تريد" },
-            { Icon: Sparkles, en: "AI builds it", ar: "الذكاء الاصطناعي يبني", enSub: "A full draft, instantly", arSub: "مسودة كاملة، فورًا" },
-            { Icon: SlidersHorizontal, en: "Customize", ar: "خصّص", enSub: "Colours, fonts, sections", arSub: "ألوان، خطوط، أقسام" },
-            { Icon: Eye, en: "Preview & edit", ar: "عاين وعدّل", enSub: "Live, exactly as printed", arSub: "مباشر، كما سيُطبع" },
-            { Icon: Download, en: "Pay & get your CV", ar: "ادفع واستلمها", enSub: "Editable pro PDF + QR", arSub: "PDF احترافي قابل للتعديل + QR" },
+            { Icon: Sparkles, en: "Build with AI", ar: "ابنِ بالذكاء الاصطناعي", enSub: "Register, drop your CV, and write what you want in plain language — AI builds your portfolio instantly.", arSub: "سجّل، أسقط سيرتك، واكتب ما تريد بلغتك — والذكاء الاصطناعي يبني بورتفوليوك فورًا." },
+            { Icon: MessageCircle, en: "Preview & edit by chat", ar: "عاين وعدّل بالمحادثة", enSub: "See it live and refine anything — just chat with the AI to change text, colours, or layout.", arSub: "شاهده مباشرة وعدّل أي شيء — حادث الذكاء الاصطناعي لتغيير النص أو الألوان أو التنسيق." },
+            { Icon: Download, en: "Get your editable pro CV", ar: "احصل على سيرتك الاحترافية", enSub: "Pay once and get your editable pro CV (PDF + QR) and live page — ready in your dashboard.", arSub: "ادفع مرة واحدة واحصل على سيرتك الاحترافية القابلة للتعديل (PDF + QR) وصفحة حيّة في لوحة التحكم." },
           ].map((s, i) => (
-            <div
-              key={i}
-              className={`relative rounded-xl border bg-[var(--land-surface)] p-5 ${
-                i === 6
-                  ? "col-span-2 border-[var(--land-accent)]/40 bg-[var(--land-accent-subtle)] md:col-span-1"
-                  : "border-[var(--land-border)]"
-              }`}
-            >
-              <span className="absolute top-3 end-3 text-xs font-bold text-[var(--land-muted)]">
-                {isRTL ? "١٢٣٤٥٦٧"[i] : i + 1}
-              </span>
-              <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-[var(--land-accent-subtle)] text-[var(--land-accent)]">
-                <s.Icon className="h-5 w-5" />
-              </span>
-              <p className="mt-3 text-sm font-semibold text-[var(--land-bright)]">{isRTL ? s.ar : s.en}</p>
-              <p className="mt-1 text-xs text-[var(--land-muted)]">{isRTL ? s.arSub : s.enSub}</p>
-            </div>
+            <Fragment key={i}>
+              <div className="flex-1 rounded-2xl border border-[var(--land-border)] bg-[var(--land-surface)] p-6 text-center">
+                <span className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-[var(--land-accent-subtle)] text-[var(--land-accent)]">
+                  <s.Icon className="h-6 w-6" />
+                </span>
+                <p className="mt-4 text-xs font-bold text-[var(--land-accent)]">
+                  {isRTL ? "الخطوة " + "١٢٣"[i] : "STEP " + (i + 1)}
+                </p>
+                <h3 className="mt-1 text-lg font-bold tracking-tight">{isRTL ? s.ar : s.en}</h3>
+                <p className="mt-2 text-sm leading-relaxed text-[var(--land-body)]">{isRTL ? s.arSub : s.enSub}</p>
+              </div>
+              {i < 2 && (
+                <span className="mx-auto text-[var(--land-muted)] md:mx-1" aria-hidden="true">
+                  <svg
+                    className={`h-6 w-6 rotate-90 md:rotate-0 ${isRTL ? "md:-scale-x-100" : ""}`}
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    strokeWidth={2}
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+                  </svg>
+                </span>
+              )}
+            </Fragment>
           ))}
         </div>
         <div className="mt-10 text-center">
