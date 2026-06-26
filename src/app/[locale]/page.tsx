@@ -2,15 +2,29 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { ScrollReveal } from "@/components/landing/ScrollReveal";
 import { Testimonials } from "@/components/landing/Testimonials";
-import { Palette, Languages, FileDown, Globe, Plus, Eye } from "lucide-react";
-import Image from "next/image";
+import {
+  Palette,
+  Languages,
+  FileDown,
+  Globe,
+  Eye,
+  UserPlus,
+  Upload,
+  PencilLine,
+  Sparkles,
+  SlidersHorizontal,
+  Download,
+  MessageCircle,
+  Mail,
+  AtSign,
+} from "lucide-react";
 import { HOSTING_ENABLED } from "@/lib/flags";
 import { AdminLink } from "@/components/AdminLink";
 import { TryItForm } from "@/components/landing/TryItForm";
-import { UseTemplateButton } from "@/components/landing/UseTemplateButton";
-import { WaitlistForm } from "@/components/landing/WaitlistForm";
 import { NavbarAuth } from "@/components/landing/NavbarAuth";
-import { CvPreviewCard } from "@/components/landing/CvPreviewCard";
+import { HeroReel } from "@/components/landing/HeroReel";
+import { TemplateShowcase } from "@/components/landing/TemplateShowcase";
+import { TIER_PRICE } from "@/lib/pricing";
 
 export default async function LandingPage({
   params,
@@ -23,14 +37,12 @@ export default async function LandingPage({
   setRequestLocale(locale);
   const tc = await getTranslations("common");
   const isRTL = locale === "ar";
-  const otherLocale = isRTL ? "en" : "ar";
-  const otherLabel = isRTL ? "English" : "عربي";
 
   const faqs = isRTL
     ? [
         {
           q: "هل يحتاج البورتفوليو إلى تجديد سنوي؟",
-          a: "لا. الدفعة لمرة واحدة فقط (٤.٩٠٠ دك). بدون اشتراكات، بدون تجديد، بدون رسوم خفية.",
+          a: "لا. كل خطة دفعة واحدة (تبدأ من ٤.٩٠٠ دك). بدون اشتراكات ولا تجديد — وخطة برو تشمل الاستضافة مدى الحياة.",
         },
         {
           q: "هل يمكنني التعديل بعد النشر؟",
@@ -70,7 +82,7 @@ export default async function LandingPage({
     : [
         {
           q: "Do I need to renew yearly?",
-          a: "No. Portfolio Pro is a one-time payment of 4.900 KD. No subscriptions, no renewals, no hidden fees.",
+          a: "No. Every plan is a one-time payment (from 4.900 KD). No subscriptions, no renewals — and Portfolio Pro includes lifetime hosting.",
         },
         {
           q: HOSTING_ENABLED ? "Can I edit after publishing?" : "Can I edit my portfolio?",
@@ -124,12 +136,14 @@ export default async function LandingPage({
             applicationCategory: "BusinessApplication",
             operatingSystem: "Web",
             offers: {
-              "@type": "Offer",
-              price: "4.900",
+              "@type": "AggregateOffer",
+              lowPrice: TIER_PRICE.essential.toFixed(3),
+              highPrice: TIER_PRICE.pro_review.toFixed(3),
               priceCurrency: "KWD",
+              offerCount: 3,
               availability: "https://schema.org/InStock",
             },
-            description: "Create a professional CV + portfolio in minutes. Pick a template, fill your info, get your PDF.",
+            description: "Create a professional CV + portfolio in minutes. Drop your CV, write notes in plain language, AI builds it, customize, and get your editable pro CV PDF.",
             url: "https://portfolio-trimind.com",
             provider: { "@type": "Organization", name: "TriMind", url: "https://trimind.ai" },
           }),
@@ -222,689 +236,259 @@ export default async function LandingPage({
               </p>
               {/* Try-it form — no signup needed */}
               <TryItForm locale={locale} />
-              {/* Animated CV preview — mobile only (desktop shows mockup images) */}
-              <div className="lg:hidden">
-                <p className="text-xs text-emerald-600 font-medium mb-2 text-center">&#10024; Watch AI build a CV live</p>
-                <CvPreviewCard locale={locale} />
+              {/* Trust row — secure payment + WhatsApp support */}
+              <div className="mt-5 flex flex-wrap items-center gap-x-4 gap-y-2 text-xs text-[var(--land-muted)]">
+                <span className="inline-flex items-center gap-1.5">
+                  <svg className="h-3.5 w-3.5 text-[var(--land-accent)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                  </svg>
+                  {isRTL ? "دفع آمن" : "Secure payment"}
+                </span>
+                <span className="font-semibold text-[var(--land-body)] tracking-tight">K-NET</span>
+                <span className="text-[var(--land-body)]">MyFatoorah</span>
+                <span className="h-3 w-px bg-[var(--land-border)]" />
+                <a
+                  href="https://wa.me/96550439150"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 text-[var(--land-accent)] hover:underline"
+                >
+                  <MessageCircle className="h-3.5 w-3.5" />
+                  {isRTL ? "دعم واتساب" : "WhatsApp support"}
+                </a>
               </div>
             </div>
 
             <div className="land-visual w-full max-w-xl">
-              {/* Desktop: stacked cards effect */}
-              <div className="hidden lg:block relative land-mockup-float" style={{ perspective: "1200px" }}>
-                {/* Ambient glow behind stack */}
-                <div
-                  className="absolute -inset-16 pointer-events-none"
-                  style={{
-                    background: `radial-gradient(ellipse 80% 70% at center, oklch(0.35 0.12 163 / 0.25), transparent 70%)`,
-                  }}
-                />
-                {/* Back card: Engineer (rotated, scaled) */}
-                <div
-                  className="absolute inset-0 rounded-xl overflow-hidden border border-[var(--land-border)] opacity-40"
-                  style={{
-                    transform: isRTL
-                      ? "translate(24px, 20px) rotate(3deg) scale(0.93)"
-                      : "translate(-24px, 20px) rotate(-3deg) scale(0.93)",
-                    zIndex: 1,
-                  }}
-                >
-                  <Image
-                    src="/landing/mockup-engineer-2026b.webp"
-                    alt=""
-                    width={1200}
-                    height={800}
-                    sizes="(min-width: 1024px) 576px, 1px"
-                    className="w-full h-auto"
-                    quality={75}
-                  />
-                </div>
-                {/* Front card: Corporate (straight, prominent) */}
-                <div
-                  className="relative rounded-xl overflow-hidden border border-[var(--land-border)]"
-                  style={{
-                    transform: isRTL
-                      ? "rotateY(3deg) rotateX(1deg)"
-                      : "rotateY(-3deg) rotateX(1deg)",
-                    zIndex: 2,
-                  }}
-                >
-                  <Image
-                    src="/landing/mockup-corporate-2026b.webp"
-                    alt="Corporate portfolio template preview"
-                    width={1200}
-                    height={800}
-                    sizes="(min-width: 1024px) 576px, 1px"
-                    className="w-full h-auto"
-                    priority
-                    quality={90}
-                  />
-                  <span className="absolute top-3 end-3 z-10 flex items-center gap-1.5 rounded-full border border-[var(--land-accent)]/30 bg-[var(--land-bg)]/80 px-2.5 py-1 text-[10px] font-medium text-[var(--land-accent)] backdrop-blur">
-                    <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-[var(--land-accent)]" />
-                    {isRTL ? "معاينة مباشرة" : "Live Preview"}
-                  </span>
-                </div>
-              </div>
-              {/* Mobile: single image */}
-              <div className="lg:hidden rounded-xl overflow-hidden border border-[var(--land-border)]">
-                <Image
-                  src="/landing/mockup-corporate-2026b.webp"
-                  alt="Corporate portfolio template preview"
-                  width={1200}
-                  height={800}
-                  sizes="(min-width: 1024px) 1px, 100vw"
-                  className="w-full h-auto"
-                  priority
-                  quality={85}
-                />
-              </div>
+              {/* How-it-works reel (click-to-play; live-demo fallback until the mp4 ships) */}
+              <HeroReel
+                locale={locale}
+                poster="/landing/mockup-corporate-2026b.webp"
+                demoHref="/demo/general"
+              />
+              <p className="mt-3 text-center text-xs text-[var(--land-muted)]">
+                {isRTL
+                  ? "شاهد كيف تبني سيرتك في أقل من دقيقة"
+                  : "See how you build your CV in under a minute"}
+              </p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* ── Sarah demo preview — strongest proof of quality ── */}
-      <section className="py-12 sm:py-16 px-6 bg-[var(--land-surface-raised)]/30">
-        <div className="mx-auto max-w-4xl text-center">
-          <p className="text-xs font-medium tracking-widest uppercase text-[var(--land-accent)] mb-3">
-            {isRTL ? "نتيجة حقيقية" : "Real result"}
-          </p>
-          <h2 className="text-xl sm:text-2xl font-bold text-[var(--land-bright)] mb-6">
-            {isRTL ? "هذا ما يحصل عليه عملاؤنا" : "This is what our users get"}
-          </h2>
-          <a
-            href="/demo/corporate"
-            target="_blank"
-            rel="noopener"
-            className="group block rounded-xl border border-[var(--land-border)] overflow-hidden shadow-sm hover:shadow-md transition-shadow"
-          >
-            <Image
-              src="/landing/mockup-corporate-2026b.webp"
-              alt={isRTL ? "سيرة ذاتية احترافية — عرض مباشر" : "Professional CV — live demo"}
-              width={1200}
-              height={800}
-              sizes="(min-width: 768px) 896px, 100vw"
-              className="w-full h-auto"
-              quality={90}
-            />
-            <div className="flex items-center justify-between px-4 py-3 bg-white border-t border-[var(--land-border)]">
-              <span className="text-sm text-[var(--land-body)]">
-                {isRTL ? "سارة الرشيدي — محللة مالية" : "Sarah Al-Rashidi — Financial Analyst"}
-              </span>
-              <span className="text-xs font-medium text-[var(--land-accent)] group-hover:underline">
-                {isRTL ? "شاهد العرض المباشر ←" : "View live demo →"}
-              </span>
-            </div>
-          </a>
-        </div>
-      </section>
-
-      {/* ── How it works ──────────────────── */}
-      <section className="py-16 px-6 border-b border-[var(--land-border)]/50">
-        <div className="mx-auto max-w-3xl">
-          <h2 className="text-2xl font-bold text-center text-[var(--land-bright)] mb-10">
-            {isRTL ? "كيف يعمل؟" : "How it works"}
-          </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-            {[
-              { step: "1", time: isRTL ? "٣٠ ثانية" : "30 seconds", en: "Fill your name and job title", ar: "أدخل اسمك ومسماك الوظيفي" },
-              { step: "2", time: isRTL ? "فوري" : "Instant", en: "AI drafts your CV instantly", ar: "الذكاء الاصطناعي يكتب مسودة سيرتك فورًا" },
-              { step: "3", time: isRTL ? "دقائق" : "Minutes", en: "Review, customize, and download", ar: "راجع، خصّص، وحمّل" },
-            ].map((s) => (
-              <div key={s.step} className="text-center">
-                <div className="mx-auto mb-3 flex h-10 w-10 items-center justify-center rounded-full bg-[var(--land-accent)] text-sm font-bold text-white">
-                  {s.step}
-                </div>
-                <p className="text-sm font-medium text-[var(--land-bright)]">{isRTL ? s.ar : s.en}</p>
-                <p className="mt-1 text-xs text-[var(--land-muted)]">{s.time}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ── Template showcase ──────────────────── */}
-      <section id="templates" className="scroll-mt-20 pt-16 sm:pt-32 pb-16 sm:pb-24 px-6">
+      {/* ── How it works — the 7-step journey ──────────── */}
+      <section id="how" className="scroll-mt-20 py-16 sm:py-24 px-6 border-b border-[var(--land-border)]/50">
         <ScrollReveal>
-          <div className="mx-auto max-w-7xl">
+          <div className="mx-auto max-w-3xl text-center">
             <p className="text-sm font-medium tracking-widest uppercase text-[var(--land-accent)]">
-              {isRTL ? "القوالب" : "Templates"}
+              {isRTL ? "كيف يعمل" : "How it works"}
             </p>
             <h2
               className="mt-3 font-extrabold tracking-tighter"
-              style={{ fontSize: "clamp(2rem, 4vw, 3.5rem)" }}
+              style={{ fontSize: "clamp(1.75rem, 4vw, 2.75rem)" }}
             >
-              {isRTL ? "شاهد ما ستبنيه" : "See what you'll build"}
-            </h2>
-            <p className="mt-4 max-w-lg text-lg text-[var(--land-body)]">
               {isRTL
-                ? "قوالب مصممة بعناية لمختلف المهن. كل قالب مختلف تمامًا عن الآخر."
-                : "Hand-crafted templates for different professions. Each one is a completely different design."}
+                ? "من سيرتك القديمة إلى سيرة احترافية — بخطوات بسيطة"
+                : "From your old CV to a professional one — in a few simple steps"}
+            </h2>
+            <p className="mt-4 text-[var(--land-body)]">
+              {isRTL
+                ? "بدون خبرة تصميم وبدون نماذج معقّدة. اكتب بلغتك العادية ودع الذكاء الاصطناعي يتولّى الباقي."
+                : "No design skills, no complicated forms. Write in plain language and let AI do the rest."}
             </p>
           </div>
         </ScrollReveal>
+        <div className="mx-auto mt-12 grid max-w-5xl grid-cols-2 gap-4 md:grid-cols-4">
+          {[
+            { Icon: UserPlus, en: "Register", ar: "أنشئ حسابك", enSub: "30 seconds, free", arSub: "٣٠ ثانية، مجانًا" },
+            { Icon: Upload, en: "Drop your CV", ar: "أسقط سيرتك", enSub: "PDF, Word, or a photo", arSub: "PDF أو Word أو صورة" },
+            { Icon: PencilLine, en: "Write in plain language", ar: "اكتب بلغتك", enSub: "Tell it what you want", arSub: "قل له ماذا تريد" },
+            { Icon: Sparkles, en: "AI builds it", ar: "الذكاء الاصطناعي يبني", enSub: "A full draft, instantly", arSub: "مسودة كاملة، فورًا" },
+            { Icon: SlidersHorizontal, en: "Customize", ar: "خصّص", enSub: "Colours, fonts, sections", arSub: "ألوان، خطوط، أقسام" },
+            { Icon: Eye, en: "Preview & edit", ar: "عاين وعدّل", enSub: "Live, exactly as printed", arSub: "مباشر، كما سيُطبع" },
+            { Icon: Download, en: "Pay & get your CV", ar: "ادفع واستلمها", enSub: "Editable pro PDF + QR", arSub: "PDF احترافي قابل للتعديل + QR" },
+          ].map((s, i) => (
+            <div
+              key={i}
+              className={`relative rounded-xl border bg-[var(--land-surface)] p-5 ${
+                i === 6
+                  ? "col-span-2 border-[var(--land-accent)]/40 bg-[var(--land-accent-subtle)] md:col-span-1"
+                  : "border-[var(--land-border)]"
+              }`}
+            >
+              <span className="absolute top-3 end-3 text-xs font-bold text-[var(--land-muted)]">
+                {isRTL ? "١٢٣٤٥٦٧"[i] : i + 1}
+              </span>
+              <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-[var(--land-accent-subtle)] text-[var(--land-accent)]">
+                <s.Icon className="h-5 w-5" />
+              </span>
+              <p className="mt-3 text-sm font-semibold text-[var(--land-bright)]">{isRTL ? s.ar : s.en}</p>
+              <p className="mt-1 text-xs text-[var(--land-muted)]">{isRTL ? s.arSub : s.enSub}</p>
+            </div>
+          ))}
+        </div>
+        <div className="mt-10 text-center">
+          <Link
+            href="/build"
+            className="inline-block rounded-lg bg-[var(--land-accent)] px-8 py-3.5 text-base font-semibold text-white transition-colors hover:bg-[var(--land-accent-hover)]"
+          >
+            {isRTL ? "ابدأ الآن — مجانًا" : "Start now — it's free"}
+          </Link>
+        </div>
+      </section>
 
-        <div className="mx-auto max-w-7xl mt-16">
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 items-stretch">
-            <ScrollReveal>
-              <div className="group">
-                <div className="relative rounded-xl overflow-hidden border border-[var(--land-border)] transition-all duration-500 group-hover:translate-y-[-2px] group-hover:border-[var(--land-accent)]/30">
-                  <Image
-                    src="/landing/mockup-corporate-2026b.webp"
-                    alt="Corporate portfolio template"
-                    width={1200}
-                    height={800}
-                    sizes="(min-width: 1024px) 400px, (min-width: 640px) 50vw, 100vw"
-                    className="w-full h-auto"
-                    quality={90}
-                  />
-                  <span className="absolute top-3 start-3 z-10 rounded-full border border-[var(--land-accent)]/30 bg-[var(--land-bg)]/80 px-2.5 py-1 text-[10px] font-medium uppercase tracking-wider text-[var(--land-accent)] backdrop-blur">
-                    {isRTL ? "عام" : "General"}
-                  </span>
-                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-all duration-300 flex items-center justify-center">
-                    <span className="text-sm font-medium text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center gap-2">
-                      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path strokeLinecap="round" strokeLinejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
-                      {isRTL ? "عرض مباشر" : "View live demo"}
-                    </span>
-                  </div>
-                </div>
-                <div className="mt-6">
-                  <h3 className="text-xl font-semibold">
-                    {isRTL ? "بورتفوليو مؤسسي" : "Corporate Portfolio"}
-                  </h3>
-                  <p className="mt-2 text-sm text-[var(--land-body)] max-w-md">
-                    {isRTL
-                      ? "تصميم مؤسسي بألوان كحلي وذهبي. مؤشرات الإنجاز، الخط الزمني، الشهادات، التوصيات، وPDF جاهز للطباعة."
-                      : "Navy and gold institutional design. Achievement metrics, career timeline, credentials, endorsements, and print-ready PDF."}
-                  </p>
-                  <div className="mt-4 flex flex-wrap gap-4">
-                    <a
-                      href="/demo/general"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-sm text-[var(--land-accent)] hover:text-[var(--land-accent-hover)] transition-colors"
-                    >
-                      {isRTL ? "عرض مباشر ←" : "View live demo \u2192"}
-                    </a>
-                    <UseTemplateButton
-                      template="corporate"
-                      locale={locale}
-                      label={isRTL ? "استخدم هذا القالب" : "Use this template"}
-                      className="rounded-lg border border-[var(--land-accent)]/50 px-4 py-2 text-sm font-medium text-[var(--land-accent)] transition-colors hover:bg-[var(--land-accent)]/10"
-                    />
-                  </div>
-                </div>
-              </div>
-            </ScrollReveal>
-
-            <ScrollReveal delay={150}>
-              <div className="group h-full">
-                <div className="relative rounded-xl overflow-hidden border border-[var(--land-border)] transition-all duration-500 group-hover:translate-y-[-2px] group-hover:border-[var(--land-accent)]/30">
-                  <Image
-                    src="/landing/mockup-engineer-2026b.webp"
-                    alt="Engineer portfolio template"
-                    width={1200}
-                    height={800}
-                    sizes="(min-width: 1024px) 400px, (min-width: 640px) 50vw, 100vw"
-                    className="w-full h-auto"
-                    quality={90}
-                  />
-                  <span className="absolute top-3 start-3 z-10 rounded-full border border-[var(--land-accent)]/30 bg-[var(--land-bg)]/80 px-2.5 py-1 text-[10px] font-medium uppercase tracking-wider text-[var(--land-accent)] backdrop-blur">
-                    {isRTL ? "هندسي" : "Engineering"}
-                  </span>
-                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-all duration-300 flex items-center justify-center">
-                    <span className="text-sm font-medium text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center gap-2">
-                      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path strokeLinecap="round" strokeLinejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
-                      {isRTL ? "عرض مباشر" : "View live demo"}
-                    </span>
-                  </div>
-                </div>
-                <div className="mt-6">
-                  <h3 className="text-xl font-semibold">
-                    {isRTL ? "بورتفوليو هندسي" : "Engineer Portfolio"}
-                  </h3>
-                  <p className="mt-2 text-sm text-[var(--land-body)] max-w-md">
-                    {isRTL
-                      ? "تصميم بسيط يركز على المشاريع. بطاقات مشاريع، مهارات تقنية، شهادات، وصفحات تفصيلية."
-                      : "Minimal, project-forward design. Project cards, grouped technical skills, certifications, and detail pages."}
-                  </p>
-                  <div className="mt-4 flex flex-wrap gap-4">
-                    <a
-                      href="/demo/engineer"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-sm text-[var(--land-accent)] hover:text-[var(--land-accent-hover)] transition-colors"
-                    >
-                      {isRTL ? "عرض مباشر ←" : "View live demo \u2192"}
-                    </a>
-                    <UseTemplateButton
-                      template="engineer"
-                      locale={locale}
-                      label={isRTL ? "استخدم هذا القالب" : "Use this template"}
-                      className="rounded-lg border border-[var(--land-accent)]/50 px-4 py-2 text-sm font-medium text-[var(--land-accent)] transition-colors hover:bg-[var(--land-accent)]/10"
-                    />
-                  </div>
-                </div>
-              </div>
-            </ScrollReveal>
-
-            {/* Creative template */}
-            <ScrollReveal delay={300}>
-              <div className="group h-full">
-                <div className="relative rounded-xl overflow-hidden border border-[var(--land-border)] transition-all duration-500 group-hover:translate-y-[-2px] group-hover:border-[var(--land-accent)]/30">
-                  <Image
-                    src="/landing/mockup-creative-2026b.webp"
-                    alt="Creative portfolio template"
-                    width={1200}
-                    height={800}
-                    sizes="(min-width: 1024px) 400px, (min-width: 640px) 50vw, 100vw"
-                    className="w-full h-auto"
-                    quality={90}
-                  />
-                  <span className="absolute top-3 start-3 z-10 rounded-full border border-[var(--land-accent)]/30 bg-[var(--land-bg)]/80 px-2.5 py-1 text-[10px] font-medium uppercase tracking-wider text-[var(--land-accent)] backdrop-blur">
-                    {isRTL ? "إبداعي" : "Creative"}
-                  </span>
-                  <div className="absolute inset-0 flex items-center justify-center bg-black/0 transition-all duration-300 group-hover:bg-black/50">
-                    <span className="flex items-center gap-2 text-sm font-medium text-white opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-                      <Eye className="h-4 w-4" />
-                      {isRTL ? "معاينة" : "Preview"}
-                    </span>
-                  </div>
-                </div>
-                <div className="mt-6">
-                  <h3 className="text-xl font-semibold">
-                    {isRTL ? "بورتفوليو إبداعي" : "Creative Portfolio"}
-                  </h3>
-                  <p className="mt-2 text-sm text-[var(--land-body)] max-w-md">
-                    {isRTL
-                      ? "تصميم جريء يركز على العمل المرئي. معارض ماسونري، سرد العملية، وشبكات إتقان الأدوات."
-                      : "Bold, work-forward design. Masonry galleries, process storytelling, and tool-proficiency grids."}
-                  </p>
-                  <div className="mt-4 flex flex-wrap items-center gap-3">
-                    <a
-                      href="/demo/creative"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-sm text-[var(--land-accent)] hover:text-[var(--land-accent-hover)] transition-colors"
-                    >
-                      {isRTL ? "عرض مباشر ←" : "View live demo →"}
-                    </a>
-                    <UseTemplateButton
-                      template="creative"
-                      locale={locale}
-                      label={isRTL ? "استخدم هذا القالب" : "Use this template"}
-                      className="rounded-lg border border-[var(--land-accent)]/50 px-4 py-2 text-sm font-medium text-[var(--land-accent)] transition-colors hover:bg-[var(--land-accent)]/10"
-                    />
-                  </div>
-                </div>
-              </div>
-            </ScrollReveal>
-
-            {/* Creator template */}
-            <ScrollReveal>
-              <div className="group h-full">
-                <div className="relative rounded-xl overflow-hidden border border-[var(--land-border)] transition-all duration-500 group-hover:translate-y-[-2px] group-hover:border-[var(--land-accent)]/30">
-                  <Image
-                    src="/landing/mockup-creator-2026b.webp"
-                    alt="Creator portfolio template"
-                    width={1200}
-                    height={800}
-                    sizes="(min-width: 1024px) 400px, (min-width: 640px) 50vw, 100vw"
-                    className="w-full h-auto"
-                    quality={90}
-                  />
-                  <span className="absolute top-3 start-3 z-10 rounded-full border border-[var(--land-accent)]/30 bg-[var(--land-bg)]/80 px-2.5 py-1 text-[10px] font-medium uppercase tracking-wider text-[var(--land-accent)] backdrop-blur">
-                    {isRTL ? "صانع محتوى" : "Creator"}
-                  </span>
-                  <div className="absolute inset-0 flex items-center justify-center bg-black/0 transition-all duration-300 group-hover:bg-black/40">
-                    <span className="flex items-center gap-2 text-sm font-medium text-white opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-                      <Eye className="h-4 w-4" />
-                      {isRTL ? "عرض مباشر" : "View live demo"}
-                    </span>
-                  </div>
-                </div>
-                <div className="mt-6">
-                  <h3 className="text-xl font-semibold">
-                    {isRTL ? "بورتفوليو صانع المحتوى" : "Creator Portfolio"}
-                  </h3>
-                  <p className="mt-2 text-sm text-[var(--land-body)] max-w-md">
-                    {isRTL
-                      ? "بورتفوليو يُلعب. لعبة بطاقات اختيارية تكشف أعمالك، إحصائيات الجمهور، وشريط العلامات التجارية — أو الانتقال مباشرة إلى الأعمال."
-                      : "A portfolio you can play. An optional match-card game reveals your work, audience stats, and brand marquee — or skip straight to the work."}
-                  </p>
-                  <div className="mt-4 flex flex-wrap items-center gap-3">
-                    <a
-                      href="/demo/creator"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-sm text-[var(--land-accent)] hover:text-[var(--land-accent-hover)] transition-colors"
-                    >
-                      {isRTL ? "عرض مباشر ←" : "View live demo →"}
-                    </a>
-                    <UseTemplateButton
-                      template="creator"
-                      locale={locale}
-                      label={isRTL ? "استخدم هذا القالب" : "Use this template"}
-                      className="rounded-lg border border-[var(--land-accent)]/50 px-4 py-2 text-sm font-medium text-[var(--land-accent)] transition-colors hover:bg-[var(--land-accent)]/10"
-                    />
-                  </div>
-                </div>
-              </div>
-            </ScrollReveal>
-
-            {/* Developer template */}
-            <ScrollReveal delay={150}>
-              <div className="group h-full">
-                <div className="relative rounded-xl overflow-hidden border border-[var(--land-border)] transition-all duration-500 group-hover:translate-y-[-2px] group-hover:border-[var(--land-accent)]/30">
-                  <Image
-                    src="/landing/mockup-developer-2026b.webp"
-                    alt="Developer portfolio template"
-                    width={1200}
-                    height={800}
-                    sizes="(min-width: 1024px) 400px, (min-width: 640px) 50vw, 100vw"
-                    className="w-full h-auto"
-                    quality={90}
-                  />
-                  <span className="absolute top-3 start-3 z-10 rounded-full border border-[var(--land-accent)]/30 bg-[var(--land-bg)]/80 px-2.5 py-1 text-[10px] font-medium uppercase tracking-wider text-[var(--land-accent)] backdrop-blur">
-                    {isRTL ? "مطوّر" : "Developer"}
-                  </span>
-                  <div className="absolute inset-0 flex items-center justify-center bg-black/0 transition-all duration-300 group-hover:bg-black/40">
-                    <span className="flex items-center gap-2 text-sm font-medium text-white opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-                      <Eye className="h-4 w-4" />
-                      {isRTL ? "عرض مباشر" : "View live demo"}
-                    </span>
-                  </div>
-                </div>
-                <div className="mt-6">
-                  <h3 className="text-xl font-semibold">
-                    {isRTL ? "بورتفوليو مطوّر" : "Developer Portfolio"}
-                  </h3>
-                  <p className="mt-2 text-sm text-[var(--land-body)] max-w-md">
-                    {isRTL
-                      ? "تصميم تفاعلي مع لوحة مفاتيح ثلاثية الأبعاد لأدواتك — كل تقنية تضيء زرًا حقيقيًا. مشاريع، خط زمني للخبرات، وروابط GitHub."
-                      : "Interactive design with a 3D keyboard of your stack — every tool lights up a real key. Projects, experience timeline, and GitHub links."}
-                  </p>
-                  <div className="mt-4 flex flex-wrap items-center gap-3">
-                    <a
-                      href="/demo/developer"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-sm text-[var(--land-accent)] hover:text-[var(--land-accent-hover)] transition-colors"
-                    >
-                      {isRTL ? "عرض مباشر ←" : "View live demo →"}
-                    </a>
-                    <UseTemplateButton
-                      template="developer"
-                      locale={locale}
-                      label={isRTL ? "استخدم هذا القالب" : "Use this template"}
-                      className="rounded-lg border border-[var(--land-accent)]/50 px-4 py-2 text-sm font-medium text-[var(--land-accent)] transition-colors hover:bg-[var(--land-accent)]/10"
-                    />
-                  </div>
-                </div>
-              </div>
-            </ScrollReveal>
-
-            {/* More templates coming soon */}
-            <ScrollReveal delay={300}>
-              <div className="flex h-full flex-col items-center justify-center rounded-xl border border-dashed border-[var(--land-border)] bg-[var(--land-surface)]/40 p-8 text-center">
-                <span className="flex h-12 w-12 items-center justify-center rounded-full border border-[var(--land-border)] text-[var(--land-muted)]">
-                  <Plus className="h-6 w-6" />
+      {/* ── Why build your CV with us — benefits + live template demo ── */}
+      <section id="templates" className="scroll-mt-20 py-16 sm:py-28 px-6">
+        <ScrollReveal>
+          <div className="mx-auto max-w-7xl">
+            <p className="text-sm font-medium tracking-widest uppercase text-[var(--land-accent)]">
+              {isRTL ? "لماذا نحن" : "Why us"}
+            </p>
+            <h2
+              className="mt-3 font-extrabold tracking-tighter"
+              style={{ fontSize: "clamp(2rem, 4vw, 3.25rem)" }}
+            >
+              {isRTL ? "لماذا تبني سيرتك معنا" : "Why build your CV with us"}
+            </h2>
+            <p className="mt-4 max-w-lg text-lg text-[var(--land-body)]">
+              {isRTL
+                ? "ليست مجرد سيرة ذاتية — بل قوالب مصمّمة، عربي أصيل، وعرض مباشر تجرّبه قبل أن تدفع."
+                : "Not just a CV — designed templates, native Arabic, and a live demo you can try before you pay."}
+            </p>
+          </div>
+        </ScrollReveal>
+        <div className="mx-auto mt-12 grid max-w-7xl items-start gap-10 lg:grid-cols-2 lg:gap-16">
+          {/* Left: benefits */}
+          <div className="space-y-5">
+            {[
+              { Icon: Palette, en: "Designed, not generated", ar: "مصمّمة، ليست مولّدة", enD: "Each template is hand-crafted for a real profession — not AI-slop clones with swapped colours.", arD: "كل قالب مصمّم يدويًا لمهنة حقيقية — وليس نسخًا مكررة بألوان مختلفة." },
+              { Icon: Languages, en: "Native Arabic + English", ar: "عربي وإنجليزي أصيل", enD: "Proper RTL Arabic designed from scratch — typography, spacing, and reading direction, not a mirrored page.", arD: "تصميم عربي RTL من الصفر — خطوط ومسافات واتجاه قراءة، وليس صفحة معكوسة." },
+              { Icon: FileDown, en: "ATS-ready PDF with a QR code", ar: "PDF متوافق مع ATS وبه QR", enD: "An editable, recruiter-friendly CV PDF carrying a QR that opens your live portfolio.", arD: "سيرة PDF قابلة للتعديل وجاهزة لأنظمة التوظيف، تحمل QR يفتح بورتفوليوك الحي." },
+              ...(HOSTING_ENABLED
+                ? [{ Icon: Globe, en: "Live hosted page, for life", ar: "صفحة حيّة مستضافة مدى الحياة", enD: "Your portfolio gets its own URL with lifetime hosting — update anytime, changes go live instantly.", arD: "بورتفوليوك يحصل على رابط خاص باستضافة مدى الحياة — حدّثه في أي وقت، والتغييرات فورية." }]
+                : []),
+            ].map((b, i) => (
+              <div key={i} className="flex gap-4">
+                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[var(--land-accent-subtle)] text-[var(--land-accent)]">
+                  <b.Icon className="h-5 w-5" />
                 </span>
-                <p className="mt-4 text-sm text-[var(--land-body)]">
-                  {isRTL
-                    ? "قوالب جديدة قريبًا — طبي، قانوني، تعليمي، والمزيد."
-                    : "More templates coming soon — Medical, Legal, Education, and more."}
-                </p>
-                <p className="mt-4 text-sm font-medium text-[var(--land-bright)]">
-                  {isRTL ? "انضم لقائمة الانتظار" : "Join the waitlist"}
-                </p>
-                <WaitlistForm locale={locale} source="templates" />
+                <div>
+                  <h3 className="text-base font-bold tracking-tight">{isRTL ? b.ar : b.en}</h3>
+                  <p className="mt-1 text-sm leading-relaxed text-[var(--land-body)]">{isRTL ? b.arD : b.enD}</p>
+                </div>
               </div>
-            </ScrollReveal>
+            ))}
+            <div className="rounded-xl border border-[var(--land-accent)]/20 bg-[var(--land-accent-subtle)] p-4">
+              <p className="text-sm leading-relaxed text-[var(--land-body)]">
+                <span className="font-semibold text-[var(--land-accent)]">{isRTL ? "دفعة واحدة." : "One-time payment."}</span>{" "}
+                {isRTL
+                  ? "بدون اشتراكات وبدون تجديد."
+                  : "No subscriptions, no renewals."}{" "}
+                {HOSTING_ENABLED ? (isRTL ? "الاستضافة مشمولة مدى الحياة." : "Hosting included for life.") : ""}
+              </p>
+            </div>
+          </div>
+          {/* Right: live interactive 5-template demo */}
+          <div className="lg:sticky lg:top-24">
+            <p className="mb-3 text-xs font-medium uppercase tracking-widest text-[var(--land-muted)]">
+              {isRTL ? "جرّب القوالب الخمسة مباشرة" : "Try the 5 templates live"}
+            </p>
+            <TemplateShowcase locale={locale} />
           </div>
         </div>
       </section>
 
-      {/* ── (How-it-works component removed — kept inline AI version above) ── */}
-
-      {/* ── Features (2x2 grid) ────────────────── */}
-      <section className="py-16 sm:py-28 px-6">
-        <div className="mx-auto max-w-5xl">
-          <ScrollReveal>
-            <div className="grid gap-6 md:grid-cols-2">
-              {/* Feature 1 */}
-              <div className="rounded-2xl border border-[var(--land-border)] bg-[var(--land-surface)] p-7">
-                <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-[var(--land-accent-subtle)] text-[var(--land-accent)]">
-                  <Palette className="h-5 w-5" />
-                </span>
-                <h3 className="mt-4 text-xl font-bold tracking-tight">
-                  {isRTL
-                    ? "كل قالب مصمم يدويًا، ليس مولّد."
-                    : "Every template designed, not generated."}
-                </h3>
-                <p className="mt-3 text-sm text-[var(--land-body)] leading-relaxed">
-                  {isRTL
-                    ? "من مجالس الشركات إلى تقارير المشاريع الهندسية. كل قالب مصنوع يدويًا لمهنة محددة، ليس نسخًا متكررة بألوان مختلفة."
-                    : "From corporate boardrooms to engineering field reports. Each template is hand-crafted for a specific profession, not clones with different colors."}
-                </p>
-              </div>
-
-              {/* Feature 2 — bilingual, with split-screen proof */}
-              <div className="rounded-2xl border border-[var(--land-border)] bg-[var(--land-surface)] p-7">
-                <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-[var(--land-accent-subtle)] text-[var(--land-accent)]">
-                  <Languages className="h-5 w-5" />
-                </span>
-                <h3 className="mt-4 text-xl font-bold tracking-tight">
-                  {isRTL
-                    ? "عربي وإنجليزي. أصلي، ليس ترجمة."
-                    : "Arabic and English. Native, not translated."}
-                </h3>
-                <p className="mt-3 text-sm text-[var(--land-body)] leading-relaxed">
-                  {isRTL
-                    ? "كل قالب بتصميم عربي RTL أصيل — ليس مجرد صفحة إنجليزية معكوسة. الخطوط والمسافات واتجاه القراءة كلها مصممة للعربي."
-                    : "Every template has a proper RTL Arabic layout, not a mirrored English page. Typography, spacing, and reading direction are all designed for Arabic."}
-                </p>
-                <div className="mt-5 flex gap-3">
-                  {/* English LTR */}
-                  <div className="flex-1 overflow-hidden rounded-lg border border-[var(--land-border)] bg-[var(--land-bg)]">
-                    <div className="border-b border-[var(--land-border)] px-2.5 py-1 text-[9px] text-[var(--land-muted)]">
-                      English (LTR)
-                    </div>
-                    <div className="space-y-1.5 p-2.5">
-                      <div className="h-2 w-16 rounded-full bg-[var(--land-border)]" />
-                      <div className="h-1.5 w-full rounded-full bg-[var(--land-border)]" />
-                      <div className="h-1.5 w-4/5 rounded-full bg-[var(--land-border)]" />
-                    </div>
-                  </div>
-                  {/* Arabic RTL */}
-                  <div className="flex-1 overflow-hidden rounded-lg border border-[var(--land-border)] bg-[var(--land-bg)]" dir="rtl">
-                    <div className="border-b border-[var(--land-border)] px-2.5 py-1 text-[9px] text-[var(--land-muted)]">
-                      العربية (RTL)
-                    </div>
-                    <div className="space-y-1.5 p-2.5">
-                      <div className="ms-0 h-2 w-16 rounded-full bg-[var(--land-border)]" />
-                      <div className="h-1.5 w-full rounded-full bg-[var(--land-border)]" />
-                      <div className="h-1.5 w-4/5 rounded-full bg-[var(--land-border)]" />
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Feature 3 */}
-              <div className="rounded-2xl border border-[var(--land-border)] bg-[var(--land-surface)] p-7">
-                <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-[var(--land-accent-subtle)] text-[var(--land-accent)]">
-                  <FileDown className="h-5 w-5" />
-                </span>
-                <h3 className="mt-4 text-xl font-bold tracking-tight">
-                  {HOSTING_ENABLED
-                    ? isRTL
-                      ? "سيرة ذاتية PDF مع باركود QR"
-                      : "CV PDF with a QR code"
-                    : isRTL
-                      ? "سيرة ذاتية PDF احترافية"
-                      : "Professional PDF download"}
-                </h3>
-                <p className="mt-3 text-sm text-[var(--land-body)] leading-relaxed">
-                  {HOSTING_ENABLED
-                    ? isRTL
-                      ? "سيرة ذاتية احترافية جاهزة لأنظمة التوظيف (ATS) بصيغة PDF، تحمل باركود QR يفتح بورتفوليوك الحيّ عند مسحه — تطبعها وتشاركها في أي مقابلة."
-                      : "An ATS-ready professional CV as a PDF, carrying a QR code that opens your live portfolio when scanned — print it, attach it, share it in any interview."
-                    : isRTL
-                      ? "حمّل بورتفوليوك كصفحة سيرة ذاتية احترافية بصيغة PDF جاهزة للطباعة والمشاركة."
-                      : "Download your portfolio as a polished, print-ready PDF you can share anywhere."}
-                </p>
-              </div>
-
-              {/* Feature 4 — hosted URL (only while hosting is enabled) */}
-              {HOSTING_ENABLED && (
-              <div className="rounded-2xl border border-[var(--land-border)] bg-[var(--land-surface)] p-7">
-                <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-[var(--land-accent-subtle)] text-[var(--land-accent)]">
-                  <Globe className="h-5 w-5" />
-                </span>
-                <h3 className="mt-4 text-xl font-bold tracking-tight">
-                  {isRTL ? "صفحة حيّة محدّثة دائمًا" : "A live page that's always current"}
-                </h3>
-                <p className="mt-3 text-sm text-[var(--land-body)] leading-relaxed">
-                  {isRTL
-                    ? "بورتفوليوك يحصل على رابط خاص مستضاف. حدّثه متى شئت من لوحة التحكم — التغييرات تظهر فورًا."
-                    : "Your portfolio gets its own hosted URL. Update anytime from your dashboard; changes appear instantly."}
-                </p>
-              </div>
-              )}
-            </div>
-          </ScrollReveal>
-        </div>
-      </section>
-
-      {/* ── Pricing ────────────────────────────── */}
+      {/* ── Pricing — bundled tiers ─────────────── */}
+      {/* ponytail: display prices mirror src/lib/pricing TIER_PRICE; real charges are server-validated in myfatoorah.ts */}
       <ScrollReveal>
-        <section className="relative py-16 sm:py-24 px-6 bg-[var(--land-surface-raised)]">
+        <section id="pricing" className="relative scroll-mt-20 py-16 sm:py-24 px-6 bg-[var(--land-surface-raised)]">
           <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[var(--land-accent)] to-transparent opacity-40" />
-          <div className="mx-auto max-w-3xl lg:grid lg:grid-cols-[1fr_auto] gap-16 items-start">
-            <div>
+          <div className="mx-auto max-w-6xl">
+            <div className="text-center">
               <h2
                 className="font-bold tracking-tight"
                 style={{ fontSize: "clamp(1.75rem, 3vw, 2.5rem)" }}
               >
-                {isRTL ? "سعر واحد. بدون مفاجآت." : "One price. No surprises."}
+                {isRTL ? "أسعار بسيطة. ادفع مرة واحدة." : "Simple pricing. Pay once."}
               </h2>
-              <p className="mt-4 text-[var(--land-body)] leading-relaxed max-w-md">
-                {isRTL ? (
-                  <>
-                    كل شيء مشمول مقابل{" "}
-                    <span className="font-semibold text-[var(--land-bright)]">
-                      ٤.٩٠٠ دك
-                    </span>{" "}
-                    للبورتفوليو الواحد (~١٦ دولار). دفعة واحدة. بدون اشتراكات.
-                    بدون تجديد.
-                  </>
-                ) : (
-                  <>
-                    Everything included for{" "}
-                    <span className="font-semibold text-[var(--land-bright)]">
-                      4.900 KD
-                    </span>{" "}
-                    per portfolio (~$16 USD). One-time payment. No subscriptions.
-                    No renewals.
-                  </>
-                )}
+              <p className="mt-3 text-[var(--land-body)]">
+                {isRTL
+                  ? "ابنِ وعاين مجانًا — ادفع فقط عند التصدير أو النشر. بدون اشتراكات، بدون تجديد."
+                  : "Build & preview free — pay only to export or publish. No subscriptions, no renewals."}
               </p>
-              <div className="mt-8 grid grid-cols-1 gap-y-3 text-sm text-[var(--land-body)] sm:grid-cols-2 sm:gap-x-6">
-                {(isRTL
-                  ? [
-                      HOSTING_ENABLED ? "رابط بورتفوليو مستضاف" : null,
-                      "عربي + إنجليزي",
-                      "تصدير PDF جاهز للطباعة",
-                      HOSTING_ENABLED
-                        ? "سيرة ذاتية PDF مع باركود QR"
-                        : "تحميل PDF احترافي",
-                      "ثيمات ألوان مخصصة",
-                      "رفع صورة شخصية",
-                      "تحديثات فورية",
-                      "وصول لمرة واحدة",
-                    ]
-                  : [
-                      HOSTING_ENABLED ? "Hosted portfolio URL" : null,
-                      "Arabic + English bilingual",
-                      "Print-optimized PDF export",
-                      HOSTING_ENABLED
-                        ? "CV PDF with a QR code"
-                        : "Professional PDF download",
-                      "Custom color themes",
-                      "Photo upload",
-                      "Instant updates",
-                      "One-time access",
-                    ]
-                )
-                  .filter((item): item is string => Boolean(item))
-                  .map((item) => (
-                  <div key={item} className="flex items-center gap-2">
-                    <span className="shrink-0 text-[var(--land-accent)]">✓</span>
-                    {item}
-                  </div>
-                ))}
-              </div>
-
-              {/* Why one-time? */}
-              <div className="mt-8 rounded-xl border border-[var(--land-accent)]/20 bg-[var(--land-accent-subtle)] p-5">
-                <h3 className="text-sm font-semibold text-[var(--land-accent)]">
-                  {isRTL ? "لماذا دفعة واحدة؟" : "Why One-Time?"}
-                </h3>
-                <p className="mt-1.5 text-sm leading-relaxed text-[var(--land-body)]">
-                  {isRTL
-                    ? "نؤمن أن قصة مسيرتك لا يجب أن تحمل رسومًا شهرية. ادفع مرة واحدة، وامتلكها للأبد."
-                    : "We believe your career story shouldn't have a monthly fee. Pay once, own forever."}
-                </p>
-              </div>
-              <div className="mt-10">
-                <Link
-                  href="/templates"
-                  className="inline-block rounded-lg bg-[var(--land-accent)] px-8 py-3.5 text-base font-semibold text-white hover:bg-[var(--land-accent-hover)] transition-colors"
+            </div>
+            <div className="mt-12 grid items-stretch gap-5 sm:grid-cols-2 lg:grid-cols-4">
+              {[
+                { key: "free", en: "Free Preview", ar: "معاينة مجانية", price: "0", arPrice: "٠", once: false,
+                  feats: isRTL ? ["رفع ومعاينة", "سيرة PDF بعلامة مائية", "قالب واحد، حتى ٣ تعديلات"] : ["Upload & preview", "Watermarked PDF", "1 template, up to 3 edits"],
+                  highlight: false, cta: isRTL ? "ابدأ مجانًا" : "Start free" },
+                { key: "essential", en: "CV Essential", ar: "السيرة الأساسية", price: "4.900", arPrice: "٤.٩٠٠", once: true,
+                  feats: isRTL ? ["سيرة PDF نهائية (بدون علامة)", "٥ قوالب + ألوان وخطوط", "عربي/إنجليزي، تعديلات غير محدودة"] : ["Final ATS PDF (no watermark)", "5 templates + colours & fonts", "EN/AR, unlimited edits"],
+                  highlight: false, cta: isRTL ? "اختر الأساسية" : "Choose Essential" },
+                { key: "pro", en: "Portfolio Pro", ar: "بورتفوليو برو", price: "9.900", arPrice: "٩.٩٠٠", once: true,
+                  feats: isRTL ? ["كل مزايا الأساسية", "صفحة حيّة /p/اسمك + QR", "استضافة مدى الحياة"] : ["Everything in Essential", "Live /p/<name> page + QR", "Lifetime hosting"],
+                  highlight: true, cta: isRTL ? "اختر برو" : "Choose Pro" },
+                { key: "pro_review", en: "Pro + Expert Review", ar: "برو + مراجعة خبير", price: "24.900", arPrice: "٢٤.٩٠٠", once: true,
+                  feats: isRTL ? ["كل مزايا برو", "مراجعة بشرية + ملاحظات ATS", "مراجعة واحدة خلال ٤٨ ساعة"] : ["Everything in Pro", "Human review + ATS notes", "1 revision within 48h"],
+                  highlight: false, cta: isRTL ? "اختر برو + مراجعة" : "Choose Pro + Review" },
+              ].map((t) => (
+                <div
+                  key={t.key}
+                  className={`relative flex flex-col rounded-2xl border p-6 ${
+                    t.highlight
+                      ? "border-[var(--land-accent)] bg-[var(--land-surface)] shadow-lg ring-1 ring-[var(--land-accent)]/30"
+                      : "border-[var(--land-border)] bg-[var(--land-surface)]"
+                  }`}
                 >
-                  {isRTL ? "ابدأ الآن" : "Start Now — It's Free"}
-                </Link>
-                <p className="mt-3 text-xs text-[var(--land-muted)]">
-                  {isRTL
-                    ? "ابنِ وعاين مجانًا — ادفع ٤.٩٠٠ دك فقط عند النشر. دفعة واحدة، بدون تجديد."
-                    : "Build & preview for free — pay 4.900 KD only when you publish. One-time, no renewals."}
-                </p>
-                {/* Payment trust icons */}
-                <div className="mt-6 flex flex-wrap items-center gap-4">
-                  <p className="text-[10px] text-[var(--land-muted)] tracking-wide uppercase">
-                    {isRTL ? "ادفع عبر" : "Pay with"}
-                  </p>
-                  <div className="flex items-center gap-3">
-                    {/* K-Net */}
-                    <span className="text-xs font-bold text-[var(--land-body)] tracking-tight">K-NET</span>
-                    {/* Visa */}
-                    <svg className="h-4 text-[var(--land-body)]" viewBox="0 0 48 16" fill="currentColor"><path d="M19.6 1.2l-3.5 13.6h-2.8l3.5-13.6h2.8zm14.3 8.8l1.5-4 .8 4h-2.3zm3.1 4.8h2.6l-2.3-13.6h-2.4c-.5 0-1 .3-1.2.8l-4.2 12.8h2.9l.6-1.6h3.6l.4 1.6zm-7.5-4.4c0-3.6-5-3.8-5-5.4 0-.5.5-1 1.5-1.1.5 0 1.9-.1 3.4.6l.6-2.8c-.8-.3-1.9-.6-3.2-.6-3.4 0-5.8 1.8-5.8 4.4 0 1.9 1.7 3 3 3.6 1.3.7 1.8 1.1 1.8 1.7 0 .9-1.1 1.3-2 1.3-1.7 0-2.7-.5-3.5-.8l-.6 2.9c.8.4 2.3.7 3.8.7 3.6 0 6-1.8 6-4.5zm-14.2-9.2l-5.6 13.6h-3l-2.7-10.9c-.2-.6-.3-.8-.8-1.1-.9-.4-2.3-.8-3.5-1.1l.1-.5h4.7c.6 0 1.1.4 1.3 1.1l1.2 6.1 2.8-7.2h2.9z" /></svg>
-                    {/* Mastercard */}
-                    <svg className="h-4" viewBox="0 0 32 20" fill="none"><circle cx="12" cy="10" r="8" fill="oklch(0.55 0.02 20)" /><circle cx="20" cy="10" r="8" fill="oklch(0.6 0.08 65)" /><path d="M16 4.7a7.96 7.96 0 010 10.6 7.96 7.96 0 000-10.6z" fill="oklch(0.58 0.06 40)" /></svg>
-                    {/* Apple Pay */}
-                    <span className="text-xs font-medium text-[var(--land-body)]">Apple Pay</span>
+                  {t.highlight && (
+                    <span className="absolute -top-3 start-1/2 -translate-x-1/2 rounded-full bg-[var(--land-accent)] px-3 py-1 text-[10px] font-bold uppercase tracking-wide text-white">
+                      {isRTL ? "الأكثر اختيارًا ⭐" : "Most popular ⭐"}
+                    </span>
+                  )}
+                  <h3 className="text-base font-bold tracking-tight">{isRTL ? t.ar : t.en}</h3>
+                  <div className="mt-2 flex items-baseline gap-1">
+                    <span className="text-3xl font-extrabold tracking-tighter text-[var(--land-accent)]">{isRTL ? t.arPrice : t.price}</span>
+                    <span className="text-sm font-medium text-[var(--land-muted)]">{isRTL ? "دك" : "KD"}</span>
                   </div>
-                  <div className="h-3 w-px bg-[var(--land-border)]" />
-                  <p className="text-[10px] text-[var(--land-accent)] font-medium">
-                    {isRTL ? "عبر MyFatoorah" : "via MyFatoorah"}
+                  <p className="mt-0.5 text-xs text-[var(--land-muted)]">
+                    {t.once ? (isRTL ? "دفعة واحدة" : "one-time") : (isRTL ? "بدون دفع" : "no payment")}
                   </p>
+                  <ul className="mt-4 space-y-2 text-sm text-[var(--land-body)]">
+                    {t.feats.map((f) => (
+                      <li key={f} className="flex items-start gap-2">
+                        <span className="mt-0.5 shrink-0 text-[var(--land-accent)]">✓</span>
+                        <span>{f}</span>
+                      </li>
+                    ))}
+                  </ul>
+                  <Link
+                    href="/build"
+                    className={`mt-6 inline-block rounded-lg px-4 py-2.5 text-center text-sm font-semibold transition-colors ${
+                      t.highlight
+                        ? "bg-[var(--land-accent)] text-white hover:bg-[var(--land-accent-hover)]"
+                        : "border border-[var(--land-accent)]/50 text-[var(--land-accent)] hover:bg-[var(--land-accent)]/10"
+                    }`}
+                  >
+                    {t.cta}
+                  </Link>
                 </div>
-              </div>
+              ))}
             </div>
-            <div className="hidden lg:block text-end pt-2">
-              <div
-                className="font-extrabold tracking-tighter"
-                style={{ fontSize: "clamp(3rem, 5vw, 4.5rem)" }}
-              >
-                <span className="text-[var(--land-accent)]">4.900</span>{" "}
-                <span className="text-2xl font-medium text-[var(--land-muted)]">
-                  KD
-                </span>
-              </div>
-              <p className="text-sm text-[var(--land-muted)] mt-2">~$16 USD</p>
-              <p className="text-xs text-[var(--land-accent)] mt-1 font-medium">
-                {isRTL ? "دفعة واحدة فقط" : "one-time, forever"}
-              </p>
+            {/* Payment trust row */}
+            <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
+              <p className="text-[10px] uppercase tracking-wide text-[var(--land-muted)]">{isRTL ? "ادفع عبر" : "Pay with"}</p>
+              <span className="text-xs font-bold tracking-tight text-[var(--land-body)]">K-NET</span>
+              <span className="text-xs font-medium text-[var(--land-body)]">Visa</span>
+              <span className="text-xs font-medium text-[var(--land-body)]">Mastercard</span>
+              <span className="text-xs font-medium text-[var(--land-body)]">Apple Pay</span>
+              <span className="h-3 w-px bg-[var(--land-border)]" />
+              <p className="text-[10px] font-medium text-[var(--land-accent)]">{isRTL ? "عبر MyFatoorah" : "via MyFatoorah"}</p>
             </div>
+            <p className="mt-4 text-center text-xs text-[var(--land-muted)]">
+              {isRTL
+                ? "ترقية لاحقًا؟ تدفع الفرق فقط — من الأساسية إلى برو بـ ٥.٠٠٠ دك."
+                : "Upgrade later? Pay only the difference — Essential → Pro for 5.000 KD."}
+            </p>
           </div>
         </section>
       </ScrollReveal>
@@ -954,37 +538,61 @@ export default async function LandingPage({
         </section>
       </ScrollReveal>
 
-      {/* ── Pre-footer CTA ─────────────────────── */}
+      {/* ── Contact us ──────────────────────────── */}
       <ScrollReveal>
-        <section className="border-t border-[var(--land-border)] bg-[var(--land-surface-raised)] px-6 py-14 sm:py-20 text-center">
-          <div className="mx-auto max-w-2xl">
+        <section id="contact" className="scroll-mt-20 border-t border-[var(--land-border)] bg-[var(--land-surface-raised)] px-6 py-16 sm:py-24">
+          <div className="mx-auto max-w-4xl text-center">
             <h2
               className="font-extrabold tracking-tighter"
               style={{ fontSize: "clamp(1.75rem, 4vw, 2.75rem)" }}
             >
-              {isRTL
-                ? "البورتفوليو الذي تستحقه مسيرتك"
-                : "The portfolio your career has earned"}
+              {isRTL ? "جاهز تبني سيرتك؟" : "Ready to build your CV?"}
             </h2>
             <p className="mt-4 text-[var(--land-body)]">
-              {HOSTING_ENABLED
-                ? isRTL
-                  ? "اختر قالبًا وانشر بورتفوليوك خلال دقائق."
-                  : "Pick a template and publish your portfolio in minutes."
-                : isRTL
-                  ? "اختر قالبًا وحمّل بورتفوليوك كملف PDF خلال دقائق."
-                  : "Pick a template and download your portfolio as a PDF in minutes."}
+              {isRTL
+                ? "ابدأ الآن، أو راسلنا بأي سؤال — نرد بسرعة على واتساب."
+                : "Start now, or message us with any question — we reply fast on WhatsApp."}
             </p>
-            <div className="mt-8 flex flex-col items-center">
+            <div className="mt-8 flex flex-col items-center gap-3">
               <Link
-                href="/templates"
-                className="inline-block rounded-lg shadow-sm bg-[var(--land-accent)] px-10 py-4 text-lg font-semibold text-white transition-colors hover:bg-[var(--land-accent-hover)] active:scale-[0.98]"
+                href="/build"
+                className="inline-block rounded-lg bg-[var(--land-accent)] px-10 py-4 text-lg font-semibold text-white shadow-sm transition-colors hover:bg-[var(--land-accent-hover)] active:scale-[0.98]"
               >
-                {isRTL ? "ابدأ البناء — مجاني" : "Start Building — It's Free"}
+                {isRTL ? "ابنِ سيرتك — مجاني" : "Build your CV — it's free"}
               </Link>
-              <p className="mt-3 text-xs text-[var(--land-muted)]">
-                {isRTL ? "ابنِ مجانًا · ادفع فقط عند النشر" : "Build free · Pay only when you publish"}
+              <p className="text-xs text-[var(--land-muted)]">
+                {isRTL ? "ابنِ مجانًا · ادفع فقط عند التصدير" : "Build free · pay only to export"}
               </p>
+            </div>
+            <div className="mx-auto mt-12 grid max-w-2xl gap-4 sm:grid-cols-3">
+              <a
+                href="https://wa.me/96550439150"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex flex-col items-center gap-2 rounded-xl border border-[var(--land-border)] bg-[var(--land-surface)] p-5 transition-colors hover:border-[var(--land-accent)]/40"
+              >
+                <MessageCircle className="h-6 w-6 text-[var(--land-accent)]" />
+                <span className="text-sm font-semibold text-[var(--land-bright)]">WhatsApp</span>
+                <span className="text-xs text-[var(--land-muted)]" dir="ltr">+965 5043 9150</span>
+              </a>
+              <a
+                href="mailto:support@portfolio-trimind.com"
+                className="flex flex-col items-center gap-2 rounded-xl border border-[var(--land-border)] bg-[var(--land-surface)] p-5 transition-colors hover:border-[var(--land-accent)]/40"
+              >
+                <Mail className="h-6 w-6 text-[var(--land-accent)]" />
+                <span className="text-sm font-semibold text-[var(--land-bright)]">{isRTL ? "البريد" : "Email"}</span>
+                <span className="text-xs text-[var(--land-muted)]" dir="ltr">support@portfolio-trimind.com</span>
+              </a>
+              <a
+                href="https://instagram.com/trimindartificiall"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex flex-col items-center gap-2 rounded-xl border border-[var(--land-border)] bg-[var(--land-surface)] p-5 transition-colors hover:border-[var(--land-accent)]/40"
+              >
+                <AtSign className="h-6 w-6 text-[var(--land-accent)]" />
+                <span className="text-sm font-semibold text-[var(--land-bright)]">Instagram</span>
+                <span className="text-xs text-[var(--land-muted)]">@trimindartificiall</span>
+              </a>
             </div>
           </div>
         </section>
