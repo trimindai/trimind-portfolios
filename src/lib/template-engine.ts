@@ -1,4 +1,5 @@
 import Handlebars from "handlebars";
+import { titleCase as titleCaseName } from "@/lib/utils";
 import generalTemplateSource from "@/templates/general/template.hbs";
 import engineerTemplateSource from "@/templates/engineer/template.hbs";
 import engineerProjectDetailSource from "@/templates/engineer/project-detail.hbs";
@@ -166,12 +167,7 @@ Handlebars.registerHelper("nl2br", function (value: any) {
 });
 
 Handlebars.registerHelper("titleCase", function (name: string) {
-  if (!name) return "";
-  // Only uppercase the first letter of all-lowercase words; leave words that
-  // already carry an uppercase letter as typed (acronyms QA/iOS, McK, PhD).
-  return String(name).trim().split(/\s+/)
-    .map(w => /[A-Z]/.test(w) ? w : w.charAt(0).toUpperCase() + w.slice(1))
-    .join(" ");
+  return titleCaseName(name);
 });
 
 Handlebars.registerHelper("initials", function (name: string) {
