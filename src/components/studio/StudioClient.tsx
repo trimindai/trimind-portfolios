@@ -20,7 +20,7 @@ import { Link } from "@/i18n/navigation";
 import PreviewFrame from "@/components/preview/PreviewFrame";
 import { toPortfolioData } from "@/lib/portfolio-data";
 import { COLOR_PRESETS, type TemplatePresetKey } from "@/lib/color-presets";
-import { resolveTemplateId } from "@/lib/templates";
+import { resolveTemplateId, TEMPLATES } from "@/lib/templates";
 import {
   Upload,
   Loader2,
@@ -243,6 +243,12 @@ export default function StudioClient({ initialId }: { initialId?: string }) {
       : [...hidden, id];
     patchCustomization({ hiddenSections: next });
   }
+  // Switch template: top-level field (not customization). Preview, colour
+  // presets and section toggles all re-derive off portfolio.templateId.
+  function setTemplate(id: string) {
+    if (!portfolioId || id === templateKey) return;
+    update({ id: portfolioId as Id<"portfolios">, templateId: id }).catch(() => {});
+  }
 
   // ── chat ────────────────────────────────────────────────────────────────────
   async function sendChat() {
@@ -412,6 +418,33 @@ export default function StudioClient({ initialId }: { initialId?: string }) {
         <div className="grid gap-4 lg:grid-cols-[minmax(320px,420px)_1fr]">
           {/* LEFT: controls + chat */}
           <div className="flex flex-col gap-5">
+            {/* design / template — try all 5 live, pick the best */}
+            <section className="rounded-xl border border-[var(--land-border)] bg-[var(--land-surface)]/40 p-4">
+              <h3 className="mb-3 text-sm font-semibold text-[var(--land-bright)]">
+                {T("Design", "التصميم")}
+              </h3>
+              <div className="grid grid-cols-2 gap-2">
+                {TEMPLATES.map((t) => {
+                  const active = t.id === templateKey;
+                  return (
+                    <button
+                      key={t.id}
+                      title={t.description}
+                      onClick={() => setTemplate(t.id)}
+                      // ponytail: manifest names are English-only; fine as short labels
+                      className={`rounded-lg border px-3 py-2 text-left text-xs font-medium transition-colors ${
+                        active
+                          ? "border-[var(--land-accent)] bg-[var(--land-accent-subtle)] text-[var(--land-accent-hover)]"
+                          : "border-[var(--land-border)] text-[var(--land-body)] hover:border-[var(--land-accent)]"
+                      }`}
+                    >
+                      {t.name}
+                    </button>
+                  );
+                })}
+              </div>
+            </section>
+
             {/* colours */}
             <section className="rounded-xl border border-[var(--land-border)] bg-[var(--land-surface)]/40 p-4">
               <h3 className="mb-3 text-sm font-semibold text-[var(--land-bright)]">
