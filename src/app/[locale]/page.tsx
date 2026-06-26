@@ -16,7 +16,6 @@ import {
 } from "lucide-react";
 import { HOSTING_ENABLED } from "@/lib/flags";
 import { AdminLink } from "@/components/AdminLink";
-import { TryItForm } from "@/components/landing/TryItForm";
 import { NavbarAuth } from "@/components/landing/NavbarAuth";
 import { HeroReel } from "@/components/landing/HeroReel";
 import { TemplateShowcase } from "@/components/landing/TemplateShowcase";
@@ -230,8 +229,18 @@ export default async function LandingPage({
               <p className="mt-4 text-xs text-gray-400 text-center sm:text-start">
                 {isRTL ? "١٣٠+ سيرة ذاتية · 🇰🇼 الكويت والخليج · عربي مدعوم" : "130+ CVs built · 🇰🇼 Kuwait & Gulf · Arabic supported"}
               </p>
-              {/* Try-it form — no signup needed */}
-              <TryItForm locale={locale} />
+              {/* Primary CTA → the AI build flow */}
+              <div className="mt-6 flex flex-col items-stretch gap-3 sm:items-start">
+                <Link
+                  href="/build"
+                  className="inline-block rounded-xl bg-[var(--land-accent)] px-8 py-4 text-center text-base font-bold text-white shadow-sm transition-colors hover:bg-[var(--land-accent-hover)] active:scale-[0.98]"
+                >
+                  {isRTL ? "ابنِ سيرتك — مجانًا" : "Build your CV — free"}
+                </Link>
+                <p className="text-xs text-[var(--land-muted)]">
+                  {isRTL ? "ابنِ وعاين مجانًا · ادفع فقط عند التصدير" : "Build & preview free · pay only to export"}
+                </p>
+              </div>
               {/* Trust row — secure payment + WhatsApp support */}
               <div className="mt-5 flex flex-wrap items-center gap-x-4 gap-y-2 text-xs text-[var(--land-muted)]">
                 <span className="inline-flex items-center gap-1.5">
@@ -260,7 +269,7 @@ export default async function LandingPage({
               <HeroReel
                 locale={locale}
                 src="/how-it-works.mp4"
-                poster="/landing/mockup-corporate-2026b.webp"
+                poster="/landing/reel-poster.jpg"
                 demoHref="/demo/corporate/index.html"
               />
               <p className="mt-3 text-center text-xs text-[var(--land-muted)]">
