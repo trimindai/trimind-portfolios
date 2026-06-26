@@ -31,9 +31,11 @@
   /* fixed Social Pulse supporting hues */
   --eggshell:#F1EDDC; --sunshade:#F69C40; --ube:#DD8CF1; --ink-d:oklch(24% 0.035 60);
   --valentine-deep:oklch(57% 0.21 26);
-  --bg-2:oklch(91.5% 0.028 90); --surface:oklch(97.5% 0.014 95); --surface-2:oklch(99% 0.008 96);
-  --line:oklch(45% 0.04 80 / .22); --line-soft:oklch(45% 0.035 80 / .12);
-  --text:oklch(29% 0.028 72); --text-2:oklch(44% 0.026 70); --text-3:oklch(56% 0.022 68);
+  /* surfaces + text derive from --bg/--text so any bg (light or dark) recolours
+     the whole page and stays readable */
+  --bg-2:color-mix(in srgb, var(--bg), var(--text) 9%); --surface:color-mix(in srgb, var(--bg), var(--text) 4%); --surface-2:color-mix(in srgb, var(--bg), var(--text) 2%);
+  --line:color-mix(in srgb, var(--text) 18%, transparent); --line-soft:color-mix(in srgb, var(--text) 10%, transparent);
+  --text:{{textOn customization.bgColor "#F1EDDC"}}; --text-2:color-mix(in srgb, var(--text) 68%, var(--bg)); --text-3:color-mix(in srgb, var(--text) 52%, var(--bg));
   --accent:var(--emerald); --ember:var(--valentine); --grape:var(--ube); --gold:oklch(76% 0.14 72);
   --r:18px; --r-sm:13px; --ease:cubic-bezier(.22,1,.36,1);
   --shadow:0 22px 50px -30px oklch(45% 0.06 60 / .28);
@@ -71,7 +73,7 @@ img{max-width:100%;display:block}
 
 /* ── nav ── */
 .nav{position:sticky;top:0;z-index:40;backdrop-filter:saturate(140%) blur(10px);
-  background:linear-gradient(180deg,var(--bg),oklch(94% 0.022 92 / .82));border-bottom:1px solid var(--line-soft)}
+  background:linear-gradient(180deg,var(--bg),color-mix(in srgb, var(--bg) 78%, transparent));border-bottom:1px solid var(--line-soft)}
 .nav-in{display:flex;align-items:center;gap:14px;padding:13px 22px;max-width:1080px;margin:0 auto;position:relative}
 .brand{display:flex;align-items:center;gap:11px;font-family:var(--font-head);font-weight:700;min-width:0;flex:0 1 auto}
 .mono{width:36px;height:36px;border-radius:10px;display:grid;place-items:center;background:var(--valentine-deep);

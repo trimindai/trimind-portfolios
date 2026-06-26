@@ -19,14 +19,14 @@
 :root {
   --font-head: 'Space Grotesk', sans-serif;
   --font-body: 'Inter', sans-serif;
-  --text: {{#if customization.primaryColor}}{{customization.primaryColor}}{{else}}#000000{{/if}};
-  --text-secondary: #52525b;
-  --text-muted: #a1a1aa;
-  --bg: {{#if customization.bgColor}}{{customization.bgColor}}{{else}}#ffffff{{/if}};
-  --bg-warm: #fafafa;
-  --bg-card: #f4f4f5;
-  --border: #e4e4e7;
-  --accent: {{#if customization.accentColor}}{{customization.accentColor}}{{else}}#1e3a5f{{/if}};
+  --text: {{#if customization.primaryColor}}{{safeColor customization.primaryColor "#161616"}}{{else}}{{textOn customization.bgColor "#ffffff"}}{{/if}};
+  --text-secondary: color-mix(in srgb, var(--text) 60%, var(--bg));
+  --text-muted: color-mix(in srgb, var(--text) 42%, var(--bg));
+  --bg: {{#if customization.bgColor}}{{safeColor customization.bgColor "#ffffff"}}{{else}}#ffffff{{/if}};
+  --bg-warm: color-mix(in srgb, var(--bg), var(--text) 3%);
+  --bg-card: color-mix(in srgb, var(--bg), var(--text) 6%);
+  --border: color-mix(in srgb, var(--text) 12%, transparent);
+  --accent: {{#if customization.accentColor}}{{safeColor customization.accentColor "#1e3a5f"}}{{else}}#1e3a5f{{/if}};
   --accent-glow: rgba(30, 58, 95, 0.08);
   --orange: #f97316;
 }

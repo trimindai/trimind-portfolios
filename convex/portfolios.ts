@@ -124,6 +124,21 @@ export const create = mutation({
   handler: async (ctx, args) => {
     // Auth: derive userId from session, never trust client.
     const user = await requireUser(ctx);
+    // One CV per user: if they already have one, return it instead of creating a
+    // second. This is the real cap — the UI redirect is just a convenience.
+    // ponytail: paid/published wins, else newest; hidden extras are never deleted.
+    const existing = await ctx.db
+      .query("portfolios")
+      .withIndex("by_user", (q) => q.eq("userId", user._id))
+      .order("desc")
+      .collect();
+    if (existing.length > 0) {
+      const primary =
+        existing.find(
+          (p) => p.status === "paid" || p.status === "published"
+        ) ?? existing[0];
+      return primary._id;
+    }
     const now = Date.now();
     return await ctx.db.insert("portfolios", {
       ...args,

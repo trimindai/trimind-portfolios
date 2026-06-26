@@ -27,20 +27,22 @@
    ═══════════════════════════════════════════════════════════════ */
 :root{
   --bg:{{#if customization.bgColor}}{{safeColor customization.bgColor "#ccd1da"}}{{else}}#ccd1da{{/if}};
-  --bg-2:#bbc2ce;
-  --card:#a6bad0;
-  --card-hover:#9cb2cc;
-  --fg:#222831;
-  --muted:#4b5056;
-  --muted-2:#5f6b7a;
-  --border:rgba(75,80,86,0.16);
-  --border-strong:rgba(75,80,86,0.30);
+  /* Every surface + text layer derives from --bg / --fg, so any picked colour
+     (light OR dark) recolours the whole page and text stays readable. */
+  --bg-2:color-mix(in srgb, var(--bg) 84%, #000 16%);
+  --card:color-mix(in srgb, var(--bg) 78%, #000 22%);
+  --card-hover:color-mix(in srgb, var(--bg) 70%, #000 30%);
+  --fg:{{textOn customization.bgColor "#ccd1da"}};
+  --muted:color-mix(in srgb, var(--fg) 64%, var(--bg));
+  --muted-2:color-mix(in srgb, var(--fg) 52%, var(--bg));
+  --border:color-mix(in srgb, var(--fg) 16%, transparent);
+  --border-strong:color-mix(in srgb, var(--fg) 30%, transparent);
   --brand:{{#if customization.primaryColor}}{{safeColor customization.primaryColor "#6d99ce"}}{{else}}#6d99ce{{/if}};
-  --brand-ink:#2f5588;
+  --brand-ink:color-mix(in srgb, var(--brand) 72%, #000);
   --accent:{{#if customization.accentColor}}{{safeColor customization.accentColor "#5f6b7a"}}{{else}}#5f6b7a{{/if}};
-  --surface-dark:#5f6b7a;
+  --surface-dark:color-mix(in srgb, var(--bg) 50%, #000);
   --on-dark:#eef1f5;
-  --contact-bg:#4b5056;
+  --contact-bg:color-mix(in srgb, var(--bg) 42%, #000);
   --brand-glow:color-mix(in srgb, var(--brand) 28%, transparent);
   --accent-glow:color-mix(in srgb, var(--accent) 26%, transparent);
   --radius:16px;
@@ -174,7 +176,7 @@ section[data-reveal]{ will-change:opacity,transform; }
 #hero h1{
   font-family:var(--font-display);font-weight:400;
   font-size:clamp(2.6rem,11vw,8rem);line-height:.92;letter-spacing:-.02em;margin-left:-.04em;
-  background:linear-gradient(180deg,#222831 0%, #2f5588 58%, #4b5056 100%);
+  background:linear-gradient(180deg,var(--fg) 0%, var(--brand) 62%, var(--fg) 100%);
   -webkit-background-clip:text;background-clip:text;color:transparent;
 }
 #hero .role{font-family:var(--font-display);font-size:clamp(1.1rem,3.4vw,1.9rem);color:var(--muted);margin-top:18px}
@@ -197,7 +199,7 @@ section[data-reveal]{ will-change:opacity,transform; }
 /* ── skills / tech stack ────────────────────────────────────── */
 /* ── stack section: self-hosted interactive 3D keyboard build (iframe) ── */
 #skills.stack-section{padding:0;position:relative}
-.stack-frame{display:block;width:100%;height:min(100svh,920px);min-height:560px;border:0;background:#ccd1da}
+.stack-frame{display:block;width:100%;height:min(100svh,920px);min-height:560px;border:0;background:var(--bg)}
 @media(max-width:768px){.stack-frame{height:84svh;min-height:480px}}
 /* ── skills / Dygma-style split 3D keyboard (pure CSS + Web Audio) ── */
 #skills{padding:80px 0 110px;--ks:62px;--glow:#2f6bff;--body:#243049}

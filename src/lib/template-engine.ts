@@ -224,6 +224,26 @@ Handlebars.registerHelper("safeColor", function (value: any, fallback: any) {
   return ok ? v : fb;
 });
 
+// Relative luminance of a hex colour (0 = black … 1 = white); null if not a hex.
+function hexLuminance(hex: any): number | null {
+  let h = String(hex ?? "").trim().replace(/^#/, "");
+  if (h.length === 3) h = h.split("").map((c) => c + c).join("");
+  if (h.length !== 6 || /[^0-9a-fA-F]/.test(h)) return null;
+  const r = parseInt(h.slice(0, 2), 16);
+  const g = parseInt(h.slice(2, 4), 16);
+  const b = parseInt(h.slice(4, 6), 16);
+  return (0.2126 * r + 0.7152 * g + 0.0722 * b) / 255;
+}
+
+// textOn(bg, defaultBg) → a readable near-black / near-white text colour for the
+// chosen background, so any preset OR custom bg (light or dark) stays legible.
+// Falls back to defaultBg's luminance when bg isn't a usable hex (e.g. unset).
+Handlebars.registerHelper("textOn", function (bg: any, defaultBg: any) {
+  const dft = typeof defaultBg === "string" ? defaultBg : undefined;
+  const lum = hexLuminance(bg) ?? hexLuminance(dft) ?? 1;
+  return lum > 0.5 ? "#161616" : "#f5f5f5";
+});
+
 // Render a responsive video embed from a YouTube / Vimeo / direct-file URL.
 // IDs are matched and reinserted (safe); raw URLs are validated to http(s)
 // and escaped before being placed in attributes to avoid injection.
