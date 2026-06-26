@@ -11,6 +11,9 @@ export const create = mutation({
     portfolioId: v.id("portfolios"),
     userId: v.optional(v.id("users")),
     amount: v.number(),
+    tier: v.optional(
+      v.union(v.literal("essential"), v.literal("pro"), v.literal("pro_review"))
+    ),
     currency: v.string(),
     myfatoorahInvoiceId: v.optional(v.string()),
     serverSecret: v.string(),

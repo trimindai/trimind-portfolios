@@ -157,7 +157,10 @@ export async function verifyAndProcessPayment(
     return { ok: true, invoiceId, portfolioId, locale, alreadyProcessed: true };
   }
 
-  if (status.Data.InvoiceValue < PRICE_KWD * PRICE_TOLERANCE) {
+  // Validate the gateway amount against what WE charged for this invoice's tier
+  // (stored on the payment row), not a flat price — never trust the client.
+  const expectedAmount = existing?.amount ?? PRICE_KWD;
+  if (status.Data.InvoiceValue < expectedAmount * PRICE_TOLERANCE) {
     return { ok: false, reason: "amount_mismatch" };
   }
 
@@ -169,6 +172,7 @@ export async function verifyAndProcessPayment(
     await convexClient.mutation(api.portfolios.markPaid, {
       id: portfolioId as Id<"portfolios">,
       paymentId: invoiceId,
+      tier: existing?.tier ?? undefined,
       serverSecret: secret,
     });
   } catch (e: unknown) {
@@ -178,6 +182,7 @@ export async function verifyAndProcessPayment(
       const fallbackId = await convexClient.mutation(api.portfolios.markPaidByUser, {
         userId: existing.userId,
         paymentId: invoiceId,
+        tier: existing.tier ?? undefined,
         serverSecret: secret,
       });
       resolvedPortfolioId = fallbackId;

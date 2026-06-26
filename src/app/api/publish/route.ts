@@ -80,6 +80,16 @@ export async function POST(req: NextRequest) {
     ) {
       return NextResponse.json({ error: "payment_required" }, { status: 402 });
     }
+    // The live portfolio page is a Portfolio Pro feature. Essential (PDF-only)
+    // buyers can't publish a public page. Legacy flat-4.9 paid = full access.
+    const liveTier =
+      portfolio.tier ??
+      (portfolio.status === "paid" || portfolio.status === "published"
+        ? "pro"
+        : null);
+    if (!isAdmin && liveTier !== "pro" && liveTier !== "pro_review") {
+      return NextResponse.json({ error: "pro_required" }, { status: 402 });
+    }
     const taken = await userClient.query(api.portfolios.isSlugTaken, { slug });
     if (taken && taken.ownerPortfolioId !== portfolioId) {
       return NextResponse.json({ error: "slug_taken" }, { status: 409 });

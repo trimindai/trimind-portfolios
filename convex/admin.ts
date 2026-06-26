@@ -109,15 +109,22 @@ export const getStats = query({
 });
 
 export const markPortfolioPaid = mutation({
-  args: { id: v.id("portfolios") },
-  handler: async (ctx, { id }) => {
+  args: {
+    id: v.id("portfolios"),
+    tier: v.optional(
+      v.union(v.literal("essential"), v.literal("pro"), v.literal("pro_review"))
+    ),
+  },
+  handler: async (ctx, { id, tier }) => {
     await requireAdmin(ctx);
     const portfolio = await ctx.db.get(id);
     if (!portfolio) throw new Error("Portfolio not found");
-    if (portfolio.status === "paid" || portfolio.status === "published") return;
+    const grant = tier ?? "pro"; // admins grant full access by default
     await ctx.db.patch(id, {
       status: "paid",
+      tier: grant,
       paymentId: "admin-grant",
+      ...(grant === "pro_review" ? { reviewStatus: "pending" as const } : {}),
       lastEditedAt: Date.now(),
     });
   },

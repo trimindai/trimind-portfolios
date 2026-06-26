@@ -8,7 +8,7 @@ import {
 } from "@/lib/convex";
 import { api } from "@convex/_generated/api";
 import { Id } from "@convex/_generated/dataModel";
-import { PRICE_KWD } from "@/lib/pricing";
+import { priceFor, TIER_RANK, type Tier } from "@/lib/pricing";
 import { enforceUserRateLimit } from "@/lib/ratelimit";
 import { parseJsonBody } from "@/lib/api-input";
 import { z } from "zod";
@@ -16,6 +16,7 @@ import { z } from "zod";
 const InitiateSchema = z.object({
   portfolioId: z.string().min(1).max(64),
   locale: z.enum(["en", "ar"]).default("en"),
+  tier: z.enum(["essential", "pro", "pro_review"]).default("pro"),
   mobile: z.string().max(24).optional(),
   mobileCountryCode: z.string().max(8).optional(),
 });
@@ -41,7 +42,7 @@ export async function POST(req: NextRequest) {
       maxBytes: 2 * 1024,
     });
     if (!parsed.ok) return parsed.response;
-    const { portfolioId, locale } = parsed.data;
+    const { portfolioId, locale, tier } = parsed.data;
 
     // Customer mobile — enables MyFatoorah "ALL" (SMS + email + link) delivery.
     // Strip everything but digits; validate length if present. Defaults to the
@@ -73,11 +74,19 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Portfolio not found" }, { status: 404 });
     }
 
-    // Already-paid short-circuit (idempotent if user double-clicks).
-    if (portfolio.status === "paid" || portfolio.status === "published") {
+    // Tier the portfolio already holds (legacy flat-4.9 paid = full "pro" access).
+    const currentTier: Tier | undefined =
+      (portfolio.tier as Tier | undefined) ??
+      (portfolio.status === "paid" || portfolio.status === "published"
+        ? "pro"
+        : undefined);
+
+    // Already at/above the requested tier → nothing to buy (idempotent).
+    if (currentTier && TIER_RANK[currentTier] >= TIER_RANK[tier]) {
       return NextResponse.json({
         alreadyPaid: true,
         paymentId: portfolio.paymentId,
+        tier: currentTier,
       });
     }
 
@@ -88,12 +97,14 @@ export async function POST(req: NextRequest) {
       { portfolioId: portfolioId as Id<"portfolios"> }
     );
     if (
+      !currentTier &&
       existingPayment?.status === "completed" &&
       existingPayment.myfatoorahInvoiceId
     ) {
       await convexClient.mutation(api.portfolios.markPaid, {
         id: portfolioId as Id<"portfolios">,
         paymentId: existingPayment.myfatoorahInvoiceId,
+        tier: existingPayment.tier ?? undefined,
         serverSecret: serverSecret(),
       });
       return NextResponse.json({
@@ -101,6 +112,9 @@ export async function POST(req: NextRequest) {
         paymentId: existingPayment.myfatoorahInvoiceId,
       });
     }
+
+    // Price to reach this tier: full from scratch, or the upgrade delta.
+    const price = priceFor(tier, currentTier);
 
     if (
       existingPayment?.status === "pending" &&
@@ -125,7 +139,7 @@ export async function POST(req: NextRequest) {
     const baseUrl = process.env.NEXT_PUBLIC_APP_URL || req.nextUrl.origin;
 
     const result = await sendPayment({
-      invoiceValue: PRICE_KWD,
+      invoiceValue: price,
       customerName: name,
       customerEmail: email,
       customerMobile: mobileDigits || undefined,
@@ -153,7 +167,8 @@ export async function POST(req: NextRequest) {
     await convexClient.mutation(api.payments.create, {
       portfolioId: portfolioId as Id<"portfolios">,
       userId: portfolio.userId ?? undefined,
-      amount: PRICE_KWD,
+      amount: price,
+      tier,
       currency: "KWD",
       myfatoorahInvoiceId: String(result.Data.InvoiceId),
       serverSecret: serverSecret(),

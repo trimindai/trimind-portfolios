@@ -20,6 +20,12 @@ export default defineSchema({
       v.literal("paid"),
       v.literal("published")
     ),
+    // Bundled pricing tier purchased (absent = legacy flat-4.9 = full access).
+    tier: v.optional(
+      v.union(v.literal("essential"), v.literal("pro"), v.literal("pro_review"))
+    ),
+    // pro_review portfolios are queued for human expert review.
+    reviewStatus: v.optional(v.union(v.literal("pending"), v.literal("done"))),
     locale: v.union(v.literal("en"), v.literal("ar")),
     slug: v.optional(v.string()),
     // When a draft reserved its slug (ms). Lets an unpaid hold expire so an
@@ -298,6 +304,9 @@ export default defineSchema({
     portfolioId: v.id("portfolios"),
     userId: v.optional(v.id("users")),
     amount: v.number(),
+    tier: v.optional(
+      v.union(v.literal("essential"), v.literal("pro"), v.literal("pro_review"))
+    ),
     currency: v.string(),
     myfatoorahInvoiceId: v.optional(v.string()),
     status: v.union(

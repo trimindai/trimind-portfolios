@@ -367,22 +367,34 @@ export const update = mutation({
  *
  * Caller must pass INTERNAL_API_SECRET (matches process.env.INTERNAL_API_SECRET).
  */
+const TIER_RANK = { essential: 1, pro: 2, pro_review: 3 } as const;
+type TierLit = keyof typeof TIER_RANK;
+const tierArg = v.optional(
+  v.union(v.literal("essential"), v.literal("pro"), v.literal("pro_review"))
+);
+
 export const markPaid = mutation({
   args: {
     id: v.id("portfolios"),
     paymentId: v.string(),
+    tier: tierArg,
     serverSecret: v.string(),
   },
-  handler: async (ctx, { id, paymentId, serverSecret }) => {
+  handler: async (ctx, { id, paymentId, tier, serverSecret }) => {
     verifyServerSecret(serverSecret);
     const portfolio = await ctx.db.get(id);
     if (!portfolio) throw new Error("Portfolio not found");
-    if (portfolio.status === "paid" || portfolio.status === "published") {
-      return;
-    }
+    const alreadyPaid =
+      portfolio.status === "paid" || portfolio.status === "published";
+    const curRank = portfolio.tier ? TIER_RANK[portfolio.tier as TierLit] : 0;
+    const newRank = tier ? TIER_RANK[tier] : 0;
+    // No-op on a repeat callback or a same/lower tier; allow tier UPGRADES.
+    if (alreadyPaid && newRank <= curRank) return;
     await ctx.db.patch(id, {
       status: "paid",
       paymentId,
+      ...(tier ? { tier } : {}),
+      ...(tier === "pro_review" ? { reviewStatus: "pending" as const } : {}),
       lastEditedAt: Date.now(),
     });
   },
@@ -392,9 +404,10 @@ export const markPaidByUser = mutation({
   args: {
     userId: v.id("users"),
     paymentId: v.string(),
+    tier: tierArg,
     serverSecret: v.string(),
   },
-  handler: async (ctx, { userId, paymentId, serverSecret }) => {
+  handler: async (ctx, { userId, paymentId, tier, serverSecret }) => {
     verifyServerSecret(serverSecret);
     const drafts = await ctx.db
       .query("portfolios")
@@ -406,6 +419,8 @@ export const markPaidByUser = mutation({
     await ctx.db.patch(target._id, {
       status: "paid",
       paymentId,
+      ...(tier ? { tier } : {}),
+      ...(tier === "pro_review" ? { reviewStatus: "pending" as const } : {}),
       lastEditedAt: Date.now(),
     });
     return target._id;
@@ -606,6 +621,15 @@ export const publish = mutation({
     // Admins can bypass the payment gate.
     if (!isAdmin && portfolio.status !== "paid" && portfolio.status !== "published") {
       throw new Error("Portfolio is not paid");
+    }
+    // Live page is a Pro feature (legacy flat-4.9 paid = full access).
+    const liveTier =
+      portfolio.tier ??
+      (portfolio.status === "paid" || portfolio.status === "published"
+        ? "pro"
+        : null);
+    if (!isAdmin && liveTier !== "pro" && liveTier !== "pro_review") {
+      throw new Error("Live portfolio requires Portfolio Pro");
     }
 
     // Final duplicate guard (expiry-aware, ignores this portfolio's own hold).
