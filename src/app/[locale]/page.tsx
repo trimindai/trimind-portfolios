@@ -264,12 +264,12 @@ export default async function LandingPage({
               </div>
             </div>
 
-            <div className="land-visual mx-auto w-full max-w-sm">
+            <div className="land-visual mx-auto w-full max-w-[300px]">
               {/* How-it-works reel (click-to-play; live-demo fallback until the mp4 ships) */}
               <HeroReel
                 locale={locale}
-                src="/how-it-works.mp4"
-                poster="/landing/reel-poster.jpg"
+                src={isRTL ? "/how-it-works-ar.mp4" : "/how-it-works-en.mp4"}
+                poster={isRTL ? "/landing/reel-poster-ar.jpg" : "/landing/reel-poster-en.jpg"}
                 demoHref="/demo/corporate/index.html"
               />
               <p className="mt-3 text-center text-xs text-[var(--land-muted)]">

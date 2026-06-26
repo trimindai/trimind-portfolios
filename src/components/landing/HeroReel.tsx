@@ -25,7 +25,7 @@ export function HeroReel({
 
   if (playing && src) {
     return (
-      <div className="relative w-full aspect-square overflow-hidden rounded-xl border border-[var(--land-border)] shadow-lg">
+      <div className="relative w-full aspect-[9/16] overflow-hidden rounded-xl border border-[var(--land-border)] shadow-lg">
         {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
         <video className="h-full w-full object-cover" src={src} controls autoPlay playsInline />
       </div>
@@ -57,7 +57,7 @@ export function HeroReel({
   );
 
   const cls =
-    "group relative block w-full aspect-square overflow-hidden rounded-xl border border-[var(--land-border)] shadow-lg";
+    "group relative block w-full aspect-[9/16] overflow-hidden rounded-xl border border-[var(--land-border)] shadow-lg";
 
   return src ? (
     <button type="button" onClick={() => setPlaying(true)} className={`${cls} text-start`} aria-label={label}>
