@@ -167,7 +167,11 @@ Handlebars.registerHelper("nl2br", function (value: any) {
 
 Handlebars.registerHelper("titleCase", function (name: string) {
   if (!name) return "";
-  return String(name).trim().split(/\s+/).map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(" ");
+  // Only uppercase the first letter of all-lowercase words; leave words that
+  // already carry an uppercase letter as typed (acronyms QA/iOS, McK, PhD).
+  return String(name).trim().split(/\s+/)
+    .map(w => /[A-Z]/.test(w) ? w : w.charAt(0).toUpperCase() + w.slice(1))
+    .join(" ");
 });
 
 Handlebars.registerHelper("initials", function (name: string) {

@@ -167,6 +167,24 @@ export default function StudioClient({ initialId }: { initialId?: string }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [initialId, portfolio]);
 
+  // Create mode: seed the paste box from the landing hero (name + title saved
+  // to localStorage by TryItForm) so the user's details carry over instead of
+  // facing a blank screen. Consume it once.
+  useEffect(() => {
+    if (initialId || portfolioId) return;
+    try {
+      const raw = localStorage.getItem("portfolio-draft");
+      if (!raw) return;
+      const { fullName, title } = JSON.parse(raw);
+      const seed = [fullName, title].filter(Boolean).join("\n");
+      if (seed) setPasteText((prev) => prev || seed);
+      localStorage.removeItem("portfolio-draft");
+    } catch {
+      /* ignore malformed draft */
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   // ── parse a CV (file or pasted text) ───────────────────────────────────────
   const onParsed = useCallback(
     (id: string) => {
