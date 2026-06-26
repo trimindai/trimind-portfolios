@@ -25,9 +25,9 @@ export function HeroReel({
 
   if (playing && src) {
     return (
-      <div className="relative w-full overflow-hidden rounded-xl border border-[var(--land-border)] shadow-lg">
+      <div className="relative w-full aspect-square overflow-hidden rounded-xl border border-[var(--land-border)] shadow-lg">
         {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
-        <video className="w-full h-auto" src={src} controls autoPlay playsInline />
+        <video className="h-full w-full object-cover" src={src} controls autoPlay playsInline />
       </div>
     );
   }
@@ -38,9 +38,9 @@ export function HeroReel({
         src={poster}
         alt={label}
         width={1200}
-        height={800}
-        sizes="(min-width: 1024px) 576px, 100vw"
-        className="w-full h-auto"
+        height={1200}
+        sizes="(min-width: 1024px) 384px, 100vw"
+        className="h-full w-full object-cover"
         priority
         quality={85}
       />
@@ -57,7 +57,7 @@ export function HeroReel({
   );
 
   const cls =
-    "group relative block w-full overflow-hidden rounded-xl border border-[var(--land-border)] shadow-lg";
+    "group relative block w-full aspect-square overflow-hidden rounded-xl border border-[var(--land-border)] shadow-lg";
 
   return src ? (
     <button type="button" onClick={() => setPlaying(true)} className={`${cls} text-start`} aria-label={label}>

@@ -264,7 +264,7 @@ export default async function LandingPage({
               </div>
             </div>
 
-            <div className="land-visual w-full max-w-xl">
+            <div className="land-visual mx-auto w-full max-w-sm">
               {/* How-it-works reel (click-to-play; live-demo fallback until the mp4 ships) */}
               <HeroReel
                 locale={locale}

@@ -55,7 +55,7 @@ export function NavbarAuth({ locale }: { locale: string }) {
           {isRTL ? "تسجيل الدخول" : "Sign in"}
         </Link>
         <Link
-          href="/templates"
+          href={`/sign-up?redirect_url=${encodeURIComponent(`/${locale}/build`)}`}
           className="rounded-lg bg-[var(--land-accent)] px-4 py-2 text-sm font-medium text-white hover:bg-[var(--land-accent-hover)] transition-colors"
         >
           {isRTL ? "ابدأ الآن" : "Get Started"}
