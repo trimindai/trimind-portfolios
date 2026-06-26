@@ -3,7 +3,7 @@ import { NextIntlClientProvider, hasLocale } from "next-intl";
 import { getMessages, setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { routing } from "@/i18n/routing";
-import { Geist, Noto_Kufi_Arabic } from "next/font/google";
+import { Geist, IBM_Plex_Sans_Arabic } from "next/font/google";
 import { cn } from "@/lib/utils";
 import { Providers } from "../providers";
 import { GoogleAnalytics } from "@next/third-parties/google";
@@ -11,8 +11,9 @@ import { GoogleAnalytics } from "@next/third-parties/google";
 const GA_ID = process.env.NEXT_PUBLIC_GA_ID;
 
 const geist = Geist({ subsets: ["latin"], variable: "--font-sans" });
-const notoKufi = Noto_Kufi_Arabic({
+const plexArabic = IBM_Plex_Sans_Arabic({
   subsets: ["arabic"],
+  weight: ["300", "400", "500", "600", "700"],
   variable: "--font-arabic",
 });
 
@@ -107,7 +108,7 @@ export default async function LocaleLayout({
             <div
               className={cn(
                 geist.variable,
-                notoKufi.variable,
+                plexArabic.variable,
                 isRTL ? "font-arabic" : "font-sans"
               )}
             >

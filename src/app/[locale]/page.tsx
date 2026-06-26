@@ -5,12 +5,13 @@ import { Testimonials } from "@/components/landing/Testimonials";
 import { Palette, Languages, FileDown, Globe, Plus, Eye } from "lucide-react";
 import Image from "next/image";
 import { HOSTING_ENABLED } from "@/lib/flags";
-import { AdminLink } from "@/components/AdminLink";
 import { TryItForm } from "@/components/landing/TryItForm";
 import { UseTemplateButton } from "@/components/landing/UseTemplateButton";
 import { WaitlistForm } from "@/components/landing/WaitlistForm";
 import { NavbarAuth } from "@/components/landing/NavbarAuth";
 import { CvPreviewCard } from "@/components/landing/CvPreviewCard";
+import AiDemoStrip from "@/components/landing/AiDemoStrip";
+import StickyFooterCTA from "@/components/landing/StickyFooterCTA";
 
 export default async function LandingPage({
   params,
@@ -110,6 +111,95 @@ export default async function LandingPage({
         },
       ];
 
+  type TemplateCard = {
+    img: string;
+    alt: string;
+    badgeAr: string;
+    badgeEn: string;
+    titleAr: string;
+    titleEn: string;
+    descAr: string;
+    descEn: string;
+    demoHref: string;
+    template: string;
+    popular?: "green" | "gold";
+  };
+
+  const templateCards: TemplateCard[] = [
+    {
+      img: "/landing/mockup-corporate-2026b.webp",
+      alt: "Corporate portfolio template",
+      badgeAr: "عام",
+      badgeEn: "General",
+      titleAr: "بورتفوليو مؤسسي",
+      titleEn: "Corporate Portfolio",
+      descAr:
+        "تصميم مؤسسي بألوان كحلي وذهبي. مؤشرات الإنجاز، الخط الزمني، الشهادات، التوصيات، وPDF جاهز للطباعة.",
+      descEn:
+        "Navy and gold institutional design. Achievement metrics, career timeline, credentials, endorsements, and print-ready PDF.",
+      demoHref: "/demo/general",
+      template: "corporate",
+      popular: "green",
+    },
+    {
+      img: "/landing/mockup-engineer-2026b.webp",
+      alt: "Engineer portfolio template",
+      badgeAr: "هندسي",
+      badgeEn: "Engineering",
+      titleAr: "بورتفوليو هندسي",
+      titleEn: "Engineer Portfolio",
+      descAr:
+        "تصميم بسيط يركز على المشاريع. بطاقات مشاريع، مهارات تقنية، شهادات، وصفحات تفصيلية.",
+      descEn:
+        "Minimal, project-forward design. Project cards, grouped technical skills, certifications, and detail pages.",
+      demoHref: "/demo/engineer",
+      template: "engineer",
+      popular: "gold",
+    },
+    {
+      img: "/landing/mockup-creative-2026b.webp",
+      alt: "Creative portfolio template",
+      badgeAr: "إبداعي",
+      badgeEn: "Creative",
+      titleAr: "بورتفوليو إبداعي",
+      titleEn: "Creative Portfolio",
+      descAr:
+        "تصميم جريء يركز على العمل المرئي. معارض ماسونري، سرد العملية، وشبكات إتقان الأدوات.",
+      descEn:
+        "Bold, work-forward design. Masonry galleries, process storytelling, and tool-proficiency grids.",
+      demoHref: "/demo/creative",
+      template: "creative",
+    },
+    {
+      img: "/landing/mockup-creator-2026b.webp",
+      alt: "Creator portfolio template",
+      badgeAr: "صانع محتوى",
+      badgeEn: "Creator",
+      titleAr: "بورتفوليو صانع المحتوى",
+      titleEn: "Creator Portfolio",
+      descAr:
+        "بورتفوليو يُلعب. لعبة بطاقات اختيارية تكشف أعمالك، إحصائيات الجمهور، وشريط العلامات التجارية — أو الانتقال مباشرة إلى الأعمال.",
+      descEn:
+        "A portfolio you can play. An optional match-card game reveals your work, audience stats, and brand marquee — or skip straight to the work.",
+      demoHref: "/demo/creator",
+      template: "creator",
+    },
+    {
+      img: "/landing/mockup-developer-2026b.webp",
+      alt: "Developer portfolio template",
+      badgeAr: "مطوّر",
+      badgeEn: "Developer",
+      titleAr: "بورتفوليو مطوّر",
+      titleEn: "Developer Portfolio",
+      descAr:
+        "تصميم تفاعلي مع لوحة مفاتيح ثلاثية الأبعاد لأدواتك — كل تقنية تضيء زرًا حقيقيًا. مشاريع، خط زمني للخبرات، وروابط GitHub.",
+      descEn:
+        "Interactive design with a 3D keyboard of your stack — every tool lights up a real key. Projects, experience timeline, and GitHub links.",
+      demoHref: "/demo/developer",
+      template: "developer",
+    },
+  ];
+
 
   return (
     <div className="min-h-screen bg-[var(--land-bg)] text-[var(--land-bright)] land-grain">
@@ -150,35 +240,8 @@ export default async function LandingPage({
           }),
         }}
       />
-      {/* ── Navbar ─────────────────────────────── */}
-      <nav className="fixed top-0 z-50 w-full border-b border-[var(--land-border)]/50 bg-[var(--land-bg)]/80 backdrop-blur-md">
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
-          <Link href="/" className="text-lg font-bold tracking-tight hover:text-[var(--land-accent)] transition-colors">
-            {tc("appName")}
-          </Link>
-          <div className="flex items-center gap-3">
-            <AdminLink />
-            <div className="flex rounded-lg border border-gray-200 overflow-hidden text-sm">
-              <Link
-                href="/"
-                locale="en"
-                className={`px-3 py-1 font-medium transition-colors ${locale === "en" ? "bg-emerald-600 text-white" : "text-gray-500 hover:text-gray-900"}`}
-              >
-                EN
-              </Link>
-              <span className="flex items-center text-gray-300">|</span>
-              <Link
-                href="/"
-                locale="ar"
-                className={`px-3 py-1 font-medium transition-colors ${locale === "ar" ? "bg-emerald-600 text-white" : "text-gray-500 hover:text-gray-900"}`}
-              >
-                عربي
-              </Link>
-            </div>
-            <NavbarAuth locale={locale} />
-          </div>
-        </div>
-      </nav>
+      {/* ── Navbar (full bar lives in NavbarAuth: brand, lang pill, admin, auth) ── */}
+      <NavbarAuth locale={locale} />
 
       {/* ── Hero ───────────────────────────────── */}
       <section className="relative min-h-[100dvh] flex items-center overflow-hidden">
@@ -186,7 +249,7 @@ export default async function LandingPage({
         <div
           className="absolute inset-0 pointer-events-none"
           style={{
-            background: `radial-gradient(ellipse 80% 60% at ${isRTL ? "25%" : "75%"} 35%, rgba(5,150,105,0.06), transparent 70%), radial-gradient(circle at ${isRTL ? "85%" : "15%"} 85%, rgba(5,150,105,0.04), transparent 50%), linear-gradient(180deg, #f8fafc 0%, #ffffff 100%)`,
+            background: `radial-gradient(ellipse 80% 60% at ${isRTL ? "25%" : "75%"} 35%, rgba(34,160,99,0.08), transparent 70%), radial-gradient(circle at ${isRTL ? "85%" : "15%"} 85%, rgba(34,160,99,0.05), transparent 50%), linear-gradient(180deg, #F4F6F9 0%, #FAFBFC 100%)`,
           }}
         />
         {/* Subtle grid pattern */}
@@ -220,8 +283,25 @@ export default async function LandingPage({
               <p className="mt-4 text-xs text-gray-400 text-center sm:text-start">
                 {isRTL ? "١٣٠+ سيرة ذاتية · 🇰🇼 الكويت والخليج · عربي مدعوم" : "130+ CVs built · 🇰🇼 Kuwait & Gulf · Arabic supported"}
               </p>
+              {/* Hero stats bar */}
+              <div className="flex bg-white border border-ink-10 rounded-2xl shadow-sm overflow-hidden mb-7 mt-6 max-w-md mx-auto">
+                <div className="flex-1 text-center py-3">
+                  <span className="block text-xl font-bold text-ink leading-none mb-1">{isRTL ? "+١٣٠" : "130+"}</span>
+                  <span className="block text-[11px] text-ink-30 font-medium">{isRTL ? "سيرة ذاتية" : "CVs built"}</span>
+                </div>
+                <div className="flex-1 text-center py-3 border-s border-ink-10">
+                  <span className="block text-xl font-bold text-ink leading-none mb-1">{isRTL ? "٤.٩٠٠" : "4.900"}</span>
+                  <span className="block text-[11px] text-ink-30 font-medium">{isRTL ? "د.ك فقط" : "KD only"}</span>
+                </div>
+                <div className="flex-1 text-center py-3 border-s border-ink-10">
+                  <span className="block text-xl font-bold text-ink leading-none mb-1">{isRTL ? "~١٠" : "~10"}</span>
+                  <span className="block text-[11px] text-ink-30 font-medium">{isRTL ? "ثوانٍ" : "seconds"}</span>
+                </div>
+              </div>
               {/* Try-it form — no signup needed */}
               <TryItForm locale={locale} />
+              {/* AI demo strip — shows AI building CVs live */}
+              <AiDemoStrip locale={locale} />
               {/* Animated CV preview — mobile only (desktop shows mockup images) */}
               <div className="lg:hidden">
                 <p className="text-xs text-emerald-600 font-medium mb-2 text-center">&#10024; Watch AI build a CV live</p>
@@ -385,283 +465,96 @@ export default async function LandingPage({
         </ScrollReveal>
 
         <div className="mx-auto max-w-7xl mt-16">
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 items-stretch">
-            <ScrollReveal>
-              <div className="group">
-                <div className="relative rounded-xl overflow-hidden border border-[var(--land-border)] transition-all duration-500 group-hover:translate-y-[-2px] group-hover:border-[var(--land-accent)]/30">
-                  <Image
-                    src="/landing/mockup-corporate-2026b.webp"
-                    alt="Corporate portfolio template"
-                    width={1200}
-                    height={800}
-                    sizes="(min-width: 1024px) 400px, (min-width: 640px) 50vw, 100vw"
-                    className="w-full h-auto"
-                    quality={90}
-                  />
-                  <span className="absolute top-3 start-3 z-10 rounded-full border border-[var(--land-accent)]/30 bg-[var(--land-bg)]/80 px-2.5 py-1 text-[10px] font-medium uppercase tracking-wider text-[var(--land-accent)] backdrop-blur">
-                    {isRTL ? "عام" : "General"}
-                  </span>
-                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-all duration-300 flex items-center justify-center">
-                    <span className="text-sm font-medium text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center gap-2">
-                      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path strokeLinecap="round" strokeLinejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
-                      {isRTL ? "عرض مباشر" : "View live demo"}
-                    </span>
-                  </div>
-                </div>
-                <div className="mt-6">
-                  <h3 className="text-xl font-semibold">
-                    {isRTL ? "بورتفوليو مؤسسي" : "Corporate Portfolio"}
-                  </h3>
-                  <p className="mt-2 text-sm text-[var(--land-body)] max-w-md">
-                    {isRTL
-                      ? "تصميم مؤسسي بألوان كحلي وذهبي. مؤشرات الإنجاز، الخط الزمني، الشهادات، التوصيات، وPDF جاهز للطباعة."
-                      : "Navy and gold institutional design. Achievement metrics, career timeline, credentials, endorsements, and print-ready PDF."}
-                  </p>
-                  <div className="mt-4 flex flex-wrap gap-4">
-                    <a
-                      href="/demo/general"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-sm text-[var(--land-accent)] hover:text-[var(--land-accent-hover)] transition-colors"
-                    >
-                      {isRTL ? "عرض مباشر ←" : "View live demo \u2192"}
-                    </a>
-                    <UseTemplateButton
-                      template="corporate"
-                      locale={locale}
-                      label={isRTL ? "استخدم هذا القالب" : "Use this template"}
-                      className="rounded-lg border border-[var(--land-accent)]/50 px-4 py-2 text-sm font-medium text-[var(--land-accent)] transition-colors hover:bg-[var(--land-accent)]/10"
+          <div className="flex overflow-x-auto gap-3 pb-3 -mx-5 px-5 scrollbar-hide">
+            {templateCards.map((t, i) => (
+              <ScrollReveal key={t.template} delay={i * 100} className="flex-shrink-0 w-40">
+                <div className="group h-full flex-shrink-0 w-40 rounded-2xl border-[1.5px] border-ink-10 bg-white overflow-hidden transition-all hover:-translate-y-1 hover:border-green-mid hover:shadow-lg">
+                  <div className="relative overflow-hidden">
+                    <Image
+                      src={t.img}
+                      alt={t.alt}
+                      width={1200}
+                      height={800}
+                      sizes="160px"
+                      className="w-full h-auto"
+                      quality={80}
                     />
-                  </div>
-                </div>
-              </div>
-            </ScrollReveal>
-
-            <ScrollReveal delay={150}>
-              <div className="group h-full">
-                <div className="relative rounded-xl overflow-hidden border border-[var(--land-border)] transition-all duration-500 group-hover:translate-y-[-2px] group-hover:border-[var(--land-accent)]/30">
-                  <Image
-                    src="/landing/mockup-engineer-2026b.webp"
-                    alt="Engineer portfolio template"
-                    width={1200}
-                    height={800}
-                    sizes="(min-width: 1024px) 400px, (min-width: 640px) 50vw, 100vw"
-                    className="w-full h-auto"
-                    quality={90}
-                  />
-                  <span className="absolute top-3 start-3 z-10 rounded-full border border-[var(--land-accent)]/30 bg-[var(--land-bg)]/80 px-2.5 py-1 text-[10px] font-medium uppercase tracking-wider text-[var(--land-accent)] backdrop-blur">
-                    {isRTL ? "هندسي" : "Engineering"}
-                  </span>
-                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-all duration-300 flex items-center justify-center">
-                    <span className="text-sm font-medium text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center gap-2">
-                      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path strokeLinecap="round" strokeLinejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
-                      {isRTL ? "عرض مباشر" : "View live demo"}
+                    <span className="absolute top-2 start-2 z-10 rounded-full border border-ink-10 bg-paper/80 px-2 py-0.5 text-[9px] font-medium uppercase tracking-wider text-ink-30 backdrop-blur">
+                      {isRTL ? t.badgeAr : t.badgeEn}
                     </span>
+                    {t.popular === "green" && (
+                      <span className="absolute top-2 end-2 z-10 rounded-full bg-green-glow px-2 py-0.5 text-[9px] font-bold text-green">
+                        {isRTL ? "الأكثر شيوعاً" : "Most popular"}
+                      </span>
+                    )}
+                    {t.popular === "gold" && (
+                      <span className="absolute top-2 end-2 z-10 rounded-full border border-gold/30 bg-gold/10 px-2 py-0.5 text-[9px] font-bold text-gold">
+                        {isRTL ? "جديد" : "New"}
+                      </span>
+                    )}
+                    <div className="absolute inset-0 flex items-center justify-center bg-black/0 transition-all duration-300 group-hover:bg-black/40">
+                      <span className="flex items-center gap-1.5 text-xs font-medium text-white opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+                        <Eye className="h-3.5 w-3.5" />
+                        {isRTL ? "عرض مباشر" : "View live demo"}
+                      </span>
+                    </div>
+                  </div>
+                  <div className="p-3">
+                    <h3 className="text-sm font-bold text-ink">
+                      {isRTL ? t.titleAr : t.titleEn}
+                    </h3>
+                    <p className="mt-1 text-[11px] leading-relaxed text-ink-50 line-clamp-3">
+                      {isRTL ? t.descAr : t.descEn}
+                    </p>
+                    <div className="mt-3 flex flex-col gap-2">
+                      <a
+                        href={t.demoHref}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-xs font-medium text-green transition-colors hover:text-green-mid"
+                      >
+                        {isRTL ? "عرض مباشر ←" : "View live demo →"}
+                      </a>
+                      <UseTemplateButton
+                        template={t.template}
+                        locale={locale}
+                        label={isRTL ? "استخدم هذا القالب" : "Use this template"}
+                        className="rounded-lg border border-green-mid/50 px-3 py-1.5 text-center text-xs font-medium text-green transition-colors hover:bg-green-glow"
+                      />
+                    </div>
                   </div>
                 </div>
-                <div className="mt-6">
-                  <h3 className="text-xl font-semibold">
-                    {isRTL ? "بورتفوليو هندسي" : "Engineer Portfolio"}
-                  </h3>
-                  <p className="mt-2 text-sm text-[var(--land-body)] max-w-md">
-                    {isRTL
-                      ? "تصميم بسيط يركز على المشاريع. بطاقات مشاريع، مهارات تقنية، شهادات، وصفحات تفصيلية."
-                      : "Minimal, project-forward design. Project cards, grouped technical skills, certifications, and detail pages."}
-                  </p>
-                  <div className="mt-4 flex flex-wrap gap-4">
-                    <a
-                      href="/demo/engineer"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-sm text-[var(--land-accent)] hover:text-[var(--land-accent-hover)] transition-colors"
-                    >
-                      {isRTL ? "عرض مباشر ←" : "View live demo \u2192"}
-                    </a>
-                    <UseTemplateButton
-                      template="engineer"
-                      locale={locale}
-                      label={isRTL ? "استخدم هذا القالب" : "Use this template"}
-                      className="rounded-lg border border-[var(--land-accent)]/50 px-4 py-2 text-sm font-medium text-[var(--land-accent)] transition-colors hover:bg-[var(--land-accent)]/10"
-                    />
-                  </div>
-                </div>
-              </div>
-            </ScrollReveal>
-
-            {/* Creative template */}
-            <ScrollReveal delay={300}>
-              <div className="group h-full">
-                <div className="relative rounded-xl overflow-hidden border border-[var(--land-border)] transition-all duration-500 group-hover:translate-y-[-2px] group-hover:border-[var(--land-accent)]/30">
-                  <Image
-                    src="/landing/mockup-creative-2026b.webp"
-                    alt="Creative portfolio template"
-                    width={1200}
-                    height={800}
-                    sizes="(min-width: 1024px) 400px, (min-width: 640px) 50vw, 100vw"
-                    className="w-full h-auto"
-                    quality={90}
-                  />
-                  <span className="absolute top-3 start-3 z-10 rounded-full border border-[var(--land-accent)]/30 bg-[var(--land-bg)]/80 px-2.5 py-1 text-[10px] font-medium uppercase tracking-wider text-[var(--land-accent)] backdrop-blur">
-                    {isRTL ? "إبداعي" : "Creative"}
-                  </span>
-                  <div className="absolute inset-0 flex items-center justify-center bg-black/0 transition-all duration-300 group-hover:bg-black/50">
-                    <span className="flex items-center gap-2 text-sm font-medium text-white opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-                      <Eye className="h-4 w-4" />
-                      {isRTL ? "معاينة" : "Preview"}
-                    </span>
-                  </div>
-                </div>
-                <div className="mt-6">
-                  <h3 className="text-xl font-semibold">
-                    {isRTL ? "بورتفوليو إبداعي" : "Creative Portfolio"}
-                  </h3>
-                  <p className="mt-2 text-sm text-[var(--land-body)] max-w-md">
-                    {isRTL
-                      ? "تصميم جريء يركز على العمل المرئي. معارض ماسونري، سرد العملية، وشبكات إتقان الأدوات."
-                      : "Bold, work-forward design. Masonry galleries, process storytelling, and tool-proficiency grids."}
-                  </p>
-                  <div className="mt-4 flex flex-wrap items-center gap-3">
-                    <a
-                      href="/demo/creative"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-sm text-[var(--land-accent)] hover:text-[var(--land-accent-hover)] transition-colors"
-                    >
-                      {isRTL ? "عرض مباشر ←" : "View live demo →"}
-                    </a>
-                    <UseTemplateButton
-                      template="creative"
-                      locale={locale}
-                      label={isRTL ? "استخدم هذا القالب" : "Use this template"}
-                      className="rounded-lg border border-[var(--land-accent)]/50 px-4 py-2 text-sm font-medium text-[var(--land-accent)] transition-colors hover:bg-[var(--land-accent)]/10"
-                    />
-                  </div>
-                </div>
-              </div>
-            </ScrollReveal>
-
-            {/* Creator template */}
-            <ScrollReveal>
-              <div className="group h-full">
-                <div className="relative rounded-xl overflow-hidden border border-[var(--land-border)] transition-all duration-500 group-hover:translate-y-[-2px] group-hover:border-[var(--land-accent)]/30">
-                  <Image
-                    src="/landing/mockup-creator-2026b.webp"
-                    alt="Creator portfolio template"
-                    width={1200}
-                    height={800}
-                    sizes="(min-width: 1024px) 400px, (min-width: 640px) 50vw, 100vw"
-                    className="w-full h-auto"
-                    quality={90}
-                  />
-                  <span className="absolute top-3 start-3 z-10 rounded-full border border-[var(--land-accent)]/30 bg-[var(--land-bg)]/80 px-2.5 py-1 text-[10px] font-medium uppercase tracking-wider text-[var(--land-accent)] backdrop-blur">
-                    {isRTL ? "صانع محتوى" : "Creator"}
-                  </span>
-                  <div className="absolute inset-0 flex items-center justify-center bg-black/0 transition-all duration-300 group-hover:bg-black/40">
-                    <span className="flex items-center gap-2 text-sm font-medium text-white opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-                      <Eye className="h-4 w-4" />
-                      {isRTL ? "عرض مباشر" : "View live demo"}
-                    </span>
-                  </div>
-                </div>
-                <div className="mt-6">
-                  <h3 className="text-xl font-semibold">
-                    {isRTL ? "بورتفوليو صانع المحتوى" : "Creator Portfolio"}
-                  </h3>
-                  <p className="mt-2 text-sm text-[var(--land-body)] max-w-md">
-                    {isRTL
-                      ? "بورتفوليو يُلعب. لعبة بطاقات اختيارية تكشف أعمالك، إحصائيات الجمهور، وشريط العلامات التجارية — أو الانتقال مباشرة إلى الأعمال."
-                      : "A portfolio you can play. An optional match-card game reveals your work, audience stats, and brand marquee — or skip straight to the work."}
-                  </p>
-                  <div className="mt-4 flex flex-wrap items-center gap-3">
-                    <a
-                      href="/demo/creator"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-sm text-[var(--land-accent)] hover:text-[var(--land-accent-hover)] transition-colors"
-                    >
-                      {isRTL ? "عرض مباشر ←" : "View live demo →"}
-                    </a>
-                    <UseTemplateButton
-                      template="creator"
-                      locale={locale}
-                      label={isRTL ? "استخدم هذا القالب" : "Use this template"}
-                      className="rounded-lg border border-[var(--land-accent)]/50 px-4 py-2 text-sm font-medium text-[var(--land-accent)] transition-colors hover:bg-[var(--land-accent)]/10"
-                    />
-                  </div>
-                </div>
-              </div>
-            </ScrollReveal>
-
-            {/* Developer template */}
-            <ScrollReveal delay={150}>
-              <div className="group h-full">
-                <div className="relative rounded-xl overflow-hidden border border-[var(--land-border)] transition-all duration-500 group-hover:translate-y-[-2px] group-hover:border-[var(--land-accent)]/30">
-                  <Image
-                    src="/landing/mockup-developer-2026b.webp"
-                    alt="Developer portfolio template"
-                    width={1200}
-                    height={800}
-                    sizes="(min-width: 1024px) 400px, (min-width: 640px) 50vw, 100vw"
-                    className="w-full h-auto"
-                    quality={90}
-                  />
-                  <span className="absolute top-3 start-3 z-10 rounded-full border border-[var(--land-accent)]/30 bg-[var(--land-bg)]/80 px-2.5 py-1 text-[10px] font-medium uppercase tracking-wider text-[var(--land-accent)] backdrop-blur">
-                    {isRTL ? "مطوّر" : "Developer"}
-                  </span>
-                  <div className="absolute inset-0 flex items-center justify-center bg-black/0 transition-all duration-300 group-hover:bg-black/40">
-                    <span className="flex items-center gap-2 text-sm font-medium text-white opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-                      <Eye className="h-4 w-4" />
-                      {isRTL ? "عرض مباشر" : "View live demo"}
-                    </span>
-                  </div>
-                </div>
-                <div className="mt-6">
-                  <h3 className="text-xl font-semibold">
-                    {isRTL ? "بورتفوليو مطوّر" : "Developer Portfolio"}
-                  </h3>
-                  <p className="mt-2 text-sm text-[var(--land-body)] max-w-md">
-                    {isRTL
-                      ? "تصميم تفاعلي مع لوحة مفاتيح ثلاثية الأبعاد لأدواتك — كل تقنية تضيء زرًا حقيقيًا. مشاريع، خط زمني للخبرات، وروابط GitHub."
-                      : "Interactive design with a 3D keyboard of your stack — every tool lights up a real key. Projects, experience timeline, and GitHub links."}
-                  </p>
-                  <div className="mt-4 flex flex-wrap items-center gap-3">
-                    <a
-                      href="/demo/developer"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-sm text-[var(--land-accent)] hover:text-[var(--land-accent-hover)] transition-colors"
-                    >
-                      {isRTL ? "عرض مباشر ←" : "View live demo →"}
-                    </a>
-                    <UseTemplateButton
-                      template="developer"
-                      locale={locale}
-                      label={isRTL ? "استخدم هذا القالب" : "Use this template"}
-                      className="rounded-lg border border-[var(--land-accent)]/50 px-4 py-2 text-sm font-medium text-[var(--land-accent)] transition-colors hover:bg-[var(--land-accent)]/10"
-                    />
-                  </div>
-                </div>
-              </div>
-            </ScrollReveal>
+              </ScrollReveal>
+            ))}
 
             {/* More templates coming soon */}
-            <ScrollReveal delay={300}>
-              <div className="flex h-full flex-col items-center justify-center rounded-xl border border-dashed border-[var(--land-border)] bg-[var(--land-surface)]/40 p-8 text-center">
-                <span className="flex h-12 w-12 items-center justify-center rounded-full border border-[var(--land-border)] text-[var(--land-muted)]">
-                  <Plus className="h-6 w-6" />
+            <ScrollReveal delay={templateCards.length * 100} className="flex-shrink-0 w-40">
+              <div className="flex h-full flex-col items-center justify-center rounded-2xl border-[1.5px] border-dashed border-ink-10 bg-paper p-4 text-center">
+                <span className="flex h-10 w-10 items-center justify-center rounded-full border border-ink-10 text-ink-30">
+                  <Plus className="h-5 w-5" />
                 </span>
-                <p className="mt-4 text-sm text-[var(--land-body)]">
+                <p className="mt-3 text-[11px] text-ink-50">
                   {isRTL
                     ? "قوالب جديدة قريبًا — طبي، قانوني، تعليمي، والمزيد."
                     : "More templates coming soon — Medical, Legal, Education, and more."}
                 </p>
-                <p className="mt-4 text-sm font-medium text-[var(--land-bright)]">
+                <p className="mt-3 text-xs font-medium text-ink">
                   {isRTL ? "انضم لقائمة الانتظار" : "Join the waitlist"}
                 </p>
                 <WaitlistForm locale={locale} source="templates" />
               </div>
             </ScrollReveal>
           </div>
+
+          {/* Strip CTA — start & pick a template */}
+          <ScrollReveal className="mx-auto mt-8 block max-w-md">
+            <Link
+              href="/templates"
+              className="block w-full rounded-2xl bg-gradient-to-br from-green to-green-mid py-4 text-center font-bold text-white shadow-green transition-all hover:-translate-y-0.5"
+            >
+              {isRTL ? "ابدأ واختر قالبك ←" : "Start & pick your template →"}
+            </Link>
+          </ScrollReveal>
         </div>
       </section>
 
@@ -778,7 +671,7 @@ export default async function LandingPage({
 
       {/* ── Pricing ────────────────────────────── */}
       <ScrollReveal>
-        <section className="relative py-16 sm:py-24 px-6 bg-[var(--land-surface-raised)]">
+        <section className="relative py-16 sm:py-24 px-6 bg-ink text-white">
           <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[var(--land-accent)] to-transparent opacity-40" />
           <div className="mx-auto max-w-3xl lg:grid lg:grid-cols-[1fr_auto] gap-16 items-start">
             <div>
@@ -788,11 +681,11 @@ export default async function LandingPage({
               >
                 {isRTL ? "سعر واحد. بدون مفاجآت." : "One price. No surprises."}
               </h2>
-              <p className="mt-4 text-[var(--land-body)] leading-relaxed max-w-md">
+              <p className="mt-4 text-white/70 leading-relaxed max-w-md">
                 {isRTL ? (
                   <>
                     كل شيء مشمول مقابل{" "}
-                    <span className="font-semibold text-[var(--land-bright)]">
+                    <span className="font-semibold text-white">
                       ٤.٩٠٠ دك
                     </span>{" "}
                     للبورتفوليو الواحد (~١٦ دولار). دفعة واحدة. بدون اشتراكات.
@@ -801,7 +694,7 @@ export default async function LandingPage({
                 ) : (
                   <>
                     Everything included for{" "}
-                    <span className="font-semibold text-[var(--land-bright)]">
+                    <span className="font-semibold text-white">
                       4.900 KD
                     </span>{" "}
                     per portfolio (~$16 USD). One-time payment. No subscriptions.
@@ -809,7 +702,7 @@ export default async function LandingPage({
                   </>
                 )}
               </p>
-              <div className="mt-8 grid grid-cols-1 gap-y-3 text-sm text-[var(--land-body)] sm:grid-cols-2 sm:gap-x-6">
+              <div className="mt-8 grid grid-cols-1 gap-y-3 text-sm text-white/80 sm:grid-cols-2 sm:gap-x-6">
                 {(isRTL
                   ? [
                       HOSTING_ENABLED ? "رابط بورتفوليو مستضاف" : null,
@@ -839,18 +732,18 @@ export default async function LandingPage({
                   .filter((item): item is string => Boolean(item))
                   .map((item) => (
                   <div key={item} className="flex items-center gap-2">
-                    <span className="shrink-0 text-[var(--land-accent)]">✓</span>
+                    <span className="shrink-0 text-green-bright">✓</span>
                     {item}
                   </div>
                 ))}
               </div>
 
               {/* Why one-time? */}
-              <div className="mt-8 rounded-xl border border-[var(--land-accent)]/20 bg-[var(--land-accent-subtle)] p-5">
-                <h3 className="text-sm font-semibold text-[var(--land-accent)]">
+              <div className="mt-8 rounded-xl border border-green-mid/30 bg-white/5 p-5">
+                <h3 className="text-sm font-semibold text-green-bright">
                   {isRTL ? "لماذا دفعة واحدة؟" : "Why One-Time?"}
                 </h3>
-                <p className="mt-1.5 text-sm leading-relaxed text-[var(--land-body)]">
+                <p className="mt-1.5 text-sm leading-relaxed text-white/70">
                   {isRTL
                     ? "نؤمن أن قصة مسيرتك لا يجب أن تحمل رسومًا شهرية. ادفع مرة واحدة، وامتلكها للأبد."
                     : "We believe your career story shouldn't have a monthly fee. Pay once, own forever."}
@@ -859,32 +752,32 @@ export default async function LandingPage({
               <div className="mt-10">
                 <Link
                   href="/templates"
-                  className="inline-block rounded-lg bg-[var(--land-accent)] px-8 py-3.5 text-base font-semibold text-white hover:bg-[var(--land-accent-hover)] transition-colors"
+                  className="inline-block rounded-2xl bg-gradient-to-br from-green to-green-mid px-8 py-3.5 text-base font-semibold text-white shadow-green transition-all hover:-translate-y-0.5"
                 >
                   {isRTL ? "ابدأ الآن" : "Start Now — It's Free"}
                 </Link>
-                <p className="mt-3 text-xs text-[var(--land-muted)]">
+                <p className="mt-3 text-xs text-white/50">
                   {isRTL
                     ? "ابنِ وعاين مجانًا — ادفع ٤.٩٠٠ دك فقط عند النشر. دفعة واحدة، بدون تجديد."
                     : "Build & preview for free — pay 4.900 KD only when you publish. One-time, no renewals."}
                 </p>
                 {/* Payment trust icons */}
                 <div className="mt-6 flex flex-wrap items-center gap-4">
-                  <p className="text-[10px] text-[var(--land-muted)] tracking-wide uppercase">
+                  <p className="text-[10px] text-white/50 tracking-wide uppercase">
                     {isRTL ? "ادفع عبر" : "Pay with"}
                   </p>
                   <div className="flex items-center gap-3">
                     {/* K-Net */}
-                    <span className="text-xs font-bold text-[var(--land-body)] tracking-tight">K-NET</span>
+                    <span className="text-xs font-bold text-white/80 tracking-tight">K-NET</span>
                     {/* Visa */}
-                    <svg className="h-4 text-[var(--land-body)]" viewBox="0 0 48 16" fill="currentColor"><path d="M19.6 1.2l-3.5 13.6h-2.8l3.5-13.6h2.8zm14.3 8.8l1.5-4 .8 4h-2.3zm3.1 4.8h2.6l-2.3-13.6h-2.4c-.5 0-1 .3-1.2.8l-4.2 12.8h2.9l.6-1.6h3.6l.4 1.6zm-7.5-4.4c0-3.6-5-3.8-5-5.4 0-.5.5-1 1.5-1.1.5 0 1.9-.1 3.4.6l.6-2.8c-.8-.3-1.9-.6-3.2-.6-3.4 0-5.8 1.8-5.8 4.4 0 1.9 1.7 3 3 3.6 1.3.7 1.8 1.1 1.8 1.7 0 .9-1.1 1.3-2 1.3-1.7 0-2.7-.5-3.5-.8l-.6 2.9c.8.4 2.3.7 3.8.7 3.6 0 6-1.8 6-4.5zm-14.2-9.2l-5.6 13.6h-3l-2.7-10.9c-.2-.6-.3-.8-.8-1.1-.9-.4-2.3-.8-3.5-1.1l.1-.5h4.7c.6 0 1.1.4 1.3 1.1l1.2 6.1 2.8-7.2h2.9z" /></svg>
+                    <svg className="h-4 text-white/80" viewBox="0 0 48 16" fill="currentColor"><path d="M19.6 1.2l-3.5 13.6h-2.8l3.5-13.6h2.8zm14.3 8.8l1.5-4 .8 4h-2.3zm3.1 4.8h2.6l-2.3-13.6h-2.4c-.5 0-1 .3-1.2.8l-4.2 12.8h2.9l.6-1.6h3.6l.4 1.6zm-7.5-4.4c0-3.6-5-3.8-5-5.4 0-.5.5-1 1.5-1.1.5 0 1.9-.1 3.4.6l.6-2.8c-.8-.3-1.9-.6-3.2-.6-3.4 0-5.8 1.8-5.8 4.4 0 1.9 1.7 3 3 3.6 1.3.7 1.8 1.1 1.8 1.7 0 .9-1.1 1.3-2 1.3-1.7 0-2.7-.5-3.5-.8l-.6 2.9c.8.4 2.3.7 3.8.7 3.6 0 6-1.8 6-4.5zm-14.2-9.2l-5.6 13.6h-3l-2.7-10.9c-.2-.6-.3-.8-.8-1.1-.9-.4-2.3-.8-3.5-1.1l.1-.5h4.7c.6 0 1.1.4 1.3 1.1l1.2 6.1 2.8-7.2h2.9z" /></svg>
                     {/* Mastercard */}
                     <svg className="h-4" viewBox="0 0 32 20" fill="none"><circle cx="12" cy="10" r="8" fill="oklch(0.55 0.02 20)" /><circle cx="20" cy="10" r="8" fill="oklch(0.6 0.08 65)" /><path d="M16 4.7a7.96 7.96 0 010 10.6 7.96 7.96 0 000-10.6z" fill="oklch(0.58 0.06 40)" /></svg>
                     {/* Apple Pay */}
-                    <span className="text-xs font-medium text-[var(--land-body)]">Apple Pay</span>
+                    <span className="text-xs font-medium text-white/80">Apple Pay</span>
                   </div>
-                  <div className="h-3 w-px bg-[var(--land-border)]" />
-                  <p className="text-[10px] text-[var(--land-accent)] font-medium">
+                  <div className="h-3 w-px bg-white/15" />
+                  <p className="text-[10px] text-green-bright font-medium">
                     {isRTL ? "عبر MyFatoorah" : "via MyFatoorah"}
                   </p>
                 </div>
@@ -895,13 +788,13 @@ export default async function LandingPage({
                 className="font-extrabold tracking-tighter"
                 style={{ fontSize: "clamp(3rem, 5vw, 4.5rem)" }}
               >
-                <span className="text-[var(--land-accent)]">4.900</span>{" "}
-                <span className="text-2xl font-medium text-[var(--land-muted)]">
+                <span className="text-green-bright">4.900</span>{" "}
+                <span className="text-2xl font-medium text-white/50">
                   KD
                 </span>
               </div>
-              <p className="text-sm text-[var(--land-muted)] mt-2">~$16 USD</p>
-              <p className="text-xs text-[var(--land-accent)] mt-1 font-medium">
+              <p className="text-sm text-white/50 mt-2">~$16 USD</p>
+              <p className="text-xs text-green-bright mt-1 font-medium">
                 {isRTL ? "دفعة واحدة فقط" : "one-time, forever"}
               </p>
             </div>
@@ -957,34 +850,33 @@ export default async function LandingPage({
       {/* ── Pre-footer CTA ─────────────────────── */}
       <ScrollReveal>
         <section className="border-t border-[var(--land-border)] bg-[var(--land-surface-raised)] px-6 py-14 sm:py-20 text-center">
-          <div className="mx-auto max-w-2xl">
+          <div className="mx-auto max-w-md">
             <h2
               className="font-extrabold tracking-tighter"
               style={{ fontSize: "clamp(1.75rem, 4vw, 2.75rem)" }}
             >
-              {isRTL
-                ? "البورتفوليو الذي تستحقه مسيرتك"
-                : "The portfolio your career has earned"}
+              {isRTL ? "جاهز تبدأ؟" : "Ready to start?"}
             </h2>
-            <p className="mt-4 text-[var(--land-body)]">
-              {HOSTING_ENABLED
-                ? isRTL
-                  ? "اختر قالبًا وانشر بورتفوليوك خلال دقائق."
-                  : "Pick a template and publish your portfolio in minutes."
-                : isRTL
-                  ? "اختر قالبًا وحمّل بورتفوليوك كملف PDF خلال دقائق."
-                  : "Pick a template and download your portfolio as a PDF in minutes."}
+            <p className="mt-4 text-ink-50">
+              {isRTL
+                ? "سيرتك الذاتية الاحترافية بانتظارك — مجاناً."
+                : "Your professional CV is waiting — free."}
             </p>
-            <div className="mt-8 flex flex-col items-center">
+            <div className="mt-8">
               <Link
                 href="/templates"
-                className="inline-block rounded-lg shadow-sm bg-[var(--land-accent)] px-10 py-4 text-lg font-semibold text-white transition-colors hover:bg-[var(--land-accent-hover)] active:scale-[0.98]"
+                className="block w-full rounded-2xl bg-gradient-to-br from-green to-green-mid py-4 text-lg font-semibold text-white shadow-green transition-all hover:-translate-y-0.5 active:scale-[0.98]"
               >
-                {isRTL ? "ابدأ البناء — مجاني" : "Start Building — It's Free"}
+                {isRTL ? "ابدأ الآن — مجاناً ←" : "Start now — free →"}
               </Link>
-              <p className="mt-3 text-xs text-[var(--land-muted)]">
-                {isRTL ? "ابنِ مجانًا · ادفع فقط عند النشر" : "Build free · Pay only when you publish"}
-              </p>
+              <div className="mt-5 flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-xs text-ink-30">
+                {(isRTL
+                  ? ["🔒 دفع آمن", "⚡ ١٠ ثوانٍ", "✨ بلا اشتراك", "🇰🇼 K-NET"]
+                  : ["🔒 Secure pay", "⚡ 10 sec", "✨ No subscription", "🇰🇼 K-NET"]
+                ).map((badge) => (
+                  <span key={badge}>{badge}</span>
+                ))}
+              </div>
             </div>
           </div>
         </section>
@@ -1106,6 +998,9 @@ export default async function LandingPage({
           &copy; {new Date().getFullYear()} {isRTL ? "بورتفوليو برو" : "Portfolio Pro"} by TriMind
         </div>
       </footer>
+
+      {/* Sticky mobile/scroll CTA — appears after scrolling */}
+      <StickyFooterCTA locale={locale} />
     </div>
   );
 }

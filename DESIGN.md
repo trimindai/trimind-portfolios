@@ -1,17 +1,22 @@
 ---
 name: Portfolio Pro
-description: Professional portfolio builder for GCC professionals
+description: Arabic-first CV/portfolio builder for Kuwait & Gulf professionals
+# Homepage system (2026-06): Arabic-first ink/paper/green/gold palette replaces
+# the prior "Quiet Atelier" emerald. Tokens live in tailwind.config.ts (ink/paper/
+# green/gold) and globals.css (--ink-*/--paper/--green-*/--gold; --land-* remap onto them).
 colors:
-  atelier-emerald: "#059669"
-  emerald-hover: "#10b981"
-  emerald-tint: "#0596691a"
-  deep-ink: "#020617"
-  workshop-dark: "#0f172a"
-  surface-recessed: "#1e293b"
-  frame-line: "#334155"
-  quiet-text: "#94a3b8"
-  soft-text: "#cbd5e1"
-  whisper-text: "#64748b"
+  ink: "#0D1117"
+  ink-80: "#1C2333"
+  ink-50: "#4A5568"
+  ink-30: "#8B9BAD"
+  ink-10: "#EFF2F6"
+  paper: "#FAFBFC"
+  green: "#1B7A4E"
+  green-mid: "#22A063"
+  green-bright: "#2DC072"
+  green-glow: "rgba(34,160,99,0.15)"
+  gold: "#C8862A"
+  gold-light: "#F5D48A"
 typography:
   display:
     fontFamily: "Geist, system-ui, sans-serif"

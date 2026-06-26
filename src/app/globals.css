@@ -95,26 +95,45 @@
   }
 }
 
-/* ─── Landing page tokens — Fresh Light palette ── */
+/* ─── Brand palette — Arabic-first redesign (ink / paper / green / gold) ── */
 :root {
-  --land-bg: #ffffff;                           /* Clean White */
-  --land-surface: #f8fafc;                      /* Soft Gray */
-  --land-surface-raised: #f1f5f9;              /* Raised Surface */
-  --land-border: #e2e8f0;                       /* Light Border */
-  --land-border-subtle: #f1f5f9;
-  --land-muted: #94a3b8;                        /* Muted Text */
-  --land-body: #64748b;                         /* Body Text */
-  --land-bright: #1e293b;                       /* Dark Text */
-  --land-accent: #059669;                       /* Emerald */
-  --land-accent-hover: #047857;                 /* Emerald Hover (darker for light bg) */
-  --land-accent-subtle: rgba(5, 150, 105, 0.08);
-  --land-glow: rgba(5, 150, 105, 0.06);
+  --ink: #0D1117;
+  --ink-80: #1C2333;
+  --ink-50: #4A5568;
+  --ink-30: #8B9BAD;
+  --ink-10: #EFF2F6;
+  --paper: #FAFBFC;
+  --green: #1B7A4E;
+  --green-mid: #22A063;
+  --green-bright: #2DC072;
+  --green-glow: rgba(34, 160, 99, 0.15);
+  --gold: #C8862A;
+  --gold-light: #F5D48A;
+
+  /* Landing tokens remapped onto the brand palette so existing markup
+     recolours without per-element edits. */
+  --land-bg: var(--paper);
+  --land-surface: #F4F6F9;
+  --land-surface-raised: var(--ink-10);
+  --land-border: var(--ink-10);
+  --land-border-subtle: #F4F6F9;
+  --land-muted: var(--ink-30);
+  --land-body: var(--ink-50);
+  --land-bright: var(--ink);
+  --land-accent: var(--green-mid);
+  --land-accent-hover: var(--green);
+  --land-accent-subtle: rgba(34, 160, 99, 0.08);
+  --land-glow: var(--green-glow);
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
 }
 
 /* ─── Grain texture — disabled (Quiet Atelier: no decoration) ── */
 .land-grain::before { display: none; }
+
+/* ─── Hide scrollbar for horizontal card strips ── */
+.scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+.scrollbar-hide::-webkit-scrollbar { display: none; }
 
 /* ─── Selection color ────────────────────────── */
 ::selection {

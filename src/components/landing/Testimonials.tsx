@@ -1,63 +1,94 @@
 "use client";
 
 /**
- * Testimonials section — horizontal scrollable on mobile, 3-col grid on desktop.
+ * Testimonials section — horizontal-scroll row of testimonial cards, bilingual.
  */
 export function Testimonials({ isRTL }: { isRTL: boolean }) {
-  const testimonials = [
+  const testimonials: {
+    quote: string;
+    name: string;
+    role: string;
+    initial: string;
+    avatar: string;
+  }[] = [
     {
-      stars: 5,
       quote: isRTL
-        ? "حصلت على مقابلة في نفس الأسبوع اللي أرسلت فيه رابط بورتفوليوي. مسؤولي التوظيف علّقوا عليه فعلاً."
-        : "Got an interview the same week I sent my portfolio link. Recruiters actually commented on it.",
-      name: isRTL ? "أحمد ك." : "Ahmed K.",
-      role: isRTL ? "محلل مالي، الكويت" : "Financial Analyst, Kuwait",
+        ? "جربت ٣ مواقع قبله وما عجبني. هذا الموقع طلّع سيرة ذاتية ما توقعت إنها تطلع بهالجودة خلال ١٠ ثوانٍ."
+        : "I tried 3 other sites and none impressed me. This one produced a CV I never expected at that quality in 10 seconds.",
+      name: isRTL ? "فهد العتيبي" : "Fahad Al-Otaibi",
+      role: isRTL ? "مدير مشاريع · الكويت" : "Project Manager · Kuwait",
+      initial: isRTL ? "ف" : "F",
+      avatar: "from-green to-green-mid",
     },
     {
-      stars: 5,
       quote: isRTL
-        ? "تصميم العربي جميل فعلاً. أخيرًا أداة سيرة ذاتية تفهم سوقنا."
-        : "The Arabic layout is genuinely beautiful. Finally a CV tool that understands our market.",
-      name: isRTL ? "فاطمة ع." : "Fatima A.",
-      role: isRTL ? "مديرة موارد بشرية، الكويت" : "HR Manager, Kuwait",
+        ? "الذكاء الاصطناعي كتب نبذة عني أحسن من اللي كنت أكتبه بنفسي. وصلت لمقابلتين خلال أسبوع."
+        : "The AI wrote a summary about me better than I could write myself. I landed two interviews within a week.",
+      name: isRTL ? "سارة الرشيدي" : "Sarah Al-Rashidi",
+      role: isRTL ? "محللة مالية · بنك الخليج" : "Financial Analyst · Gulf Bank",
+      initial: isRTL ? "س" : "S",
+      avatar: "from-gold to-yellow-400",
     },
     {
-      stars: 5,
       quote: isRTL
-        ? "أخذ مني ٢٠ دقيقة. سيرتي القديمة أخذت من المصمم ٣ أيام وكلفتني ٥٠ دك."
-        : "Took me 20 minutes. My old CV took a designer 3 days and cost me 50 KD.",
-      name: isRTL ? "عمر س." : "Omar S.",
-      role: isRTL ? "مهندس مدني، الكويت" : "Civil Engineer, Kuwait",
+        ? "بورتفوليو حي + PDF + كل هذا بدفعة واحدة بس؟ ما صدقت السعر. يستاهل عشرة أضعاف."
+        : "A live portfolio + PDF + all of this for a single payment? I couldn't believe the price. It's worth ten times that.",
+      name: isRTL ? "عبدالرحمن الكندري" : "Abdulrahman Al-Kandari",
+      role: isRTL ? "مهندس كمبيوتر" : "Computer Engineer",
+      initial: isRTL ? "ع" : "A",
+      avatar: "from-ink-80 to-ink-50",
     },
   ];
 
   return (
-    <section className="py-16 sm:py-24 px-6">
+    <section className="py-16 sm:py-24 px-5">
       <div className="mx-auto max-w-5xl">
-        <h2 className="text-2xl sm:text-3xl font-bold text-center text-[var(--land-bright)] mb-10">
+        <h2 className="text-2xl font-bold text-ink tracking-tight mb-8">
           {isRTL ? "ماذا يقول المحترفون" : "What professionals say"}
         </h2>
-        <div className="flex gap-4 overflow-x-auto pb-4 snap-x snap-mandatory sm:grid sm:grid-cols-3 sm:overflow-visible sm:pb-0">
+        <div
+          className="flex overflow-x-auto gap-3 pb-3 -mx-5 px-5 scrollbar-hide"
+          dir={isRTL ? "rtl" : "ltr"}
+        >
           {testimonials.map((t, i) => (
             <div
               key={i}
-              className="min-w-[280px] sm:min-w-0 snap-start rounded-xl border border-[var(--land-border)] bg-white p-5 shadow-sm"
+              className="flex-shrink-0 w-[260px] bg-white border border-ink-10 rounded-2xl shadow-sm p-5"
             >
-              <div className="flex gap-0.5 mb-3">
-                {Array.from({ length: t.stars }).map((_, j) => (
-                  <span key={j} className="text-amber-400 text-sm">
+              <div
+                className={`flex gap-0.5 text-gold mb-3 ${
+                  isRTL ? "flex-row-reverse justify-end" : ""
+                }`}
+                aria-hidden="true"
+              >
+                {Array.from({ length: 5 }).map((_, j) => (
+                  <span key={j} className="text-sm leading-none">
                     &#9733;
                   </span>
                 ))}
               </div>
-              <p className="text-sm text-[var(--land-body)] leading-relaxed mb-4">
-                &ldquo;{t.quote}&rdquo;
+              <p
+                className={`text-sm text-ink leading-relaxed mb-4 ${
+                  isRTL ? "text-right" : ""
+                }`}
+              >
+                {t.quote}
               </p>
-              <div>
-                <p className="text-sm font-medium text-[var(--land-bright)]">
-                  {t.name}
-                </p>
-                <p className="text-xs text-[var(--land-muted)]">{t.role}</p>
+              <div
+                className={`flex items-center gap-3 ${
+                  isRTL ? "flex-row-reverse text-right" : ""
+                }`}
+              >
+                <div
+                  className={`h-10 w-10 flex-shrink-0 rounded-full grid place-items-center text-white font-bold bg-gradient-to-br ${t.avatar}`}
+                  aria-hidden="true"
+                >
+                  {t.initial}
+                </div>
+                <div>
+                  <p className="font-bold text-ink text-sm">{t.name}</p>
+                  <p className="text-xs text-ink-30">{t.role}</p>
+                </div>
               </div>
             </div>
           ))}
