@@ -259,6 +259,7 @@ export default async function LandingPage({
               {/* How-it-works reel (click-to-play; live-demo fallback until the mp4 ships) */}
               <HeroReel
                 locale={locale}
+                src="/how-it-works.mp4"
                 poster="/landing/mockup-corporate-2026b.webp"
                 demoHref="/demo/corporate/index.html"
               />

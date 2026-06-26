@@ -21,7 +21,7 @@ export function HeroReel({
   const isRTL = locale === "ar";
   const [playing, setPlaying] = useState(false);
   const label = isRTL ? "شاهد كيف يعمل" : "Watch how it works";
-  const sub = isRTL ? "جولة قصيرة في الموقع" : "A 40-second tour";
+  const sub = isRTL ? "جولة قصيرة في الموقع" : "A quick tour";
 
   if (playing && src) {
     return (
