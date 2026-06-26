@@ -16,9 +16,10 @@ import { useParams, useSearchParams } from "next/navigation";
 import { useQuery, useMutation, useConvexAuth } from "convex/react";
 import { api } from "@convex/_generated/api";
 import { Id } from "@convex/_generated/dataModel";
-import { Link } from "@/i18n/navigation";
+import { Link, useRouter } from "@/i18n/navigation";
 import PreviewFrame from "@/components/preview/PreviewFrame";
 import { toPortfolioData } from "@/lib/portfolio-data";
+import { pickPrimaryPortfolio } from "@/lib/single-cv";
 import { COLOR_PRESETS, type TemplatePresetKey } from "@/lib/color-presets";
 import { resolveTemplateId, TEMPLATES } from "@/lib/templates";
 import {
@@ -46,6 +47,14 @@ const HEADING_FONTS = [
   "Cormorant Garamond",
 ];
 const BODY_FONTS = ["Inter", "DM Sans", "Source Sans 3", "Raleway", "Lora"];
+
+// Custom colour picker fields → customization keys (live preview reads these).
+const COLOR_FIELDS = [
+  { key: "primaryColor", state: "primary", en: "Primary", ar: "الأساسي", fallback: "#000000" },
+  { key: "accentColor", state: "accent", en: "Accent", ar: "التمييز", fallback: "#059669" },
+  { key: "bgColor", state: "bg", en: "Background", ar: "الخلفية", fallback: "#ffffff" },
+] as const;
+const HEX_RE = /^#[0-9a-fA-F]{6}$/;
 
 type Sec = { id: string; en: string; ar: string };
 
@@ -117,6 +126,10 @@ export default function StudioClient({ initialId }: { initialId?: string }) {
   const [uploading, setUploading] = useState(false);
   const [parseError, setParseError] = useState("");
   const [pasteText, setPasteText] = useState("");
+  // Plain-English notes merged into the uploaded/pasted CV in a single parse.
+  const [instructions, setInstructions] = useState("");
+  // Hex text fields for the custom colour picker (synced from saved colours).
+  const [hexInputs, setHexInputs] = useState({ primary: "", accent: "", bg: "" });
   const [chat, setChat] = useState<ChatMsg[]>([]);
   const [chatInput, setChatInput] = useState("");
   const [sending, setSending] = useState(false);
@@ -132,6 +145,23 @@ export default function StudioClient({ initialId }: { initialId?: string }) {
     portfolioId && isAuthenticated ? { id: portfolioId as Id<"portfolios"> } : "skip"
   );
   const update = useMutation(api.portfolios.update);
+  const router = useRouter();
+
+  // One CV per user: in CREATE mode, if the signed-in user already has a
+  // portfolio, open it instead of starting a new one. Skipped in edit mode and
+  // when resuming a draft via ?id. Paid/published always wins (never strand a
+  // paying user); otherwise newest. Hidden extras are never deleted.
+  const myList = useQuery(
+    api.portfolios.listByUser,
+    isAuthenticated && !initialId && !portfolioId ? {} : "skip"
+  );
+  const checkingExisting =
+    !initialId && !portfolioId && isAuthenticated && myList === undefined;
+  useEffect(() => {
+    if (initialId || portfolioId || !myList || myList.length === 0) return;
+    const primary = pickPrimaryPortfolio(myList);
+    if (primary) router.replace(`/build/${primary._id}`);
+  }, [myList, initialId, portfolioId, router]);
 
   const previewData = useMemo(
     () => (portfolio ? toPortfolioData(portfolio, locale) : null),
@@ -150,6 +180,17 @@ export default function StudioClient({ initialId }: { initialId?: string }) {
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [chat]);
+
+  // Mirror saved colours into the hex text fields (so a preset click or chat
+  // colour change updates them too). Typing an invalid partial hex doesn't
+  // patch, so cust is unchanged and this won't clobber what's being typed.
+  useEffect(() => {
+    setHexInputs({
+      primary: cust.primaryColor || "",
+      accent: cust.accentColor || "",
+      bg: cust.bgColor || "",
+    });
+  }, [cust.primaryColor, cust.accentColor, cust.bgColor]);
 
   // Edit mode: greet once the loaded portfolio arrives (no upload step).
   useEffect(() => {
@@ -213,6 +254,7 @@ export default function StudioClient({ initialId }: { initialId?: string }) {
       const fd = new FormData();
       fd.append("file", file);
       fd.append("locale", locale);
+      if (instructions.trim()) fd.append("instructions", instructions.trim());
       const res = await fetch("/api/parse-cv", { method: "POST", body: fd });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Parse failed");
@@ -235,7 +277,11 @@ export default function StudioClient({ initialId }: { initialId?: string }) {
       const res = await fetch("/api/parse-cv", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ text: pasteText, locale }),
+        body: JSON.stringify({
+          text: pasteText,
+          locale,
+          ...(instructions.trim() ? { instructions: instructions.trim() } : {}),
+        }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Parse failed");
@@ -341,7 +387,7 @@ export default function StudioClient({ initialId }: { initialId?: string }) {
       {/* ── no portfolio yet: upload / paste ───────────────────────────────── */}
       {!hasPortfolio && (
         <div className="mx-auto w-full max-w-xl py-10">
-          {loadingDoc ? (
+          {loadingDoc || checkingExisting ? (
             <div className="flex flex-col items-center py-20 text-[var(--land-body)]">
               <Loader2 className="mb-3 h-7 w-7 animate-spin text-[var(--land-accent)]" />
               {T("Loading your draft…", "جارٍ تحميل المسودة…")}
@@ -392,6 +438,31 @@ export default function StudioClient({ initialId }: { initialId?: string }) {
                   PDF · Word · TXT · JPG/PNG · ≤ 8 MB
                 </span>
               </label>
+
+              {/* Optional plain-English notes merged into the CV in one parse. */}
+              <div className="mt-5">
+                <label className="mb-1.5 block text-sm font-medium text-[var(--land-bright)]">
+                  {T("Anything to add or change? (optional)", "تبي تضيف أو تعدّل شي؟ (اختياري)")}
+                </label>
+                <textarea
+                  value={instructions}
+                  onChange={(e) => setInstructions(e.target.value)}
+                  disabled={uploading}
+                  rows={3}
+                  maxLength={4000}
+                  placeholder={T(
+                    "e.g. add my new role at Acme (2024–now), emphasise leadership, fix my job title…",
+                    "مثال: أضف وظيفتي الجديدة في أكمي (٢٠٢٤–الآن)، ركّز على القيادة، صحّح مسماي الوظيفي…"
+                  )}
+                  className="w-full rounded-xl border border-[var(--land-border)] bg-[var(--land-bg)] p-3 text-sm text-[var(--land-bright)] outline-none focus:border-[var(--land-accent)]"
+                />
+                <p className="mt-1 text-xs text-[var(--land-muted)]">
+                  {T(
+                    "We'll merge these notes with your uploaded or pasted CV.",
+                    "بندمج هذي الملاحظات مع سيرتك المرفوعة أو الملصوقة."
+                  )}
+                </p>
+              </div>
 
               <div className="my-6 flex items-center gap-3 text-xs text-[var(--land-muted)]">
                 <span className="h-px flex-1 bg-[var(--land-border)]" />
@@ -488,6 +559,48 @@ export default function StudioClient({ initialId }: { initialId?: string }) {
                     }}
                   />
                 ))}
+              </div>
+
+              {/* Custom — any hex; persists via the same path as presets, so the
+                  preview updates live. ponytail: color input patches on every
+                  change; debounce only if write volume ever matters. */}
+              <div className="mt-4 border-t border-[var(--land-border)] pt-3">
+                <p className="mb-2 text-xs font-medium text-[var(--land-muted)]">
+                  {T("Custom", "مخصص")}
+                </p>
+                <div className="space-y-2">
+                  {COLOR_FIELDS.map((f) => {
+                    const saved = (cust[f.key] as string) || "";
+                    const swatch = HEX_RE.test(saved) ? saved : f.fallback;
+                    return (
+                      <div key={f.key} className="flex items-center gap-2">
+                        <span className="w-24 text-xs text-[var(--land-body)]">
+                          {T(f.en, f.ar)}
+                        </span>
+                        <input
+                          type="color"
+                          value={swatch}
+                          onChange={(e) => patchCustomization({ [f.key]: e.target.value })}
+                          aria-label={T(f.en, f.ar)}
+                          className="h-8 w-10 cursor-pointer rounded border border-[var(--land-border)] bg-transparent p-0"
+                        />
+                        <input
+                          type="text"
+                          dir="ltr"
+                          value={hexInputs[f.state]}
+                          onChange={(e) => {
+                            const v = e.target.value;
+                            setHexInputs((h) => ({ ...h, [f.state]: v }));
+                            if (HEX_RE.test(v)) patchCustomization({ [f.key]: v });
+                          }}
+                          placeholder={f.fallback}
+                          maxLength={7}
+                          className="w-24 rounded-lg border border-[var(--land-border)] bg-[var(--land-bg)] px-2 py-1 text-xs text-[var(--land-bright)] outline-none focus:border-[var(--land-accent)]"
+                        />
+                      </div>
+                    );
+                  })}
+                </div>
               </div>
             </section>
 

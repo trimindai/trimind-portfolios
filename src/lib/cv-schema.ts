@@ -113,7 +113,11 @@ export const PARSE_SYSTEM =
   "for design/art/media, 'creator' for content/marketing/influencer, else 'general'. " +
   "(4) Preserve the CV's language (Arabic stays Arabic). (5) If a field is unknown, " +
   "OMIT it or use an empty string — never guess. (6) If the input is clearly " +
-  "not a CV, set is_cv=false. Return ONLY a JSON object, no prose, no markdown fences. " +
+  "not a CV, set is_cv=false. (7) If extra notes follow the CV (marked " +
+  "'ADDITIONAL INSTRUCTIONS'), MERGE that information into the result — add or " +
+  "correct fields accordingly — while keeping everything else faithful to the " +
+  "source CV; the notes are still subject to rules (2) and (5). " +
+  "Return ONLY a JSON object, no prose, no markdown fences. " +
   "Shape: {is_cv:boolean, confidence:number, templateId:string, " +
   "basics:{fullName,title,summary,location,email,phone,website,linkedin,github," +
   "languages:[{name,level}]}, experience:[{title,company,startDate,endDate," +

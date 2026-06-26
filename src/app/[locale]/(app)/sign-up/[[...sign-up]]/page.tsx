@@ -28,9 +28,12 @@ function clerkError(err: unknown): string {
 }
 
 // Only allow same-origin relative paths to prevent open-redirects.
+// New accounts go straight to the AI builder (/build) instead of the empty
+// dashboard. /build itself opens an existing CV for returning users (one CV
+// per user), so direct sign-ups land on upload and returning users on their CV.
 function safeRedirect(raw: string | null, locale: string): string {
   if (raw && raw.startsWith("/") && !raw.startsWith("//")) return raw;
-  return `/${locale}/dashboard`;
+  return `/${locale}/build`;
 }
 
 function SignUpForm() {

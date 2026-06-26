@@ -27,9 +27,11 @@ function clerkError(err: unknown): string {
   return e?.longMessage || e?.message || "Something went wrong. Please try again.";
 }
 
+// Returning users land on /build, which opens their single existing CV
+// (one CV per user). Falls back to dashboard only if they have none.
 function safeRedirect(raw: string | null, locale: string): string {
   if (raw && raw.startsWith("/") && !raw.startsWith("//")) return raw;
-  return `/${locale}/dashboard`;
+  return `/${locale}/build`;
 }
 
 function SignInForm() {

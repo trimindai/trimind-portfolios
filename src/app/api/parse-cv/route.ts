@@ -29,12 +29,14 @@ export const maxDuration = 120; // CV parse can take a few seconds on cold start
 
 const MAX_FILE_BYTES = 8 * 1024 * 1024; // 8 MB
 const MAX_TEXT_CHARS = 24_000; // ~6k tokens — matches the Python MAX_INPUT_CHARS
+const MAX_INSTRUCTIONS_CHARS = 4_000; // extra plain-English notes merged into the CV
 const MIN_TEXT_CHARS = 150; // below this a PDF is treated as scanned → vision
 const IMAGE_EXTS = new Set(["jpg", "jpeg", "png", "webp", "gif", "bmp"]);
 
 const TextBody = z.object({
   text: z.string().trim().min(20, "Paste a bit more of your CV.").max(40_000),
   locale: z.enum(["en", "ar"]).default("en"),
+  instructions: z.string().trim().max(MAX_INSTRUCTIONS_CHARS).optional(),
 });
 
 function ext(name: string): string {
@@ -74,11 +76,22 @@ function userContent(
 }
 
 /** ONE call + one repair retry, validating against the zod CV schema. */
-async function extractCv(content: ORMessage["content"]) {
+async function extractCv(content: ORMessage["content"], instructions?: string) {
   const messages: ORMessage[] = [
     { role: "system", content: PARSE_SYSTEM },
     { role: "user", content },
   ];
+  // Combined path: merge the user's plain-English notes into the same parse.
+  const notes = instructions?.trim();
+  if (notes) {
+    messages.push({
+      role: "user",
+      content: `ADDITIONAL INSTRUCTIONS from the candidate — merge these into the CV:\n${notes.slice(
+        0,
+        MAX_INSTRUCTIONS_CHARS
+      )}`,
+    });
+  }
   let totalIn = 0;
   let totalOut = 0;
 
@@ -135,6 +148,7 @@ export async function POST(req: NextRequest) {
 
     let locale: "en" | "ar" = "en";
     let content: ORMessage["content"];
+    let instructions: string | undefined;
 
     const ctype = req.headers.get("content-type") || "";
     if (ctype.includes("multipart/form-data")) {
@@ -142,6 +156,10 @@ export async function POST(req: NextRequest) {
       const file = form.get("file");
       const loc = form.get("locale");
       if (loc === "ar") locale = "ar";
+      const instr = form.get("instructions");
+      if (typeof instr === "string" && instr.trim()) {
+        instructions = instr.slice(0, MAX_INSTRUCTIONS_CHARS);
+      }
       if (!(file instanceof File)) {
         return NextResponse.json({ error: "No file provided" }, { status: 400 });
       }
@@ -198,9 +216,10 @@ export async function POST(req: NextRequest) {
       }
       locale = parsed.data.locale;
       content = userContent(parsed.data.text);
+      instructions = parsed.data.instructions;
     }
 
-    const { cv } = await extractCv(content);
+    const { cv } = await extractCv(content, instructions);
     if (!cv.is_cv) {
       return NextResponse.json(
         { error: "That doesn't look like a CV. Try a different file or paste your details." },

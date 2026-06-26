@@ -8,8 +8,9 @@ import { useState } from "react";
 import { useParams } from "next/navigation";
 import { Id } from "@convex/_generated/dataModel";
 import { HOSTING_ENABLED } from "@/lib/flags";
+import { pickPrimaryPortfolio } from "@/lib/single-cv";
 import { useTranslations } from "next-intl";
-import { Check, Copy, LayoutGrid, PenLine, Rocket, X } from "lucide-react";
+import { Check, LayoutGrid, PenLine, Rocket, X } from "lucide-react";
 
 const TEMPLATE_COLORS: Record<string, { primary: string; accent: string }> = {
   general: { primary: "#0F172A", accent: "#A16207" },
@@ -47,10 +48,8 @@ export default function DashboardPage() {
   const t = useTranslations();
   const portfolios = useQuery(api.portfolios.listByUser, {});
   const removePortfolio = useMutation(api.portfolios.remove);
-  const duplicatePortfolio = useMutation(api.portfolios.duplicate);
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
-  const [duplicatingId, setDuplicatingId] = useState<string | null>(null);
 
   if (!userId || portfolios === undefined) {
     // Skeleton cards matching the loaded grid — no spinner, no layout shift.
@@ -80,7 +79,11 @@ export default function DashboardPage() {
     );
   }
 
-  const hasPortfolios = portfolios.length > 0;
+  // One CV per user: surface only the user's primary CV (a paid/published one
+  // wins, else the newest). Any older extras stay in the DB but are hidden here.
+  const primary = pickPrimaryPortfolio(portfolios);
+  const visiblePortfolios = primary ? [primary] : [];
+  const hasPortfolios = visiblePortfolios.length > 0;
 
   const handleDelete = async (id: string) => {
     setDeletingId(id);
@@ -89,15 +92,6 @@ export default function DashboardPage() {
     } finally {
       setDeletingId(null);
       setConfirmDeleteId(null);
-    }
-  };
-
-  const handleDuplicate = async (id: string) => {
-    setDuplicatingId(id);
-    try {
-      await duplicatePortfolio({ id: id as Id<"portfolios"> });
-    } finally {
-      setDuplicatingId(null);
     }
   };
 
@@ -175,7 +169,7 @@ export default function DashboardPage() {
         </div>
       ) : (
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {portfolios.map((portfolio) => {
+          {visiblePortfolios.map((portfolio) => {
             const statusCfg = STATUS_CONFIG[portfolio.status as keyof typeof STATUS_CONFIG];
             return (
               <div
@@ -287,14 +281,6 @@ export default function DashboardPage() {
                       {isRTL ? "عرض" : "View"}
                     </a>
                   )}
-                  <button
-                    onClick={() => handleDuplicate(portfolio._id)}
-                    disabled={duplicatingId === portfolio._id}
-                    className="rounded-lg border border-[var(--land-border)] px-2 py-1.5 text-sm text-[var(--land-muted)] hover:text-[var(--land-accent)] hover:border-[var(--land-accent)]/30 transition-colors disabled:opacity-50"
-                    title={isRTL ? "نسخ" : "Duplicate"}
-                  >
-                    {duplicatingId === portfolio._id ? "..." : <Copy className="h-4 w-4" aria-hidden />}
-                  </button>
                   {confirmDeleteId === portfolio._id ? (
                     <div className="flex gap-1">
                       <button
