@@ -2,6 +2,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { ScrollReveal } from "@/components/landing/ScrollReveal";
 import { Testimonials } from "@/components/landing/Testimonials";
+import { HowItWorks } from "@/components/landing/HowItWorks";
 import { Palette, Languages, FileDown, Globe, Plus, Eye } from "lucide-react";
 import Image from "next/image";
 import { HOSTING_ENABLED } from "@/lib/flags";
@@ -421,26 +422,11 @@ export default async function LandingPage({
 
       {/* ── How it works ──────────────────── */}
       <section className="py-16 px-6 border-b border-[var(--land-border)]/50">
-        <div className="mx-auto max-w-3xl">
-          <h2 className="text-2xl font-bold text-center text-[var(--land-bright)] mb-10">
-            {isRTL ? "كيف يعمل؟" : "How it works"}
-          </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-            {[
-              { step: "1", time: isRTL ? "٣٠ ثانية" : "30 seconds", en: "Fill your name and job title", ar: "أدخل اسمك ومسماك الوظيفي" },
-              { step: "2", time: isRTL ? "فوري" : "Instant", en: "AI drafts your CV instantly", ar: "الذكاء الاصطناعي يكتب مسودة سيرتك فورًا" },
-              { step: "3", time: isRTL ? "دقائق" : "Minutes", en: "Review, customize, and download", ar: "راجع، خصّص، وحمّل" },
-            ].map((s) => (
-              <div key={s.step} className="text-center">
-                <div className="mx-auto mb-3 flex h-10 w-10 items-center justify-center rounded-full bg-[var(--land-accent)] text-sm font-bold text-white">
-                  {s.step}
-                </div>
-                <p className="text-sm font-medium text-[var(--land-bright)]">{isRTL ? s.ar : s.en}</p>
-                <p className="mt-1 text-xs text-[var(--land-muted)]">{s.time}</p>
-              </div>
-            ))}
+        <ScrollReveal>
+          <div className="mx-auto max-w-md">
+            <HowItWorks isRTL={isRTL} />
           </div>
-        </div>
+        </ScrollReveal>
       </section>
 
       {/* ── Template showcase ──────────────────── */}
