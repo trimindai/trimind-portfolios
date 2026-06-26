@@ -225,7 +225,7 @@ export default async function LandingPage({
               {/* Animated CV preview — mobile only (desktop shows mockup images) */}
               <div className="lg:hidden">
                 <p className="text-xs text-emerald-600 font-medium mb-2 text-center">&#10024; Watch AI build a CV live</p>
-                <CvPreviewCard />
+                <CvPreviewCard locale={locale} />
               </div>
             </div>
 

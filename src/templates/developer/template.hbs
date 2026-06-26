@@ -802,8 +802,15 @@ html[dir="rtl"] .tl-item::before{left:auto;right:0}
     function reveal(){
       revTick = false;
       var vh = window.innerHeight;
+      // On phones the sections are taller than the viewport, so a
+      // distance-from-centre fade can never resolve to 1 while you read them —
+      // it leaves most content stuck near opacity 0. Keep the flourish on
+      // desktop only; show sections fully on narrow viewports.
+      var narrow = window.innerWidth <= 768;
       for(var i=0;i<revSecs.length;i++){
-        var s = revSecs[i], r = s.getBoundingClientRect();
+        var s = revSecs[i];
+        if(narrow){ s.style.opacity = "1"; s.style.transform = "none"; continue; }
+        var r = s.getBoundingClientRect();
         var centre = (r.top + r.height/2) / vh;
         var d = Math.min(1, Math.abs(centre - 0.5) / 0.85);
         var k = 1 - d*d;

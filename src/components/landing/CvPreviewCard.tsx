@@ -2,18 +2,27 @@
 
 import { useState, useEffect, useRef } from "react";
 
-const DEMO_LINES = [
+const DEMO_LINES_EN = [
   { label: "Name", text: "Sarah Al-Rashidi" },
   { label: "Title", text: "Financial Analyst" },
   { label: "Company", text: "BB Bank" },
   { label: "Summary", text: "Detail-oriented financial analyst with 6+ years of experience in corporate banking, risk assessment, and portfolio management across the Gulf region." },
 ];
 
+const DEMO_LINES_AR = [
+  { label: "الاسم", text: "سارة الرشيدي" },
+  { label: "المسمى", text: "محللة مالية" },
+  { label: "الشركة", text: "بنك الخليج" },
+  { label: "نبذة", text: "محللة مالية دقيقة بخبرة تزيد عن 6 سنوات في الصيرفة المؤسسية وتقييم المخاطر وإدارة المحافظ في منطقة الخليج." },
+];
+
 const CHAR_DELAY = 40; // ms per character
 const FIELD_PAUSE = 500; // ms pause between fields completing and next starting
 const RESET_PAUSE = 2000; // ms pause after all fields complete before looping
 
-export function CvPreviewCard() {
+export function CvPreviewCard({ locale = "en" }: { locale?: string }) {
+  const isRTL = locale === "ar";
+  const DEMO_LINES = isRTL ? DEMO_LINES_AR : DEMO_LINES_EN;
   const [fieldIndex, setFieldIndex] = useState(0);
   const [charIndex, setCharIndex] = useState(0);
   const [phase, setPhase] = useState<"typing" | "fieldPause" | "resetPause">("typing");
@@ -56,11 +65,11 @@ export function CvPreviewCard() {
   }, [fieldIndex, charIndex, phase]);
 
   return (
-    <div className="mt-6 lg:mt-0 w-full max-w-sm mx-auto">
+    <div dir={isRTL ? "rtl" : "ltr"} className="mt-6 lg:mt-0 w-full max-w-sm mx-auto">
       <div className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
         <div className="flex items-center gap-2 mb-3">
           <div className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
-          <span className="text-[10px] font-medium text-emerald-600 uppercase tracking-wider">AI generating...</span>
+          <span className="text-[10px] font-medium text-emerald-600 uppercase tracking-wider">{isRTL ? "يكتب بالذكاء الاصطناعي…" : "AI generating..."}</span>
         </div>
         <div className="space-y-2">
           {DEMO_LINES.map((line, i) => {
@@ -90,11 +99,11 @@ export function CvPreviewCard() {
         </div>
         <div className="mt-3 pt-3 border-t border-gray-100 flex items-center justify-between">
           <div className="flex gap-1">
-            {["Skills", "Education", "Certs"].map((s) => (
+            {(isRTL ? ["المهارات", "التعليم", "الشهادات"] : ["Skills", "Education", "Certs"]).map((s) => (
               <span key={s} className="text-[9px] bg-gray-100 text-gray-500 rounded px-1.5 py-0.5">{s}</span>
             ))}
           </div>
-          <span className="text-[10px] text-emerald-600 font-medium">~10 sec</span>
+          <span className="text-[10px] text-emerald-600 font-medium">{isRTL ? "~10 ثوانٍ" : "~10 sec"}</span>
         </div>
       </div>
     </div>

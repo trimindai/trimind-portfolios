@@ -45,7 +45,9 @@ export default function DashboardLayout({
   if (!isLoaded || !synced) {
     return (
       <div className="min-h-screen bg-[var(--land-bg)] flex items-center justify-center">
-        <div className="text-[var(--land-body)] text-sm">Loading...</div>
+        <div dir={isRTL ? "rtl" : "ltr"} className="text-[var(--land-body)] text-sm">
+          {isRTL ? "جاري التحميل…" : "Loading…"}
+        </div>
       </div>
     );
   }
