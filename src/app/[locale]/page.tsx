@@ -17,8 +17,6 @@ import {
 import { HOSTING_ENABLED } from "@/lib/flags";
 import { LandingNav } from "@/components/landing/LandingNav";
 import SocialProofStrip from "@/components/landing/SocialProofStrip";
-import MiniCvPreview from "@/components/landing/MiniCvPreview";
-import { HeroForm } from "@/components/landing/HeroForm";
 import { TemplateShowcase } from "@/components/landing/TemplateShowcase";
 import { TIER_PRICE } from "@/lib/pricing";
 
@@ -180,7 +178,7 @@ export default async function LandingPage({
             backgroundSize: "64px 64px",
           }}
         />
-        <div className="relative z-10 mx-auto w-full max-w-md px-5 pt-28 pb-16">
+        <div className="relative z-10 mx-auto flex w-full max-w-md flex-col items-center px-5 pt-28 pb-16 text-center">
           {/* gold trust badge */}
           <div className="inline-flex items-center gap-1.5 bg-gradient-to-r from-gold/10 to-gold/5 border border-gold/30 rounded-full px-3 py-1.5 text-xs font-bold text-gold mb-5 animate-fadeInUp">
             <span className="w-1.5 h-1.5 bg-gold rounded-full animate-pulse flex-shrink-0" />
@@ -190,7 +188,7 @@ export default async function LandingPage({
           </div>
 
           {/* headline — profession word in green */}
-          <h1 className="text-4xl font-bold leading-snug tracking-tight text-ink mb-4">
+          <h1 className="text-4xl sm:text-[2.75rem] font-bold leading-snug tracking-tight text-ink mb-4">
             {isRTL ? (
               <>
                 سيرتك الذاتية
@@ -209,14 +207,58 @@ export default async function LandingPage({
           </h1>
 
           {/* subtext */}
-          <p className="text-sm text-ink-50 leading-relaxed mb-5">
+          <p className="text-sm text-ink-50 leading-relaxed mb-7 max-w-sm">
             {isRTL
               ? "الذكاء الاصطناعي يكتب. أنت تختار القالب. تدفع فقط لما تعجبك النتيجة."
               : "AI writes it. You pick the template. Pay only when you love the result."}
           </p>
 
+          {/* guide reel — locale-aware portrait phone frame, the hero centerpiece.
+              Muted autoplay loop shows the product instantly (no client JS needed). */}
+          <div className="relative mb-7 w-full max-w-[260px] animate-fadeInUp">
+            <div
+              className="absolute -inset-5 -z-10 rounded-[2.5rem] bg-green-glow opacity-70 blur-2xl"
+              aria-hidden="true"
+            />
+            <div className="relative aspect-[9/16] overflow-hidden rounded-[1.75rem] border border-ink-10 bg-ink-10 shadow-green ring-1 ring-black/5">
+              {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
+              <video
+                className="h-full w-full object-cover"
+                src={isRTL ? "/how-it-works-ar.mp4" : "/how-it-works-en.mp4"}
+                poster={isRTL ? "/landing/reel-poster-ar.jpg" : "/landing/reel-poster-en.jpg"}
+                autoPlay
+                muted
+                loop
+                playsInline
+                preload="metadata"
+              />
+              {/* live "watch how it works" caption pill */}
+              <div className="pointer-events-none absolute inset-x-3 bottom-3 flex items-center justify-center gap-1.5 rounded-full bg-black/45 px-3 py-1.5 text-[11px] font-semibold text-white backdrop-blur-sm">
+                <span className="h-1.5 w-1.5 rounded-full bg-green-bright animate-pulse" />
+                {isRTL ? "شوف كيف يعمل خلال ثوانٍ" : "See how it works in seconds"}
+              </div>
+            </div>
+          </div>
+
+          {/* primary CTA — the action focal point */}
+          <Link
+            href="/build"
+            className="w-full max-w-[300px] rounded-2xl bg-green-mid py-4 text-center text-lg font-bold text-white shadow-green transition-all hover:-translate-y-px hover:bg-green hover:shadow-green-lg active:scale-[0.99]"
+          >
+            {isRTL ? "ابدأ الحين" : "Start now"}
+          </Link>
+          <p className="mt-2.5 text-xs text-ink-30">
+            {isRTL ? "تدفع بس لما تعجبك النتيجة" : "Pay only when you love it"}
+          </p>
+          <a
+            href="#templates"
+            className="mt-3 text-sm font-medium text-green-mid hover:underline"
+          >
+            {isRTL ? "شوف القوالب" : "See templates"}
+          </a>
+
           {/* stats bar */}
-          <div className="flex bg-white border border-ink-10 rounded-2xl shadow-sm overflow-hidden mb-5">
+          <div className="mt-8 flex w-full bg-white border border-ink-10 rounded-2xl shadow-sm overflow-hidden">
             {(isRTL
               ? [
                   { num: "+١٣٠", label: "سيرة ذاتية" },
@@ -239,12 +281,8 @@ export default async function LandingPage({
             ))}
           </div>
 
-          {/* live social proof + example result — Arabic-primary audience */}
-          {isRTL && <SocialProofStrip />}
-          {isRTL && <MiniCvPreview />}
-
-          {/* name + job-title capture → hands off to /build (StudioClient) */}
-          <HeroForm locale={locale} />
+          {/* live social proof — Arabic-primary audience */}
+          {isRTL && <div className="mt-5 w-full">{<SocialProofStrip />}</div>}
 
           {/* trust row */}
           <div className="mt-5 flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-xs text-ink-30">
