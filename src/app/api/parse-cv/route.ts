@@ -24,10 +24,14 @@ import {
   parseJsonLoose,
   type ORMessage,
 } from "@/lib/openrouter";
+import { buildUserContent, type Img } from "@/lib/cv-content";
 
 export const maxDuration = 120; // CV parse can take a few seconds on cold start
 
 const MAX_FILE_BYTES = 8 * 1024 * 1024; // 8 MB
+// ponytail: 5 files / 20 MB total bounds LLM cost per parse; lift if users hit it.
+const MAX_FILES = 5;
+const MAX_TOTAL_BYTES = 20 * 1024 * 1024; // 20 MB across all files
 const MAX_TEXT_CHARS = 24_000; // ~6k tokens — matches the Python MAX_INPUT_CHARS
 const MAX_INSTRUCTIONS_CHARS = 4_000; // extra plain-English notes merged into the CV
 const MIN_TEXT_CHARS = 150; // below this a PDF is treated as scanned → vision
@@ -56,23 +60,26 @@ async function docxToText(buf: Buffer): Promise<string> {
   return (value || "").trim();
 }
 
-/** Build the LLM user message: text, or an inline base64 image for the vision path. */
-function userContent(
-  text: string | null,
-  image?: { buf: Buffer; mime: string }
-): ORMessage["content"] {
-  if (image) {
-    return [
-      { type: "text", text: "Extract this CV image into the schema." },
-      {
-        type: "image_url",
-        image_url: {
-          url: `data:${image.mime};base64,${image.buf.toString("base64")}`,
-        },
-      },
-    ];
+const userContent = (text: string | null, images?: Img[]): ORMessage["content"] =>
+  buildUserContent(text, images, MAX_TEXT_CHARS);
+
+/** Extract one uploaded file → text, or an image for the vision path. */
+async function extractFile(file: File): Promise<{ text?: string; image?: Img }> {
+  const buf = Buffer.from(await file.arrayBuffer());
+  const e = ext(file.name);
+  if (IMAGE_EXTS.has(e)) {
+    return { image: { buf, mime: e === "jpg" ? "image/jpeg" : `image/${e}` } };
   }
-  return (text || "").slice(0, MAX_TEXT_CHARS);
+  if (e === "pdf") {
+    const text = await pdfToText(buf);
+    // Scanned / image-only PDF → vision path on the raw bytes.
+    return text.length < MIN_TEXT_CHARS
+      ? { image: { buf, mime: "application/pdf" } }
+      : { text };
+  }
+  if (e === "docx") return { text: await docxToText(buf) };
+  if (e === "txt" || e === "md") return { text: buf.toString("utf8").trim() };
+  throw new Error("Unsupported file type. Use PDF, Word, text, or an image.");
 }
 
 /** ONE call + one repair retry, validating against the zod CV schema. */
@@ -153,52 +160,64 @@ export async function POST(req: NextRequest) {
     const ctype = req.headers.get("content-type") || "";
     if (ctype.includes("multipart/form-data")) {
       const form = await req.formData();
-      const file = form.get("file");
+      const files = form.getAll("file").filter((f): f is File => f instanceof File);
       const loc = form.get("locale");
       if (loc === "ar") locale = "ar";
       const instr = form.get("instructions");
       if (typeof instr === "string" && instr.trim()) {
         instructions = instr.slice(0, MAX_INSTRUCTIONS_CHARS);
       }
-      if (!(file instanceof File)) {
+      const pastedField = form.get("text");
+      const pasted = typeof pastedField === "string" ? pastedField.trim() : "";
+
+      if (files.length === 0 && pasted.length < 20) {
         return NextResponse.json({ error: "No file provided" }, { status: 400 });
       }
-      if (file.size > MAX_FILE_BYTES) {
+      if (files.length > MAX_FILES) {
         return NextResponse.json(
-          { error: "File too large (max 8 MB)." },
+          { error: `Too many files (max ${MAX_FILES}).` },
+          { status: 400 }
+        );
+      }
+      let total = 0;
+      for (const f of files) {
+        if (f.size > MAX_FILE_BYTES) {
+          return NextResponse.json({ error: "File too large (max 8 MB)." }, { status: 413 });
+        }
+        total += f.size;
+      }
+      if (total > MAX_TOTAL_BYTES) {
+        return NextResponse.json(
+          { error: "Files too large (max 20 MB total)." },
           { status: 413 }
         );
       }
-      const buf = Buffer.from(await file.arrayBuffer());
-      const e = ext(file.name);
 
-      if (IMAGE_EXTS.has(e)) {
-        const mime = e === "jpg" ? "image/jpeg" : `image/${e}`;
-        content = userContent(null, { buf, mime });
-      } else {
-        let text = "";
-        if (e === "pdf") text = await pdfToText(buf);
-        else if (e === "docx") text = await docxToText(buf);
-        else if (e === "txt" || e === "md")
-          text = buf.toString("utf8").trim();
-        else
+      // Extract every file, then combine: one parse over all sources at once.
+      const texts: string[] = [];
+      const images: Img[] = [];
+      for (const f of files) {
+        let r: { text?: string; image?: Img };
+        try {
+          r = await extractFile(f);
+        } catch (e) {
           return NextResponse.json(
-            { error: "Unsupported file type. Use PDF, Word, text, or an image." },
+            { error: e instanceof Error ? e.message : "Unsupported file." },
             { status: 400 }
           );
-
-        if (text.length < MIN_TEXT_CHARS && e === "pdf") {
-          // Scanned / image-only PDF → vision path on the raw bytes.
-          content = userContent(null, { buf, mime: "application/pdf" });
-        } else if (text.length < 20) {
-          return NextResponse.json(
-            { error: "Could not read any text from that file." },
-            { status: 422 }
-          );
-        } else {
-          content = userContent(text);
         }
+        if (r.image) images.push(r.image);
+        else if (r.text && r.text.length > 0) texts.push(`--- ${f.name} ---\n${r.text}`);
       }
+      if (pasted) texts.push(pasted);
+      const combinedText = texts.join("\n\n") || null;
+      if (!combinedText && images.length === 0) {
+        return NextResponse.json(
+          { error: "Could not read any text from those files." },
+          { status: 422 }
+        );
+      }
+      content = userContent(combinedText, images.length ? images : undefined);
     } else {
       const raw = await req.text();
       let json: unknown;

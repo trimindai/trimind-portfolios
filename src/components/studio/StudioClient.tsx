@@ -33,6 +33,7 @@ import {
   FileText,
   Globe,
   ArrowLeft,
+  X,
 } from "lucide-react";
 
 const HEADING_FONTS = [
@@ -126,6 +127,8 @@ export default function StudioClient({ initialId }: { initialId?: string }) {
   const [uploading, setUploading] = useState(false);
   const [parseError, setParseError] = useState("");
   const [pasteText, setPasteText] = useState("");
+  // Multiple files (PDF / Word / image) collected before a single Generate call.
+  const [files, setFiles] = useState<File[]>([]);
   // Plain-English notes merged into the uploaded/pasted CV in a single parse.
   const [instructions, setInstructions] = useState("");
   // Hex text fields for the custom colour picker (synced from saved colours).
@@ -247,47 +250,40 @@ export default function StudioClient({ initialId }: { initialId?: string }) {
     [isRTL]
   );
 
-  async function handleFile(file: File) {
+  const fmtSize = (n: number) =>
+    n < 1024 * 1024 ? `${Math.round(n / 1024)} KB` : `${(n / 1024 / 1024).toFixed(1)} MB`;
+
+  // Collect files (no auto-build); cap at 5 to match the server.
+  function addFiles(list: FileList | null) {
+    if (!list || list.length === 0) return;
+    setParseError("");
+    setFiles((prev) => [...prev, ...Array.from(list)].slice(0, 5));
+  }
+  function removeFile(idx: number) {
+    setFiles((prev) => prev.filter((_, i) => i !== idx));
+  }
+
+  // Single entry point: all files + pasted text + notes → one parse, then preview.
+  async function generate() {
+    const text = pasteText.trim();
+    if (files.length === 0 && text.length < 20) {
+      setParseError(T("Add a file or paste your CV first.", "أضف ملفًا أو الصق سيرتك أولًا."));
+      return;
+    }
     setUploading(true);
     setParseError("");
     try {
       const fd = new FormData();
-      fd.append("file", file);
+      files.forEach((f) => fd.append("file", f));
       fd.append("locale", locale);
+      if (text) fd.append("text", text);
       if (instructions.trim()) fd.append("instructions", instructions.trim());
       const res = await fetch("/api/parse-cv", { method: "POST", body: fd });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Parse failed");
       onParsed(data.portfolioId);
     } catch (e: any) {
-      setParseError(e?.message || T("Couldn't read that CV.", "تعذّرت قراءة السيرة."));
-    } finally {
-      setUploading(false);
-    }
-  }
-
-  async function handlePaste() {
-    if (pasteText.trim().length < 20) {
-      setParseError(T("Paste a bit more of your CV.", "الصق نصًّا أطول من سيرتك."));
-      return;
-    }
-    setUploading(true);
-    setParseError("");
-    try {
-      const res = await fetch("/api/parse-cv", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          text: pasteText,
-          locale,
-          ...(instructions.trim() ? { instructions: instructions.trim() } : {}),
-        }),
-      });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Parse failed");
-      onParsed(data.portfolioId);
-    } catch (e: any) {
-      setParseError(e?.message || T("Couldn't parse that.", "تعذّر التحليل."));
+      setParseError(e?.message || T("Couldn't build that.", "تعذّر البناء."));
     } finally {
       setUploading(false);
     }
@@ -408,36 +404,58 @@ export default function StudioClient({ initialId }: { initialId?: string }) {
                 onDragOver={(e) => e.preventDefault()}
                 onDrop={(e) => {
                   e.preventDefault();
-                  const f = e.dataTransfer.files?.[0];
-                  if (f) handleFile(f);
+                  addFiles(e.dataTransfer.files);
                 }}
                 className="mt-8 flex cursor-pointer flex-col items-center justify-center rounded-2xl border-2 border-dashed border-[var(--land-border)] bg-[var(--land-surface)]/40 px-6 py-12 text-center transition-colors hover:border-[var(--land-accent)]"
               >
                 <input
                   ref={fileRef}
                   type="file"
+                  multiple
                   accept=".pdf,.docx,.txt,.md,image/*"
                   className="hidden"
                   disabled={uploading}
                   onChange={(e) => {
-                    const f = e.target.files?.[0];
-                    if (f) handleFile(f);
+                    addFiles(e.target.files);
+                    e.target.value = ""; // allow re-selecting the same file
                   }}
                 />
-                {uploading ? (
-                  <Loader2 className="h-8 w-8 animate-spin text-[var(--land-accent)]" />
-                ) : (
-                  <Upload className="h-8 w-8 text-[var(--land-accent)]" />
-                )}
+                <Upload className="h-8 w-8 text-[var(--land-accent)]" />
                 <span className="mt-3 font-medium text-[var(--land-bright)]">
-                  {uploading
-                    ? T("Reading your CV…", "جارٍ قراءة سيرتك…")
-                    : T("Drop your CV or click to upload", "أفلت سيرتك أو اضغط للرفع")}
+                  {T("Drop your CV files or click to upload", "أفلت ملفات سيرتك أو اضغط للرفع")}
                 </span>
                 <span className="mt-1 text-xs text-[var(--land-muted)]">
-                  PDF · Word · TXT · JPG/PNG · ≤ 8 MB
+                  {T(
+                    "PDF · Word · images — up to 5 files, ≤ 8 MB each",
+                    "PDF · Word · صور — حتى ٥ ملفات، ٨ ميغا لكل ملف"
+                  )}
                 </span>
               </label>
+
+              {/* selected files (removable) — nothing is parsed until Generate */}
+              {files.length > 0 && (
+                <ul className="mt-3 space-y-2">
+                  {files.map((f, i) => (
+                    <li
+                      key={`${f.name}-${i}`}
+                      className="flex items-center gap-2 rounded-lg border border-[var(--land-border)] bg-[var(--land-bg)] px-3 py-2 text-sm"
+                    >
+                      <FileText className="h-4 w-4 shrink-0 text-[var(--land-accent)]" />
+                      <span className="flex-1 truncate text-[var(--land-bright)]">{f.name}</span>
+                      <span className="text-xs text-[var(--land-muted)]">{fmtSize(f.size)}</span>
+                      <button
+                        type="button"
+                        onClick={() => removeFile(i)}
+                        disabled={uploading}
+                        aria-label={T("Remove", "إزالة")}
+                        className="text-[var(--land-muted)] hover:text-red-500"
+                      >
+                        <X className="h-4 w-4" />
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              )}
 
               {/* Optional plain-English notes merged into the CV in one parse. */}
               <div className="mt-5">
@@ -466,7 +484,7 @@ export default function StudioClient({ initialId }: { initialId?: string }) {
 
               <div className="my-6 flex items-center gap-3 text-xs text-[var(--land-muted)]">
                 <span className="h-px flex-1 bg-[var(--land-border)]" />
-                {T("or paste it", "أو الصقها")}
+                {T("and / or paste it", "و/أو الصقها")}
                 <span className="h-px flex-1 bg-[var(--land-border)]" />
               </div>
 
@@ -481,17 +499,24 @@ export default function StudioClient({ initialId }: { initialId?: string }) {
                 )}
                 className="w-full rounded-xl border border-[var(--land-border)] bg-[var(--land-bg)] p-3 text-sm text-[var(--land-bright)] outline-none focus:border-[var(--land-accent)]"
               />
+
+              {/* Single Generate gate — nothing redirects to preview until this. */}
               <button
-                onClick={handlePaste}
+                onClick={generate}
                 disabled={uploading}
-                className="mt-3 flex w-full items-center justify-center gap-2 rounded-lg bg-[var(--land-accent)] py-3 font-semibold text-white hover:bg-[var(--land-accent-hover)] disabled:opacity-60 transition-colors"
+                className="mt-3 flex w-full items-center justify-center gap-2 rounded-lg bg-[var(--land-accent)] py-3.5 text-base font-semibold text-white hover:bg-[var(--land-accent-hover)] disabled:opacity-60 transition-colors"
               >
                 {uploading ? (
-                  <Loader2 className="h-4 w-4 animate-spin" />
+                  <>
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                    {T("Building your portfolio…", "جارٍ بناء بورتفوليوك…")}
+                  </>
                 ) : (
-                  <Sparkles className="h-4 w-4" />
+                  <>
+                    <Sparkles className="h-4 w-4" />
+                    {T("Generate my portfolio", "أنشئ بورتفوليو")}
+                  </>
                 )}
-                {T("Build my portfolio", "ابنِ بورتفوليو")}
               </button>
 
               {parseError && (
