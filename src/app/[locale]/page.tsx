@@ -193,7 +193,7 @@ export default async function LandingPage({
           </div>
 
           {/* headline — profession word in green */}
-          <h1 className="text-4xl sm:text-[2.75rem] lg:text-5xl xl:text-[3.5rem] font-bold leading-snug tracking-tight text-ink mb-4">
+          <h1 className="text-balance text-4xl sm:text-[2.75rem] lg:text-5xl xl:text-[3.5rem] font-bold leading-snug tracking-tight text-ink mb-4">
             {isRTL ? (
               <>
                 سيرتك الذاتية
@@ -204,7 +204,10 @@ export default async function LandingPage({
               </>
             ) : (
               <>
-                Your <span className="text-green-mid">professional</span> CV,
+                Your{" "}
+                <span className="whitespace-nowrap">
+                  <span className="text-green-mid">professional</span> CV,
+                </span>
                 <br />
                 ready in minutes
               </>
@@ -260,12 +263,9 @@ export default async function LandingPage({
             href="/build"
             className="w-full max-w-[300px] rounded-2xl bg-green-mid py-4 text-center text-lg font-bold text-white shadow-green transition-all hover:-translate-y-px hover:bg-green hover:shadow-green-lg active:scale-[0.99]"
           >
-            {isRTL ? "ابدأ الحين" : "Start now"}
+            {isRTL ? "ابنِ سيرتي — مجانًا" : "Build my CV — free"}
           </Link>
-          <p className="mt-2.5 text-xs text-ink-30">
-            {isRTL ? "تدفع بس لما تعجبك النتيجة" : "Pay only when you love it"}
-          </p>
-          {/* price-anchor pill — amber/gold on light amber */}
+          {/* price-anchor pill — amber/gold on light amber (single, non-duplicated pay message) */}
           <span className="mt-3 inline-block rounded-full bg-gold/10 border border-gold/20 px-3 py-1 text-xs font-semibold text-gold">
             {isRTL ? "ادفع ٤.٩ د.ك فقط عند التصدير" : "Pay just 4.9 KD only on export"}
           </span>
@@ -295,7 +295,7 @@ export default async function LandingPage({
                 className={`flex-1 text-center py-3 ${i > 0 ? "border-r border-ink-10" : ""}`}
               >
                 <span className="block text-xl font-bold text-ink leading-none mb-1">{s.num}</span>
-                <span className="block text-[11px] text-ink-30 font-medium">{s.label}</span>
+                <span className="block text-[11px] text-ink-50 font-medium">{s.label}</span>
               </div>
             ))}
           </div>
@@ -383,7 +383,7 @@ export default async function LandingPage({
             href="/build"
             className="inline-block rounded-lg bg-[var(--land-accent)] px-8 py-3.5 text-base font-semibold text-white transition-colors hover:bg-[var(--land-accent-hover)]"
           >
-            {isRTL ? "ابدأ الآن — مجانًا" : "Start now — it's free"}
+            {isRTL ? "ابنِ سيرتي — مجانًا" : "Build my CV — free"}
           </Link>
         </div>
       </section>
@@ -475,25 +475,29 @@ export default async function LandingPage({
                   highlight: false, cta: isRTL ? "ابدأ مجانًا" : "Start free" },
                 { key: "essential", en: "CV Essential", ar: "السيرة الأساسية", price: "4.900", arPrice: "٤.٩٠٠", once: true,
                   feats: isRTL ? ["سيرة PDF نهائية (بدون علامة)", "٥ قوالب + ألوان وخطوط", "عربي/إنجليزي، تعديلات غير محدودة"] : ["Final ATS PDF (no watermark)", "5 templates + colours & fonts", "EN/AR, unlimited edits"],
-                  highlight: false, cta: isRTL ? "اختر الأساسية" : "Choose Essential" },
+                  highlight: true, cta: isRTL ? "اختر الأساسية" : "Choose Essential" },
                 { key: "pro", en: "Portfolio Pro", ar: "بورتفوليو برو", price: "9.900", arPrice: "٩.٩٠٠", once: true,
                   feats: isRTL ? ["كل مزايا الأساسية", "صفحة حيّة /p/اسمك + QR", "استضافة مدى الحياة"] : ["Everything in Essential", "Live /p/<name> page + QR", "Lifetime hosting"],
-                  highlight: true, cta: isRTL ? "اختر برو" : "Choose Pro" },
+                  highlight: false, cta: isRTL ? "اختر برو" : "Choose Pro" },
                 { key: "pro_review", en: "Pro + Expert Review", ar: "برو + مراجعة خبير", price: "24.900", arPrice: "٢٤.٩٠٠", once: true,
                   feats: isRTL ? ["كل مزايا برو", "مراجعة بشرية + ملاحظات ATS", "مراجعة واحدة خلال ٤٨ ساعة"] : ["Everything in Pro", "Human review + ATS notes", "1 revision within 48h"],
                   highlight: false, cta: isRTL ? "اختر برو + مراجعة" : "Choose Pro + Review" },
               ].map((t) => (
                 <div
                   key={t.key}
-                  className={`relative flex flex-col rounded-2xl border p-6 ${
+                  className={`relative flex flex-col rounded-2xl border p-6 transition-transform ${
                     t.highlight
-                      ? "border-[var(--land-accent)] bg-[var(--land-surface)] shadow-lg ring-1 ring-[var(--land-accent)]/30"
+                      ? "order-first z-10 border-[var(--land-accent)] bg-[var(--land-surface)] shadow-lg ring-1 ring-[var(--land-accent)]/40 sm:order-none lg:scale-[1.04]"
                       : "border-[var(--land-border)] bg-[var(--land-surface)]"
                   }`}
                 >
                   {t.highlight && (
-                    <span className="absolute -top-3 start-1/2 -translate-x-1/2 rounded-full bg-[var(--land-accent)] px-3 py-1 text-[10px] font-bold uppercase tracking-wide text-white">
-                      {isRTL ? "الأكثر اختيارًا ⭐" : "Most popular ⭐"}
+                    <span
+                      className={`absolute -top-3 start-1/2 -translate-x-1/2 rounded-full bg-gold px-3 py-1 text-[10px] font-bold text-white shadow-sm ${
+                        isRTL ? "" : "uppercase tracking-wide"
+                      }`}
+                    >
+                      {isRTL ? "الأكثر شيوعاً" : "Most Popular"}
                     </span>
                   )}
                   <h3 className="text-base font-bold tracking-tight">{isRTL ? t.ar : t.en}</h3>
@@ -609,7 +613,7 @@ export default async function LandingPage({
                 href="/build"
                 className="inline-block rounded-lg bg-[var(--land-accent)] px-10 py-4 text-lg font-semibold text-white shadow-sm transition-colors hover:bg-[var(--land-accent-hover)] active:scale-[0.98]"
               >
-                {isRTL ? "ابنِ سيرتك — مجاني" : "Build your CV — it's free"}
+                {isRTL ? "ابنِ سيرتي — مجانًا" : "Build my CV — free"}
               </Link>
               <p className="text-xs text-[var(--land-muted)]">
                 {isRTL ? "ابنِ مجانًا · ادفع فقط عند التصدير" : "Build free · pay only to export"}

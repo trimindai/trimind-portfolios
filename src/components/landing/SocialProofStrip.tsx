@@ -24,14 +24,17 @@ export default function SocialProofStrip({ locale = 'ar' }: { locale?: string })
   const [index, setIndex] = useState(0)
   const [visible, setVisible] = useState(true)
 
+  // Long full-opacity dwell + a quick, smooth cross-fade between items — the
+  // previous fast 3s/300ms cycle spent too long in a ghosted half-opacity state
+  // that read as broken text.
   useEffect(() => {
     const interval = setInterval(() => {
       setVisible(false)
       setTimeout(() => {
         setIndex(i => (i + 1) % activities.length)
         setVisible(true)
-      }, 300)
-    }, 3000)
+      }, 220)
+    }, 4500)
     return () => clearInterval(interval)
   }, [activities.length])
 
@@ -47,7 +50,7 @@ export default function SocialProofStrip({ locale = 'ar' }: { locale?: string })
           </div>
         ))}
       </div>
-      <div className={`transition-all duration-300 flex-1 min-w-0 ${visible ? 'opacity-100' : 'opacity-0'}`}>
+      <div className={`transition-opacity duration-500 ease-out flex-1 min-w-0 ${visible ? 'opacity-100' : 'opacity-0'}`}>
         <p className={`text-sm text-ink font-semibold truncate ${align}`}>
           <span className="text-green-mid">{current.name}</span> {current.action}
         </p>

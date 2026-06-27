@@ -68,7 +68,7 @@ export function LandingFloating({ locale }: { locale: string }) {
             href="/build"
             className="block w-full rounded-xl bg-[#22c55e] py-3.5 text-center text-base font-bold text-white shadow-md transition-all hover:-translate-y-px hover:bg-[#16a34a] active:scale-[0.99]"
           >
-            {isRTL ? "ابن سيرتي مجانًا" : "Build my CV — free"}
+            {isRTL ? "ابنِ سيرتي — مجانًا" : "Build my CV — free"}
           </Link>
         </div>
       </div>
