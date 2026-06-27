@@ -627,14 +627,14 @@ export default async function LandingPage({
                 <span className="text-xs text-[var(--land-muted)]" dir="ltr">support@portfolio-trimind.com</span>
               </a>
               <a
-                href="https://instagram.com/trimindartificiall"
+                href="https://instagram.com/trimindartificial"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex flex-col items-center gap-2 rounded-xl border border-[var(--land-border)] bg-[var(--land-surface)] p-5 transition-colors hover:border-[var(--land-accent)]/40"
               >
                 <AtSign className="h-6 w-6 text-[var(--land-accent)]" />
                 <span className="text-sm font-semibold text-[var(--land-bright)]">Instagram</span>
-                <span className="text-xs text-[var(--land-muted)]">@trimindartificiall</span>
+                <span className="text-xs text-[var(--land-muted)]">@trimindartificial</span>
               </a>
             </div>
           </div>
@@ -733,7 +733,7 @@ export default async function LandingPage({
               </li>
               <li>
                 <a
-                  href="https://instagram.com/trimindartificiall"
+                  href="https://instagram.com/trimindartificial"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="hover:text-[var(--land-bright)] transition-colors"
