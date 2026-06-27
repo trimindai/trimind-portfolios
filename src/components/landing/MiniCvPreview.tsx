@@ -3,7 +3,7 @@ export default function MiniCvPreview() {
     <div className="mb-6">
       <div className="flex items-center justify-center gap-2 mb-3">
         <div className="h-px flex-1 bg-ink-10" />
-        <span className="text-[11px] font-bold text-ink-30 tracking-wider uppercase whitespace-nowrap">مثال على النتيجة</span>
+        <span className="text-[11px] font-bold text-[#374151] tracking-wider uppercase whitespace-nowrap">مثال على النتيجة</span>
         <div className="h-px flex-1 bg-ink-10" />
       </div>
       <div className="bg-white border border-ink-10 rounded-2xl shadow-md overflow-hidden">
@@ -46,11 +46,15 @@ export default function MiniCvPreview() {
           <span className="text-[9px] text-ink-30">portfolio-trimind.com/sarah</span>
         </div>
       </div>
-      <div className="flex flex-col items-center gap-1 mt-3">
-        <span className="text-[11px] text-ink-30 font-medium">اكتب اسمك وسيبني الذكاء الاصطناعي سيرتك</span>
-        <svg className="w-4 h-4 text-green-mid animate-bounce" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-        </svg>
+      <div className="flex justify-center mt-3">
+        <a
+          href="/demo/corporate/index.html"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-sm font-semibold text-green-mid hover:underline"
+        >
+          شاهد السيرة كاملة ←
+        </a>
       </div>
     </div>
   )

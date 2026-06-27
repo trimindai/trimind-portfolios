@@ -86,10 +86,10 @@ export function TemplateShowcase({ locale }: { locale: string }) {
             role="tab"
             aria-selected={i === active}
             onClick={() => setActive(i)}
-            className={`rounded-full px-3.5 py-1.5 text-xs font-medium transition-colors ${
+            className={`rounded-full px-3.5 py-1.5 text-xs transition-colors ${
               i === active
-                ? "bg-[var(--land-accent)] text-white"
-                : "border border-[var(--land-border)] text-[var(--land-body)] hover:border-[var(--land-accent)]/40"
+                ? "bg-green-mid font-bold text-white"
+                : "bg-gray-100 font-medium text-gray-700 hover:bg-gray-200"
             }`}
           >
             {isRTL ? tpl.ar : tpl.en}

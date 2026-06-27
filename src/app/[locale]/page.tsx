@@ -17,6 +17,8 @@ import {
 import { HOSTING_ENABLED } from "@/lib/flags";
 import { LandingNav } from "@/components/landing/LandingNav";
 import SocialProofStrip from "@/components/landing/SocialProofStrip";
+import MiniCvPreview from "@/components/landing/MiniCvPreview";
+import { LandingFloating } from "@/components/landing/LandingFloating";
 import { TemplateShowcase } from "@/components/landing/TemplateShowcase";
 import { TIER_PRICE } from "@/lib/pricing";
 
@@ -162,7 +164,7 @@ export default async function LandingPage({
       <LandingNav locale={locale} appName={tc("appName")} />
 
       {/* ── Hero ───────────────────────────────── */}
-      <section className="relative min-h-[100dvh] flex items-center overflow-hidden">
+      <section id="hero" className="relative min-h-[100dvh] flex items-center overflow-hidden">
         {/* Soft gradient background */}
         <div
           className="absolute inset-0 pointer-events-none"
@@ -207,11 +209,18 @@ export default async function LandingPage({
           </h1>
 
           {/* subtext */}
-          <p className="text-sm text-ink-50 leading-relaxed mb-7 max-w-sm">
+          <p className="text-sm text-ink-50 leading-relaxed mb-5 max-w-sm">
             {isRTL
               ? "الذكاء الاصطناعي يكتب. أنت تختار القالب. تدفع فقط لما تعجبك النتيجة."
               : "AI writes it. You pick the template. Pay only when you love the result."}
           </p>
+
+          {/* live activity ticker — directly below the headline, before the stats row */}
+          {isRTL && (
+            <div className="mb-7 w-full">
+              <SocialProofStrip />
+            </div>
+          )}
 
           {/* guide reel — locale-aware portrait phone frame, the hero centerpiece.
               Muted autoplay loop shows the product instantly (no client JS needed). */}
@@ -250,6 +259,10 @@ export default async function LandingPage({
           <p className="mt-2.5 text-xs text-ink-30">
             {isRTL ? "تدفع بس لما تعجبك النتيجة" : "Pay only when you love it"}
           </p>
+          {/* price-anchor pill — amber/gold on light amber */}
+          <span className="mt-3 inline-block rounded-full bg-gold/10 border border-gold/20 px-3 py-1 text-xs font-semibold text-gold">
+            {isRTL ? "ادفع ٤.٩ د.ك فقط عند التصدير" : "Pay just 4.9 KD only on export"}
+          </span>
           <a
             href="#templates"
             className="mt-3 text-sm font-medium text-green-mid hover:underline"
@@ -281,8 +294,8 @@ export default async function LandingPage({
             ))}
           </div>
 
-          {/* live social proof — Arabic-primary audience */}
-          {isRTL && <div className="mt-5 w-full">{<SocialProofStrip />}</div>}
+          {/* full demo CV preview — «سارة الرشيدي», unclipped, with a link to the live demo */}
+          {isRTL && <div className="mt-8 w-full">{<MiniCvPreview />}</div>}
 
           {/* trust row */}
           <div className="mt-5 flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-xs text-ink-30">
@@ -748,6 +761,9 @@ export default async function LandingPage({
           &copy; {new Date().getFullYear()} {isRTL ? "بورتفوليو برو" : "Portfolio Pro"} by TriMind
         </div>
       </footer>
+
+      {/* Sticky CTA bar + floating WhatsApp + scroll-to-top */}
+      <LandingFloating locale={locale} />
     </div>
   );
 }
