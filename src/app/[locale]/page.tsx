@@ -219,11 +219,9 @@ export default async function LandingPage({
           </p>
 
           {/* live activity ticker — directly below the headline, before the stats row */}
-          {isRTL && (
-            <div className="mb-7 w-full">
-              <SocialProofStrip />
-            </div>
-          )}
+          <div className="mb-7 w-full">
+            <SocialProofStrip locale={locale} />
+          </div>
 
           </div>
 
