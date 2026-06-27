@@ -17,7 +17,6 @@ import {
 import { HOSTING_ENABLED } from "@/lib/flags";
 import { LandingNav } from "@/components/landing/LandingNav";
 import SocialProofStrip from "@/components/landing/SocialProofStrip";
-import MiniCvPreview from "@/components/landing/MiniCvPreview";
 import { LandingFloating } from "@/components/landing/LandingFloating";
 import { TemplateShowcase } from "@/components/landing/TemplateShowcase";
 import { TIER_PRICE } from "@/lib/pricing";
@@ -293,9 +292,6 @@ export default async function LandingPage({
               </div>
             ))}
           </div>
-
-          {/* full demo CV preview — «سارة الرشيدي», unclipped, with a link to the live demo */}
-          {isRTL && <div className="mt-8 w-full">{<MiniCvPreview />}</div>}
 
           {/* trust row */}
           <div className="mt-5 flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-xs text-ink-30">
