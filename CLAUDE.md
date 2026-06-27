@@ -6,9 +6,8 @@ Next.js 15 + React 19 + Convex + Clerk + Tailwind CSS. Bilingual (EN/AR with RTL
 
 See `PRODUCT.md` (strategic) and `DESIGN.md` (visual) at the project root. Both are loaded automatically by `/impeccable` commands.
 
-- **Register:** Product (brand attention for landing page)
-- **North Star:** "The Quiet Atelier" — dark workshop, single emerald accent, flat elevation
-- **Palette:** Restrained. Tinted slate neutrals + Atelier Emerald (#059669) at ≤10%
-- **Type:** Geist only. Hierarchy via scale + weight, no second family
-- **Elevation:** Flat. No box-shadow. Depth via background tint layering + borders
-- **Anti-references:** AI-generated aesthetic, cheap page builders, generic SaaS cream
+**Two surfaces, two directions:**
+
+- **Landing / marketing (2026-06-27): "Ink / Green / Gold"** — light paper (#FAFBFC), ink text (#0D1117), green accent (#22A063), gold trust accents (#C8862A), soft shadows allowed, IBM Plex Sans Arabic for AR. Tokens: `globals.css` `--land-*` + `tailwind.config.ts` `ink`/`green`/`gold`. This is the source of truth for the landing.
+- **Builder / dashboard app chrome: "The Quiet Atelier"** — single accent (now green via `--land-accent`), flat, Geist-only, restrained. Governed by `DESIGN.md`.
+- **Anti-references (both):** AI-slop aesthetic, cheap page builders, generic SaaS cream.

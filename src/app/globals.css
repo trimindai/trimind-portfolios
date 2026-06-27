@@ -95,20 +95,22 @@
   }
 }
 
-/* ─── Landing page tokens — Fresh Light palette ── */
+/* ─── Landing page tokens — Ink / Green / Gold palette ──
+   Remapped so existing sections (pricing, FAQ, footer) adopt the new look
+   with the new hero/navbar. Mirrors the Tailwind ink/green tokens. */
 :root {
-  --land-bg: #ffffff;                           /* Clean White */
-  --land-surface: #f8fafc;                      /* Soft Gray */
-  --land-surface-raised: #f1f5f9;              /* Raised Surface */
-  --land-border: #e2e8f0;                       /* Light Border */
-  --land-border-subtle: #f1f5f9;
-  --land-muted: #94a3b8;                        /* Muted Text */
-  --land-body: #64748b;                         /* Body Text */
-  --land-bright: #1e293b;                       /* Dark Text */
-  --land-accent: #059669;                       /* Emerald */
-  --land-accent-hover: #047857;                 /* Emerald Hover (darker for light bg) */
-  --land-accent-subtle: rgba(5, 150, 105, 0.08);
-  --land-glow: rgba(5, 150, 105, 0.06);
+  --land-bg: #FAFBFC;                           /* paper */
+  --land-surface: #FFFFFF;                      /* cards on paper */
+  --land-surface-raised: #F1F4F8;               /* raised surface */
+  --land-border: #EFF2F6;                       /* ink-10 */
+  --land-border-subtle: #F5F7FA;
+  --land-muted: #8B9BAD;                        /* ink-30 */
+  --land-body: #4A5568;                         /* ink-50 */
+  --land-bright: #0D1117;                       /* ink */
+  --land-accent: #22A063;                       /* green-mid */
+  --land-accent-hover: #1B8452;                 /* darker green for hover */
+  --land-accent-subtle: rgba(34, 160, 99, 0.08);
+  --land-glow: rgba(34, 160, 99, 0.15);
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
 }
@@ -118,8 +120,8 @@
 
 /* ─── Selection color ────────────────────────── */
 ::selection {
-  background: rgba(5, 150, 105, 0.15);
-  color: #1e293b;
+  background: rgba(34, 160, 99, 0.15);
+  color: #0D1117;
 }
 
 /* ─── Landing page animations ─────────────────── */
@@ -276,3 +278,7 @@ details[open] > p {
     opacity: 1 !important;
   }
 }
+
+/* ─── Hide scrollbar on the hero job-title chip row ── */
+.scrollbar-hide::-webkit-scrollbar { display: none; }
+.scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }

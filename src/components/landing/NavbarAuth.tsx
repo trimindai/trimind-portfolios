@@ -50,7 +50,7 @@ export function NavbarAuth({ locale }: { locale: string }) {
       <>
         <Link
           href="/sign-in"
-          className="hidden sm:inline text-sm text-[var(--land-body)] hover:text-[var(--land-bright)] transition-colors"
+          className="hidden md:inline text-sm font-semibold text-[var(--land-body)] hover:text-[var(--land-bright)] transition-colors"
         >
           {isRTL ? "تسجيل الدخول" : "Sign in"}
         </Link>

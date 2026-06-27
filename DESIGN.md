@@ -83,6 +83,16 @@ components:
 
 ## 1. Overview
 
+> **⚠️ Landing & marketing override (2026-06-27).** The public landing page and
+> marketing surfaces now follow an **"Ink / Green / Gold"** conversion direction —
+> light paper background (#FAFBFC), ink text (#0D1117), green accent (#22A063),
+> gold trust accents (#C8862A), soft shadows, and **IBM Plex Sans Arabic** for the
+> Arabic UI. This intentionally diverges from the "Quiet Atelier" rules below
+> (no-shadow / single-emerald / Geist-only), which still govern the **builder &
+> dashboard app chrome**. Source of truth for landing tokens: `src/app/globals.css`
+> (`--land-*`) + `tailwind.config.ts` (`ink`/`green`/`gold`). When styling the
+> landing, follow that palette — not the dark-workshop tokens in this file.
+
 **Creative North Star: "The Quiet Atelier"**
 
 A designer's private workshop: precise, unhurried, expert. Dark surfaces recede so the work (portfolio templates) stands forward. Emerald accents are deliberate and rare, marking only the actions that matter. The tool never competes with what it produces.

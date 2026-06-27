@@ -3,7 +3,7 @@ import { NextIntlClientProvider, hasLocale } from "next-intl";
 import { getMessages, setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { routing } from "@/i18n/routing";
-import { Geist, Noto_Kufi_Arabic } from "next/font/google";
+import { Geist, IBM_Plex_Sans_Arabic } from "next/font/google";
 import { cn } from "@/lib/utils";
 import { Providers } from "../providers";
 import { GoogleAnalytics } from "@next/third-parties/google";
@@ -11,9 +11,13 @@ import { GoogleAnalytics } from "@next/third-parties/google";
 const GA_ID = process.env.NEXT_PUBLIC_GA_ID;
 
 const geist = Geist({ subsets: ["latin"], variable: "--font-sans" });
-const notoKufi = Noto_Kufi_Arabic({
+// Arabic UI font. ponytail: --font-sans stays Geist so English never renders in
+// the Arabic face; the [locale] wrapper picks font-arabic vs font-sans per dir.
+const arabicFont = IBM_Plex_Sans_Arabic({
   subsets: ["arabic"],
+  weight: ["300", "400", "500", "600", "700"],
   variable: "--font-arabic",
+  display: "swap",
 });
 
 const SITE_URL = "https://portfolio-trimind.com";
@@ -96,7 +100,12 @@ export default async function LocaleLayout({
   const isRTL = locale === "ar";
 
   return (
-    <html lang={locale} dir={isRTL ? "rtl" : "ltr"} suppressHydrationWarning>
+    <html
+      lang={locale}
+      dir={isRTL ? "rtl" : "ltr"}
+      className={cn(geist.variable, arabicFont.variable)}
+      suppressHydrationWarning
+    >
       <body className="antialiased">
         <Providers locale={locale}>
           <NextIntlClientProvider messages={messages}>
@@ -104,13 +113,7 @@ export default async function LocaleLayout({
             <noscript>
               <style>{`.reveal-up{opacity:1!important;transform:none!important}`}</style>
             </noscript>
-            <div
-              className={cn(
-                geist.variable,
-                notoKufi.variable,
-                isRTL ? "font-arabic" : "font-sans"
-              )}
-            >
+            <div className={isRTL ? "font-arabic" : "font-sans"}>
               {children}
             </div>
           </NextIntlClientProvider>

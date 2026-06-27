@@ -15,9 +15,10 @@ import {
   AtSign,
 } from "lucide-react";
 import { HOSTING_ENABLED } from "@/lib/flags";
-import { AdminLink } from "@/components/AdminLink";
-import { NavbarAuth } from "@/components/landing/NavbarAuth";
-import { HeroReel } from "@/components/landing/HeroReel";
+import { LandingNav } from "@/components/landing/LandingNav";
+import SocialProofStrip from "@/components/landing/SocialProofStrip";
+import MiniCvPreview from "@/components/landing/MiniCvPreview";
+import { HeroForm } from "@/components/landing/HeroForm";
 import { TemplateShowcase } from "@/components/landing/TemplateShowcase";
 import { TIER_PRICE } from "@/lib/pricing";
 
@@ -160,34 +161,7 @@ export default async function LandingPage({
         }}
       />
       {/* ── Navbar ─────────────────────────────── */}
-      <nav className="fixed top-0 z-50 w-full border-b border-[var(--land-border)]/50 bg-[var(--land-bg)]/80 backdrop-blur-md">
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
-          <Link href="/" className="text-lg font-bold tracking-tight hover:text-[var(--land-accent)] transition-colors">
-            {tc("appName")}
-          </Link>
-          <div className="flex items-center gap-3">
-            <AdminLink />
-            <div className="flex rounded-lg border border-gray-200 overflow-hidden text-sm">
-              <Link
-                href="/"
-                locale="en"
-                className={`px-3 py-1 font-medium transition-colors ${locale === "en" ? "bg-emerald-600 text-white" : "text-gray-500 hover:text-gray-900"}`}
-              >
-                EN
-              </Link>
-              <span className="flex items-center text-gray-300">|</span>
-              <Link
-                href="/"
-                locale="ar"
-                className={`px-3 py-1 font-medium transition-colors ${locale === "ar" ? "bg-emerald-600 text-white" : "text-gray-500 hover:text-gray-900"}`}
-              >
-                عربي
-              </Link>
-            </div>
-            <NavbarAuth locale={locale} />
-          </div>
-        </div>
-      </nav>
+      <LandingNav locale={locale} appName={tc("appName")} />
 
       {/* ── Hero ───────────────────────────────── */}
       <section className="relative min-h-[100dvh] flex items-center overflow-hidden">
@@ -206,78 +180,92 @@ export default async function LandingPage({
             backgroundSize: "64px 64px",
           }}
         />
-        <div className="relative z-10 mx-auto w-full max-w-7xl px-6 pt-28 pb-16 lg:pt-0">
-          <div className="flex flex-col lg:grid lg:grid-cols-[1fr_1.2fr] items-center gap-12 lg:gap-20">
-            <div className="land-stagger">
-              <h1
-                className="font-extrabold leading-[1.05] tracking-tighter"
-                style={{ fontSize: "clamp(2.5rem, 6vw, 4.5rem)" }}
-              >
-                {isRTL
-                  ? "سيرتك الذاتية الاحترافية، جاهزة في دقائق"
-                  : "Your Professional CV, Ready in Minutes"}
-              </h1>
-              <p className="mt-2 inline-flex items-center gap-1.5 text-xs font-medium text-emerald-600 bg-emerald-50 rounded-full px-3 py-1">
-                <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                {isRTL ? "✨ بمساعدة الذكاء الاصطناعي · سريع واحترافي" : "✨ AI-assisted · Fast & professional"}
-              </p>
-              <p className="mt-5 max-w-lg text-lg leading-relaxed text-[var(--land-body)]">
-                {isRTL
-                  ? "تميّز أمام مسؤولي التوظيف بسيرة ذاتية مصقولة وبورتفوليو حيّ. يستخدمه أكثر من ١٣٠ محترفًا في الكويت والخليج."
-                  : "Stand out to recruiters with a polished CV and live portfolio. Used by 130+ professionals across Kuwait and the Gulf."}
-              </p>
-              <p className="mt-4 text-xs text-gray-400 text-center sm:text-start">
-                {isRTL ? "١٣٠+ سيرة ذاتية · 🇰🇼 الكويت والخليج · عربي مدعوم" : "130+ CVs built · 🇰🇼 Kuwait & Gulf · Arabic supported"}
-              </p>
-              {/* Primary CTA → the AI build flow */}
-              <div className="mt-6 flex flex-col items-stretch gap-3 sm:items-start">
-                <Link
-                  href="/build"
-                  className="inline-block rounded-xl bg-[var(--land-accent)] px-8 py-4 text-center text-base font-bold text-white shadow-sm transition-colors hover:bg-[var(--land-accent-hover)] active:scale-[0.98]"
-                >
-                  {isRTL ? "ابنِ سيرتك — مجانًا" : "Build your CV — free"}
-                </Link>
-                <p className="text-xs text-[var(--land-muted)]">
-                  {isRTL ? "ابنِ وعاين مجانًا · ادفع فقط عند التصدير" : "Build & preview free · pay only to export"}
-                </p>
-              </div>
-              {/* Trust row — secure payment + WhatsApp support */}
-              <div className="mt-5 flex flex-wrap items-center gap-x-4 gap-y-2 text-xs text-[var(--land-muted)]">
-                <span className="inline-flex items-center gap-1.5">
-                  <svg className="h-3.5 w-3.5 text-[var(--land-accent)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                  </svg>
-                  {isRTL ? "دفع آمن" : "Secure payment"}
-                </span>
-                <span className="font-semibold text-[var(--land-body)] tracking-tight">K-NET</span>
-                <span className="text-[var(--land-body)]">MyFatoorah</span>
-                <span className="h-3 w-px bg-[var(--land-border)]" />
-                <a
-                  href="https://wa.me/96550439150"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1.5 text-[var(--land-accent)] hover:underline"
-                >
-                  <MessageCircle className="h-3.5 w-3.5" />
-                  {isRTL ? "دعم واتساب" : "WhatsApp support"}
-                </a>
-              </div>
-            </div>
+        <div className="relative z-10 mx-auto w-full max-w-md px-5 pt-28 pb-16">
+          {/* gold trust badge */}
+          <div className="inline-flex items-center gap-1.5 bg-gradient-to-r from-gold/10 to-gold/5 border border-gold/30 rounded-full px-3 py-1.5 text-xs font-bold text-gold mb-5 animate-fadeInUp">
+            <span className="w-1.5 h-1.5 bg-gold rounded-full animate-pulse flex-shrink-0" />
+            {isRTL
+              ? "يستخدمه +١٣٠ محترف في الكويت والخليج"
+              : "Used by 130+ professionals in Kuwait & the Gulf"}
+          </div>
 
-            <div className="land-visual mx-auto w-full max-w-[300px]">
-              {/* How-it-works reel (click-to-play; live-demo fallback until the mp4 ships) */}
-              <HeroReel
-                locale={locale}
-                src={isRTL ? "/how-it-works-ar.mp4" : "/how-it-works-en.mp4"}
-                poster={isRTL ? "/landing/reel-poster-ar.jpg" : "/landing/reel-poster-en.jpg"}
-                demoHref="/demo/corporate/index.html"
-              />
-              <p className="mt-3 text-center text-xs text-[var(--land-muted)]">
-                {isRTL
-                  ? "شاهد كيف تبني سيرتك في أقل من دقيقة"
-                  : "See how you build your CV in under a minute"}
-              </p>
-            </div>
+          {/* headline — profession word in green */}
+          <h1 className="text-4xl font-bold leading-snug tracking-tight text-ink mb-4">
+            {isRTL ? (
+              <>
+                سيرتك الذاتية
+                <br />
+                <span className="text-green-mid">الاحترافية</span>،
+                <br />
+                جاهزة في دقائق
+              </>
+            ) : (
+              <>
+                Your <span className="text-green-mid">professional</span> CV,
+                <br />
+                ready in minutes
+              </>
+            )}
+          </h1>
+
+          {/* subtext */}
+          <p className="text-sm text-ink-50 leading-relaxed mb-5">
+            {isRTL
+              ? "الذكاء الاصطناعي يكتب. أنت تختار القالب. تدفع فقط لما تعجبك النتيجة."
+              : "AI writes it. You pick the template. Pay only when you love the result."}
+          </p>
+
+          {/* stats bar */}
+          <div className="flex bg-white border border-ink-10 rounded-2xl shadow-sm overflow-hidden mb-5">
+            {(isRTL
+              ? [
+                  { num: "+١٣٠", label: "سيرة ذاتية" },
+                  { num: "٤.٩", label: "د.ك فقط" },
+                  { num: "~١٠", label: "ثوانٍ" },
+                ]
+              : [
+                  { num: "130+", label: "CVs built" },
+                  { num: "4.9", label: "KD only" },
+                  { num: "~10", label: "seconds" },
+                ]
+            ).map((s, i) => (
+              <div
+                key={i}
+                className={`flex-1 text-center py-3 ${i > 0 ? "border-r border-ink-10" : ""}`}
+              >
+                <span className="block text-xl font-bold text-ink leading-none mb-1">{s.num}</span>
+                <span className="block text-[11px] text-ink-30 font-medium">{s.label}</span>
+              </div>
+            ))}
+          </div>
+
+          {/* live social proof + example result — Arabic-primary audience */}
+          {isRTL && <SocialProofStrip />}
+          {isRTL && <MiniCvPreview />}
+
+          {/* name + job-title capture → hands off to /build (StudioClient) */}
+          <HeroForm locale={locale} />
+
+          {/* trust row */}
+          <div className="mt-5 flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-xs text-ink-30">
+            <span className="inline-flex items-center gap-1.5">
+              <svg className="h-3.5 w-3.5 text-green-mid" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+              </svg>
+              {isRTL ? "دفع آمن" : "Secure payment"}
+            </span>
+            <span className="font-semibold text-ink-50 tracking-tight">K-NET</span>
+            <span className="text-ink-50">MyFatoorah</span>
+            <span className="h-3 w-px bg-ink-10" />
+            <a
+              href="https://wa.me/96550439150"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 text-green-mid hover:underline"
+            >
+              <MessageCircle className="h-3.5 w-3.5" />
+              {isRTL ? "دعم واتساب" : "WhatsApp support"}
+            </a>
           </div>
         </div>
       </section>
