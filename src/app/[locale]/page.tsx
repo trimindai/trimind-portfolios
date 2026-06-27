@@ -179,7 +179,11 @@ export default async function LandingPage({
             backgroundSize: "64px 64px",
           }}
         />
-        <div className="relative z-10 mx-auto flex w-full max-w-md flex-col items-center px-5 pt-28 pb-16 text-center">
+        {/* On desktop this becomes a 2-column hero (copy/CTA on one side, the
+            reel on the other); on mobile it stays the single centered column. */}
+        <div className="relative z-10 mx-auto grid w-full max-w-md grid-cols-1 px-5 pt-28 pb-16 lg:max-w-6xl lg:grid-cols-2 lg:items-center lg:gap-x-12 lg:gap-y-6 xl:gap-x-20 lg:px-8 lg:pt-32 lg:pb-24">
+          {/* ── top/intro text block ──────────────── */}
+          <div className="flex flex-col items-center text-center lg:col-start-1 lg:row-start-1">
           {/* gold trust badge */}
           <div className="inline-flex items-center gap-1.5 bg-gradient-to-r from-gold/10 to-gold/5 border border-gold/30 rounded-full px-3 py-1.5 text-xs font-bold text-gold mb-5 animate-fadeInUp">
             <span className="w-1.5 h-1.5 bg-gold rounded-full animate-pulse flex-shrink-0" />
@@ -189,7 +193,7 @@ export default async function LandingPage({
           </div>
 
           {/* headline — profession word in green */}
-          <h1 className="text-4xl sm:text-[2.75rem] font-bold leading-snug tracking-tight text-ink mb-4">
+          <h1 className="text-4xl sm:text-[2.75rem] lg:text-5xl xl:text-[3.5rem] font-bold leading-snug tracking-tight text-ink mb-4">
             {isRTL ? (
               <>
                 سيرتك الذاتية
@@ -208,7 +212,7 @@ export default async function LandingPage({
           </h1>
 
           {/* subtext */}
-          <p className="text-sm text-ink-50 leading-relaxed mb-5 max-w-sm">
+          <p className="text-sm lg:text-base text-ink-50 leading-relaxed mb-5 max-w-sm lg:max-w-md">
             {isRTL
               ? "الذكاء الاصطناعي يكتب. أنت تختار القالب. تدفع فقط لما تعجبك النتيجة."
               : "AI writes it. You pick the template. Pay only when you love the result."}
@@ -221,9 +225,12 @@ export default async function LandingPage({
             </div>
           )}
 
+          </div>
+
           {/* guide reel — locale-aware portrait phone frame, the hero centerpiece.
-              Muted autoplay loop shows the product instantly (no client JS needed). */}
-          <div className="relative mb-7 w-full max-w-[260px] animate-fadeInUp">
+              Muted autoplay loop shows the product instantly (no client JS needed).
+              On desktop it sits in the second column, vertically centred. */}
+          <div className="relative mx-auto mb-7 w-full max-w-[260px] animate-fadeInUp lg:col-start-2 lg:row-span-2 lg:mb-0 lg:max-w-[300px] lg:self-center">
             <div
               className="absolute -inset-5 -z-10 rounded-[2.5rem] bg-green-glow opacity-70 blur-2xl"
               aria-hidden="true"
@@ -248,6 +255,8 @@ export default async function LandingPage({
             </div>
           </div>
 
+          {/* ── action + proof block (CTA, stats, trust) ──── */}
+          <div className="flex flex-col items-center text-center lg:col-start-1 lg:row-start-2">
           {/* primary CTA — the action focal point */}
           <Link
             href="/build"
@@ -313,6 +322,7 @@ export default async function LandingPage({
               <MessageCircle className="h-3.5 w-3.5" />
               {isRTL ? "دعم واتساب" : "WhatsApp support"}
             </a>
+          </div>
           </div>
         </div>
       </section>
