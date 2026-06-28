@@ -12,10 +12,12 @@ const intlMiddleware = createIntlMiddleware(routing);
 const isProtectedRoute = createRouteMatcher([
   "/:locale/dashboard(.*)",
   "/:locale/admin(.*)",
-  // CV Studio writes a portfolio under the signed-in user, so it must require
-  // auth — otherwise a signed-out visitor uploads and parse-cv 401s. Force
-  // sign-in first (register-first flow), then they return here authenticated.
-  "/:locale/build(.*)",
+  // NOTE: /build is deliberately NOT protected here. Server middleware races
+  // Clerk's short-lived __session cookie on the first post-login navigation and
+  // 307s back to sign-in (intermittent, worst on Safari/iOS ITP). /build is
+  // gated CLIENT-side instead (build/layout.tsx), where clerk-js restores the
+  // session from the long-lived first-party __client cookie. parse-cv still
+  // 401s for signed-out callers, so that remains the real security boundary.
 ]);
 
 const isStaticRoute = (req: NextRequest) =>
