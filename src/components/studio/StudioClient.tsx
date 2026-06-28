@@ -150,6 +150,14 @@ export default function StudioClient({ initialId }: { initialId?: string }) {
   const update = useMutation(api.portfolios.update);
   const router = useRouter();
 
+  // Ensure the Convex user row exists. Brand-new accounts land here straight
+  // from sign-up (never through /dashboard, where provisioning used to live),
+  // so without this the first create (/api/parse-cv) throws "Unauthenticated".
+  const provisionUser = useMutation(api.users.upsertFromClerk);
+  useEffect(() => {
+    if (isAuthenticated) provisionUser({}).catch(() => {});
+  }, [isAuthenticated, provisionUser]);
+
   // One CV per user: in CREATE mode, if the signed-in user already has a
   // portfolio, open it instead of starting a new one. Skipped in edit mode and
   // when resuming a draft via ?id. Paid/published always wins (never strand a

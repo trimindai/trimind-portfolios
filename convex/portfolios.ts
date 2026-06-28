@@ -1,7 +1,7 @@
 import { v } from "convex/values";
 import { mutation, query, QueryCtx, MutationCtx } from "./_generated/server";
 import { Doc, Id } from "./_generated/dataModel";
-import { requireUser, requireAdminOrOwner, verifyServerSecret } from "./auth";
+import { requireUser, requireAdminOrOwner, verifyServerSecret, getCurrentUser } from "./auth";
 
 // ── Slug rules & reservation ───────────────────────────────────────────────
 // Public CVs live at portfolio-trimind.com/p/<slug>, so slugs are a single
@@ -571,7 +571,11 @@ export const listByUser = query({
   args: {},
   handler: async (ctx) => {
     // Always returns ONLY the caller's portfolios — never accept a userId arg.
-    const user = await requireUser(ctx);
+    // A just-signed-up user has no Convex row yet (provisioned lazily on first
+    // authed page); no row ⇒ no portfolios. Return [] instead of throwing — a
+    // thrown query crashes the /build page's React tree. ponytail: read-only.
+    const user = await getCurrentUser(ctx);
+    if (!user) return [];
     const docs = await ctx.db
       .query("portfolios")
       .withIndex("by_user", (q) => q.eq("userId", user._id))
