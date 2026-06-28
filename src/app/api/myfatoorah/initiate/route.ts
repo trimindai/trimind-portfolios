@@ -130,7 +130,14 @@ export async function POST(req: NextRequest) {
     }
 
     const user = await currentUser();
-    const email = user?.emailAddresses?.[0]?.emailAddress || "";
+    // Phone-only signups have no email; MyFatoorah rejects an empty/invalid
+    // CustomerEmail ("must be a valid email") → PAYMENT_INIT_FAILED. Fall back to
+    // a valid-format placeholder (the receipt still reaches them via SMS).
+    const email =
+      user?.emailAddresses?.[0]?.emailAddress ||
+      (mobileDigits
+        ? `${mobileCountryCode.replace(/\D/g, "")}${mobileDigits}@cv.portfolio-trimind.com`
+        : "customer@portfolio-trimind.com");
     const name =
       [user?.firstName, user?.lastName].filter(Boolean).join(" ") ||
       email ||
