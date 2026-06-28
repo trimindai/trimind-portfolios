@@ -460,7 +460,7 @@ export default async function LandingPage({
                 className="font-bold tracking-tight"
                 style={{ fontSize: "clamp(1.75rem, 3vw, 2.5rem)" }}
               >
-                {isRTL ? "أسعار بسيطة. ادفع مرة واحدة." : "Simple pricing. Pay once."}
+                {isRTL ? "أسعار بسيطة. ادفع مرة واحدة سنوياً." : "Simple pricing. Pay once annually."}
               </h2>
               <p className="mt-3 text-[var(--land-body)]">
                 {isRTL
