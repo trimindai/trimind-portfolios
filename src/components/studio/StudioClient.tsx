@@ -444,7 +444,7 @@ export default function StudioClient({ initialId }: { initialId?: string }) {
     !!portfolioId && portfolio === undefined && !fallbackPortfolio;
 
   return (
-    <div className="mx-auto flex w-full max-w-7xl flex-col px-4 py-4" dir={isRTL ? "rtl" : "ltr"}>
+    <div className="mx-auto flex w-full max-w-7xl flex-col px-4 py-4 pb-24" dir={isRTL ? "rtl" : "ltr"}>
       {debugOn && (
         <div
           dir="ltr"
@@ -481,7 +481,8 @@ export default function StudioClient({ initialId }: { initialId?: string }) {
           <div>parseError: {parseError || "none"}</div>
         </div>
       )}
-      {/* top bar */}
+      {/* top bar — only ← Dashboard (left) and Sign out (right); the brand is an
+          icon-only home link; Publish moved to the sticky bottom bar below. */}
       <div className="flex items-center justify-between gap-3 border-b border-[var(--land-border)] pb-3 mb-4">
         <Link
           href="/dashboard"
@@ -490,33 +491,38 @@ export default function StudioClient({ initialId }: { initialId?: string }) {
           <ArrowLeft className="h-4 w-4 rtl:rotate-180" />
           {T("Dashboard", "لوحة التحكم")}
         </Link>
-        {/* Brand title → main page (reachable from anywhere) */}
+        {/* Brand mark → home (icon only, no text) */}
         <Link
           href="/"
-          className="flex items-center gap-1.5 text-sm font-semibold text-[var(--land-bright)] transition-colors hover:text-[var(--land-accent-hover)]"
+          aria-label={T("Home", "الرئيسية")}
+          className="text-[var(--land-accent)] transition-colors hover:text-[var(--land-accent-hover)]"
         >
-          <Sparkles className="h-4 w-4 text-[var(--land-accent)]" />
-          {T("Portfolio Pro", "بورتفوليو برو")}
+          <Sparkles className="h-5 w-5" />
         </Link>
-        <div className="flex items-center gap-3">
-          {hasPortfolio && (
-            <Link
-              href={`/dashboard/${portfolioId}/publish`}
-              className="rounded-lg bg-[var(--land-accent)] px-4 py-2 text-sm font-semibold text-white hover:bg-[var(--land-accent-hover)] transition-colors"
-            >
-              {paid
-                ? T("Download / Publish", "نشر / تحميل")
-                : T("✅ Publish & download", "✅ نشر وتحميل")}
-            </Link>
-          )}
-          <button
-            onClick={() => signOut({ redirectUrl: `/${locale}` })}
-            className="whitespace-nowrap text-sm text-[var(--land-muted)] transition-colors hover:text-[var(--land-bright)]"
-          >
-            {T("Sign out", "خروج")}
-          </button>
-        </div>
+        <button
+          onClick={() => signOut({ redirectUrl: `/${locale}` })}
+          className="whitespace-nowrap text-sm text-[var(--land-muted)] transition-colors hover:text-[var(--land-bright)]"
+        >
+          {T("Sign out", "خروج")}
+        </button>
       </div>
+
+      {/* Sticky bottom Publish bar — full-width, prominent, impossible to miss. */}
+      {hasPortfolio && (
+        <div
+          className="fixed inset-x-0 bottom-0 z-50 border-t border-[var(--land-border)] bg-white px-4 py-3"
+          style={{ paddingBottom: "calc(0.75rem + env(safe-area-inset-bottom))" }}
+        >
+          <Link
+            href={`/dashboard/${portfolioId}/publish`}
+            className="flex w-full items-center justify-center gap-2 rounded-xl bg-[var(--land-accent)] py-3 font-semibold text-white transition-colors hover:bg-[var(--land-accent-hover)]"
+          >
+            {paid
+              ? T("Download / Publish", "نشر / تحميل")
+              : T("✅ Publish & Download", "✅ نشر وتحميل")}
+          </Link>
+        </div>
+      )}
 
       {/* ── no portfolio yet: upload / paste ───────────────────────────────── */}
       {!hasPortfolio && (
