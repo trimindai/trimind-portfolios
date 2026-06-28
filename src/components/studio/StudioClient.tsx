@@ -300,7 +300,13 @@ export default function StudioClient({ initialId }: { initialId?: string }) {
   function addFiles(list: FileList | null) {
     if (!list || list.length === 0) return;
     setParseError("");
-    setFiles((prev) => [...prev, ...Array.from(list)].slice(0, 5));
+    // Snapshot the FileList NOW: the picker's onChange clears the input
+    // (e.target.value = "") immediately after this call, which empties the live
+    // FileList before React runs a deferred setFiles updater — so reading
+    // Array.from(list) inside the updater got nothing on iOS Safari (file never
+    // attached). Materialise the array synchronously here instead.
+    const picked = Array.from(list);
+    setFiles((prev) => [...prev, ...picked].slice(0, 5));
   }
   function removeFile(idx: number) {
     setFiles((prev) => prev.filter((_, i) => i !== idx));
