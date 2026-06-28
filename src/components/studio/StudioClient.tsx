@@ -21,6 +21,7 @@ import PreviewFrame from "@/components/preview/PreviewFrame";
 import { toPortfolioData } from "@/lib/portfolio-data";
 import { pickPrimaryPortfolio } from "@/lib/single-cv";
 import { portfolioReady } from "@/lib/studio-view";
+import { toCreateBasics, toUpdatePatch, type Cv } from "@/lib/cv-schema";
 import { COLOR_PRESETS, type TemplatePresetKey } from "@/lib/color-presets";
 import { resolveTemplateId, TEMPLATES } from "@/lib/templates";
 import {
@@ -123,6 +124,14 @@ export default function StudioClient({ initialId }: { initialId?: string }) {
   const [portfolioId, setPortfolioId] = useState<string | null>(
     initialId ?? searchParams.get("id")
   );
+  // The CV that /api/parse-cv returns alongside the id. This is the INSTANT
+  // preview source — it never waits on the racy portfolios.get query, which can
+  // stay `undefined`/skipped while the browser Convex auth token attaches.
+  const [parsedCv, setParsedCv] = useState<Cv | null>(null);
+  // On-screen diagnostics (?debug=1) — so the owner can read the exact failure
+  // point on prod without a console. Mobile-friendly fixed overlay below.
+  const debugOn = searchParams.get("debug") === "1";
+  const [dbg, setDbg] = useState<Record<string, unknown>>({});
   const [view, setView] = useState<"live" | "cv">("live");
   const [device, setDevice] = useState<"desktop" | "tablet" | "mobile">("desktop");
   const [uploading, setUploading] = useState(false);
@@ -172,22 +181,44 @@ export default function StudioClient({ initialId }: { initialId?: string }) {
   useEffect(() => {
     if (initialId || portfolioId || !myList || myList.length === 0) return;
     const primary = pickPrimaryPortfolio(myList);
-    if (primary) router.replace(`/build/${primary._id}`);
+    if (primary) {
+      setDbg((d) => ({ ...d, oneCvRedirect: primary._id }));
+      router.replace(`/build/${primary._id}`);
+    }
   }, [myList, initialId, portfolioId, router]);
 
+  // Build a portfolio-shaped doc from the just-parsed CV using the SAME mappers
+  // the server used to write it — so the instant preview is byte-identical to
+  // what Convex stores. This paints immediately; no dependency on the get-query.
+  const fallbackPortfolio = useMemo(() => {
+    if (!parsedCv) return null;
+    return {
+      ...toUpdatePatch(parsedCv),
+      basics: toCreateBasics(parsedCv),
+      templateId: parsedCv.templateId,
+      customization: {},
+      status: "draft" as const,
+    };
+  }, [parsedCv]);
+
+  // Reconcile: the live Convex doc wins the moment it loads (so edits/chat that
+  // mutate Convex are reflected); until then fall back to the parsed CV.
+  const effectivePortfolio: any = portfolio ?? fallbackPortfolio;
+
   const previewData = useMemo(
-    () => (portfolio ? toPortfolioData(portfolio, locale) : null),
-    [portfolio, locale]
+    () => (effectivePortfolio ? toPortfolioData(effectivePortfolio, locale) : null),
+    [effectivePortfolio, locale]
   );
 
-  const templateKey = (resolveTemplateId(portfolio?.templateId) ||
+  const templateKey = (resolveTemplateId(effectivePortfolio?.templateId) ||
     "general") as TemplatePresetKey;
   const presets = COLOR_PRESETS[templateKey] || COLOR_PRESETS.general;
   const sections = SECTIONS_BY_TEMPLATE[templateKey] || GENERAL_SECTIONS;
-  const cust: any = portfolio?.customization || {};
+  const cust: any = effectivePortfolio?.customization || {};
   const hidden: string[] = cust.hiddenSections || [];
   const paid =
-    portfolio?.status === "paid" || portfolio?.status === "published";
+    effectivePortfolio?.status === "paid" ||
+    effectivePortfolio?.status === "published";
 
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -240,9 +271,12 @@ export default function StudioClient({ initialId }: { initialId?: string }) {
 
   // ── parse a CV (file or pasted text) ───────────────────────────────────────
   const onParsed = useCallback(
-    (id: string) => {
+    (id: string, cv?: Cv) => {
+      if (cv) setParsedCv(cv); // instant preview source (no get-query wait)
       setPortfolioId(id);
-      // keep the id in the URL so a refresh resumes the same draft
+      // Keep the id in the URL so a refresh resumes the same draft. Stay on the
+      // SAME route (replaceState, not router.replace to /build/[id]) — a route
+      // change would remount and discard `parsedCv`, re-blanking on the race.
       const url = new URL(window.location.href);
       url.searchParams.set("id", id);
       window.history.replaceState(null, "", url.toString());
@@ -288,9 +322,23 @@ export default function StudioClient({ initialId }: { initialId?: string }) {
       if (text) fd.append("text", text);
       if (instructions.trim()) fd.append("instructions", instructions.trim());
       const res = await fetch("/api/parse-cv", { method: "POST", body: fd });
-      const data = await res.json();
+      let data: any = {};
+      try {
+        data = await res.json();
+      } catch {
+        /* non-JSON / empty body — handled below */
+      }
+      setDbg((d) => ({
+        ...d,
+        files: files.length,
+        pasted: text.length >= 20,
+        status: res.status,
+        hadId: !!data?.portfolioId,
+        hadCv: !!data?.data?.basics,
+        cvName: data?.data?.basics?.fullName || "",
+      }));
       if (!res.ok) throw new Error(data.error || "Parse failed");
-      onParsed(data.portfolioId);
+      onParsed(data.portfolioId, data.data as Cv | undefined);
     } catch (e: any) {
       setParseError(e?.message || T("Couldn't build that.", "تعذّر البناء."));
     } finally {
@@ -359,11 +407,54 @@ export default function StudioClient({ initialId }: { initialId?: string }) {
   // ── render ──────────────────────────────────────────────────────────────────
   // Ready only when the get-query has actually resolved to a doc. Treating the
   // still-loading `undefined` as ready blanks the screen right after a parse.
-  const hasPortfolio = portfolioReady(portfolioId, portfolio);
-  const loadingDoc = !!portfolioId && portfolio === undefined;
+  // Ready when EITHER the live get-query resolved OR we have the parsed CV in
+  // hand — the latter is what guarantees an instant paint after a fresh upload.
+  const hasPortfolio =
+    portfolioReady(portfolioId, portfolio) ||
+    (!!portfolioId && !!fallbackPortfolio);
+  // Only show the "loading draft…" spinner in edit mode (no instant fallback);
+  // a fresh upload has fallbackPortfolio so it skips straight to the preview.
+  const loadingDoc =
+    !!portfolioId && portfolio === undefined && !fallbackPortfolio;
 
   return (
     <div className="flex flex-col" dir={isRTL ? "rtl" : "ltr"}>
+      {debugOn && (
+        <div
+          dir="ltr"
+          className="fixed inset-x-2 bottom-2 z-[9999] max-h-[45vh] overflow-auto rounded-lg bg-black/90 p-3 font-mono text-[11px] leading-relaxed text-green-400 shadow-2xl"
+        >
+          <div className="mb-1 font-bold text-white">CV upload debug — portfolio-trimind.com</div>
+          <div>isAuthenticated: {String(isAuthenticated)}</div>
+          <div>files selected: {String(dbg.files ?? "—")}</div>
+          <div>pasted text: {String(dbg.pasted ?? "—")}</div>
+          <div>parse-cv HTTP status: {String(dbg.status ?? "— (not sent yet)")}</div>
+          <div>response had portfolioId: {String(dbg.hadId ?? "—")}</div>
+          <div>
+            response had cv data: {String(dbg.hadCv ?? "—")}
+            {dbg.cvName ? ` (${dbg.cvName})` : ""}
+          </div>
+          <div>portfolioId state: {portfolioId ?? "null"}</div>
+          <div>
+            get-query (portfolios.get):{" "}
+            {portfolio === undefined
+              ? "undefined → loading or skipped"
+              : portfolio === null
+              ? "null → not-found / not-owner"
+              : "object → loaded ✓"}
+          </div>
+          <div>
+            preview source:{" "}
+            {portfolio
+              ? "LIVE Convex doc"
+              : fallbackPortfolio
+              ? "PARSED CV (instant) ✓"
+              : "none → blank"}
+          </div>
+          <div>one-CV redirect fired: {dbg.oneCvRedirect ? `yes → ${dbg.oneCvRedirect}` : "no"}</div>
+          <div>parseError: {parseError || "none"}</div>
+        </div>
+      )}
       {/* top bar */}
       <div className="flex items-center justify-between gap-3 border-b border-[var(--land-border)] pb-3 mb-4">
         <Link
@@ -820,8 +911,8 @@ export default function StudioClient({ initialId }: { initialId?: string }) {
                 deviceMode={device}
                 view={view}
                 liveUrlLabel={
-                  portfolio?.slug
-                    ? `portfolio-trimind.com/p/${portfolio.slug}`
+                  effectivePortfolio?.slug
+                    ? `portfolio-trimind.com/p/${effectivePortfolio.slug}`
                     : "portfolio-trimind.com"
                 }
               />
