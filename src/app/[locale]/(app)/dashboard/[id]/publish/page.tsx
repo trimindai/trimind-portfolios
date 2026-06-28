@@ -78,7 +78,7 @@ function HostingPublishPage() {
       key: "pro" as const,
       price: "9.900",
       name: L("Portfolio Pro", "بورتفوليو برو"),
-      sub: L("PDF + live page + QR + lifetime hosting", "PDF + صفحة مباشرة + QR + استضافة دائمة"),
+      sub: L("PDF + live page + QR + 1 year hosting", "PDF + صفحة مباشرة + QR + استضافة لمدة سنة"),
       star: true,
     },
     {

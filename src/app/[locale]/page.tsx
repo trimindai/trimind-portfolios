@@ -37,7 +37,7 @@ export default async function LandingPage({
     ? [
         {
           q: "هل يحتاج البورتفوليو إلى تجديد سنوي؟",
-          a: "لا. كل خطة دفعة واحدة (تبدأ من ٤.٩٠٠ دك). بدون اشتراكات ولا تجديد — وخطة برو تشمل الاستضافة مدى الحياة.",
+          a: "لا. كل خطة دفعة واحدة (تبدأ من ٤.٩٠٠ دك). بدون اشتراكات ولا تجديد — وخطة برو تشمل استضافة لمدة سنة.",
         },
         {
           q: "هل يمكنني التعديل بعد النشر؟",
@@ -77,7 +77,7 @@ export default async function LandingPage({
     : [
         {
           q: "Do I need to renew yearly?",
-          a: "No. Every plan is a one-time payment (from 4.900 KD). No subscriptions, no renewals — and Portfolio Pro includes lifetime hosting.",
+          a: "No. Every plan is a one-time payment (from 4.900 KD). No subscriptions, no renewals — and Portfolio Pro includes 1 year of hosting.",
         },
         {
           q: HOSTING_ENABLED ? "Can I edit after publishing?" : "Can I edit my portfolio?",
@@ -416,7 +416,7 @@ export default async function LandingPage({
               { Icon: Languages, en: "Native Arabic + English", ar: "عربي وإنجليزي أصيل", enD: "Proper RTL Arabic designed from scratch — typography, spacing, and reading direction, not a mirrored page.", arD: "تصميم عربي RTL من الصفر — خطوط ومسافات واتجاه قراءة، وليس صفحة معكوسة." },
               { Icon: FileDown, en: "ATS-ready PDF with a QR code", ar: "PDF متوافق مع ATS وبه QR", enD: "An editable, recruiter-friendly CV PDF carrying a QR that opens your live portfolio.", arD: "سيرة PDF قابلة للتعديل وجاهزة لأنظمة التوظيف، تحمل QR يفتح بورتفوليوك الحي." },
               ...(HOSTING_ENABLED
-                ? [{ Icon: Globe, en: "Live hosted page, for life", ar: "صفحة حيّة مستضافة مدى الحياة", enD: "Your portfolio gets its own URL with lifetime hosting — update anytime, changes go live instantly.", arD: "بورتفوليوك يحصل على رابط خاص باستضافة مدى الحياة — حدّثه في أي وقت، والتغييرات فورية." }]
+                ? [{ Icon: Globe, en: "Live hosted page (1 year)", ar: "صفحة حيّة مستضافة (سنة)", enD: "Your portfolio gets its own URL with 1 year of hosting — update anytime, changes go live instantly.", arD: "بورتفوليوك يحصل على رابط خاص باستضافة لمدة سنة — حدّثه في أي وقت، والتغييرات فورية." }]
                 : []),
             ].map((b, i) => (
               <div key={i} className="flex gap-4">
@@ -435,7 +435,7 @@ export default async function LandingPage({
                 {isRTL
                   ? "بدون اشتراكات وبدون تجديد."
                   : "No subscriptions, no renewals."}{" "}
-                {HOSTING_ENABLED ? (isRTL ? "الاستضافة مشمولة مدى الحياة." : "Hosting included for life.") : ""}
+                {HOSTING_ENABLED ? (isRTL ? "استضافة لمدة سنة." : "1 year hosting included.") : ""}
               </p>
             </div>
           </div>
@@ -477,7 +477,7 @@ export default async function LandingPage({
                   feats: isRTL ? ["سيرة PDF نهائية (بدون علامة)", "٥ قوالب + ألوان وخطوط", "عربي/إنجليزي، تعديلات غير محدودة"] : ["Final ATS PDF (no watermark)", "5 templates + colours & fonts", "EN/AR, unlimited edits"],
                   highlight: true, cta: isRTL ? "اختر الأساسية" : "Choose Essential" },
                 { key: "pro", en: "Portfolio Pro", ar: "بورتفوليو برو", price: "9.900", arPrice: "٩.٩٠٠", once: true,
-                  feats: isRTL ? ["كل مزايا الأساسية", "صفحة حيّة /p/اسمك + QR", "استضافة مدى الحياة"] : ["Everything in Essential", "Live /p/<name> page + QR", "Lifetime hosting"],
+                  feats: isRTL ? ["كل مزايا الأساسية", "صفحة حيّة /p/اسمك + QR", "استضافة لمدة سنة"] : ["Everything in Essential", "Live /p/<name> page + QR", "1 year hosting"],
                   highlight: false, cta: isRTL ? "اختر برو" : "Choose Pro" },
                 { key: "pro_review", en: "Pro + Expert Review", ar: "برو + مراجعة خبير", price: "24.900", arPrice: "٢٤.٩٠٠", once: true,
                   feats: isRTL ? ["كل مزايا برو", "مراجعة بشرية + ملاحظات ATS", "مراجعة واحدة خلال ٤٨ ساعة"] : ["Everything in Pro", "Human review + ATS notes", "1 revision within 48h"],

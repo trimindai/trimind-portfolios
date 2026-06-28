@@ -7,7 +7,7 @@ export type Tier = "essential" | "pro" | "pro_review";
 // Full price of each tier bought from scratch.
 export const TIER_PRICE: Record<Tier, number> = {
   essential: 4.9, // CV PDF (watermark off), no live page
-  pro: 9.9, // + live /p/<name> page + QR + lifetime hosting  ⭐ hero
+  pro: 9.9, // + live /p/<name> page + QR + 1 year hosting  ⭐ hero
   pro_review: 24.9, // + human expert review (48h)
 };
 
