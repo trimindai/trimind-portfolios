@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
 import { z } from "zod";
 import { enforceUserRateLimit } from "@/lib/ratelimit";
+import { enforceFreeTier, AI_COST } from "@/lib/freeTier";
 import { parseJsonBody } from "@/lib/api-input";
 
 // fullName/professionalTitle/location/userNotes are interpolated into the
@@ -37,6 +38,8 @@ export async function POST(req: NextRequest) {
     message: "Daily AI limit reached. Try again tomorrow.",
   });
   if (daily) return daily;
+  const trial = await enforceFreeTier(userId, AI_COST.fullCv);
+  if (trial) return trial;
 
   const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey) {

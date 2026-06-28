@@ -10,6 +10,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
 import { z } from "zod";
 import { enforceUserRateLimit } from "@/lib/ratelimit";
+import { enforceFreeTier, AI_COST } from "@/lib/freeTier";
 import { convexClientForUser } from "@/lib/convex";
 import { api } from "@convex/_generated/api";
 import { Id } from "@convex/_generated/dataModel";
@@ -152,6 +153,8 @@ export async function POST(req: NextRequest) {
       message: "Daily CV-parse limit reached. Try again tomorrow.",
     });
     if (daily) return daily;
+    const trial = await enforceFreeTier(userId, AI_COST.parseCv);
+    if (trial) return trial;
 
     let locale: "en" | "ar" = "en";
     let content: ORMessage["content"];

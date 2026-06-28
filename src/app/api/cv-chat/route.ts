@@ -10,6 +10,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
 import { z } from "zod";
 import { enforceUserRateLimit } from "@/lib/ratelimit";
+import { enforceFreeTier, AI_COST } from "@/lib/freeTier";
 import { parseJsonBody } from "@/lib/api-input";
 import { convexClientForUser } from "@/lib/convex";
 import { api } from "@convex/_generated/api";
@@ -227,6 +228,8 @@ export async function POST(req: NextRequest) {
       message: "Daily chat limit reached. Try again tomorrow.",
     });
     if (daily) return daily;
+    const trial = await enforceFreeTier(userId, AI_COST.chat);
+    if (trial) return trial;
 
     const parsed = await parseJsonBody(req, { schema: Body, maxBytes: 64 * 1024 });
     if (!parsed.ok) return parsed.response;

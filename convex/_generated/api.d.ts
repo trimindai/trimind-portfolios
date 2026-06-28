@@ -11,6 +11,7 @@
 import type * as admin from "../admin.js";
 import type * as auth from "../auth.js";
 import type * as crons from "../crons.js";
+import type * as freeTier from "../freeTier.js";
 import type * as payments from "../payments.js";
 import type * as portfolios from "../portfolios.js";
 import type * as rateLimit from "../rateLimit.js";
@@ -31,6 +32,7 @@ declare const fullApi: ApiFromModules<{
   admin: typeof admin;
   auth: typeof auth;
   crons: typeof crons;
+  freeTier: typeof freeTier;
   payments: typeof payments;
   portfolios: typeof portfolios;
   rateLimit: typeof rateLimit;

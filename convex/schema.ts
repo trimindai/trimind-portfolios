@@ -7,6 +7,10 @@ export default defineSchema({
     email: v.string(),
     name: v.optional(v.string()),
     createdAt: v.number(),
+    // Lifetime AI "credits" already spent while on the free tier. Bounds a
+    // never-paid user's Gemini cost (see convex/freeTier.ts). Absent = 0.
+    // Paid users are exempt, so this stops mattering once they buy a tier.
+    freeAiCredits: v.optional(v.number()),
   })
     .index("by_clerk_id", ["clerkId"])
     .index("by_email", ["email"]),
