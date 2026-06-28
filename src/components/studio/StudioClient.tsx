@@ -299,14 +299,26 @@ export default function StudioClient({ initialId }: { initialId?: string }) {
   // Collect files (no auto-build); cap at 5 to match the server.
   function addFiles(list: FileList | null) {
     if (!list || list.length === 0) return;
-    setParseError("");
     // Snapshot the FileList NOW: the picker's onChange clears the input
     // (e.target.value = "") immediately after this call, which empties the live
     // FileList before React runs a deferred setFiles updater — so reading
     // Array.from(list) inside the updater got nothing on iOS Safari (file never
     // attached). Materialise the array synchronously here instead.
     const picked = Array.from(list);
-    setFiles((prev) => [...prev, ...picked].slice(0, 5));
+    // iOS hands back a 0-byte File when the picked item is an iCloud file that
+    // isn't downloaded yet — surface that instead of silently failing.
+    const usable = picked.filter((f) => f.size > 0);
+    if (usable.length === 0) {
+      setParseError(
+        T(
+          "That file looks empty — if it's saved in iCloud, open it once in the Files app to download it, then upload again.",
+          "هذا الملف يبدو فارغًا — إذا كان محفوظًا في iCloud، افتحه مرة في تطبيق الملفات لتنزيله ثم ارفعه مجددًا."
+        )
+      );
+      return;
+    }
+    setParseError("");
+    setFiles((prev) => [...prev, ...usable].slice(0, 5));
   }
   function removeFile(idx: number) {
     setFiles((prev) => prev.filter((_, i) => i !== idx));
