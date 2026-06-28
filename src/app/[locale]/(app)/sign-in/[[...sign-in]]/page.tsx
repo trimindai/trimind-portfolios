@@ -3,7 +3,7 @@
 import { Suspense, useEffect, useState } from "react";
 import { useSignIn } from "@clerk/nextjs/legacy";
 import { useAuth } from "@clerk/nextjs";
-import { useParams, useSearchParams } from "next/navigation";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { Link } from "@/i18n/navigation";
 import PhoneField, { isValidPhoneNumber } from "@/components/auth/PhoneField";
 
@@ -47,6 +47,7 @@ function safeRedirect(raw: string | null, locale: string): string {
 
 function SignInForm() {
   const { isLoaded, signIn, setActive } = useSignIn();
+  const router = useRouter();
   const params = useParams();
   const locale = (params?.locale as string) || "en";
   const isAr = locale === "ar";
@@ -62,8 +63,10 @@ function SignInForm() {
   // prebuilt <SignIn/> does this automatically; the custom flow must too.
   const { isLoaded: authLoaded, isSignedIn } = useAuth();
   useEffect(() => {
-    if (authLoaded && isSignedIn) window.location.href = redirectUrl;
-  }, [authLoaded, isSignedIn, redirectUrl]);
+    // Soft nav, not window.location — a hard reload here drops the in-memory
+    // clerk-js session on iOS Safari (ITP), bouncing back to a fresh form.
+    if (authLoaded && isSignedIn) router.replace(redirectUrl);
+  }, [authLoaded, isSignedIn, redirectUrl, router]);
 
   const [method, setMethod] = useState<"email" | "phone">("phone");
   const [email, setEmail] = useState("");
@@ -188,11 +191,11 @@ function SignInForm() {
         setFailedAttempts(0);
         await setActive({
           session: res.createdSessionId,
-          // decorateUrl refreshes the session cookie before we land on the
-          // protected /build route. Without it, middleware can run before the
-          // cookie is committed (esp. Safari ITP on iPhone) and bounce the user
-          // straight back to sign-in.
-          navigate: ({ session, decorateUrl }) => {
+          // Soft client navigation: clerk-js keeps the just-activated session
+          // in memory, so the /build gate sees isSignedIn immediately. The old
+          // window.location reload dropped the session on iOS Safari (ITP) and
+          // bounced the verified user back to a fresh sign-in form.
+          navigate: ({ session }) => {
             // A "pending" session has an unresolved Clerk task/restriction and
             // is NOT active — navigating to the gated /build only bounces back
             // to sign-in. Surface it instead of looping forever.
@@ -204,7 +207,7 @@ function SignInForm() {
               );
               return;
             }
-            window.location.href = decorateUrl(redirectUrl);
+            router.push(redirectUrl);
           },
         });
       } else {
@@ -267,11 +270,11 @@ function SignInForm() {
         setFailedAttempts(0);
         await setActive({
           session: res.createdSessionId,
-          // decorateUrl refreshes the session cookie before we land on the
-          // protected /build route. Without it, middleware can run before the
-          // cookie is committed (esp. Safari ITP on iPhone) and bounce the user
-          // straight back to sign-in.
-          navigate: ({ session, decorateUrl }) => {
+          // Soft client navigation: clerk-js keeps the just-activated session
+          // in memory, so the /build gate sees isSignedIn immediately. The old
+          // window.location reload dropped the session on iOS Safari (ITP) and
+          // bounced the verified user back to a fresh sign-in form.
+          navigate: ({ session }) => {
             // A "pending" session has an unresolved Clerk task/restriction and
             // is NOT active — navigating to the gated /build only bounces back
             // to sign-in. Surface it instead of looping forever.
@@ -283,7 +286,7 @@ function SignInForm() {
               );
               return;
             }
-            window.location.href = decorateUrl(redirectUrl);
+            router.push(redirectUrl);
           },
         });
       } else {

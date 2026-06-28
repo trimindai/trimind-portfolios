@@ -3,7 +3,7 @@
 import { Suspense, useEffect, useState } from "react";
 import { useSignUp } from "@clerk/nextjs/legacy";
 import { useAuth } from "@clerk/nextjs";
-import { useParams, useSearchParams } from "next/navigation";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { Link } from "@/i18n/navigation";
 import PhoneField, { isValidPhoneNumber } from "@/components/auth/PhoneField";
 
@@ -43,6 +43,7 @@ function safeRedirect(raw: string | null, locale: string): string {
 
 function SignUpForm() {
   const { isLoaded, signUp, setActive } = useSignUp();
+  const router = useRouter();
   const params = useParams();
   const locale = (params?.locale as string) || "en";
   const isAr = locale === "ar";
@@ -53,8 +54,10 @@ function SignUpForm() {
   // otherwise sits on this page and "create account" throws "already signed in").
   const { isLoaded: authLoaded, isSignedIn } = useAuth();
   useEffect(() => {
-    if (authLoaded && isSignedIn) window.location.href = redirectUrl;
-  }, [authLoaded, isSignedIn, redirectUrl]);
+    // Soft nav, not window.location — a hard reload here drops the in-memory
+    // clerk-js session on iOS Safari (ITP), bouncing back to a fresh form.
+    if (authLoaded && isSignedIn) router.replace(redirectUrl);
+  }, [authLoaded, isSignedIn, redirectUrl, router]);
 
   const [method, setMethod] = useState<"email" | "phone">("phone");
   const [step, setStep] = useState<"start" | "verify">("start");
@@ -189,12 +192,13 @@ function SignUpForm() {
           ? await signUp.attemptPhoneNumberVerification({ code })
           : await signUp.attemptEmailAddressVerification({ code });
       if (res.status === "complete") {
-        // decorateUrl refreshes the session cookie before navigating to the
-        // protected /build route, so middleware doesn't run before the cookie
-        // is committed (esp. Safari ITP on iPhone) and bounce back to sign-in.
+        // Soft client navigation: clerk-js keeps the just-activated session
+        // in memory, so the /build gate sees isSignedIn immediately. The old
+        // window.location reload dropped the session on iOS Safari (ITP) and
+        // bounced the verified user back to a fresh sign-in form.
         await setActive({
           session: res.createdSessionId,
-          navigate: ({ session, decorateUrl }) => {
+          navigate: ({ session }) => {
             // A "pending" session has an unresolved Clerk task/restriction and
             // is NOT active — navigating to the gated /build only bounces back
             // to sign-in. Surface it instead of looping forever.
@@ -206,7 +210,7 @@ function SignUpForm() {
               );
               return;
             }
-            window.location.href = decorateUrl(redirectUrl);
+            router.push(redirectUrl);
           },
         });
       } else {
