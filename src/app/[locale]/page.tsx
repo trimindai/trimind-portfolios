@@ -19,6 +19,7 @@ import { LandingNav } from "@/components/landing/LandingNav";
 import SocialProofStrip from "@/components/landing/SocialProofStrip";
 import { LandingFloating } from "@/components/landing/LandingFloating";
 import { TemplateShowcase } from "@/components/landing/TemplateShowcase";
+import { HeroCtaActions } from "@/components/landing/HeroCtaActions";
 import { TIER_PRICE } from "@/lib/pricing";
 
 export default async function LandingPage({
@@ -251,13 +252,8 @@ export default async function LandingPage({
               ? "⭐ موثوق من +١٣٠ محترف في الكويت والخليج"
               : "⭐ Trusted by 130+ professionals in Kuwait & the Gulf"}
           </p>
-          {/* primary CTA — the action focal point */}
-          <Link
-            href="/build"
-            className="w-full max-w-[300px] rounded-2xl bg-green-mid py-4 text-center text-lg font-bold text-white shadow-green transition-all hover:-translate-y-px hover:bg-green hover:shadow-green-lg active:scale-[0.99]"
-          >
-            {isRTL ? "ابنِ سيرتي — مجانًا" : "Build my CV — free"}
-          </Link>
+          {/* primary CTA + "see a sample" — role sheet & sample drawer (client) */}
+          <HeroCtaActions locale={locale} />
           {/* pay message — quiet, directly below the CTA */}
           <span className="mt-3 text-xs text-gray-400">
             {isRTL ? "ادفع ٤.٩ د.ك فقط عند التصدير" : "Pay just 4.9 KD only on export"}
@@ -268,6 +264,19 @@ export default async function LandingPage({
           >
             {isRTL ? "تصفّح القوالب" : "Browse templates"}
           </Link>
+
+          {/* explainer video (§9) — placeholder until the demo clip is ready */}
+          <div className="mt-8 w-full">
+            <p className="mb-2 text-xs uppercase tracking-widest text-gray-400" dir="auto">
+              {isRTL ? "شاهده وهو يعمل" : "See it in action"}
+            </p>
+            <div
+              className="flex aspect-video w-full items-center justify-center rounded-2xl border border-ink-10 bg-gray-100 text-sm text-gray-400"
+              dir="auto"
+            >
+              {isRTL ? "▶ فيديو توضيحي قريبًا" : "▶ Demo video coming soon"}
+            </div>
+          </div>
 
           {/* stats bar */}
           <div className="mt-8 flex w-full bg-white border border-ink-10 rounded-2xl shadow-sm overflow-hidden">
@@ -340,7 +349,7 @@ export default async function LandingPage({
         </ScrollReveal>
         <div className="mx-auto mt-12 flex max-w-5xl flex-col items-stretch gap-4 md:flex-row md:items-center md:gap-2">
           {[
-            { Icon: Sparkles, en: "Build with AI", ar: "ابنِ بالذكاء الاصطناعي", enSub: "Register, drop your CV, and write what you want in plain language — AI builds your portfolio instantly.", arSub: "سجّل، أسقط سيرتك، واكتب ما تريد بلغتك — والذكاء الاصطناعي يبني بورتفوليوك فورًا." },
+            { Icon: Sparkles, en: "AI builds it", ar: "ابنِ بالذكاء الاصطناعي", enSub: "Register, drop your CV, and write what you want in plain language — AI builds your portfolio instantly.", arSub: "سجّل، أسقط سيرتك، واكتب ما تريد بلغتك — والذكاء الاصطناعي يبني بورتفوليوك فورًا." },
             { Icon: MessageCircle, en: "Preview & edit by chat", ar: "عاين وعدّل بالمحادثة", enSub: "See it live and refine anything — just chat with the AI to change text, colours, or layout.", arSub: "شاهده مباشرة وعدّل أي شيء — حادث الذكاء الاصطناعي لتغيير النص أو الألوان أو التنسيق." },
             { Icon: Download, en: "Get your editable pro CV", ar: "احصل على سيرتك الاحترافية", enSub: "Pay once a year and get your editable pro CV (PDF + QR) and live page — ready in your dashboard.", arSub: "ادفع مرة واحدة في السنة واحصل على سيرتك الاحترافية القابلة للتعديل (PDF + QR) وصفحة حيّة في لوحة التحكم." },
           ].map((s, i) => (

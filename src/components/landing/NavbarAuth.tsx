@@ -92,7 +92,7 @@ export function NavbarAuth({ locale }: { locale: string }) {
             <div className="absolute end-0 top-full mt-2 w-44 rounded-xl border border-[var(--land-border)] bg-white shadow-lg py-1 z-50">
               <Link
                 href="/dashboard"
-                className="block px-4 py-2.5 text-sm font-medium text-gray-800 hover:bg-gray-50 transition-colors"
+                className="block px-4 py-3 text-sm font-medium text-gray-800 hover:bg-gray-50 transition-colors"
                 onClick={() => setMenuOpen(false)}
               >
                 {isRTL ? "ملفاتي ←" : "My Portfolios →"}
@@ -105,7 +105,7 @@ export function NavbarAuth({ locale }: { locale: string }) {
                   // only wiped the __client_uat hint cookie, so the session lived on).
                   signOut({ redirectUrl: `/${locale}` });
                 }}
-                className="block w-full px-4 py-2.5 text-start text-sm text-red-500 hover:bg-red-50 transition-colors"
+                className="block w-full px-4 py-3 text-start text-sm text-red-500 hover:bg-red-50 transition-colors"
               >
                 {isRTL ? "خروج" : "Sign out"}
               </button>

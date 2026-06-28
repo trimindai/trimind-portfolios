@@ -148,6 +148,12 @@ export default function StudioClient({ initialId }: { initialId?: string }) {
   const [dbg, setDbg] = useState<Record<string, unknown>>({});
   const [view, setView] = useState<"live" | "cv">("live");
   const [device, setDevice] = useState<"desktop" | "tablet" | "mobile">("desktop");
+  // Create-flow progress: 1 = entering info, 2 = generating (§5).
+  const [step, setStep] = useState(1);
+  // First-visit onboarding tooltip over the upload zone (§7).
+  const [showTip, setShowTip] = useState(false);
+  // Pre-selected template carried from the landing role sheet (§6).
+  const templateParam = searchParams.get("template");
   const [uploading, setUploading] = useState(false);
   const [parseError, setParseError] = useState("");
   const [pasteText, setPasteText] = useState("");
@@ -284,6 +290,47 @@ export default function StudioClient({ initialId }: { initialId?: string }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // First-visit onboarding tooltip (§7): show after 800ms, auto-hide after 4s,
+  // once ever. localStorage is wrapped + window-guarded for SSR safety.
+  useEffect(() => {
+    if (initialId) return; // edit mode has no upload zone
+    if (typeof window === "undefined") return;
+    let seen: string | null = null;
+    try {
+      seen = localStorage.getItem("build-tip-seen");
+    } catch {
+      /* storage blocked — just don't show */
+    }
+    if (seen) return;
+    const showT = setTimeout(() => setShowTip(true), 800);
+    const hideT = setTimeout(() => setShowTip(false), 800 + 4000);
+    try {
+      localStorage.setItem("build-tip-seen", "true");
+    } catch {
+      /* ignore */
+    }
+    return () => {
+      clearTimeout(showT);
+      clearTimeout(hideT);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Pre-select the template chosen on the landing role sheet (§6). Apply once,
+  // create-mode only, after the fresh portfolio exists — never overrides an
+  // existing CV's template (edit mode / one-CV redirect both set initialId).
+  const appliedTemplateRef = useRef(false);
+  useEffect(() => {
+    if (initialId || !portfolioId || !templateParam) return;
+    if (appliedTemplateRef.current) return;
+    const valid = resolveTemplateId(templateParam);
+    if (valid && valid !== templateKey) {
+      appliedTemplateRef.current = true;
+      setTemplate(valid);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [portfolioId, templateParam, templateKey]);
+
   // ── parse a CV (file or pasted text) ───────────────────────────────────────
   const onParsed = useCallback(
     (id: string, cv?: Cv) => {
@@ -339,6 +386,7 @@ export default function StudioClient({ initialId }: { initialId?: string }) {
       setParseError(T("Add a file or paste your CV first.", "أضف ملفًا أو الصق سيرتك أولًا."));
       return;
     }
+    setStep(2); // §5: advance the progress bar before the network round-trip
     setUploading(true);
     setParseError("");
     try {
@@ -366,6 +414,7 @@ export default function StudioClient({ initialId }: { initialId?: string }) {
       if (!res.ok) throw new Error(data.error || "Parse failed");
       onParsed(data.portfolioId, data.data as Cv | undefined);
     } catch (e: any) {
+      setStep(1); // failed — back to the info step
       setParseError(e?.message || T("Couldn't build that.", "تعذّر البناء."));
     } finally {
       setUploading(false);
@@ -481,12 +530,12 @@ export default function StudioClient({ initialId }: { initialId?: string }) {
           <div>parseError: {parseError || "none"}</div>
         </div>
       )}
-      {/* top bar — only ← Dashboard (left) and Sign out (right); the brand is an
+      {/* top bar — back-to-portfolios (left) and Sign out (right); the brand is an
           icon-only home link; Publish moved to the sticky bottom bar below. */}
       <div className="relative flex items-center justify-between gap-3 border-b border-[var(--land-border)] pb-3 mb-4">
         <Link
           href="/dashboard"
-          className="flex items-center gap-0.5 text-sm text-gray-600 transition-colors hover:text-gray-900"
+          className="-mx-2 flex items-center gap-0.5 px-2 py-2 text-sm text-gray-600 transition-colors hover:text-gray-900"
         >
           <ChevronLeft size={16} strokeWidth={2.5} className="rtl:rotate-180" />
           {T("My Portfolios", "ملفاتي")}
@@ -497,11 +546,31 @@ export default function StudioClient({ initialId }: { initialId?: string }) {
         </span>
         <button
           onClick={() => signOut({ redirectUrl: `/${locale}` })}
-          className="whitespace-nowrap text-sm text-[var(--land-muted)] transition-colors hover:text-[var(--land-bright)]"
+          className="-mx-2 whitespace-nowrap px-2 py-2 text-sm text-[var(--land-muted)] transition-colors hover:text-[var(--land-bright)]"
         >
           {T("Sign out", "خروج")}
         </button>
       </div>
+
+      {/* progress bar (§5) — only during the create/generate flow */}
+      {!hasPortfolio && (
+        <div className="px-4 pt-3 pb-1">
+          <div className="flex items-center justify-between text-xs text-gray-400">
+            <span dir="auto">{T(`Step ${step} of 2`, `الخطوة ${step} من ٢`)}</span>
+            <span dir="auto">
+              {step === 1
+                ? T("Your info", "معلوماتك")
+                : T("Generating...", "جارٍ الإنشاء...")}
+            </span>
+          </div>
+          <div className="mt-1.5 h-1.5 w-full rounded-full bg-gray-100">
+            <div
+              className="h-1.5 rounded-full bg-green-mid transition-all duration-500"
+              style={{ width: step === 1 ? "50%" : "100%" }}
+            />
+          </div>
+        </div>
+      )}
 
       {/* Sticky bottom Publish bar — full-width, prominent, impossible to miss. */}
       {hasPortfolio && (
@@ -551,6 +620,19 @@ export default function StudioClient({ initialId }: { initialId?: string }) {
               {/* Step 1 — upload */}
               <div className="space-y-3">
                 <StepLabel n="1">{T("Upload your CV", "ارفع سيرتك")}</StepLabel>
+                <div className="relative">
+                {/* onboarding tooltip (§7) — first visit only */}
+                {showTip && (
+                  <div className="absolute -top-10 left-1/2 z-10 -translate-x-1/2 whitespace-nowrap rounded-lg bg-gray-800 px-3 py-2 text-xs font-medium text-white shadow-lg">
+                    <span dir="auto">
+                      {T("Start here — upload or paste your CV 👇", "ابدأ هنا — ارفع أو الصق سيرتك 👇")}
+                    </span>
+                    <span
+                      className="absolute left-1/2 top-full -translate-x-1/2 border-4 border-transparent border-t-gray-800"
+                      aria-hidden
+                    />
+                  </div>
+                )}
                 <label
                   onDragOver={(e) => e.preventDefault()}
                   onDrop={(e) => {
@@ -585,6 +667,7 @@ export default function StudioClient({ initialId }: { initialId?: string }) {
                     )}
                   </span>
                 </label>
+                </div>
 
                 {/* selected files (removable) — nothing is parsed until Generate */}
                 {files.length > 0 && (
@@ -711,7 +794,7 @@ export default function StudioClient({ initialId }: { initialId?: string }) {
                       title={t.description}
                       onClick={() => setTemplate(t.id)}
                       // ponytail: manifest names are English-only; fine as short labels
-                      className={`rounded-lg border px-3 py-2 text-left text-xs font-medium transition-colors ${
+                      className={`rounded-lg border px-3 py-3 text-left text-xs font-medium transition-colors ${
                         active
                           ? "border-[var(--land-accent)] bg-[var(--land-accent-subtle)] text-[var(--land-accent-hover)]"
                           : "border-[var(--land-border)] text-[var(--land-body)] hover:border-[var(--land-accent)]"
@@ -741,7 +824,7 @@ export default function StudioClient({ initialId }: { initialId?: string }) {
                         bgColor: p.bg,
                       })
                     }
-                    className="h-9 w-9 rounded-full border border-black/10 shadow-sm transition-transform hover:scale-110"
+                    className="h-12 w-12 rounded-full border border-black/10 shadow-sm transition-transform hover:scale-110"
                     style={{
                       background: `linear-gradient(135deg, ${
                         p.primary || p.accent
@@ -903,7 +986,7 @@ export default function StudioClient({ initialId }: { initialId?: string }) {
                     "e.g. make it navy, hide education, punch up my summary",
                     "مثال: خليه كحلي، أخفِ التعليم، حسّن النبذة"
                   )}
-                  className="flex-1 rounded-lg border border-[var(--land-border)] bg-[var(--land-bg)] px-3 py-2 text-sm text-[var(--land-bright)] outline-none focus:border-[var(--land-accent)]"
+                  className="min-h-[3rem] flex-1 rounded-lg border border-[var(--land-border)] bg-[var(--land-bg)] px-3 py-2 text-sm text-[var(--land-bright)] outline-none focus:border-[var(--land-accent)]"
                 />
                 <button
                   onClick={sendChat}

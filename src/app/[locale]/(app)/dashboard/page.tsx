@@ -103,7 +103,7 @@ export default function DashboardPage() {
           href="/build"
           className="rounded-lg bg-[var(--land-accent)] px-4 py-2 text-sm font-semibold text-white hover:bg-[var(--land-accent-hover)] transition-colors"
         >
-          ✨ {isRTL ? "ابنِ بالذكاء الاصطناعي" : "Build with AI"}
+          ✨ {isRTL ? "ابنِ بالذكاء الاصطناعي" : "AI builds it"}
         </Link>
       </div>
 
@@ -122,7 +122,7 @@ export default function DashboardPage() {
             href="/build"
             className="mt-6 inline-flex items-center justify-center rounded-lg bg-[var(--land-accent)] px-5 py-3 font-semibold text-white hover:bg-[var(--land-accent-hover)] transition-colors"
           >
-            ✨ {isRTL ? "ابنِ بالذكاء الاصطناعي ←" : "Build with AI →"}
+            ✨ {isRTL ? "ابنِ بالذكاء الاصطناعي ←" : "AI builds it →"}
           </Link>
         </div>
       ) : (
