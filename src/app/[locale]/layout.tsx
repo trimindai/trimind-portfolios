@@ -7,6 +7,7 @@ import { Geist, IBM_Plex_Sans_Arabic } from "next/font/google";
 import { cn } from "@/lib/utils";
 import { Providers } from "../providers";
 import { GoogleAnalytics } from "@next/third-parties/google";
+import { Analytics } from "@vercel/analytics/next";
 
 const GA_ID = process.env.NEXT_PUBLIC_GA_ID;
 
@@ -121,6 +122,8 @@ export default async function LocaleLayout({
         {/* GA4 — loads on every locale route (/en and /ar). Renders only when
             NEXT_PUBLIC_GA_ID is set, so non-prod/preview builds stay clean. */}
         {GA_ID ? <GoogleAnalytics gaId={GA_ID} /> : null}
+        {/* Vercel Web Analytics — visitor + page-view counts in the Vercel dashboard. */}
+        <Analytics />
       </body>
     </html>
   );
