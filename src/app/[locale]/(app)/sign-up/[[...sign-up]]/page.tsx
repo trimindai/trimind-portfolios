@@ -135,7 +135,9 @@ function SignUpForm() {
   async function handleStart(e: React.FormEvent) {
     e.preventDefault();
     if (!isLoaded || loading) return;
-    if (name.trim().length < 2) {
+    // Name is required only for email sign-up; phone sign-up collects it later
+    // in the builder (lowest barrier: number → code → done).
+    if (method === "email" && name.trim().length < 2) {
       setError(t.nameTooShort);
       return;
     }
@@ -149,7 +151,7 @@ function SignUpForm() {
       if (method === "phone") {
         await signUp.create({
           phoneNumber: phone,
-          unsafeMetadata: { fullName: name.trim() },
+          ...(name.trim() ? { unsafeMetadata: { fullName: name.trim() } } : {}),
         });
         await signUp.preparePhoneNumberVerification({ strategy: "phone_code" });
       } else {
@@ -250,22 +252,24 @@ function SignUpForm() {
               <p className="mt-1 text-sm text-[var(--land-body)]">{t.subtitle}</p>
 
               <form onSubmit={handleStart} className="mt-6 space-y-4">
-                <div>
-                  <label htmlFor="name" className="mb-1.5 block text-sm text-[var(--land-body)]">
-                    {t.fullName}
-                  </label>
-                  <input
-                    id="name"
-                    type="text"
-                    autoComplete="name"
-                    required
-                    minLength={2}
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    className={inputClass}
-                    placeholder={t.fullNamePh}
-                  />
-                </div>
+                {method === "email" && (
+                  <div>
+                    <label htmlFor="name" className="mb-1.5 block text-sm text-[var(--land-body)]">
+                      {t.fullName}
+                    </label>
+                    <input
+                      id="name"
+                      type="text"
+                      autoComplete="name"
+                      required
+                      minLength={2}
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
+                      className={inputClass}
+                      placeholder={t.fullNamePh}
+                    />
+                  </div>
+                )}
 
                 {method === "email" ? (
                   <>
