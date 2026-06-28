@@ -17,6 +17,7 @@ import { useQuery, useMutation, useConvexAuth } from "convex/react";
 import { api } from "@convex/_generated/api";
 import { Id } from "@convex/_generated/dataModel";
 import { Link, useRouter } from "@/i18n/navigation";
+import { useClerk } from "@clerk/nextjs";
 import PreviewFrame from "@/components/preview/PreviewFrame";
 import { toPortfolioData } from "@/lib/portfolio-data";
 import { pickPrimaryPortfolio } from "@/lib/single-cv";
@@ -160,6 +161,7 @@ export default function StudioClient({ initialId }: { initialId?: string }) {
   );
   const update = useMutation(api.portfolios.update);
   const router = useRouter();
+  const { signOut } = useClerk();
 
   // Ensure the Convex user row exists. Brand-new accounts land here straight
   // from sign-up (never through /dashboard, where provisioning used to live),
@@ -476,22 +478,32 @@ export default function StudioClient({ initialId }: { initialId?: string }) {
           <ArrowLeft className="h-4 w-4 rtl:rotate-180" />
           {T("Dashboard", "لوحة التحكم")}
         </Link>
-        <div className="flex items-center gap-1.5 text-sm font-semibold text-[var(--land-bright)]">
+        {/* Brand title → main page (reachable from anywhere) */}
+        <Link
+          href="/"
+          className="flex items-center gap-1.5 text-sm font-semibold text-[var(--land-bright)] transition-colors hover:text-[var(--land-accent-hover)]"
+        >
           <Sparkles className="h-4 w-4 text-[var(--land-accent)]" />
           {T("CV Studio", "استوديو السيرة")}
-        </div>
-        {hasPortfolio ? (
-          <Link
-            href={`/dashboard/${portfolioId}/publish`}
-            className="rounded-lg bg-[var(--land-accent)] px-4 py-2 text-sm font-semibold text-white hover:bg-[var(--land-accent-hover)] transition-colors"
+        </Link>
+        <div className="flex items-center gap-3">
+          {hasPortfolio && (
+            <Link
+              href={`/dashboard/${portfolioId}/publish`}
+              className="rounded-lg bg-[var(--land-accent)] px-4 py-2 text-sm font-semibold text-white hover:bg-[var(--land-accent-hover)] transition-colors"
+            >
+              {paid
+                ? T("Download / Publish", "نشر / تحميل")
+                : T("✅ Publish & download", "✅ نشر وتحميل")}
+            </Link>
+          )}
+          <button
+            onClick={() => signOut({ redirectUrl: `/${locale}` })}
+            className="whitespace-nowrap text-sm text-[var(--land-muted)] transition-colors hover:text-[var(--land-bright)]"
           >
-            {paid
-              ? T("Download / Publish", "نشر / تحميل")
-              : T("✅ Publish & download", "✅ نشر وتحميل")}
-          </Link>
-        ) : (
-          <span className="w-24" />
-        )}
+            {T("Sign out", "خروج")}
+          </button>
+        </div>
       </div>
 
       {/* ── no portfolio yet: upload / paste ───────────────────────────────── */}

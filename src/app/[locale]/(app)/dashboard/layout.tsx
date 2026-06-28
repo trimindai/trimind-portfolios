@@ -1,6 +1,6 @@
 "use client";
 
-import { useUser, SignOutButton } from "@clerk/nextjs";
+import { useUser, useClerk } from "@clerk/nextjs";
 import { useMutation, useQuery } from "convex/react";
 import { api } from "@convex/_generated/api";
 import { useEffect, useState } from "react";
@@ -16,6 +16,7 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   const { user, isLoaded } = useUser();
+  const { signOut } = useClerk();
   const params = useParams();
   const locale = (params.locale as string) || "en";
   const isRTL = locale === "ar";
@@ -75,11 +76,12 @@ export default function DashboardLayout({
               <span className="hidden sm:inline text-sm text-[var(--land-body)]">
                 {user?.fullName || user?.primaryEmailAddress?.emailAddress}
               </span>
-              <SignOutButton>
-                <button className="inline-flex items-center min-h-[44px] px-2 -mr-2 text-sm text-[var(--land-muted)] hover:text-[var(--land-bright)] transition-colors">
-                  {isRTL ? "خروج" : "Sign out"}
-                </button>
-              </SignOutButton>
+              <button
+                onClick={() => signOut({ redirectUrl: `/${locale}` })}
+                className="inline-flex items-center min-h-[44px] px-2 -mr-2 text-sm text-[var(--land-muted)] hover:text-[var(--land-bright)] transition-colors"
+              >
+                {isRTL ? "خروج" : "Sign out"}
+              </button>
             </div>
           </div>
         </header>
