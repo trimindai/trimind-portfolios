@@ -48,7 +48,7 @@ function SignUpForm() {
   const search = useSearchParams();
   const redirectUrl = safeRedirect(search.get("redirect_url"), locale);
 
-  const [method, setMethod] = useState<"email" | "phone">("email");
+  const [method, setMethod] = useState<"email" | "phone">("phone");
   const [step, setStep] = useState<"start" | "verify">("start");
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");

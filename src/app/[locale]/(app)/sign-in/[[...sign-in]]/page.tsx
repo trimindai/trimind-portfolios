@@ -46,7 +46,7 @@ function SignInForm() {
   const search = useSearchParams();
   const redirectUrl = safeRedirect(search.get("redirect_url"), locale);
 
-  const [method, setMethod] = useState<"email" | "phone">("email");
+  const [method, setMethod] = useState<"email" | "phone">("phone");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
