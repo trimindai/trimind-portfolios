@@ -971,19 +971,13 @@ export default function StudioClient({ initialId }: { initialId?: string }) {
                 portfolioData={previewData as any}
                 deviceMode={device}
                 view={view}
+                paid={paid}
                 liveUrlLabel={
                   effectivePortfolio?.slug
                     ? `portfolio-trimind.com/p/${effectivePortfolio.slug}`
                     : "portfolio-trimind.com"
                 }
               />
-              {!paid && (
-                <div className="pointer-events-none absolute inset-0 flex items-center justify-center overflow-hidden">
-                  <span className="rotate-[-24deg] select-none text-5xl font-black uppercase tracking-widest text-black/5">
-                    {T("Preview", "معاينة")}
-                  </span>
-                </div>
-              )}
             </div>
           </div>
         </div>

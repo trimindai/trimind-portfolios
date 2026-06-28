@@ -22,6 +22,9 @@ interface PreviewFrameProps {
   cvZoom?: "fit" | number;
   /** Used in the live phone frame caption (the QR target). */
   liveUrlLabel?: string;
+  /** When false (unpaid draft), overlays an anti-theft watermark on the preview
+   *  so a screenshot of the draft comes out branded/unusable. */
+  paid?: boolean;
 }
 
 export interface PreviewFrameHandle {
@@ -38,7 +41,7 @@ const LIVE_WIDTHS: Record<string, number> = {
 
 const PreviewFrame = forwardRef<PreviewFrameHandle, PreviewFrameProps>(
   function PreviewFrame(
-    { portfolioData, deviceMode, view = "cv", cvZoom = "fit", liveUrlLabel },
+    { portfolioData, deviceMode, view = "cv", cvZoom = "fit", liveUrlLabel, paid = false },
     ref
   ) {
     const iframeRef = useRef<HTMLIFrameElement>(null);
@@ -160,6 +163,27 @@ const PreviewFrame = forwardRef<PreviewFrameHandle, PreviewFrameProps>(
       );
     }
 
+    // Anti-theft watermark over the on-screen preview until the CV is paid for —
+    // a screenshot of the draft comes out branded/unusable. pointer-events:none
+    // so it never blocks scrolling/interaction.
+    const watermark = !paid ? (
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 z-20 flex select-none items-center justify-center overflow-hidden"
+      >
+        <div className="flex w-[150%] flex-wrap content-center justify-center gap-x-10 gap-y-14 rotate-[-30deg] opacity-[0.16]">
+          {Array.from({ length: 90 }).map((_, i) => (
+            <span
+              key={i}
+              className="whitespace-nowrap text-sm font-bold uppercase tracking-wider text-gray-500"
+            >
+              portfolio-trimind.com · معاينة
+            </span>
+          ))}
+        </div>
+      </div>
+    ) : null;
+
     // ── CV view: A4 paper with zoom / fit ─────────────────────────────
     if (view === "cv") {
       const fit =
@@ -181,7 +205,7 @@ const PreviewFrame = forwardRef<PreviewFrameHandle, PreviewFrameProps>(
               }}
             >
               <div
-                className="bg-white shadow-2xl shadow-black/30 ring-1 ring-black/10"
+                className="relative bg-white shadow-2xl shadow-black/30 ring-1 ring-black/10"
                 style={{
                   width: A4_WIDTH,
                   height: cvHeight,
@@ -198,6 +222,7 @@ const PreviewFrame = forwardRef<PreviewFrameHandle, PreviewFrameProps>(
                   title="CV Preview"
                   sandbox="allow-same-origin allow-popups allow-scripts allow-modals"
                 />
+                {watermark}
               </div>
             </div>
           </div>
@@ -208,13 +233,16 @@ const PreviewFrame = forwardRef<PreviewFrameHandle, PreviewFrameProps>(
     // ── Live view: real device frames ─────────────────────────────────
     const liveW = LIVE_WIDTHS[deviceMode];
     const frameIframe = (
-      <iframe
-        ref={iframeRef}
-        srcDoc={html}
-        title="Portfolio Preview"
-        sandbox="allow-same-origin allow-popups allow-scripts allow-modals"
-        className="block h-full w-full border-0 bg-white"
-      />
+      <div className="relative h-full w-full">
+        <iframe
+          ref={iframeRef}
+          srcDoc={html}
+          title="Portfolio Preview"
+          sandbox="allow-same-origin allow-popups allow-scripts allow-modals"
+          className="block h-full w-full border-0 bg-white"
+        />
+        {watermark}
+      </div>
     );
 
     if (deviceMode === "mobile") {
