@@ -20,6 +20,7 @@ import { Link, useRouter } from "@/i18n/navigation";
 import PreviewFrame from "@/components/preview/PreviewFrame";
 import { toPortfolioData } from "@/lib/portfolio-data";
 import { pickPrimaryPortfolio } from "@/lib/single-cv";
+import { portfolioReady } from "@/lib/studio-view";
 import { COLOR_PRESETS, type TemplatePresetKey } from "@/lib/color-presets";
 import { resolveTemplateId, TEMPLATES } from "@/lib/templates";
 import {
@@ -356,7 +357,9 @@ export default function StudioClient({ initialId }: { initialId?: string }) {
   }
 
   // ── render ──────────────────────────────────────────────────────────────────
-  const hasPortfolio = !!portfolioId && portfolio !== null;
+  // Ready only when the get-query has actually resolved to a doc. Treating the
+  // still-loading `undefined` as ready blanks the screen right after a parse.
+  const hasPortfolio = portfolioReady(portfolioId, portfolio);
   const loadingDoc = !!portfolioId && portfolio === undefined;
 
   return (
