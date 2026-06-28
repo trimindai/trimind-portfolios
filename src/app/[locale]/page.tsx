@@ -184,14 +184,6 @@ export default async function LandingPage({
         <div className="relative z-10 mx-auto grid w-full max-w-md grid-cols-1 px-5 pt-28 pb-16 lg:max-w-6xl lg:grid-cols-2 lg:items-center lg:gap-x-12 lg:gap-y-6 xl:gap-x-20 lg:px-8 lg:pt-32 lg:pb-24">
           {/* ── top/intro text block ──────────────── */}
           <div className="flex flex-col items-center text-center lg:col-start-1 lg:row-start-1">
-          {/* gold trust badge */}
-          <div className="inline-flex items-center gap-1.5 bg-gradient-to-r from-gold/10 to-gold/5 border border-gold/30 rounded-full px-3 py-1.5 text-xs font-bold text-gold mb-5 animate-fadeInUp">
-            <span className="w-1.5 h-1.5 bg-gold rounded-full animate-pulse flex-shrink-0" />
-            {isRTL
-              ? "يستخدمه +١٣٠ محترف في الكويت والخليج"
-              : "Used by 130+ professionals in Kuwait & the Gulf"}
-          </div>
-
           {/* headline — profession word in green */}
           <h1 className="text-balance text-4xl sm:text-[2.75rem] lg:text-5xl xl:text-[3.5rem] font-bold leading-snug tracking-tight text-ink mb-4">
             {isRTL ? (
@@ -217,8 +209,8 @@ export default async function LandingPage({
           {/* subtext */}
           <p className="text-sm lg:text-base text-ink-50 leading-relaxed mb-5 max-w-sm lg:max-w-md">
             {isRTL
-              ? "الذكاء الاصطناعي يكتب. أنت تختار القالب. تدفع فقط لما تعجبك النتيجة."
-              : "AI writes it. You pick the template. Pay only when you love the result."}
+              ? "الذكاء الاصطناعي يكتب سيرتك. أنت تختار القالب. وخلّصنا."
+              : "AI writes your CV. You pick the template. Done."}
           </p>
 
           {/* live activity ticker — directly below the headline, before the stats row */}
@@ -248,16 +240,17 @@ export default async function LandingPage({
                 playsInline
                 preload="metadata"
               />
-              {/* live "watch how it works" caption pill */}
-              <div className="pointer-events-none absolute inset-x-3 bottom-3 flex items-center justify-center gap-1.5 rounded-full bg-black/45 px-3 py-1.5 text-[11px] font-semibold text-white backdrop-blur-sm">
-                <span className="h-1.5 w-1.5 rounded-full bg-green-bright animate-pulse" />
-                {isRTL ? "شوف كيف يعمل خلال ثوانٍ" : "See how it works in seconds"}
-              </div>
             </div>
           </div>
 
           {/* ── action + proof block (CTA, stats, trust) ──── */}
           <div className="flex flex-col items-center text-center lg:col-start-1 lg:row-start-2">
+          {/* trust signal — sits directly above the single primary CTA */}
+          <p className="mb-3 text-xs text-gray-500">
+            {isRTL
+              ? "⭐ موثوق من +١٣٠ محترف في الكويت والخليج"
+              : "⭐ Trusted by 130+ professionals in Kuwait & the Gulf"}
+          </p>
           {/* primary CTA — the action focal point */}
           <Link
             href="/build"
@@ -265,16 +258,16 @@ export default async function LandingPage({
           >
             {isRTL ? "ابنِ سيرتي — مجانًا" : "Build my CV — free"}
           </Link>
-          {/* price-anchor pill — amber/gold on light amber (single, non-duplicated pay message) */}
-          <span className="mt-3 inline-block rounded-full bg-gold/10 border border-gold/20 px-3 py-1 text-xs font-semibold text-gold">
+          {/* pay message — quiet, directly below the CTA */}
+          <span className="mt-3 text-xs text-gray-400">
             {isRTL ? "ادفع ٤.٩ د.ك فقط عند التصدير" : "Pay just 4.9 KD only on export"}
           </span>
-          <a
-            href="#templates"
-            className="mt-3 text-sm font-medium text-green-mid hover:underline"
+          <Link
+            href="/templates"
+            className="mt-3 text-sm text-gray-400 underline"
           >
-            {isRTL ? "شوف القوالب" : "See templates"}
-          </a>
+            {isRTL ? "تصفّح القوالب" : "Browse templates"}
+          </Link>
 
           {/* stats bar */}
           <div className="mt-8 flex w-full bg-white border border-ink-10 rounded-2xl shadow-sm overflow-hidden">

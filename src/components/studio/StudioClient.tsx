@@ -538,12 +538,12 @@ export default function StudioClient({ initialId }: { initialId?: string }) {
             <div className="space-y-6 pb-24">
               <div>
                 <h1 className="text-center text-2xl font-bold text-[var(--land-bright)]">
-                  {T("Build your portfolio with AI", "ابنِ بورتفوليو بالذكاء الاصطناعي")}
+                  {T("Upload your CV. We do the rest.", "ارفع سيرتك. واحنا نكمّل الباقي.")}
                 </h1>
                 <p className="mt-2 text-center text-[var(--land-body)]">
                   {T(
-                    "Upload your CV (PDF, Word, or a photo) or paste it — the AI builds your full portfolio, then you refine it by chat.",
-                    "ارفع سيرتك (PDF أو Word أو صورة) أو الصقها — الذكاء الاصطناعي يبني البورتفوليو كاملًا، ثم تحسّنه بالمحادثة."
+                    "Takes less than a minute.",
+                    "ياخذ أقل من دقيقة."
                   )}
                 </p>
               </div>
@@ -576,12 +576,12 @@ export default function StudioClient({ initialId }: { initialId?: string }) {
                   />
                   <Upload className="h-8 w-8 text-[var(--land-accent)]" />
                   <span className="mt-3 font-medium text-[var(--land-bright)]">
-                    {T("Drop your CV files or click to upload", "أفلت ملفات سيرتك أو اضغط للرفع")}
+                    {T("Upload your CV", "ارفع سيرتك")}
                   </span>
                   <span className="mt-1 text-xs text-[var(--land-muted)]">
                     {T(
-                      "PDF · Word · images — up to 5 files, ≤ 8 MB each",
-                      "PDF · Word · صور — حتى ٥ ملفات، ٨ ميغا لكل ملف"
+                      "PDF, Word, or image",
+                      "PDF أو Word أو صورة"
                     )}
                   </span>
                 </label>
@@ -630,8 +630,8 @@ export default function StudioClient({ initialId }: { initialId?: string }) {
                   disabled={uploading}
                   rows={6}
                   placeholder={T(
-                    "Paste your CV text, or just write your name, title, experience, skills…",
-                    "الصق نص سيرتك، أو اكتب اسمك ومسماك وخبرتك ومهاراتك…"
+                    "Or paste your CV text here…",
+                    "أو الصق نص سيرتك هنا…"
                   )}
                   className="w-full rounded-xl border border-[var(--land-border)] bg-[var(--land-bg)] p-3 text-sm text-[var(--land-bright)] outline-none focus:border-[var(--land-accent)]"
                 />
@@ -640,7 +640,7 @@ export default function StudioClient({ initialId }: { initialId?: string }) {
               {/* Step 3 — optional plain-English notes merged into the CV. */}
               <div className="space-y-1.5">
                 <StepLabel n="3">
-                  {T("Anything to add or change? (optional)", "تبي تضيف أو تعدّل شي؟ (اختياري)")}
+                  {T("Any changes? (optional)", "أي تعديلات؟ (اختياري)")}
                 </StepLabel>
                 <textarea
                   value={instructions}
@@ -649,8 +649,8 @@ export default function StudioClient({ initialId }: { initialId?: string }) {
                   rows={3}
                   maxLength={4000}
                   placeholder={T(
-                    "e.g. add my new role at Acme (2024–now), emphasise leadership, fix my job title…",
-                    "مثال: أضف وظيفتي الجديدة في أكمي (٢٠٢٤–الآن)، ركّز على القيادة، صحّح مسماي الوظيفي…"
+                    "e.g. add my new job, change the title…",
+                    "مثال: أضف وظيفتي الجديدة، غيّر المسمى…"
                   )}
                   className="w-full rounded-xl border border-[var(--land-border)] bg-[var(--land-bg)] p-3 text-sm text-[var(--land-bright)] outline-none focus:border-[var(--land-accent)]"
                 />
