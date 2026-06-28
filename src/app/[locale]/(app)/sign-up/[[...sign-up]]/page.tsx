@@ -1,7 +1,8 @@
 "use client";
 
-import { Suspense, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { useSignUp } from "@clerk/nextjs/legacy";
+import { useAuth } from "@clerk/nextjs";
 import { useParams, useSearchParams } from "next/navigation";
 import { Link } from "@/i18n/navigation";
 import PhoneField, { isValidPhoneNumber } from "@/components/auth/PhoneField";
@@ -47,6 +48,13 @@ function SignUpForm() {
   const isAr = locale === "ar";
   const search = useSearchParams();
   const redirectUrl = safeRedirect(search.get("redirect_url"), locale);
+
+  // Already signed in → leave the form (same trap as sign-in: a live session
+  // otherwise sits on this page and "create account" throws "already signed in").
+  const { isLoaded: authLoaded, isSignedIn } = useAuth();
+  useEffect(() => {
+    if (authLoaded && isSignedIn) window.location.href = redirectUrl;
+  }, [authLoaded, isSignedIn, redirectUrl]);
 
   const [method, setMethod] = useState<"email" | "phone">("phone");
   const [step, setStep] = useState<"start" | "verify">("start");

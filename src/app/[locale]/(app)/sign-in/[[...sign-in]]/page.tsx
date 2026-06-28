@@ -1,7 +1,8 @@
 "use client";
 
-import { Suspense, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { useSignIn } from "@clerk/nextjs/legacy";
+import { useAuth } from "@clerk/nextjs";
 import { useParams, useSearchParams } from "next/navigation";
 import { Link } from "@/i18n/navigation";
 import PhoneField, { isValidPhoneNumber } from "@/components/auth/PhoneField";
@@ -53,6 +54,16 @@ function SignInForm() {
   const redirectUrl = safeRedirect(search.get("redirect_url"), locale);
   // Diagnostics show only with ?debug=1 in the URL (owner-only), never for normal users.
   const showDebug = SHOW_AUTH_DEBUG && search.get("debug") === "1";
+
+  // Already signed in → leave the form. Without this, a user who already has a
+  // session lands on /sign-in and just sees the form forever; any retry throws
+  // Clerk's "already signed in", which the catch below mislabels as "Invalid
+  // email or password" — the reported "stuck on sign-in every time" bug. The
+  // prebuilt <SignIn/> does this automatically; the custom flow must too.
+  const { isLoaded: authLoaded, isSignedIn } = useAuth();
+  useEffect(() => {
+    if (authLoaded && isSignedIn) window.location.href = redirectUrl;
+  }, [authLoaded, isSignedIn, redirectUrl]);
 
   const [method, setMethod] = useState<"email" | "phone">("phone");
   const [email, setEmail] = useState("");
