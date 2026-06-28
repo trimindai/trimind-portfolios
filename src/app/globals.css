@@ -282,3 +282,29 @@ details[open] > p {
 /* ─── Hide scrollbar on the hero job-title chip row ── */
 .scrollbar-hide::-webkit-scrollbar { display: none; }
 .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+
+/* ─── PhoneField (react-phone-number-input) → --land-* tokens ── */
+.land-phone {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+  border-radius: 0.5rem;
+  border: 1px solid var(--land-border);
+  background: var(--land-bg);
+  padding: 0.35rem 1rem;
+  transition: border-color 0.15s;
+}
+.land-phone:focus-within { border-color: var(--land-accent); }
+.land-phone .PhoneInputInput {
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--land-bright);
+  padding: 0.4rem 0;
+  font: inherit;
+}
+.land-phone .PhoneInputInput::placeholder { color: var(--land-muted); }
+.land-phone .PhoneInputCountrySelect { color: #111; }
+.land-phone .PhoneInputCountrySelectArrow { color: var(--land-muted); opacity: 1; }
+.land-phone .PhoneInputCountryIcon { box-shadow: none; }

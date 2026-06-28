@@ -4,6 +4,7 @@ import { Suspense, useState } from "react";
 import { useSignUp } from "@clerk/nextjs/legacy";
 import { useParams, useSearchParams } from "next/navigation";
 import { Link } from "@/i18n/navigation";
+import PhoneField, { isValidPhoneNumber } from "@/components/auth/PhoneField";
 
 /**
  * Custom sign-up flow (replaces the prebuilt <SignUp/>).
@@ -85,7 +86,8 @@ function SignUpForm() {
         usePhone: "التسجيل برقم الهاتف",
         useEmail: "التسجيل بالبريد الإلكتروني",
         phone: "رقم الهاتف",
-        phoneHint: "أدخل الرقم مع رمز الدولة، مثال: ‎+965…",
+        phoneHint: "اختر دولتك وأدخل رقمك — لا حاجة لكتابة رمز الدولة.",
+        invalidPhone: "يرجى إدخال رقم هاتف صحيح.",
       }
     : {
         title: "Create your account",
@@ -113,7 +115,8 @@ function SignUpForm() {
         usePhone: "Sign up with phone number",
         useEmail: "Sign up with email instead",
         phone: "Phone number",
-        phoneHint: "Include your country code, e.g. +965…",
+        phoneHint: "Pick your country and enter your number — no country code needed.",
+        invalidPhone: "Please enter a valid phone number.",
       };
 
   function switchMethod(next: "email" | "phone") {
@@ -136,12 +139,16 @@ function SignUpForm() {
       setError(t.nameTooShort);
       return;
     }
+    if (method === "phone" && !isValidPhoneNumber(phone)) {
+      setError(t.invalidPhone);
+      return;
+    }
     setError(null);
     setLoading(true);
     try {
       if (method === "phone") {
         await signUp.create({
-          phoneNumber: phone.trim(),
+          phoneNumber: phone,
           unsafeMetadata: { fullName: name.trim() },
         });
         await signUp.preparePhoneNumberVerification({ strategy: "phone_code" });
@@ -346,17 +353,7 @@ function SignUpForm() {
                     <label htmlFor="phone" className="mb-1.5 block text-sm text-[var(--land-body)]">
                       {t.phone}
                     </label>
-                    <input
-                      id="phone"
-                      type="tel"
-                      autoComplete="tel"
-                      required
-                      dir="ltr"
-                      value={phone}
-                      onChange={(e) => setPhone(e.target.value)}
-                      className={`${inputClass} ${isAr ? "text-right" : ""}`}
-                      placeholder="+965 0000 0000"
-                    />
+                    <PhoneField value={phone} onChange={setPhone} />
                     <p className="mt-1.5 text-xs text-[var(--land-muted)]">{t.phoneHint}</p>
                   </div>
                 )}

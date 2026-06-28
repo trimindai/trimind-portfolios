@@ -4,6 +4,7 @@ import { Suspense, useState } from "react";
 import { useSignIn } from "@clerk/nextjs/legacy";
 import { useParams, useSearchParams } from "next/navigation";
 import { Link } from "@/i18n/navigation";
+import PhoneField, { isValidPhoneNumber } from "@/components/auth/PhoneField";
 
 /**
  * Custom sign-in flow (replaces the prebuilt <SignIn/>).
@@ -85,7 +86,8 @@ function SignInForm() {
         usePhone: "تسجيل الدخول برقم الهاتف",
         useEmail: "تسجيل الدخول بالبريد الإلكتروني",
         phone: "رقم الهاتف",
-        phoneHint: "أدخل الرقم مع رمز الدولة، مثال: ‎+965…",
+        phoneHint: "اختر دولتك وأدخل رقمك — لا حاجة لكتابة رمز الدولة.",
+        invalidPhone: "يرجى إدخال رقم هاتف صحيح.",
         sendCode: "إرسال الرمز",
         codeLabel: "رمز التحقق",
         codeSubtitle: "أدخل الرمز المكوّن من ٦ أرقام المُرسَل إلى هاتفك",
@@ -116,7 +118,8 @@ function SignInForm() {
         usePhone: "Sign in with phone number",
         useEmail: "Sign in with email instead",
         phone: "Phone number",
-        phoneHint: "Include your country code, e.g. +965…",
+        phoneHint: "Pick your country and enter your number — no country code needed.",
+        invalidPhone: "Please enter a valid phone number.",
         sendCode: "Send code",
         codeLabel: "Verification code",
         codeSubtitle: "Enter the 6-digit code we sent to your phone",
@@ -179,10 +182,14 @@ function SignInForm() {
   async function handleSendCode(e: React.FormEvent) {
     e.preventDefault();
     if (!isLoaded || loading || isLocked) return;
+    if (!isValidPhoneNumber(phone)) {
+      setError(t.invalidPhone);
+      return;
+    }
     setError(null);
     setLoading(true);
     try {
-      const res = await signIn.create({ identifier: phone.trim() });
+      const res = await signIn.create({ identifier: phone });
       const factor = res.supportedFirstFactors?.find(
         (f) => f.strategy === "phone_code",
       ) as { strategy: "phone_code"; phoneNumberId: string } | undefined;
@@ -394,19 +401,12 @@ function SignInForm() {
                   <label htmlFor="phone" className="mb-1.5 block text-sm text-[var(--land-body)]">
                     {t.phone}
                   </label>
-                  <input
-                    id="phone"
-                    type="tel"
-                    autoComplete="tel"
-                    required
-                    dir="ltr"
+                  <PhoneField
                     value={phone}
-                    onChange={(e) => {
-                      setPhone(e.target.value);
+                    onChange={(v) => {
+                      setPhone(v);
                       if (error) setError(null);
                     }}
-                    className={`${inputClass} ${isAr ? "text-right" : ""}`}
-                    placeholder="+965 0000 0000"
                   />
                   <p className="mt-1.5 text-xs text-[var(--land-muted)]">{t.phoneHint}</p>
                 </div>
