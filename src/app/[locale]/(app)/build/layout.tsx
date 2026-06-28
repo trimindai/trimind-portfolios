@@ -31,8 +31,10 @@ import { useParams } from "next/navigation";
  * a genuinely signed-out user is still sent to sign-in after the grace.
  */
 
-// ⚠️ TEMPORARY DEBUG — flip to false (or delete the AuthDebugBadge block + this
-// const) to remove the on-screen diagnostics added for the OTP sign-in repro.
+// ⚠️ TEMPORARY DEBUG — master switch. Even when true, the on-screen diagnostics
+// bar ONLY renders when the URL carries ?debug=1, so normal prod users never see
+// it; the owner enables it by adding ?debug=1 to the /build URL. Flip to false
+// (or delete the AuthDebugBadge block + this const) to remove entirely.
 const SHOW_AUTH_DEBUG = true;
 
 // How long to wait for a settling session before giving up and bouncing.
@@ -57,6 +59,16 @@ export default function BuildAuthGate({
 
   // True while we're counting down the grace window before a bounce (debug only).
   const [bouncing, setBouncing] = useState(false);
+
+  // Diagnostics bar renders only with ?debug=1 in the URL (owner-only). Read in
+  // an effect (client-only) so SSR/first paint match — no hydration mismatch.
+  const [showDebug, setShowDebug] = useState(false);
+  useEffect(() => {
+    setShowDebug(
+      SHOW_AUTH_DEBUG &&
+        new URLSearchParams(window.location.search).get("debug") === "1",
+    );
+  }, []);
 
   useEffect(() => {
     // Only consider bouncing when there is truly no session right now.
@@ -117,7 +129,7 @@ export default function BuildAuthGate({
 
   return (
     <>
-      {SHOW_AUTH_DEBUG && (
+      {showDebug && (
         <AuthDebugBadge
           clerkLoaded={clerk.loaded}
           authLoaded={!!isLoaded}

@@ -18,8 +18,10 @@ import PhoneField, { isValidPhoneNumber } from "@/components/auth/PhoneField";
  * (Clerk `phone_code` first factor — enabled in the Clerk instance).
  */
 
-// ⚠️ TEMPORARY DEBUG — flip to false (or delete the debug state + the debugLine
-// block) to remove the on-screen verify diagnostics added for the OTP repro.
+// ⚠️ TEMPORARY DEBUG — master switch. Even when true, the on-screen verify
+// diagnostics ONLY render when the URL carries ?debug=1, so normal prod users
+// never see them; the owner enables them by adding ?debug=1 to the sign-in URL.
+// Flip to false (or delete the debug state + the debugLine block) to remove.
 const SHOW_AUTH_DEBUG = true;
 
 type ClerkErr = {
@@ -49,6 +51,8 @@ function SignInForm() {
   const isAr = locale === "ar";
   const search = useSearchParams();
   const redirectUrl = safeRedirect(search.get("redirect_url"), locale);
+  // Diagnostics show only with ?debug=1 in the URL (owner-only), never for normal users.
+  const showDebug = SHOW_AUTH_DEBUG && search.get("debug") === "1";
 
   const [method, setMethod] = useState<"email" | "phone">("phone");
   const [email, setEmail] = useState("");
@@ -483,7 +487,7 @@ function SignInForm() {
 
                 {errorBox}
 
-                {SHOW_AUTH_DEBUG && debug && (
+                {showDebug && debug && (
                   <p
                     dir="ltr"
                     className="rounded-lg border border-emerald-500/40 bg-black/80 px-3 py-2 font-mono text-[11px] leading-snug text-emerald-300"
