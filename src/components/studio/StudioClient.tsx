@@ -514,14 +514,17 @@ export default function StudioClient({ initialId }: { initialId?: string }) {
                   e.preventDefault();
                   addFiles(e.dataTransfer.files);
                 }}
-                className="mt-8 flex cursor-pointer flex-col items-center justify-center rounded-2xl border-2 border-dashed border-[var(--land-border)] bg-[var(--land-surface)]/40 px-6 py-12 text-center transition-colors hover:border-[var(--land-accent)]"
+                className="relative mt-8 flex cursor-pointer flex-col items-center justify-center rounded-2xl border-2 border-dashed border-[var(--land-border)] bg-[var(--land-surface)]/40 px-6 py-12 text-center transition-colors hover:border-[var(--land-accent)]"
               >
+                {/* iOS Safari often does NOT fire `change` on a display:none
+                    file input — keep it in the layout but invisible, covering
+                    the dropzone, so taps/picks reliably register. */}
                 <input
                   ref={fileRef}
                   type="file"
                   multiple
-                  accept=".pdf,.docx,.txt,.md,image/*"
-                  className="hidden"
+                  accept="application/pdf,.pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,.doc,.docx,text/plain,.txt,.md,image/*"
+                  className="absolute inset-0 z-10 h-full w-full cursor-pointer opacity-0"
                   disabled={uploading}
                   onChange={(e) => {
                     addFiles(e.target.files);
