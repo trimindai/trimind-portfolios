@@ -7,10 +7,9 @@ import { Link } from "@/i18n/navigation";
 import { useState } from "react";
 import { useParams } from "next/navigation";
 import { Id } from "@convex/_generated/dataModel";
-import { HOSTING_ENABLED } from "@/lib/flags";
 import { pickPrimaryPortfolio } from "@/lib/single-cv";
 import { useTranslations } from "next-intl";
-import { Check, LayoutGrid, PenLine, Rocket, X } from "lucide-react";
+import { LayoutGrid, X } from "lucide-react";
 
 const TEMPLATE_COLORS: Record<string, { primary: string; accent: string }> = {
   general: { primary: "#0F172A", accent: "#A16207" },
@@ -59,6 +58,7 @@ export default function DashboardPage() {
           <div className="h-8 w-44 rounded-lg bg-[var(--land-surface-raised)]/60 motion-safe:animate-pulse" />
           <div className="h-9 w-36 rounded-lg bg-[var(--land-surface-raised)]/60 motion-safe:animate-pulse" />
         </div>
+        <p className="mb-4 text-sm text-[var(--land-muted)]">{t("common.loading")}</p>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {[0, 1, 2].map((i) => (
             <div key={i} className="rounded-xl border border-[var(--land-border)] bg-[var(--land-surface)]/50 overflow-hidden">
@@ -108,64 +108,22 @@ export default function DashboardPage() {
       </div>
 
       {!hasPortfolios ? (
-        <div className="flex flex-col items-center justify-center py-16">
-          <p className="text-[var(--land-body)] mb-6 text-center max-w-md">
+        <div className="flex flex-col items-center justify-center py-20 text-center">
+          <div className="mb-5 flex h-16 w-16 items-center justify-center rounded-2xl border border-[var(--land-border)] bg-[var(--land-surface)]">
+            <LayoutGrid className="h-7 w-7 text-[var(--land-accent)]" aria-hidden />
+          </div>
+          <h2 className="text-lg font-semibold text-[var(--land-bright)]">
+            {isRTL ? "لا توجد ملفات بعد" : "No portfolios yet"}
+          </h2>
+          <p className="mt-1.5 max-w-sm text-sm text-[var(--land-body)]">
             {t("dashboard.empty")}
           </p>
-
-          {/* How it works — 3 steps */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-2xl w-full mb-10">
-            {[
-              { step: "1", en: "Pick a template", ar: "اختر قالبًا", Icon: LayoutGrid },
-              { step: "2", en: "Fill your info", ar: "أدخل بياناتك", Icon: PenLine },
-              { step: "3", en: HOSTING_ENABLED ? "Get your CV PDF + QR" : "Download PDF", ar: HOSTING_ENABLED ? "احصل على سيرتك + باركود" : "حمّل PDF", Icon: Rocket },
-            ].map((s) => (
-              <div key={s.step} className="text-center p-4 rounded-xl border border-[var(--land-border)] bg-[var(--land-surface)]/30">
-                <s.Icon className="mx-auto mb-2 h-6 w-6 text-[var(--land-accent)]" aria-hidden />
-                <div className="text-xs text-[var(--land-accent)] font-bold mb-1">
-                  {isRTL ? `خطوة ${s.step}` : `Step ${s.step}`}
-                </div>
-                <div className="text-sm text-[var(--land-bright)]">
-                  {isRTL ? s.ar : s.en}
-                </div>
-              </div>
-            ))}
-          </div>
-
-          <div className="rounded-2xl border border-[var(--land-accent)]/30 bg-[var(--land-surface)]/80 p-8 max-w-sm w-full text-center">
-            <div className="text-5xl font-bold text-[var(--land-accent-hover)]">
-              4.900 KD
-            </div>
-            <div className="mt-1 text-[var(--land-body)]">
-              {isRTL ? "دفعة واحدة (~$16 USD)" : "One-time payment (~$16 USD)"}
-            </div>
-            <ul className="mt-6 space-y-2 text-start text-sm text-[var(--land-bright)]">
-              <li className="flex items-center gap-2">
-                <Check className="h-4 w-4 shrink-0 text-[var(--land-accent)]" aria-hidden />
-                {isRTL ? "قوالب احترافية" : "Professional templates"}
-              </li>
-              <li className="flex items-center gap-2">
-                <Check className="h-4 w-4 shrink-0 text-[var(--land-accent)]" aria-hidden />
-                {isRTL ? "ألوان وخطوط مخصصة" : "Custom colors & fonts"}
-              </li>
-              <li className="flex items-center gap-2">
-                <Check className="h-4 w-4 shrink-0 text-[var(--land-accent)]" aria-hidden />
-                {isRTL ? "عربي وإنجليزي" : "Arabic & English"}
-              </li>
-              <li className="flex items-center gap-2">
-                <Check className="h-4 w-4 shrink-0 text-[var(--land-accent)]" aria-hidden />
-                {HOSTING_ENABLED
-                  ? (isRTL ? "سيرة ذاتية PDF + بورتفوليو حيّ بباركود QR" : "CV PDF + live portfolio via QR")
-                  : (isRTL ? "تحميل PDF احترافي" : "Professional PDF download")}
-              </li>
-            </ul>
-            <Link
-              href="/build"
-              className="mt-6 flex w-full items-center justify-center rounded-lg bg-[var(--land-accent)] py-3 font-semibold text-white hover:bg-[var(--land-accent-hover)] transition-colors"
-            >
-              ✨ {isRTL ? "ابنِ بالذكاء الاصطناعي" : "Build with AI"}
-            </Link>
-          </div>
+          <Link
+            href="/build"
+            className="mt-6 inline-flex items-center justify-center rounded-lg bg-[var(--land-accent)] px-5 py-3 font-semibold text-white hover:bg-[var(--land-accent-hover)] transition-colors"
+          >
+            ✨ {isRTL ? "ابنِ بالذكاء الاصطناعي ←" : "Build with AI →"}
+          </Link>
         </div>
       ) : (
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">

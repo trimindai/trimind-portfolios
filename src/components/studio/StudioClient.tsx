@@ -115,6 +115,18 @@ const SECTIONS_BY_TEMPLATE: Record<string, Sec[]> = {
 
 type ChatMsg = { role: "user" | "assistant"; content: string };
 
+// Numbered step label for the create flow (upload → paste → notes).
+function StepLabel({ n, children }: { n: string; children: React.ReactNode }) {
+  return (
+    <div className="flex items-center gap-2">
+      <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[var(--land-accent-subtle)] text-[11px] font-bold text-[var(--land-accent-hover)]">
+        {n}
+      </span>
+      <span className="text-sm font-semibold text-[var(--land-bright)]">{children}</span>
+    </div>
+  );
+}
+
 export default function StudioClient({ initialId }: { initialId?: string }) {
   const params = useParams();
   const searchParams = useSearchParams();
@@ -432,7 +444,7 @@ export default function StudioClient({ initialId }: { initialId?: string }) {
     !!portfolioId && portfolio === undefined && !fallbackPortfolio;
 
   return (
-    <div className="flex flex-col" dir={isRTL ? "rtl" : "ltr"}>
+    <div className="mx-auto flex w-full max-w-7xl flex-col px-4 py-4" dir={isRTL ? "rtl" : "ltr"}>
       {debugOn && (
         <div
           dir="ltr"
@@ -484,7 +496,7 @@ export default function StudioClient({ initialId }: { initialId?: string }) {
           className="flex items-center gap-1.5 text-sm font-semibold text-[var(--land-bright)] transition-colors hover:text-[var(--land-accent-hover)]"
         >
           <Sparkles className="h-4 w-4 text-[var(--land-accent)]" />
-          {T("CV Studio", "استوديو السيرة")}
+          {T("Portfolio Pro", "بورتفوليو برو")}
         </Link>
         <div className="flex items-center gap-3">
           {hasPortfolio && (
@@ -510,87 +522,124 @@ export default function StudioClient({ initialId }: { initialId?: string }) {
       {!hasPortfolio && (
         <div className="mx-auto w-full max-w-xl py-10">
           {loadingDoc || checkingExisting ? (
-            <div className="flex flex-col items-center py-20 text-[var(--land-body)]">
+            <div className="flex flex-col items-center py-20 text-center text-[var(--land-body)]">
               <Loader2 className="mb-3 h-7 w-7 animate-spin text-[var(--land-accent)]" />
               {T("Loading your draft…", "جارٍ تحميل المسودة…")}
+              <span className="mt-1.5 text-xs text-[var(--land-muted)]">
+                {T(
+                  "This usually takes 10–20 seconds.",
+                  "عادةً يستغرق ١٠–٢٠ ثانية."
+                )}
+              </span>
             </div>
           ) : (
-            <>
-              <h1 className="text-center text-2xl font-bold text-[var(--land-bright)]">
-                {T("Build your portfolio with AI", "ابنِ بورتفوليو بالذكاء الاصطناعي")}
-              </h1>
-              <p className="mt-2 text-center text-[var(--land-body)]">
-                {T(
-                  "Upload your CV (PDF, Word, or a photo) or paste it — the AI builds your full portfolio, then you refine it by chat.",
-                  "ارفع سيرتك (PDF أو Word أو صورة) أو الصقها — الذكاء الاصطناعي يبني البورتفوليو كاملًا، ثم تحسّنه بالمحادثة."
-                )}
-              </p>
-
-              <label
-                onDragOver={(e) => e.preventDefault()}
-                onDrop={(e) => {
-                  e.preventDefault();
-                  addFiles(e.dataTransfer.files);
-                }}
-                className="relative mt-8 flex cursor-pointer flex-col items-center justify-center rounded-2xl border-2 border-dashed border-[var(--land-border)] bg-[var(--land-surface)]/40 px-6 py-12 text-center transition-colors hover:border-[var(--land-accent)]"
-              >
-                {/* iOS Safari often does NOT fire `change` on a display:none
-                    file input — keep it in the layout but invisible, covering
-                    the dropzone, so taps/picks reliably register. */}
-                <input
-                  ref={fileRef}
-                  type="file"
-                  multiple
-                  accept="application/pdf,.pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,.doc,.docx,text/plain,.txt,.md,image/*"
-                  className="absolute inset-0 z-10 h-full w-full cursor-pointer opacity-0"
-                  disabled={uploading}
-                  onChange={(e) => {
-                    addFiles(e.target.files);
-                    e.target.value = ""; // allow re-selecting the same file
-                  }}
-                />
-                <Upload className="h-8 w-8 text-[var(--land-accent)]" />
-                <span className="mt-3 font-medium text-[var(--land-bright)]">
-                  {T("Drop your CV files or click to upload", "أفلت ملفات سيرتك أو اضغط للرفع")}
-                </span>
-                <span className="mt-1 text-xs text-[var(--land-muted)]">
+            <div className="space-y-6 pb-24">
+              <div>
+                <h1 className="text-center text-2xl font-bold text-[var(--land-bright)]">
+                  {T("Build your portfolio with AI", "ابنِ بورتفوليو بالذكاء الاصطناعي")}
+                </h1>
+                <p className="mt-2 text-center text-[var(--land-body)]">
                   {T(
-                    "PDF · Word · images — up to 5 files, ≤ 8 MB each",
-                    "PDF · Word · صور — حتى ٥ ملفات، ٨ ميغا لكل ملف"
+                    "Upload your CV (PDF, Word, or a photo) or paste it — the AI builds your full portfolio, then you refine it by chat.",
+                    "ارفع سيرتك (PDF أو Word أو صورة) أو الصقها — الذكاء الاصطناعي يبني البورتفوليو كاملًا، ثم تحسّنه بالمحادثة."
                   )}
-                </span>
-              </label>
+                </p>
+              </div>
 
-              {/* selected files (removable) — nothing is parsed until Generate */}
-              {files.length > 0 && (
-                <ul className="mt-3 space-y-2">
-                  {files.map((f, i) => (
-                    <li
-                      key={`${f.name}-${i}`}
-                      className="flex items-center gap-2 rounded-lg border border-[var(--land-border)] bg-[var(--land-bg)] px-3 py-2 text-sm"
-                    >
-                      <FileText className="h-4 w-4 shrink-0 text-[var(--land-accent)]" />
-                      <span className="flex-1 truncate text-[var(--land-bright)]">{f.name}</span>
-                      <span className="text-xs text-[var(--land-muted)]">{fmtSize(f.size)}</span>
-                      <button
-                        type="button"
-                        onClick={() => removeFile(i)}
-                        disabled={uploading}
-                        aria-label={T("Remove", "إزالة")}
-                        className="text-[var(--land-muted)] hover:text-red-500"
-                      >
-                        <X className="h-4 w-4" />
-                      </button>
-                    </li>
-                  ))}
-                </ul>
-              )}
-
-              {/* Optional plain-English notes merged into the CV in one parse. */}
-              <div className="mt-5">
-                <label className="mb-1.5 block text-sm font-medium text-[var(--land-bright)]">
-                  {T("Anything to add or change? (optional)", "تبي تضيف أو تعدّل شي؟ (اختياري)")}
+              {/* Step 1 — upload */}
+              <div className="space-y-3">
+                <StepLabel n="1">{T("Upload your CV", "ارفع سيرتك")}</StepLabel>
+                <label
+                  onDragOver={(e) => e.preventDefault()}
+                  onDrop={(e) => {
+                    e.preventDefault();
+                    addFiles(e.dataTransfer.files);
+                  }}
+                  className="relative flex w-full cursor-pointer flex-col items-center justify-center rounded-2xl border-2 border-dashed border-[var(--land-border)] bg-[var(--land-surface)]/40 px-6 py-12 text-center transition-colors hover:border-[var(--land-accent)]"
+                >
+                  {/* iOS Safari often does NOT fire `change` on a display:none
+                      file input — keep it in the layout but invisible, covering
+                      the dropzone, so taps/picks reliably register. */}
+                  <input
+                    ref={fileRef}
+                    type="file"
+                    multiple
+                    accept="application/pdf,.pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,.doc,.docx,text/plain,.txt,.md,image/*"
+                    className="absolute inset-0 z-10 h-full w-full cursor-pointer opacity-0"
+                    disabled={uploading}
+                    onChange={(e) => {
+                      addFiles(e.target.files);
+                      e.target.value = ""; // allow re-selecting the same file
+                    }}
+                  />
+                  <Upload className="h-8 w-8 text-[var(--land-accent)]" />
+                  <span className="mt-3 font-medium text-[var(--land-bright)]">
+                    {T("Drop your CV files or click to upload", "أفلت ملفات سيرتك أو اضغط للرفع")}
+                  </span>
+                  <span className="mt-1 text-xs text-[var(--land-muted)]">
+                    {T(
+                      "PDF · Word · images — up to 5 files, ≤ 8 MB each",
+                      "PDF · Word · صور — حتى ٥ ملفات، ٨ ميغا لكل ملف"
+                    )}
+                  </span>
                 </label>
+
+                {/* selected files (removable) — nothing is parsed until Generate */}
+                {files.length > 0 && (
+                  <ul className="space-y-2">
+                    {files.map((f, i) => (
+                      <li
+                        key={`${f.name}-${i}`}
+                        className="flex items-center gap-2 rounded-lg border border-[var(--land-border)] bg-[var(--land-bg)] px-3 py-2 text-sm"
+                      >
+                        <FileText className="h-4 w-4 shrink-0 text-[var(--land-accent)]" />
+                        <span className="flex-1 truncate text-[var(--land-bright)]">{f.name}</span>
+                        <span className="text-xs text-[var(--land-muted)]">{fmtSize(f.size)}</span>
+                        <button
+                          type="button"
+                          onClick={() => removeFile(i)}
+                          disabled={uploading}
+                          aria-label={T("Remove", "إزالة")}
+                          className="text-[var(--land-muted)] hover:text-red-500"
+                        >
+                          <X className="h-4 w-4" />
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+
+              {/* divider */}
+              <div className="flex items-center gap-3 text-xs text-[var(--land-muted)]">
+                <span className="h-px flex-1 bg-[var(--land-border)]" />
+                {T("or paste your CV below", "أو الصق سيرتك بالأسفل")}
+                <span className="h-px flex-1 bg-[var(--land-border)]" />
+              </div>
+
+              {/* Step 2 — paste (optional) */}
+              <div className="space-y-1.5">
+                <StepLabel n="2">
+                  {T("Paste it (optional)", "الصقها (اختياري)")}
+                </StepLabel>
+                <textarea
+                  value={pasteText}
+                  onChange={(e) => setPasteText(e.target.value)}
+                  disabled={uploading}
+                  rows={6}
+                  placeholder={T(
+                    "Paste your CV text, or just write your name, title, experience, skills…",
+                    "الصق نص سيرتك، أو اكتب اسمك ومسماك وخبرتك ومهاراتك…"
+                  )}
+                  className="w-full rounded-xl border border-[var(--land-border)] bg-[var(--land-bg)] p-3 text-sm text-[var(--land-bright)] outline-none focus:border-[var(--land-accent)]"
+                />
+              </div>
+
+              {/* Step 3 — optional plain-English notes merged into the CV. */}
+              <div className="space-y-1.5">
+                <StepLabel n="3">
+                  {T("Anything to add or change? (optional)", "تبي تضيف أو تعدّل شي؟ (اختياري)")}
+                </StepLabel>
                 <textarea
                   value={instructions}
                   onChange={(e) => setInstructions(e.target.value)}
@@ -603,7 +652,7 @@ export default function StudioClient({ initialId }: { initialId?: string }) {
                   )}
                   className="w-full rounded-xl border border-[var(--land-border)] bg-[var(--land-bg)] p-3 text-sm text-[var(--land-bright)] outline-none focus:border-[var(--land-accent)]"
                 />
-                <p className="mt-1 text-xs text-[var(--land-muted)]">
+                <p className="text-xs text-[var(--land-muted)]">
                   {T(
                     "We'll merge these notes with your uploaded or pasted CV.",
                     "بندمج هذي الملاحظات مع سيرتك المرفوعة أو الملصوقة."
@@ -611,47 +660,32 @@ export default function StudioClient({ initialId }: { initialId?: string }) {
                 </p>
               </div>
 
-              <div className="my-6 flex items-center gap-3 text-xs text-[var(--land-muted)]">
-                <span className="h-px flex-1 bg-[var(--land-border)]" />
-                {T("and / or paste it", "و/أو الصقها")}
-                <span className="h-px flex-1 bg-[var(--land-border)]" />
-              </div>
-
-              <textarea
-                value={pasteText}
-                onChange={(e) => setPasteText(e.target.value)}
-                disabled={uploading}
-                rows={6}
-                placeholder={T(
-                  "Paste your CV text, or just write your name, title, experience, skills…",
-                  "الصق نص سيرتك، أو اكتب اسمك ومسماك وخبرتك ومهاراتك…"
-                )}
-                className="w-full rounded-xl border border-[var(--land-border)] bg-[var(--land-bg)] p-3 text-sm text-[var(--land-bright)] outline-none focus:border-[var(--land-accent)]"
-              />
-
-              {/* Single Generate gate — nothing redirects to preview until this. */}
-              <button
-                onClick={generate}
-                disabled={uploading}
-                className="mt-3 flex w-full items-center justify-center gap-2 rounded-lg bg-[var(--land-accent)] py-3.5 text-base font-semibold text-white hover:bg-[var(--land-accent-hover)] disabled:opacity-60 transition-colors"
-              >
-                {uploading ? (
-                  <>
-                    <Loader2 className="h-4 w-4 animate-spin" />
-                    {T("Building your portfolio…", "جارٍ بناء بورتفوليوك…")}
-                  </>
-                ) : (
-                  <>
-                    <Sparkles className="h-4 w-4" />
-                    {T("Generate my portfolio", "أنشئ بورتفوليو")}
-                  </>
-                )}
-              </button>
-
               {parseError && (
-                <p className="mt-3 text-center text-sm text-red-500">{parseError}</p>
+                <p className="text-center text-sm text-red-500">{parseError}</p>
               )}
-            </>
+
+              {/* Sticky Generate gate — nothing redirects to preview until this.
+                  -mx-4 + px-4 bleeds the bar to the container edges. */}
+              <div className="sticky bottom-0 -mx-4 border-t border-[var(--land-border)] bg-[var(--land-bg)]/95 px-4 py-3 backdrop-blur">
+                <button
+                  onClick={generate}
+                  disabled={uploading}
+                  className="flex w-full items-center justify-center gap-2 rounded-lg bg-[var(--land-accent)] py-3.5 text-base font-semibold text-white hover:bg-[var(--land-accent-hover)] disabled:opacity-60 transition-colors"
+                >
+                  {uploading ? (
+                    <>
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                      {T("Building your portfolio…", "جارٍ بناء بورتفوليوك…")}
+                    </>
+                  ) : (
+                    <>
+                      <Sparkles className="h-4 w-4" />
+                      {T("Generate my portfolio", "أنشئ بورتفوليو")}
+                    </>
+                  )}
+                </button>
+              </div>
+            </div>
           )}
         </div>
       )}
