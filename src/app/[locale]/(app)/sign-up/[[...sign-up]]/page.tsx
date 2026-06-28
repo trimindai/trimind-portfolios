@@ -186,7 +186,18 @@ function SignUpForm() {
         // is committed (esp. Safari ITP on iPhone) and bounce back to sign-in.
         await setActive({
           session: res.createdSessionId,
-          navigate: ({ decorateUrl }) => {
+          navigate: ({ session, decorateUrl }) => {
+            // A "pending" session has an unresolved Clerk task/restriction and
+            // is NOT active — navigating to the gated /build only bounces back
+            // to sign-in. Surface it instead of looping forever.
+            if (session?.currentTask) {
+              setError(
+                isAr
+                  ? "حسابك يحتاج خطوة إضافية قبل المتابعة. يرجى التواصل مع الدعم."
+                  : "Your account needs an extra step before continuing. Please contact support.",
+              );
+              return;
+            }
             window.location.href = decorateUrl(redirectUrl);
           },
         });

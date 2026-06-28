@@ -171,7 +171,18 @@ function SignInForm() {
           // protected /build route. Without it, middleware can run before the
           // cookie is committed (esp. Safari ITP on iPhone) and bounce the user
           // straight back to sign-in.
-          navigate: ({ decorateUrl }) => {
+          navigate: ({ session, decorateUrl }) => {
+            // A "pending" session has an unresolved Clerk task/restriction and
+            // is NOT active — navigating to the gated /build only bounces back
+            // to sign-in. Surface it instead of looping forever.
+            if (session?.currentTask) {
+              setError(
+                isAr
+                  ? "حسابك يحتاج خطوة إضافية قبل المتابعة. يرجى التواصل مع الدعم."
+                  : "Your account needs an extra step before continuing. Please contact support.",
+              );
+              return;
+            }
             window.location.href = decorateUrl(redirectUrl);
           },
         });
@@ -234,7 +245,18 @@ function SignInForm() {
           // protected /build route. Without it, middleware can run before the
           // cookie is committed (esp. Safari ITP on iPhone) and bounce the user
           // straight back to sign-in.
-          navigate: ({ decorateUrl }) => {
+          navigate: ({ session, decorateUrl }) => {
+            // A "pending" session has an unresolved Clerk task/restriction and
+            // is NOT active — navigating to the gated /build only bounces back
+            // to sign-in. Surface it instead of looping forever.
+            if (session?.currentTask) {
+              setError(
+                isAr
+                  ? "حسابك يحتاج خطوة إضافية قبل المتابعة. يرجى التواصل مع الدعم."
+                  : "Your account needs an extra step before continuing. Please contact support.",
+              );
+              return;
+            }
             window.location.href = decorateUrl(redirectUrl);
           },
         });
