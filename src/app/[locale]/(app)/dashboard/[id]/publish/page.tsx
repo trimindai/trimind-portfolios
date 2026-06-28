@@ -555,7 +555,7 @@ function HostingPublishPage() {
                         {tplan.price}
                       </span>
                       <span className="block text-[10px] text-[var(--land-muted)]">
-                        {L("KWD · one-time", "د.ك · مرة واحدة")}
+                        {L("KWD · per year", "د.ك · سنوياً")}
                       </span>
                     </span>
                   </button>
@@ -938,8 +938,8 @@ function PdfCheckout() {
           </h1>
           <p className="mt-2 text-sm text-[var(--land-body)]">
             {isRTL
-              ? "دفعة واحدة. سيرة ذاتية احترافية جاهزة للطباعة والمشاركة."
-              : "One-time payment. A polished, print-ready PDF you can share anywhere."}
+              ? "دفعة واحدة في السنة — وسيرة ذاتية احترافية جاهزة للطباعة والمشاركة."
+              : "One payment a year — and a polished, print-ready PDF you can share anywhere."}
           </p>
 
           <div className="mt-6 flex items-baseline gap-2">
@@ -947,7 +947,7 @@ function PdfCheckout() {
               {isRTL ? "٤٫٩٠٠ د.ك" : "4.900 KD"}
             </span>
             <span className="text-sm text-[var(--land-muted)]">
-              {isRTL ? "لمرة واحدة" : "one-time"}
+              {isRTL ? "سنوياً" : "per year"}
             </span>
           </div>
 
@@ -994,7 +994,7 @@ function PdfCheckout() {
               <svg className="h-4 w-4 text-[var(--land-accent)] shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
               </svg>
-              {isRTL ? "عدّل وحمّل مجددًا — مجانًا للأبد" : "Edit & re-download — free forever"}
+              {isRTL ? "عدّل وحمّل مجددًا — دائمًا مجاني" : "Edit & re-download — always free"}
             </div>
           </div>
         </div>

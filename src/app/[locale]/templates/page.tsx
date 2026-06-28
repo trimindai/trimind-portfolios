@@ -97,10 +97,10 @@ export default async function TemplatesPage({ params, searchParams }: PageProps)
     priceLine: isAr
       ? `مجاني للبناء والمعاينة. ادفع ${priceLabel} فقط عند النشر.`
       : `Free to build and preview. Pay ${priceLabel} only when you publish.`,
-    noSub: isAr ? "بدون اشتراك" : "No subscription",
+    noSub: isAr ? "بدون رسوم شهرية" : "No monthly fees",
     securePay: isAr ? "دفع آمن (K-NET، Apple Pay)" : "Secure payment (K-NET, Apple Pay)",
     usd: "~$16 USD",
-    stickyOneTime: isAr ? "دفعة واحدة" : "One-time",
+    stickyOneTime: isAr ? "سنوي" : "Annual",
     available: isAr ? "متاح الآن" : "Available now",
     adminPreview: isAr ? "معاينة المشرف" : "Admin preview",
     adminPreviewHint: isAr
@@ -117,8 +117,8 @@ export default async function TemplatesPage({ params, searchParams }: PageProps)
     step2: isAr ? "أضف بياناتك" : "Fill in your details",
     step3: isAr ? "انشر بضغطة" : "Publish with one click",
     oneTime: isAr
-      ? `دفعة واحدة · ${priceLabel} · بدون اشتراك`
-      : `One-time payment · ${priceLabel} · No subscription`,
+      ? `دفعة سنوية · ${priceLabel} · بدون رسوم شهرية`
+      : `Annual plan · ${priceLabel} · No monthly fees`,
     prefillBanner: isAr
       ? "تم حفظ بياناتك — اختر قالبًا للمتابعة."
       : "Your details are saved — pick a template to continue.",

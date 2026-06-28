@@ -385,8 +385,8 @@ export default function PreviewPage() {
               </h3>
               <p className="mt-2 text-sm text-[var(--land-body)]">
                 {locale === "ar"
-                  ? "ادفع 4.900 د.ك لمرة واحدة لتحميل وعرض PDF الاحترافي"
-                  : "One-time payment of 4.900 KD to view and download your professional PDF"}
+                  ? "ادفع 4.900 د.ك في السنة لعرض وتحميل PDF الاحترافي"
+                  : "Pay 4.900 KD per year to view and download your professional PDF"}
               </p>
               <Link
                 href={`/dashboard/${id}/publish`}

@@ -37,7 +37,7 @@ export default async function LandingPage({
     ? [
         {
           q: "هل يحتاج البورتفوليو إلى تجديد سنوي؟",
-          a: "لا. كل خطة دفعة واحدة (تبدأ من ٤.٩٠٠ دك). بدون اشتراكات ولا تجديد — وخطة برو تشمل استضافة لمدة سنة.",
+          a: "نعم. إنها خطة سنوية بسيطة: دفعة واحدة في السنة (تبدأ من ٤.٩٠٠ دك) تُبقي صفحتك حيّة مع الاستضافة. بدون رسوم شهرية، وملف PDF الذي تنزّله يبقى لك دائمًا.",
         },
         {
           q: "هل يمكنني التعديل بعد النشر؟",
@@ -77,7 +77,7 @@ export default async function LandingPage({
     : [
         {
           q: "Do I need to renew yearly?",
-          a: "No. Every plan is a one-time payment (from 4.900 KD). No subscriptions, no renewals — and Portfolio Pro includes 1 year of hosting.",
+          a: "Yes. It's a simple annual plan: one payment a year (from 4.900 KD) keeps your page live with hosting included. No monthly fees, and any PDF you download is yours to keep.",
         },
         {
           q: HOSTING_ENABLED ? "Can I edit after publishing?" : "Can I edit my portfolio?",
@@ -349,7 +349,7 @@ export default async function LandingPage({
           {[
             { Icon: Sparkles, en: "Build with AI", ar: "ابنِ بالذكاء الاصطناعي", enSub: "Register, drop your CV, and write what you want in plain language — AI builds your portfolio instantly.", arSub: "سجّل، أسقط سيرتك، واكتب ما تريد بلغتك — والذكاء الاصطناعي يبني بورتفوليوك فورًا." },
             { Icon: MessageCircle, en: "Preview & edit by chat", ar: "عاين وعدّل بالمحادثة", enSub: "See it live and refine anything — just chat with the AI to change text, colours, or layout.", arSub: "شاهده مباشرة وعدّل أي شيء — حادث الذكاء الاصطناعي لتغيير النص أو الألوان أو التنسيق." },
-            { Icon: Download, en: "Get your editable pro CV", ar: "احصل على سيرتك الاحترافية", enSub: "Pay once and get your editable pro CV (PDF + QR) and live page — ready in your dashboard.", arSub: "ادفع مرة واحدة واحصل على سيرتك الاحترافية القابلة للتعديل (PDF + QR) وصفحة حيّة في لوحة التحكم." },
+            { Icon: Download, en: "Get your editable pro CV", ar: "احصل على سيرتك الاحترافية", enSub: "Pay once a year and get your editable pro CV (PDF + QR) and live page — ready in your dashboard.", arSub: "ادفع مرة واحدة في السنة واحصل على سيرتك الاحترافية القابلة للتعديل (PDF + QR) وصفحة حيّة في لوحة التحكم." },
           ].map((s, i) => (
             <Fragment key={i}>
               <div className="flex-1 rounded-2xl border border-[var(--land-border)] bg-[var(--land-surface)] p-6 text-center">
@@ -431,10 +431,10 @@ export default async function LandingPage({
             ))}
             <div className="rounded-xl border border-[var(--land-accent)]/20 bg-[var(--land-accent-subtle)] p-4">
               <p className="text-sm leading-relaxed text-[var(--land-body)]">
-                <span className="font-semibold text-[var(--land-accent)]">{isRTL ? "دفعة واحدة." : "One-time payment."}</span>{" "}
+                <span className="font-semibold text-[var(--land-accent)]">{isRTL ? "خطة سنوية." : "Annual plan."}</span>{" "}
                 {isRTL
-                  ? "بدون اشتراكات وبدون تجديد."
-                  : "No subscriptions, no renewals."}{" "}
+                  ? "دفعة واحدة في السنة، بدون رسوم شهرية."
+                  : "One payment a year, no monthly fees."}{" "}
                 {HOSTING_ENABLED ? (isRTL ? "استضافة لمدة سنة." : "1 year hosting included.") : ""}
               </p>
             </div>
@@ -464,8 +464,8 @@ export default async function LandingPage({
               </h2>
               <p className="mt-3 text-[var(--land-body)]">
                 {isRTL
-                  ? "ابنِ وعاين مجانًا — ادفع فقط عند التصدير أو النشر. بدون اشتراكات، بدون تجديد."
-                  : "Build & preview free — pay only to export or publish. No subscriptions, no renewals."}
+                  ? "ابنِ وعاين مجانًا — ادفع فقط عند التصدير أو النشر. دفعة واحدة في السنة، بدون رسوم شهرية."
+                  : "Build & preview free — pay only to export or publish. One payment a year, no monthly fees."}
               </p>
             </div>
             <div className="mt-12 grid items-stretch gap-5 sm:grid-cols-2 lg:grid-cols-4">
@@ -506,7 +506,7 @@ export default async function LandingPage({
                     <span className="text-sm font-medium text-[var(--land-muted)]">{isRTL ? "دك" : "KD"}</span>
                   </div>
                   <p className="mt-0.5 text-xs text-[var(--land-muted)]">
-                    {t.once ? (isRTL ? "دفعة واحدة" : "one-time") : (isRTL ? "بدون دفع" : "no payment")}
+                    {t.once ? (isRTL ? "سنوياً" : "per year") : (isRTL ? "بدون دفع" : "no payment")}
                   </p>
                   <ul className="mt-4 space-y-2 text-sm text-[var(--land-body)]">
                     {t.feats.map((f) => (
@@ -660,8 +660,8 @@ export default async function LandingPage({
             <div className="text-base font-bold">{tc("appName")}</div>
             <p className="mt-2 text-sm text-[var(--land-muted)]">
               {isRTL
-                ? "بورتفوليو احترافي بدفعة واحدة."
-                : "Professional portfolios for a one-time fee."}
+                ? "بورتفوليو احترافي بخطة سنوية بسيطة."
+                : "Professional portfolios on a simple annual plan."}
             </p>
           </div>
           <nav aria-label={isRTL ? "المنتج" : "Product"}>

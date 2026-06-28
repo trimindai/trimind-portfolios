@@ -50,7 +50,7 @@
     },
     "pricing": {
       "title": "سعر بسيط",
-      "subtitle": "دفعة واحدة. بدون اشتراكات.",
+      "subtitle": "خطة سنوية بسيطة. بدون رسوم شهرية.",
       "price": "٤٫٩٠٠ د.ك",
       "perPortfolio": "لكل بورتفوليو",
       "includes": [
@@ -1299,11 +1299,11 @@
     "price": "٤٫٩٠٠ د.ك",
     "priceLabel": "المبلغ الإجمالي",
     "priceAmount": "٤٫٩٠٠ د.ك",
-    "priceCaption": "دفعة واحدة. بدون اشتراك.",
+    "priceCaption": "خطة سنوية. بدون رسوم شهرية.",
     "slugReadyHint": "أدخل اسمًا متاحًا بالأعلى للمتابعة.",
     "trustSecure": "دفع آمن عبر MyFatoorah",
     "trustMethods": "كي-نت · فيزا · ماستركارد · Apple Pay",
-    "trustEdit": "عدّل وحمّل مجددًا — مجانًا للأبد",
+    "trustEdit": "عدّل وحمّل مجددًا — دائمًا مجاني",
     "downloadPdf": "حمّل PDF",
     "published": "بورتفوليو منشور!",
     "visitSite": "زيارة البورتفوليو",

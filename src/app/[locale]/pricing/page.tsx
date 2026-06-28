@@ -16,8 +16,8 @@ export async function generateMetadata({
   return {
     title: isAr ? "الأسعار — بورتفوليو برو" : "Pricing — Portfolio Pro",
     description: isAr
-      ? "مجاني للبناء والمعاينة. ادفع ٤.٩٠٠ دك لمرة واحدة فقط عند النشر — بدون اشتراك، بدون تجديد."
-      : "Free to build and preview. Pay a one-time 4.900 KD only when you publish — no subscription, no renewals.",
+      ? "مجاني للبناء والمعاينة. ادفع ٤.٩٠٠ دك سنوياً فقط عند النشر — بدون رسوم شهرية، بدون مفاجآت."
+      : "Free to build and preview. Pay 4.900 KD per year only when you publish — no monthly fees, no surprises.",
     alternates: {
       canonical: `${SITE_URL}/${locale}/pricing`,
       languages: {
@@ -46,8 +46,8 @@ export default async function PricingPage({
         HOSTING_ENABLED ? "سيرة ذاتية PDF مع باركود QR" : "تحميل PDF احترافي",
         "ثيمات ألوان مخصصة",
         "رفع صورة شخصية",
-        "تحديثات فورية مجانية للأبد",
-        "وصول لمرة واحدة — بدون اشتراك",
+        "تحديثات فورية غير محدودة مجانًا",
+        "خطة سنوية — بدون رسوم شهرية",
       ]
     : [
         HOSTING_ENABLED ? "Hosted portfolio URL" : null,
@@ -56,20 +56,20 @@ export default async function PricingPage({
         HOSTING_ENABLED ? "CV PDF with a QR code" : "Professional PDF download",
         "Custom color themes",
         "Photo upload",
-        "Free updates, forever",
-        "One-time access — no subscription",
+        "Free unlimited updates",
+        "Annual plan — no monthly fees",
       ];
 
   const steps = isRTL
     ? [
         { n: "١", t: "ابنِ مجانًا", d: "اختر قالبًا، أضف بياناتك، وعاين بورتفوليوك بالكامل — دون أي دفع." },
-        { n: "٢", t: "ادفع عند النشر", d: "ادفع ٤.٩٠٠ دك لمرة واحدة فقط عندما تكون جاهزًا للنشر أو تحميل ملف PDF." },
-        { n: "٣", t: "امتلكها للأبد", d: "عدّل وحدّث وأعد التحميل متى شئت — بدون رسوم متكررة." },
+        { n: "٢", t: "ادفع عند النشر", d: "ادفع ٤.٩٠٠ دك في السنة فقط عندما تكون جاهزًا للنشر أو تحميل ملف PDF." },
+        { n: "٣", t: "حدّثها وقتما تشاء", d: "عدّل وحدّث وأعد التحميل متى شئت — بدون رسوم شهرية، وملف الـ PDF يبقى لك." },
       ]
     : [
         { n: "1", t: "Build for free", d: "Pick a template, add your info, and fully preview your portfolio — no payment needed." },
-        { n: "2", t: "Pay when you publish", d: "Pay a one-time 4.900 KD only when you're ready to publish or download your PDF." },
-        { n: "3", t: "Own it forever", d: "Edit, update, and re-download anytime — no recurring fees." },
+        { n: "2", t: "Pay when you publish", d: "Pay 4.900 KD per year only when you're ready to publish or download your PDF." },
+        { n: "3", t: "Update it anytime", d: "Edit, update, and re-download anytime — no monthly fees, and your PDF stays yours." },
       ];
 
   return (
@@ -103,8 +103,8 @@ export default async function PricingPage({
         {/* The model in one line — resolves the "free" vs "4.900 KD" question */}
         <p className="mt-5 max-w-xl text-lg leading-relaxed text-[var(--land-body)]">
           {isRTL
-            ? "ابنِ بورتفوليوك وعاينه مجانًا. ادفع ٤.٩٠٠ دك لمرة واحدة فقط عند النشر — بدون اشتراك، بدون تجديد، بدون رسوم خفية."
-            : "Build and preview your portfolio for free. Pay a one-time 4.900 KD only when you publish — no subscription, no renewals, no hidden fees."}
+            ? "ابنِ بورتفوليوك وعاينه مجانًا. ادفع ٤.٩٠٠ دك سنوياً فقط عند النشر — بدون رسوم شهرية، بدون رسوم خفية."
+            : "Build and preview your portfolio for free. Pay 4.900 KD per year only when you publish — no monthly fees, no hidden fees."}
         </p>
 
         {/* Price card */}
@@ -117,7 +117,7 @@ export default async function PricingPage({
             <span className="text-sm text-[var(--land-muted)]">(~$16 USD)</span>
           </div>
           <p className="mt-1 text-sm font-medium text-[var(--land-accent)]">
-            {isRTL ? "دفعة واحدة فقط · للأبد" : "one-time · forever"}
+            {isRTL ? "سنوياً · بدون رسوم شهرية" : "per year · no monthly fees"}
           </p>
 
           <ul className="mt-7 grid grid-cols-1 gap-y-3 text-sm text-[var(--land-body)] sm:grid-cols-2 sm:gap-x-6">

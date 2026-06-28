@@ -138,8 +138,8 @@ export function HowItWorks({ isRTL }: { isRTL: boolean }) {
           </Link>
           <p className="mt-3 text-xs text-[var(--land-muted)]">
             {isRTL
-              ? "دفعة واحدة. بدون اشتراك. وصول فوري."
-              : "One-time payment. No subscription. Instant access."}
+              ? "دفعة واحدة في السنة. بدون رسوم شهرية. وصول فوري."
+              : "One payment a year. No monthly fees. Instant access."}
           </p>
         </div>
       </div>

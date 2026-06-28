@@ -50,7 +50,7 @@
     },
     "pricing": {
       "title": "Simple Pricing",
-      "subtitle": "One-time payment. No subscriptions.",
+      "subtitle": "Simple annual plan. No monthly fees.",
       "price": "4.900 KD",
       "perPortfolio": "per portfolio",
       "includes": [
@@ -1299,11 +1299,11 @@
     "price": "4.900 KD",
     "priceLabel": "Total amount",
     "priceAmount": "4.900 KD",
-    "priceCaption": "One-time payment. No subscription.",
+    "priceCaption": "Annual plan. No monthly fees.",
     "slugReadyHint": "Enter an available name above to continue.",
     "trustSecure": "Secure payment via MyFatoorah",
     "trustMethods": "K-NET · Visa · Mastercard · Apple Pay",
-    "trustEdit": "Edit & re-download — free forever",
+    "trustEdit": "Edit & re-download — always free",
     "downloadPdf": "Download PDF",
     "published": "Your portfolio is live!",
     "visitSite": "Visit Your Portfolio",

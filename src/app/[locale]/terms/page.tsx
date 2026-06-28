@@ -110,7 +110,8 @@ export default async function TermsPage({ params }: PageProps) {
       <h2>The service</h2>
       <p>
         Portfolio Pro lets you create and publish a professional portfolio for
-        a one-time fee of 4.900 KWD per portfolio.
+        an annual fee of 4.900 KWD per portfolio. The fee renews yearly to keep
+        your published page live; any PDF you download is yours to keep.
       </p>
 
       <h2>Your account</h2>
