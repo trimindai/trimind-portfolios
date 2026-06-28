@@ -20,6 +20,32 @@ export async function getCurrentUser(
 }
 
 /**
+ * Like requireUser, but PROVISIONS the row from the JWT if it doesn't exist yet.
+ * Use in the FIRST write a brand-new user makes (portfolios.create): they're
+ * redirected to /build straight from sign-up, and the client-side
+ * upsertFromClerk may not have completed before they submit. Mutation-only
+ * (it writes). Eliminates the provisioning race without client-side gating.
+ */
+export async function getOrCreateUser(
+  ctx: MutationCtx
+): Promise<Doc<"users">> {
+  const identity = await ctx.auth.getUserIdentity();
+  if (!identity) throw new Error("Unauthenticated");
+  const existing = await ctx.db
+    .query("users")
+    .withIndex("by_clerk_id", (q) => q.eq("clerkId", identity.subject))
+    .first();
+  if (existing) return existing;
+  const id = await ctx.db.insert("users", {
+    clerkId: identity.subject,
+    email: identity.email ?? "",
+    name: (typeof identity.name === "string" && identity.name) || undefined,
+    createdAt: Date.now(),
+  });
+  return (await ctx.db.get(id))!;
+}
+
+/**
  * Requires an authenticated user and returns the Convex `users` row.
  * Throws on missing auth or missing user record.
  */

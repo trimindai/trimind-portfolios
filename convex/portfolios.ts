@@ -1,7 +1,7 @@
 import { v } from "convex/values";
 import { mutation, query, QueryCtx, MutationCtx } from "./_generated/server";
 import { Doc, Id } from "./_generated/dataModel";
-import { requireUser, requireAdminOrOwner, verifyServerSecret, getCurrentUser } from "./auth";
+import { requireUser, requireAdminOrOwner, verifyServerSecret, getCurrentUser, getOrCreateUser } from "./auth";
 
 // ── Slug rules & reservation ───────────────────────────────────────────────
 // Public CVs live at portfolio-trimind.com/p/<slug>, so slugs are a single
@@ -122,8 +122,10 @@ export const create = mutation({
     basics: basicsValidator,
   },
   handler: async (ctx, args) => {
-    // Auth: derive userId from session, never trust client.
-    const user = await requireUser(ctx);
+    // Auth: derive userId from session, never trust client. get-or-create so a
+    // brand-new user's first CV doesn't 401 if client-side provisioning (the
+    // /build upsertFromClerk) hasn't landed yet.
+    const user = await getOrCreateUser(ctx);
     // One CV per user: if they already have one, return it instead of creating a
     // second. This is the real cap — the UI redirect is just a convenience.
     // ponytail: paid/published wins, else newest; hidden extras are never deleted.
