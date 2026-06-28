@@ -43,8 +43,8 @@ export function LandingNav({ locale, appName }: { locale: string; appName: strin
         </Link>
         <div className="flex items-center gap-2 sm:gap-3">
           <AdminLink />
-          {/* language pill — hidden on mobile */}
-          <div className="hidden md:flex bg-ink-10 rounded-lg p-0.5 gap-0.5">
+          {/* language pill — visible on all sizes (incl. mobile) */}
+          <div className="flex bg-ink-10 rounded-lg p-0.5 gap-0.5">
             <button
               type="button"
               aria-label="العربية"
