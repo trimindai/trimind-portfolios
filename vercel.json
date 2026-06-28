@@ -2,6 +2,11 @@
   "crons": [
     { "path": "/api/cron/reconcile", "schedule": "0 */6 * * *" }
   ],
+  "redirects": [
+    { "source": "/demo", "destination": "/demo/general" },
+    { "source": "/en/demo", "destination": "/demo/general" },
+    { "source": "/ar/demo", "destination": "/ar/demo/general" }
+  ],
   "rewrites": [
     { "source": "/demo/general", "destination": "/demo/corporate/index.html" },
     { "source": "/demo/corporate", "destination": "/demo/corporate/index.html" },

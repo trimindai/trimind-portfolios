@@ -21,6 +21,7 @@ import PreviewFrame from "@/components/preview/PreviewFrame";
 import { toPortfolioData } from "@/lib/portfolio-data";
 import { pickPrimaryPortfolio } from "@/lib/single-cv";
 import { portfolioReady } from "@/lib/studio-view";
+import { pickUsableFiles } from "@/lib/file-pick";
 import { toCreateBasics, toUpdatePatch, type Cv } from "@/lib/cv-schema";
 import { COLOR_PRESETS, type TemplatePresetKey } from "@/lib/color-presets";
 import { resolveTemplateId, TEMPLATES } from "@/lib/templates";
@@ -296,18 +297,11 @@ export default function StudioClient({ initialId }: { initialId?: string }) {
   const fmtSize = (n: number) =>
     n < 1024 * 1024 ? `${Math.round(n / 1024)} KB` : `${(n / 1024 / 1024).toFixed(1)} MB`;
 
-  // Collect files (no auto-build); cap at 5 to match the server.
+  // Collect files (no auto-build); cap at 5 to match the server. The iOS
+  // FileList-snapshot + iCloud 0-byte guard live in pickUsableFiles (tested).
   function addFiles(list: FileList | null) {
-    if (!list || list.length === 0) return;
-    // Snapshot the FileList NOW: the picker's onChange clears the input
-    // (e.target.value = "") immediately after this call, which empties the live
-    // FileList before React runs a deferred setFiles updater — so reading
-    // Array.from(list) inside the updater got nothing on iOS Safari (file never
-    // attached). Materialise the array synchronously here instead.
-    const picked = Array.from(list);
-    // iOS hands back a 0-byte File when the picked item is an iCloud file that
-    // isn't downloaded yet — surface that instead of silently failing.
-    const usable = picked.filter((f) => f.size > 0);
+    const { picked, usable } = pickUsableFiles(list);
+    if (picked === 0) return; // cancelled picker — nothing selected
     if (usable.length === 0) {
       setParseError(
         T(
