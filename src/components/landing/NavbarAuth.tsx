@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { Link } from "@/i18n/navigation";
+import { useClerk } from "@clerk/nextjs";
 
 function isSignedIn(): boolean {
   if (typeof document === "undefined") return false;
@@ -30,6 +31,7 @@ export function NavbarAuth({ locale }: { locale: string }) {
   const [initial, setInitial] = useState("U");
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
+  const { signOut } = useClerk();
 
   useEffect(() => {
     setSignedIn(isSignedIn());
@@ -89,17 +91,17 @@ export function NavbarAuth({ locale }: { locale: string }) {
               {isRTL ? "ملفاتي ←" : "My Portfolios →"}
             </Link>
             <div className="mx-3 my-1 h-px bg-[var(--land-border)]" />
-            <a
-              href={`/${locale}/sign-in`}
-              onClick={(e) => {
-                e.preventDefault();
-                document.cookie = "__client_uat=0; path=/; max-age=0";
-                window.location.href = "/";
+            <button
+              onClick={() => {
+                setMenuOpen(false);
+                // Real Clerk sign-out — clears the httpOnly session (the old code
+                // only wiped the __client_uat hint cookie, so the session lived on).
+                signOut({ redirectUrl: `/${locale}` });
               }}
-              className="block px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 transition-colors"
+              className="block w-full px-4 py-2.5 text-start text-sm text-red-600 hover:bg-red-50 transition-colors"
             >
               {isRTL ? "خروج" : "Sign out"}
-            </a>
+            </button>
           </div>
         )}
       </div>
