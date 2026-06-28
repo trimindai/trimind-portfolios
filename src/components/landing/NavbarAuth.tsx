@@ -82,27 +82,35 @@ export function NavbarAuth({ locale }: { locale: string }) {
           {initial}
         </button>
         {menuOpen && (
-          <div className="absolute end-0 top-full mt-2 w-44 rounded-xl border border-[var(--land-border)] bg-white shadow-lg py-1 z-50">
-            <Link
-              href="/dashboard"
-              className="block px-4 py-2.5 text-sm text-[var(--land-bright)] hover:bg-[var(--land-surface)] transition-colors"
+          <>
+            {/* subtle backdrop — reliable tap-to-close, esp. on mobile */}
+            <div
+              className="fixed inset-0 z-40"
+              aria-hidden="true"
               onClick={() => setMenuOpen(false)}
-            >
-              {isRTL ? "ملفاتي ←" : "My Portfolios →"}
-            </Link>
-            <div className="mx-3 my-1 h-px bg-[var(--land-border)]" />
-            <button
-              onClick={() => {
-                setMenuOpen(false);
-                // Real Clerk sign-out — clears the httpOnly session (the old code
-                // only wiped the __client_uat hint cookie, so the session lived on).
-                signOut({ redirectUrl: `/${locale}` });
-              }}
-              className="block w-full px-4 py-2.5 text-start text-sm text-red-600 hover:bg-red-50 transition-colors"
-            >
-              {isRTL ? "خروج" : "Sign out"}
-            </button>
-          </div>
+            />
+            <div className="absolute end-0 top-full mt-2 w-44 rounded-xl border border-[var(--land-border)] bg-white shadow-lg py-1 z-50">
+              <Link
+                href="/dashboard"
+                className="block px-4 py-2.5 text-sm font-medium text-gray-800 hover:bg-gray-50 transition-colors"
+                onClick={() => setMenuOpen(false)}
+              >
+                {isRTL ? "ملفاتي ←" : "My Portfolios →"}
+              </Link>
+              <hr className="mx-3 my-1 border-t border-[var(--land-border)]" />
+              <button
+                onClick={() => {
+                  setMenuOpen(false);
+                  // Real Clerk sign-out — clears the httpOnly session (the old code
+                  // only wiped the __client_uat hint cookie, so the session lived on).
+                  signOut({ redirectUrl: `/${locale}` });
+                }}
+                className="block w-full px-4 py-2.5 text-start text-sm text-red-500 hover:bg-red-50 transition-colors"
+              >
+                {isRTL ? "خروج" : "Sign out"}
+              </button>
+            </div>
+          </>
         )}
       </div>
     </>
