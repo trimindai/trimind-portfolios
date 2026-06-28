@@ -46,7 +46,7 @@ export default async function PricingPage({
         HOSTING_ENABLED ? "سيرة ذاتية PDF مع باركود QR" : "تحميل PDF احترافي",
         "ثيمات ألوان مخصصة",
         "رفع صورة شخصية",
-        "تحديثات فورية غير محدودة مجانًا",
+        "تحديثات فورية مجانًا",
         "خطة سنوية — بدون رسوم شهرية",
       ]
     : [
@@ -56,7 +56,7 @@ export default async function PricingPage({
         HOSTING_ENABLED ? "CV PDF with a QR code" : "Professional PDF download",
         "Custom color themes",
         "Photo upload",
-        "Free unlimited updates",
+        "Free instant updates",
         "Annual plan — no monthly fees",
       ];
 

@@ -476,7 +476,7 @@ export default async function LandingPage({
                   feats: isRTL ? ["رفع ومعاينة", "سيرة PDF بعلامة مائية", "قالب واحد، حتى ٣ تعديلات"] : ["Upload & preview", "Watermarked PDF", "1 template, up to 3 edits"],
                   highlight: false, cta: isRTL ? "ابدأ مجانًا" : "Start free" },
                 { key: "essential", en: "CV Essential", ar: "السيرة الأساسية", price: "4.900", arPrice: "٤.٩٠٠", once: true,
-                  feats: isRTL ? ["سيرة PDF نهائية (بدون علامة)", "٥ قوالب + ألوان وخطوط", "عربي/إنجليزي، تعديلات غير محدودة"] : ["Final ATS PDF (no watermark)", "5 templates + colours & fonts", "EN/AR, unlimited edits"],
+                  feats: isRTL ? ["سيرة PDF نهائية (بدون علامة)", "٥ قوالب + ألوان وخطوط", "عربي/إنجليزي، تعديلات سهلة"] : ["Final ATS PDF (no watermark)", "5 templates + colours & fonts", "EN/AR, easy edits"],
                   highlight: true, cta: isRTL ? "اختر الأساسية" : "Choose Essential" },
                 { key: "pro", en: "Portfolio Pro", ar: "بورتفوليو برو", price: "9.900", arPrice: "٩.٩٠٠", once: true,
                   feats: isRTL ? ["كل مزايا الأساسية", "صفحة حيّة /p/اسمك + QR", "استضافة لمدة سنة"] : ["Everything in Essential", "Live /p/<name> page + QR", "1 year hosting"],
