@@ -1,6 +1,7 @@
 "use client";
 
 import PhoneInput, { isValidPhoneNumber } from "react-phone-number-input";
+import flags from "react-phone-number-input/flags";
 import "react-phone-number-input/style.css";
 
 // Re-export so callers validate without a second import of the library.
@@ -28,6 +29,7 @@ export default function PhoneField({
     <PhoneInput
       id={id}
       international
+      flags={flags}
       defaultCountry="KW"
       countryCallingCodeEditable={false}
       value={value || undefined}
