@@ -483,7 +483,7 @@ export default function StudioClient({ initialId }: { initialId?: string }) {
       )}
       {/* top bar — only ← Dashboard (left) and Sign out (right); the brand is an
           icon-only home link; Publish moved to the sticky bottom bar below. */}
-      <div className="flex items-center justify-between gap-3 border-b border-[var(--land-border)] pb-3 mb-4">
+      <div className="relative flex items-center justify-between gap-3 border-b border-[var(--land-border)] pb-3 mb-4">
         <Link
           href="/dashboard"
           className="inline-flex items-center gap-1.5 text-sm text-[var(--land-body)] hover:text-[var(--land-bright)]"
@@ -491,14 +491,10 @@ export default function StudioClient({ initialId }: { initialId?: string }) {
           <ArrowLeft className="h-4 w-4 rtl:rotate-180" />
           {T("Dashboard", "لوحة التحكم")}
         </Link>
-        {/* Brand mark → home (icon only, no text) */}
-        <Link
-          href="/"
-          aria-label={T("Home", "الرئيسية")}
-          className="text-[var(--land-accent)] transition-colors hover:text-[var(--land-accent-hover)]"
-        >
-          <Sparkles className="h-5 w-5" />
-        </Link>
+        {/* Centered page title */}
+        <span className="absolute left-1/2 -translate-x-1/2 text-sm font-semibold text-gray-800">
+          {T("CV Editor", "محرر السيرة")}
+        </span>
         <button
           onClick={() => signOut({ redirectUrl: `/${locale}` })}
           className="whitespace-nowrap text-sm text-[var(--land-muted)] transition-colors hover:text-[var(--land-bright)]"
