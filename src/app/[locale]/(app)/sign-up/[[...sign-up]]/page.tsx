@@ -16,6 +16,9 @@ import { Link } from "@/i18n/navigation";
  * sized `#clerk-captcha` element makes Clerk show the *visible* widget so any
  * user can complete the challenge, and we surface every error instead of
  * swallowing it.
+ *
+ * Three methods: Google OAuth, email + password (email_code verify), and
+ * phone + SMS code (phone_code verify — enabled in the Clerk instance).
  */
 
 function clerkError(err: unknown): string {
@@ -44,10 +47,12 @@ function SignUpForm() {
   const search = useSearchParams();
   const redirectUrl = safeRedirect(search.get("redirect_url"), locale);
 
+  const [method, setMethod] = useState<"email" | "phone">("email");
   const [step, setStep] = useState<"start" | "verify">("start");
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [phone, setPhone] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [code, setCode] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -67,14 +72,20 @@ function SignUpForm() {
         or: "أو",
         haveAccount: "لديك حساب بالفعل؟",
         signIn: "تسجيل الدخول",
-        verifyTitle: "تأكيد بريدك الإلكتروني",
-        verifySubtitle: "أدخل الرمز المكوّن من ٦ أرقام المُرسَل إلى بريدك",
+        verifyEmailTitle: "تأكيد بريدك الإلكتروني",
+        verifyEmailSubtitle: "أدخل الرمز المكوّن من ٦ أرقام المُرسَل إلى بريدك",
+        verifyPhoneTitle: "تأكيد رقم هاتفك",
+        verifyPhoneSubtitle: "أدخل الرمز المكوّن من ٦ أرقام المُرسَل إلى هاتفك",
         code: "رمز التحقق",
         verify: "تأكيد",
         resend: "إعادة إرسال الرمز",
         working: "جارٍ المعالجة…",
         showPassword: "إظهار كلمة المرور",
         hidePassword: "إخفاء كلمة المرور",
+        usePhone: "التسجيل برقم الهاتف",
+        useEmail: "التسجيل بالبريد الإلكتروني",
+        phone: "رقم الهاتف",
+        phoneHint: "أدخل الرقم مع رمز الدولة، مثال: ‎+965…",
       }
     : {
         title: "Create your account",
@@ -89,15 +100,34 @@ function SignUpForm() {
         or: "or",
         haveAccount: "Already have an account?",
         signIn: "Sign in",
-        verifyTitle: "Verify your email",
-        verifySubtitle: "Enter the 6-digit code we sent to your inbox",
+        verifyEmailTitle: "Verify your email",
+        verifyEmailSubtitle: "Enter the 6-digit code we sent to your inbox",
+        verifyPhoneTitle: "Verify your phone",
+        verifyPhoneSubtitle: "Enter the 6-digit code we sent to your phone",
         code: "Verification code",
         verify: "Verify",
         resend: "Resend code",
         working: "Working…",
         showPassword: "Show password",
         hidePassword: "Hide password",
+        usePhone: "Sign up with phone number",
+        useEmail: "Sign up with email instead",
+        phone: "Phone number",
+        phoneHint: "Include your country code, e.g. +965…",
       };
+
+  function switchMethod(next: "email" | "phone") {
+    setMethod(next);
+    setError(null);
+  }
+
+  function resendCode() {
+    if (method === "phone") {
+      signUp?.preparePhoneNumberVerification({ strategy: "phone_code" });
+    } else {
+      signUp?.prepareEmailAddressVerification({ strategy: "email_code" });
+    }
+  }
 
   async function handleStart(e: React.FormEvent) {
     e.preventDefault();
@@ -109,12 +139,20 @@ function SignUpForm() {
     setError(null);
     setLoading(true);
     try {
-      await signUp.create({
-        emailAddress: email,
-        password,
-        unsafeMetadata: { fullName: name.trim() },
-      });
-      await signUp.prepareEmailAddressVerification({ strategy: "email_code" });
+      if (method === "phone") {
+        await signUp.create({
+          phoneNumber: phone.trim(),
+          unsafeMetadata: { fullName: name.trim() },
+        });
+        await signUp.preparePhoneNumberVerification({ strategy: "phone_code" });
+      } else {
+        await signUp.create({
+          emailAddress: email,
+          password,
+          unsafeMetadata: { fullName: name.trim() },
+        });
+        await signUp.prepareEmailAddressVerification({ strategy: "email_code" });
+      }
       setStep("verify");
     } catch (err) {
       setError(clerkError(err));
@@ -129,7 +167,10 @@ function SignUpForm() {
     setError(null);
     setLoading(true);
     try {
-      const res = await signUp.attemptEmailAddressVerification({ code });
+      const res =
+        method === "phone"
+          ? await signUp.attemptPhoneNumberVerification({ code })
+          : await signUp.attemptEmailAddressVerification({ code });
       if (res.status === "complete") {
         await setActive({ session: res.createdSessionId });
         // Full navigation so middleware runs and Convex picks up the session.
@@ -162,6 +203,17 @@ function SignUpForm() {
     "w-full rounded-lg border border-[var(--land-border)] bg-[var(--land-bg)] px-4 py-3 text-[var(--land-bright)] placeholder-[var(--land-muted)] outline-none transition-colors focus:border-[var(--land-accent)]";
   const primaryBtn =
     "w-full rounded-lg bg-[var(--land-accent)] px-4 py-3 font-semibold text-white transition-colors hover:bg-[var(--land-accent-hover)] disabled:cursor-not-allowed disabled:opacity-60";
+  const switchBtn =
+    "mt-4 w-full text-center text-sm font-medium text-[var(--land-accent)] hover:underline";
+
+  const errorBox = error && (
+    <p
+      role="alert"
+      className="rounded-lg border border-red-500/40 bg-red-500/10 px-3 py-2 text-sm text-red-300"
+    >
+      {error}
+    </p>
+  );
 
   return (
     <div
@@ -216,84 +268,100 @@ function SignUpForm() {
                     placeholder={t.fullNamePh}
                   />
                 </div>
-                <div>
-                  <label htmlFor="email" className="mb-1.5 block text-sm text-[var(--land-body)]">
-                    {t.email}
-                  </label>
-                  <input
-                    id="email"
-                    type="email"
-                    autoComplete="email"
-                    required
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    className={inputClass}
-                    placeholder="you@example.com"
-                  />
-                </div>
-                <div>
-                  <label htmlFor="password" className="mb-1.5 block text-sm text-[var(--land-body)]">
-                    {t.password}
-                  </label>
-                  <div className="relative">
-                    <input
-                      id="password"
-                      type={showPassword ? "text" : "password"}
-                      autoComplete="new-password"
-                      required
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      className={`${inputClass} pe-11`}
-                      placeholder="••••••••"
-                    />
-                    <button
-                      type="button"
-                      onClick={() => setShowPassword((v) => !v)}
-                      aria-label={showPassword ? t.hidePassword : t.showPassword}
-                      aria-pressed={showPassword}
-                      className="absolute inset-y-0 end-3 flex items-center text-[var(--land-muted)] transition-colors hover:text-[var(--land-bright)]"
-                    >
-                      {showPassword ? (
-                        <svg
-                          className="h-5 w-5"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        >
-                          <path d="M9.88 9.88a3 3 0 0 0 4.24 4.24" />
-                          <path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68" />
-                          <path d="M6.61 6.61A13.526 13.526 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61" />
-                          <line x1="2" y1="2" x2="22" y2="22" />
-                        </svg>
-                      ) : (
-                        <svg
-                          className="h-5 w-5"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        >
-                          <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z" />
-                          <circle cx="12" cy="12" r="3" />
-                        </svg>
-                      )}
-                    </button>
-                  </div>
-                </div>
 
-                {error && (
-                  <p
-                    role="alert"
-                    className="rounded-lg border border-red-500/40 bg-red-500/10 px-3 py-2 text-sm text-red-300"
-                  >
-                    {error}
-                  </p>
+                {method === "email" ? (
+                  <>
+                    <div>
+                      <label htmlFor="email" className="mb-1.5 block text-sm text-[var(--land-body)]">
+                        {t.email}
+                      </label>
+                      <input
+                        id="email"
+                        type="email"
+                        autoComplete="email"
+                        required
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        className={inputClass}
+                        placeholder="you@example.com"
+                      />
+                    </div>
+                    <div>
+                      <label htmlFor="password" className="mb-1.5 block text-sm text-[var(--land-body)]">
+                        {t.password}
+                      </label>
+                      <div className="relative">
+                        <input
+                          id="password"
+                          type={showPassword ? "text" : "password"}
+                          autoComplete="new-password"
+                          required
+                          value={password}
+                          onChange={(e) => setPassword(e.target.value)}
+                          className={`${inputClass} pe-11`}
+                          placeholder="••••••••"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => setShowPassword((v) => !v)}
+                          aria-label={showPassword ? t.hidePassword : t.showPassword}
+                          aria-pressed={showPassword}
+                          className="absolute inset-y-0 end-3 flex items-center text-[var(--land-muted)] transition-colors hover:text-[var(--land-bright)]"
+                        >
+                          {showPassword ? (
+                            <svg
+                              className="h-5 w-5"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              strokeWidth="2"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            >
+                              <path d="M9.88 9.88a3 3 0 0 0 4.24 4.24" />
+                              <path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68" />
+                              <path d="M6.61 6.61A13.526 13.526 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61" />
+                              <line x1="2" y1="2" x2="22" y2="22" />
+                            </svg>
+                          ) : (
+                            <svg
+                              className="h-5 w-5"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              strokeWidth="2"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            >
+                              <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z" />
+                              <circle cx="12" cy="12" r="3" />
+                            </svg>
+                          )}
+                        </button>
+                      </div>
+                    </div>
+                  </>
+                ) : (
+                  <div>
+                    <label htmlFor="phone" className="mb-1.5 block text-sm text-[var(--land-body)]">
+                      {t.phone}
+                    </label>
+                    <input
+                      id="phone"
+                      type="tel"
+                      autoComplete="tel"
+                      required
+                      dir="ltr"
+                      value={phone}
+                      onChange={(e) => setPhone(e.target.value)}
+                      className={`${inputClass} ${isAr ? "text-right" : ""}`}
+                      placeholder="+965 0000 0000"
+                    />
+                    <p className="mt-1.5 text-xs text-[var(--land-muted)]">{t.phoneHint}</p>
+                  </div>
                 )}
+
+                {errorBox}
 
                 {/* Clerk renders the Turnstile bot-protection widget here. Must be
                     present (and not collapsed) before signUp.create so a visible,
@@ -304,6 +372,14 @@ function SignUpForm() {
                   {loading ? t.working : t.continue}
                 </button>
               </form>
+
+              <button
+                type="button"
+                onClick={() => switchMethod(method === "email" ? "phone" : "email")}
+                className={switchBtn}
+              >
+                {method === "email" ? t.usePhone : t.useEmail}
+              </button>
 
               <p className="mt-6 text-center text-sm text-[var(--land-body)]">
                 {t.haveAccount}{" "}
@@ -318,9 +394,11 @@ function SignUpForm() {
           ) : (
             <>
               <h1 className="text-2xl font-bold text-[var(--land-bright)]">
-                {t.verifyTitle}
+                {method === "phone" ? t.verifyPhoneTitle : t.verifyEmailTitle}
               </h1>
-              <p className="mt-1 text-sm text-[var(--land-body)]">{t.verifySubtitle}</p>
+              <p className="mt-1 text-sm text-[var(--land-body)]">
+                {method === "phone" ? t.verifyPhoneSubtitle : t.verifyEmailSubtitle}
+              </p>
 
               <form onSubmit={handleVerify} className="mt-6 space-y-4">
                 <div>
@@ -332,6 +410,7 @@ function SignUpForm() {
                     inputMode="numeric"
                     autoComplete="one-time-code"
                     required
+                    dir="ltr"
                     value={code}
                     onChange={(e) => setCode(e.target.value)}
                     className={`${inputClass} text-center text-lg tracking-[0.5em]`}
@@ -339,14 +418,7 @@ function SignUpForm() {
                   />
                 </div>
 
-                {error && (
-                  <p
-                    role="alert"
-                    className="rounded-lg border border-red-500/40 bg-red-500/10 px-3 py-2 text-sm text-red-300"
-                  >
-                    {error}
-                  </p>
-                )}
+                {errorBox}
 
                 <button type="submit" disabled={!isLoaded || loading} className={primaryBtn}>
                   {loading ? t.working : t.verify}
@@ -355,9 +427,7 @@ function SignUpForm() {
 
               <button
                 type="button"
-                onClick={() =>
-                  signUp?.prepareEmailAddressVerification({ strategy: "email_code" })
-                }
+                onClick={resendCode}
                 className="mt-4 w-full text-center text-sm text-[var(--land-muted)] hover:text-[var(--land-bright)]"
               >
                 {t.resend}

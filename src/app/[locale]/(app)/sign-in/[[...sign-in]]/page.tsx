@@ -12,6 +12,9 @@ import { Link } from "@/i18n/navigation";
  * a tiny link that QA testers missed. This flow surfaces a prominent
  * "Create a free account" card on that specific error, preserving the original
  * redirect_url so the template-selection purchase flow stays intact.
+ *
+ * Three methods: Google OAuth, email + password, and phone + SMS code
+ * (Clerk `phone_code` first factor — enabled in the Clerk instance).
  */
 
 type ClerkErr = {
@@ -42,9 +45,14 @@ function SignInForm() {
   const search = useSearchParams();
   const redirectUrl = safeRedirect(search.get("redirect_url"), locale);
 
+  const [method, setMethod] = useState<"email" | "phone">("email");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  // Phone flow: "enter" (type number) → "code" (type SMS code).
+  const [phone, setPhone] = useState("");
+  const [phoneStep, setPhoneStep] = useState<"enter" | "code">("enter");
+  const [code, setCode] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   // Client-side brute-force throttle (defense-in-depth; Clerk also rate-limits
@@ -74,6 +82,17 @@ function SignInForm() {
         locked: "محاولات كثيرة جدًا. يرجى المحاولة مرة أخرى بعد ١٥ دقيقة.",
         showPassword: "إظهار كلمة المرور",
         hidePassword: "إخفاء كلمة المرور",
+        usePhone: "تسجيل الدخول برقم الهاتف",
+        useEmail: "تسجيل الدخول بالبريد الإلكتروني",
+        phone: "رقم الهاتف",
+        phoneHint: "أدخل الرقم مع رمز الدولة، مثال: ‎+965…",
+        sendCode: "إرسال الرمز",
+        codeLabel: "رمز التحقق",
+        codeSubtitle: "أدخل الرمز المكوّن من ٦ أرقام المُرسَل إلى هاتفك",
+        verify: "تأكيد",
+        resend: "إعادة إرسال الرمز",
+        changeNumber: "تغيير الرقم",
+        phoneNotFound: "لم نجد حسابًا بهذا الرقم.",
       }
     : {
         title: "Sign in",
@@ -94,6 +113,17 @@ function SignInForm() {
         locked: "Too many attempts. Please try again in 15 minutes.",
         showPassword: "Show password",
         hidePassword: "Hide password",
+        usePhone: "Sign in with phone number",
+        useEmail: "Sign in with email instead",
+        phone: "Phone number",
+        phoneHint: "Include your country code, e.g. +965…",
+        sendCode: "Send code",
+        codeLabel: "Verification code",
+        codeSubtitle: "Enter the 6-digit code we sent to your phone",
+        verify: "Verify",
+        resend: "Resend code",
+        changeNumber: "Change number",
+        phoneNotFound: "We couldn't find an account with that number.",
       };
 
   const signUpHref = `/sign-up?redirect_url=${encodeURIComponent(redirectUrl)}`;
@@ -116,6 +146,13 @@ function SignInForm() {
     }
   }
 
+  function switchMethod(next: "email" | "phone") {
+    setMethod(next);
+    setError(null);
+    setPhoneStep("enter");
+    setCode("");
+  }
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!isLoaded || loading || isLocked) return;
@@ -130,6 +167,56 @@ function SignInForm() {
       } else {
         // Any non-complete status (additional factor, etc.) → generic, no detail.
         setError(t.invalidCreds);
+      }
+    } catch {
+      registerFailure();
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  // Phone step 1: look up the account by number and send the SMS code.
+  async function handleSendCode(e: React.FormEvent) {
+    e.preventDefault();
+    if (!isLoaded || loading || isLocked) return;
+    setError(null);
+    setLoading(true);
+    try {
+      const res = await signIn.create({ identifier: phone.trim() });
+      const factor = res.supportedFirstFactors?.find(
+        (f) => f.strategy === "phone_code",
+      ) as { strategy: "phone_code"; phoneNumberId: string } | undefined;
+      if (!factor) {
+        setError(t.phoneNotFound);
+        return;
+      }
+      await signIn.prepareFirstFactor({
+        strategy: "phone_code",
+        phoneNumberId: factor.phoneNumberId,
+      });
+      setPhoneStep("code");
+    } catch (err) {
+      // Account-not-found and bad-format both surface here; keep it generic.
+      setError(clerkError(err));
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  // Phone step 2: verify the SMS code.
+  async function handleVerifyCode(e: React.FormEvent) {
+    e.preventDefault();
+    if (!isLoaded || loading || isLocked) return;
+    setError(null);
+    setLoading(true);
+    try {
+      const res = await signIn.attemptFirstFactor({ strategy: "phone_code", code });
+      if (res.status === "complete") {
+        await setActive({ session: res.createdSessionId });
+        setFailedAttempts(0);
+        window.location.assign(redirectUrl);
+      } else {
+        setError(clerkError(res));
       }
     } catch {
       registerFailure();
@@ -156,6 +243,17 @@ function SignInForm() {
     "w-full rounded-lg border border-[var(--land-border)] bg-[var(--land-bg)] px-4 py-3 text-[var(--land-bright)] placeholder-[var(--land-muted)] outline-none transition-colors focus:border-[var(--land-accent)]";
   const primaryBtn =
     "w-full rounded-lg bg-[var(--land-accent)] px-4 py-3 font-semibold text-white transition-colors hover:bg-[var(--land-accent-hover)] disabled:cursor-not-allowed disabled:opacity-60";
+  const switchBtn =
+    "mt-4 w-full text-center text-sm font-medium text-[var(--land-accent)] hover:underline";
+
+  const errorBox = error && (
+    <p
+      role="alert"
+      className="rounded-lg border border-red-500/40 bg-red-500/10 px-3 py-2 text-sm text-red-300"
+    >
+      {error}
+    </p>
+  );
 
   return (
     <div
@@ -189,106 +287,193 @@ function SignInForm() {
             <div className="h-px flex-1 bg-[var(--land-border)]" />
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div>
-              <label htmlFor="email" className="mb-1.5 block text-sm text-[var(--land-body)]">
-                {t.email}
-              </label>
-              <input
-                id="email"
-                type="email"
-                autoComplete="email"
-                required
-                value={email}
-                onChange={(e) => {
-                  setEmail(e.target.value);
-                  if (error) setError(null);
-                }}
-                className={inputClass}
-                placeholder="you@example.com"
-              />
-            </div>
-            <div>
-              <label htmlFor="password" className="mb-1.5 block text-sm text-[var(--land-body)]">
-                {t.password}
-              </label>
-              <div className="relative">
-                <input
-                  id="password"
-                  type={showPassword ? "text" : "password"}
-                  autoComplete="current-password"
-                  required
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className={`${inputClass} pe-11`}
-                  placeholder="••••••••"
-                />
+          {method === "email" ? (
+            <>
+              <form onSubmit={handleSubmit} className="space-y-4">
+                <div>
+                  <label htmlFor="email" className="mb-1.5 block text-sm text-[var(--land-body)]">
+                    {t.email}
+                  </label>
+                  <input
+                    id="email"
+                    type="email"
+                    autoComplete="email"
+                    required
+                    value={email}
+                    onChange={(e) => {
+                      setEmail(e.target.value);
+                      if (error) setError(null);
+                    }}
+                    className={inputClass}
+                    placeholder="you@example.com"
+                  />
+                </div>
+                <div>
+                  <label htmlFor="password" className="mb-1.5 block text-sm text-[var(--land-body)]">
+                    {t.password}
+                  </label>
+                  <div className="relative">
+                    <input
+                      id="password"
+                      type={showPassword ? "text" : "password"}
+                      autoComplete="current-password"
+                      required
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      className={`${inputClass} pe-11`}
+                      placeholder="••••••••"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword((v) => !v)}
+                      aria-label={showPassword ? t.hidePassword : t.showPassword}
+                      aria-pressed={showPassword}
+                      className="absolute inset-y-0 end-3 flex items-center text-[var(--land-muted)] transition-colors hover:text-[var(--land-bright)]"
+                    >
+                      {showPassword ? (
+                        <svg
+                          className="h-5 w-5"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        >
+                          <path d="M9.88 9.88a3 3 0 0 0 4.24 4.24" />
+                          <path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68" />
+                          <path d="M6.61 6.61A13.526 13.526 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61" />
+                          <line x1="2" y1="2" x2="22" y2="22" />
+                        </svg>
+                      ) : (
+                        <svg
+                          className="h-5 w-5"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        >
+                          <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z" />
+                          <circle cx="12" cy="12" r="3" />
+                        </svg>
+                      )}
+                    </button>
+                  </div>
+                </div>
+
+                {errorBox}
+
                 <button
-                  type="button"
-                  onClick={() => setShowPassword((v) => !v)}
-                  aria-label={showPassword ? t.hidePassword : t.showPassword}
-                  aria-pressed={showPassword}
-                  className="absolute inset-y-0 end-3 flex items-center text-[var(--land-muted)] transition-colors hover:text-[var(--land-bright)]"
+                  type="submit"
+                  disabled={!isLoaded || loading || isLocked}
+                  className={primaryBtn}
                 >
-                  {showPassword ? (
-                    <svg
-                      className="h-5 w-5"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    >
-                      <path d="M9.88 9.88a3 3 0 0 0 4.24 4.24" />
-                      <path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68" />
-                      <path d="M6.61 6.61A13.526 13.526 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61" />
-                      <line x1="2" y1="2" x2="22" y2="22" />
-                    </svg>
-                  ) : (
-                    <svg
-                      className="h-5 w-5"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    >
-                      <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z" />
-                      <circle cx="12" cy="12" r="3" />
-                    </svg>
-                  )}
+                  {loading ? t.working : t.continue}
                 </button>
+              </form>
+
+              <div className="mt-4 text-center">
+                <Link
+                  href="/forgot-password"
+                  className="text-xs text-[var(--land-muted)] hover:text-[var(--land-bright)]"
+                >
+                  {t.forgot}
+                </Link>
               </div>
-            </div>
 
-            {error && (
-              <p
-                role="alert"
-                className="rounded-lg border border-red-500/40 bg-red-500/10 px-3 py-2 text-sm text-red-300"
+              <button type="button" onClick={() => switchMethod("phone")} className={switchBtn}>
+                {t.usePhone}
+              </button>
+            </>
+          ) : phoneStep === "enter" ? (
+            <>
+              <form onSubmit={handleSendCode} className="space-y-4">
+                <div>
+                  <label htmlFor="phone" className="mb-1.5 block text-sm text-[var(--land-body)]">
+                    {t.phone}
+                  </label>
+                  <input
+                    id="phone"
+                    type="tel"
+                    autoComplete="tel"
+                    required
+                    dir="ltr"
+                    value={phone}
+                    onChange={(e) => {
+                      setPhone(e.target.value);
+                      if (error) setError(null);
+                    }}
+                    className={`${inputClass} ${isAr ? "text-right" : ""}`}
+                    placeholder="+965 0000 0000"
+                  />
+                  <p className="mt-1.5 text-xs text-[var(--land-muted)]">{t.phoneHint}</p>
+                </div>
+
+                {errorBox}
+
+                <button
+                  type="submit"
+                  disabled={!isLoaded || loading || isLocked}
+                  className={primaryBtn}
+                >
+                  {loading ? t.working : t.sendCode}
+                </button>
+              </form>
+
+              <button type="button" onClick={() => switchMethod("email")} className={switchBtn}>
+                {t.useEmail}
+              </button>
+            </>
+          ) : (
+            <>
+              <p className="text-sm text-[var(--land-body)]">{t.codeSubtitle}</p>
+              <form onSubmit={handleVerifyCode} className="mt-4 space-y-4">
+                <div>
+                  <label htmlFor="code" className="mb-1.5 block text-sm text-[var(--land-body)]">
+                    {t.codeLabel}
+                  </label>
+                  <input
+                    id="code"
+                    inputMode="numeric"
+                    autoComplete="one-time-code"
+                    required
+                    dir="ltr"
+                    value={code}
+                    onChange={(e) => {
+                      setCode(e.target.value);
+                      if (error) setError(null);
+                    }}
+                    className={`${inputClass} text-center text-lg tracking-[0.5em]`}
+                    placeholder="••••••"
+                  />
+                </div>
+
+                {errorBox}
+
+                <button
+                  type="submit"
+                  disabled={!isLoaded || loading || isLocked}
+                  className={primaryBtn}
+                >
+                  {loading ? t.working : t.verify}
+                </button>
+              </form>
+
+              <button
+                type="button"
+                onClick={() => {
+                  setPhoneStep("enter");
+                  setCode("");
+                  setError(null);
+                }}
+                className="mt-4 w-full text-center text-sm text-[var(--land-muted)] hover:text-[var(--land-bright)]"
               >
-                {error}
-              </p>
-            )}
-
-            <button
-              type="submit"
-              disabled={!isLoaded || loading || isLocked}
-              className={primaryBtn}
-            >
-              {loading ? t.working : t.continue}
-            </button>
-          </form>
-
-          <div className="mt-4 text-center">
-            <Link
-              href="/forgot-password"
-              className="text-xs text-[var(--land-muted)] hover:text-[var(--land-bright)]"
-            >
-              {t.forgot}
-            </Link>
-          </div>
+                {t.changeNumber}
+              </button>
+            </>
+          )}
 
           <p className="mt-6 text-center text-sm text-[var(--land-body)]">
             {t.noAccount}{" "}
