@@ -164,9 +164,17 @@ function SignInForm() {
     try {
       const res = await signIn.create({ identifier: email, password });
       if (res.status === "complete") {
-        await setActive({ session: res.createdSessionId });
         setFailedAttempts(0);
-        window.location.assign(redirectUrl);
+        await setActive({
+          session: res.createdSessionId,
+          // decorateUrl refreshes the session cookie before we land on the
+          // protected /build route. Without it, middleware can run before the
+          // cookie is committed (esp. Safari ITP on iPhone) and bounce the user
+          // straight back to sign-in.
+          navigate: ({ decorateUrl }) => {
+            window.location.href = decorateUrl(redirectUrl);
+          },
+        });
       } else {
         // Any non-complete status (additional factor, etc.) → generic, no detail.
         setError(t.invalidCreds);
@@ -219,9 +227,17 @@ function SignInForm() {
     try {
       const res = await signIn.attemptFirstFactor({ strategy: "phone_code", code });
       if (res.status === "complete") {
-        await setActive({ session: res.createdSessionId });
         setFailedAttempts(0);
-        window.location.assign(redirectUrl);
+        await setActive({
+          session: res.createdSessionId,
+          // decorateUrl refreshes the session cookie before we land on the
+          // protected /build route. Without it, middleware can run before the
+          // cookie is committed (esp. Safari ITP on iPhone) and bounce the user
+          // straight back to sign-in.
+          navigate: ({ decorateUrl }) => {
+            window.location.href = decorateUrl(redirectUrl);
+          },
+        });
       } else {
         setError(clerkError(res));
       }

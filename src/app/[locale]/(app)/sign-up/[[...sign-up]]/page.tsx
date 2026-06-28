@@ -181,9 +181,15 @@ function SignUpForm() {
           ? await signUp.attemptPhoneNumberVerification({ code })
           : await signUp.attemptEmailAddressVerification({ code });
       if (res.status === "complete") {
-        await setActive({ session: res.createdSessionId });
-        // Full navigation so middleware runs and Convex picks up the session.
-        window.location.assign(redirectUrl);
+        // decorateUrl refreshes the session cookie before navigating to the
+        // protected /build route, so middleware doesn't run before the cookie
+        // is committed (esp. Safari ITP on iPhone) and bounce back to sign-in.
+        await setActive({
+          session: res.createdSessionId,
+          navigate: ({ decorateUrl }) => {
+            window.location.href = decorateUrl(redirectUrl);
+          },
+        });
       } else {
         // The code verified, but the sign-up still needs more (e.g. the Clerk
         // instance marks email as required). Re-submitting the now-consumed
