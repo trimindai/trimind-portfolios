@@ -36,7 +36,7 @@ import {
   Smartphone,
   FileText,
   Globe,
-  ArrowLeft,
+  ChevronLeft,
   X,
 } from "lucide-react";
 
@@ -486,10 +486,10 @@ export default function StudioClient({ initialId }: { initialId?: string }) {
       <div className="relative flex items-center justify-between gap-3 border-b border-[var(--land-border)] pb-3 mb-4">
         <Link
           href="/dashboard"
-          className="inline-flex items-center gap-1.5 text-sm text-[var(--land-body)] hover:text-[var(--land-bright)]"
+          className="flex items-center gap-0.5 text-sm text-gray-600 transition-colors hover:text-gray-900"
         >
-          <ArrowLeft className="h-4 w-4 rtl:rotate-180" />
-          {T("Dashboard", "لوحة التحكم")}
+          <ChevronLeft size={16} strokeWidth={2.5} className="rtl:rotate-180" />
+          {T("My Portfolios", "ملفاتي")}
         </Link>
         {/* Centered page title */}
         <span className="absolute left-1/2 -translate-x-1/2 text-sm font-semibold text-gray-800">
