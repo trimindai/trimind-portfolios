@@ -183,7 +183,20 @@ function SignUpForm() {
         // Full navigation so middleware runs and Convex picks up the session.
         window.location.assign(redirectUrl);
       } else {
-        setError("Verification incomplete. Please check the code and retry.");
+        // The code verified, but the sign-up still needs more (e.g. the Clerk
+        // instance marks email as required). Re-submitting the now-consumed
+        // code returns "already verified", so name the real gap instead of
+        // inviting a retry.
+        const missing = (signUp?.missingFields || []).join(", ");
+        setError(
+          missing
+            ? isAr
+              ? `لإكمال التسجيل نحتاج أيضًا: ${missing}. جرّب التسجيل بالبريد الإلكتروني.`
+              : `To finish signing up we still need: ${missing}. Try email sign-up instead.`
+            : isAr
+              ? "تعذّر إكمال التسجيل. يرجى التواصل مع الدعم."
+              : "Couldn't complete sign-up. Please contact support.",
+        );
       }
     } catch (err) {
       setError(clerkError(err));
