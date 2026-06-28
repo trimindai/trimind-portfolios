@@ -18,6 +18,10 @@ import PhoneField, { isValidPhoneNumber } from "@/components/auth/PhoneField";
  * (Clerk `phone_code` first factor — enabled in the Clerk instance).
  */
 
+// ⚠️ TEMPORARY DEBUG — flip to false (or delete the debug state + the debugLine
+// block) to remove the on-screen verify diagnostics added for the OTP repro.
+const SHOW_AUTH_DEBUG = true;
+
 type ClerkErr = {
   errors?: Array<{ code?: string; longMessage?: string; message?: string }>;
 };
@@ -56,6 +60,8 @@ function SignInForm() {
   const [code, setCode] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  // ⚠️ TEMPORARY — verify-path diagnostics surfaced on screen for the OTP repro.
+  const [debug, setDebug] = useState<string | null>(null);
   // Client-side brute-force throttle (defense-in-depth; Clerk also rate-limits
   // server-side). After 5 failed attempts, lock the form for 15 minutes.
   const [failedAttempts, setFailedAttempts] = useState(0);
@@ -235,8 +241,13 @@ function SignInForm() {
     if (!isLoaded || loading || isLocked) return;
     setError(null);
     setLoading(true);
+    setDebug(null);
     try {
       const res = await signIn.attemptFirstFactor({ strategy: "phone_code", code });
+      // ⚠️ TEMPORARY: did the verify complete and did Clerk hand us a session id?
+      setDebug(
+        `verify status=${res.status} sessionId=${res.createdSessionId ? "present" : "MISSING"} → calling setActive`,
+      );
       if (res.status === "complete") {
         setFailedAttempts(0);
         await setActive({
@@ -263,7 +274,10 @@ function SignInForm() {
       } else {
         setError(clerkError(res));
       }
-    } catch {
+    } catch (err) {
+      // ⚠️ TEMPORARY: a throw here (incl. inside setActive's navigate) is what
+      // the generic "invalid" message would otherwise hide.
+      setDebug(`verify threw: ${clerkError(err)}`);
       registerFailure();
     } finally {
       setLoading(false);
@@ -468,6 +482,15 @@ function SignInForm() {
                 </div>
 
                 {errorBox}
+
+                {SHOW_AUTH_DEBUG && debug && (
+                  <p
+                    dir="ltr"
+                    className="rounded-lg border border-emerald-500/40 bg-black/80 px-3 py-2 font-mono text-[11px] leading-snug text-emerald-300"
+                  >
+                    DEBUG {debug}
+                  </p>
+                )}
 
                 <button
                   type="submit"

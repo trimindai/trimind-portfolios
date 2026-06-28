@@ -1,7 +1,7 @@
 "use client";
 
 import { useAuth, useSession, useClerk } from "@clerk/nextjs";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 
 /**
@@ -21,13 +21,29 @@ import { useParams } from "next/navigation";
  * that straight back to sign-in → an infinite loop (the reported bug). We now
  * only redirect when there is GENUINELY no session, and otherwise show WHY,
  * including the session status — so a repro surfaces the cause on screen.
+ *
+ * GRACE WINDOW (fix/otp-signin): even after setActive() succeeds, clerk-js can
+ * report isLoaded=true with the just-set session still settling for a beat on
+ * the fresh post-sign-in load (Safari ITP cookie read is async). Bouncing on
+ * that first frame killed a valid login → the +965 reset. We now wait a short
+ * grace before redirecting; if the session resolves in that window the deps
+ * change and the pending redirect is cancelled. This only DELAYS the bounce —
+ * a genuinely signed-out user is still sent to sign-in after the grace.
  */
+
+// ⚠️ TEMPORARY DEBUG — flip to false (or delete the AuthDebugBadge block + this
+// const) to remove the on-screen diagnostics added for the OTP sign-in repro.
+const SHOW_AUTH_DEBUG = true;
+
+// How long to wait for a settling session before giving up and bouncing.
+const REDIRECT_GRACE_MS = 1800;
+
 export default function BuildAuthGate({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const { isLoaded, isSignedIn } = useAuth();
+  const { isLoaded, isSignedIn, userId } = useAuth();
   const { session: hookSession } = useSession();
   const clerk = useClerk();
   const params = useParams();
@@ -39,26 +55,39 @@ export default function BuildAuthGate({
   const session = hookSession ?? (clerk.loaded ? clerk.session : null);
   const pending = !isSignedIn && !!session;
 
+  // True while we're counting down the grace window before a bounce (debug only).
+  const [bouncing, setBouncing] = useState(false);
+
   useEffect(() => {
-    // Only bounce to sign-in when there is truly no session. NEVER loop a
-    // pending session back to sign-in — that was the infinite bounce.
-    if (isLoaded && !isSignedIn && !session) {
+    // Only consider bouncing when there is truly no session right now.
+    if (!(isLoaded && !isSignedIn && !session)) {
+      setBouncing(false);
+      return;
+    }
+    // Grace: wait for a just-set session to settle before redirecting. If it
+    // resolves, this effect re-runs (deps changed) and clears the timeout, so
+    // we never bounce a valid login. If it stays empty, bounce after the grace.
+    setBouncing(true);
+    const t = setTimeout(() => {
       const returnTo = window.location.pathname + window.location.search;
       window.location.assign(
         `/${locale}/sign-in?redirect_url=${encodeURIComponent(returnTo)}`,
       );
-    }
+    }, REDIRECT_GRACE_MS);
+    return () => clearTimeout(t);
   }, [isLoaded, isSignedIn, session, locale]);
 
-  if (!isLoaded) return <GateScreen text={isAr ? "جاري التحميل…" : "Loading…"} />;
-  if (isSignedIn) return <>{children}</>;
-
-  // Signed-out but a session exists = pending Clerk task / restriction. Show the
-  // reason instead of bouncing. The status line is the diagnostic we need.
-  if (pending) {
+  let content: React.ReactNode;
+  if (!isLoaded) {
+    content = <GateScreen text={isAr ? "جاري التحميل…" : "Loading…"} />;
+  } else if (isSignedIn) {
+    content = <>{children}</>;
+  } else if (pending) {
+    // Signed-out but a session exists = pending Clerk task / restriction. Show
+    // the reason instead of bouncing. The status line is the diagnostic.
     const status = (session as { status?: string })?.status ?? "unknown";
     const task = (session as { currentTask?: { key?: string } })?.currentTask;
-    return (
+    content = (
       <div className="min-h-screen bg-[var(--land-bg)] flex items-center justify-center px-6">
         <div className="max-w-md text-center">
           <p className="text-[var(--land-bright)] font-semibold">
@@ -79,16 +108,85 @@ export default function BuildAuthGate({
         </div>
       </div>
     );
+  } else {
+    // isLoaded && !isSignedIn && no session → inside the grace window, about to
+    // redirect (effect above). Show loading, not a bounce, so a settling
+    // session has a chance to appear.
+    content = <GateScreen text={isAr ? "جاري التحميل…" : "Loading…"} />;
   }
 
-  // isLoaded && !isSignedIn && no session → about to redirect (effect above).
-  return <GateScreen text={isAr ? "جاري التحميل…" : "Loading…"} />;
+  return (
+    <>
+      {SHOW_AUTH_DEBUG && (
+        <AuthDebugBadge
+          clerkLoaded={clerk.loaded}
+          authLoaded={!!isLoaded}
+          isSignedIn={!!isSignedIn}
+          status={(session as { status?: string })?.status ?? null}
+          userId={userId ?? null}
+          bouncing={bouncing}
+        />
+      )}
+      {content}
+    </>
+  );
 }
 
 function GateScreen({ text }: { text: string }) {
   return (
     <div className="min-h-screen bg-[var(--land-bg)] flex items-center justify-center">
       <div className="text-[var(--land-body)] text-sm">{text}</div>
+    </div>
+  );
+}
+
+/**
+ * ⚠️ TEMPORARY — remove with SHOW_AUTH_DEBUG. On-screen auth diagnostics so the
+ * owner's real-phone OTP repro reveals the exact failure: whether clerk-js
+ * loaded, whether it sees a session, and whether the session cookies survived
+ * the post-sign-in navigation (the Safari ITP suspect).
+ */
+function AuthDebugBadge({
+  clerkLoaded,
+  authLoaded,
+  isSignedIn,
+  status,
+  userId,
+  bouncing,
+}: {
+  clerkLoaded: boolean;
+  authLoaded: boolean;
+  isSignedIn: boolean;
+  status: string | null;
+  userId: string | null;
+  bouncing: boolean;
+}) {
+  const [cookies, setCookies] = useState("…");
+  useEffect(() => {
+    const has = (name: string) =>
+      document.cookie.split("; ").some((c) => c.startsWith(name + "="));
+    setCookies(
+      `__client:${has("__client") ? "Y" : "n"} __session:${has("__session") ? "Y" : "n"} __client_uat:${has("__client_uat") ? "Y" : "n"}`,
+    );
+  }, [clerkLoaded, isSignedIn, status]);
+  return (
+    <div
+      dir="ltr"
+      style={{
+        position: "fixed",
+        bottom: 0,
+        left: 0,
+        right: 0,
+        zIndex: 99999,
+        background: "rgba(0,0,0,0.85)",
+        color: "#7CFC9E",
+        font: "11px/1.5 ui-monospace, monospace",
+        padding: "6px 10px",
+        whiteSpace: "pre-wrap",
+        wordBreak: "break-all",
+      }}
+    >
+      {`DEBUG /build gate — clerkLoaded:${clerkLoaded} authLoaded:${authLoaded} isSignedIn:${isSignedIn} session:${status ?? "null"} userId:${userId ? userId.slice(0, 10) + "…" : "null"} ${bouncing ? "⏳bouncing-in-grace" : ""}\ncookies ${cookies}`}
     </div>
   );
 }
