@@ -7,6 +7,9 @@ const nextConfig = {
   poweredByHeader: false,
   compress: true,
   reactStrictMode: true,
+  // Native/binary deps must stay external — bundling them breaks the chromium
+  // launch in the /api/pdf route on Vercel.
+  serverExternalPackages: ["@sparticuz/chromium", "puppeteer-core"],
   experimental: {
     optimizePackageImports: ["@clerk/nextjs", "@clerk/localizations"],
   },

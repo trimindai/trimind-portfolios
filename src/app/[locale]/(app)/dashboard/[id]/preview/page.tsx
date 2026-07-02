@@ -7,7 +7,7 @@ import { Id } from "@convex/_generated/dataModel";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { useState, useMemo, useRef, useEffect } from "react";
-import { Monitor, Tablet, Smartphone, ArrowLeft, Download, CheckCircle2, FileText, Globe, ZoomIn, ZoomOut, Maximize2, Maximize, Minimize } from "lucide-react";
+import { Monitor, Tablet, Smartphone, ArrowLeft, Download, CheckCircle2, FileText, Globe, ZoomIn, ZoomOut, Maximize2, Maximize, Minimize, Loader2 } from "lucide-react";
 import PreviewFrame from "@/components/preview/PreviewFrame";
 import type { PreviewFrameHandle } from "@/components/preview/PreviewFrame";
 import { toPortfolioData } from "@/lib/portfolio-data";
@@ -68,15 +68,16 @@ export default function PreviewPage() {
     }
   };
 
-  // Always print the ATS CV (carries the QR), regardless of the current view.
+  // Download the ATS CV (carries the QR) as a real PDF from the server. The old
+  // client path opened a blob in a new window + print() — popup-blocked on
+  // mobile Safari/Chrome, so paying users got a spinner and no file. A same-tab
+  // navigation to the attachment endpoint downloads directly on every device.
+  const [downloading, setDownloading] = useState(false);
   const printCv = () => {
-    if (view !== "cv") {
-      setView("cv");
-      // Let the CV iframe load before invoking the native print dialog.
-      window.setTimeout(() => previewRef.current?.print(), 600);
-    } else {
-      previewRef.current?.print();
-    }
+    setDownloading(true);
+    window.location.assign(`/api/pdf/${id}?locale=${locale}`);
+    // The download doesn't unload the page; clear the busy state after a beat.
+    window.setTimeout(() => setDownloading(false), 4000);
   };
 
   const [showSuccess, setShowSuccess] = useState(false);
@@ -181,10 +182,19 @@ export default function PreviewPage() {
     ) : canDownload ? (
       <button
         onClick={printCv}
-        className={`inline-flex items-center justify-center gap-2 rounded-lg bg-[var(--land-accent)] px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-[var(--land-accent-hover)] ${extra}`}
+        disabled={downloading}
+        className={`inline-flex items-center justify-center gap-2 rounded-lg bg-[var(--land-accent)] px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-[var(--land-accent-hover)] disabled:opacity-70 ${extra}`}
       >
-        <Download className="h-4 w-4" />
-        {downloadLabel}
+        {downloading ? (
+          <Loader2 className="h-4 w-4 animate-spin" />
+        ) : (
+          <Download className="h-4 w-4" />
+        )}
+        {downloading
+          ? locale === "ar"
+            ? "جارٍ التحضير…"
+            : "Preparing…"
+          : downloadLabel}
       </button>
     ) : (
       <Link
