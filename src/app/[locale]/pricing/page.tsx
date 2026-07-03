@@ -3,8 +3,14 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { Check } from "lucide-react";
 import { HOSTING_ENABLED } from "@/lib/flags";
+import { priceNumber, priceLabel, currencySymbol, chargedInKwdNote } from "@/lib/currency";
+import { getCurrency } from "@/lib/currency-server";
+import { TIER_PRICE } from "@/lib/pricing";
 
 const SITE_URL = "https://portfolio-trimind.com";
+
+// Per-visitor currency (SA → SAR) from the 'cur' cookie → render per-request.
+export const dynamic = "force-dynamic";
 
 export async function generateMetadata({
   params,
@@ -37,6 +43,9 @@ export default async function PricingPage({
   setRequestLocale(locale);
   const tc = await getTranslations("common");
   const isRTL = locale === "ar";
+  const loc = isRTL ? "ar" : "en";
+  const cur = await getCurrency();
+  const entry = priceLabel(TIER_PRICE.essential, cur, loc);
 
   const includes = isRTL
     ? [
@@ -63,12 +72,12 @@ export default async function PricingPage({
   const steps = isRTL
     ? [
         { n: "١", t: "ابنِ مجانًا", d: "اختر قالبًا، أضف بياناتك، وعاين بورتفوليوك بالكامل — دون أي دفع." },
-        { n: "٢", t: "ادفع عند النشر", d: "ادفع ٤.٩٠٠ دك في السنة فقط عندما تكون جاهزًا للنشر أو تحميل ملف PDF." },
+        { n: "٢", t: "ادفع عند النشر", d: `ادفع ${entry} في السنة فقط عندما تكون جاهزًا للنشر أو تحميل ملف PDF.` },
         { n: "٣", t: "حدّثها وقتما تشاء", d: "عدّل وحدّث وأعد التحميل متى شئت — بدون رسوم شهرية، وملف الـ PDF يبقى لك." },
       ]
     : [
         { n: "1", t: "Build for free", d: "Pick a template, add your info, and fully preview your portfolio — no payment needed." },
-        { n: "2", t: "Pay when you publish", d: "Pay 4.900 KD per year only when you're ready to publish or download your PDF." },
+        { n: "2", t: "Pay when you publish", d: `Pay ${entry} per year only when you're ready to publish or download your PDF.` },
         { n: "3", t: "Update it anytime", d: "Edit, update, and re-download anytime — no monthly fees, and your PDF stays yours." },
       ];
 
@@ -103,17 +112,17 @@ export default async function PricingPage({
         {/* The model in one line — resolves the "free" vs "4.900 KD" question */}
         <p className="mt-5 max-w-xl text-lg leading-relaxed text-[var(--land-body)]">
           {isRTL
-            ? "ابنِ بورتفوليوك وعاينه مجانًا. ادفع ٤.٩٠٠ دك سنوياً فقط عند النشر — بدون رسوم شهرية، بدون رسوم خفية."
-            : "Build and preview your portfolio for free. Pay 4.900 KD per year only when you publish — no monthly fees, no hidden fees."}
+            ? `ابنِ بورتفوليوك وعاينه مجانًا. ادفع ${entry} سنوياً فقط عند النشر — بدون رسوم شهرية، بدون رسوم خفية.`
+            : `Build and preview your portfolio for free. Pay ${entry} per year only when you publish — no monthly fees, no hidden fees.`}
         </p>
 
         {/* Price card */}
         <div className="mt-10 rounded-2xl border border-[var(--land-border)] bg-[var(--land-surface)] p-8">
           <div className="flex items-baseline gap-3">
             <span className="font-extrabold tracking-tighter text-[var(--land-accent)]" style={{ fontSize: "clamp(2.5rem, 6vw, 3.5rem)" }}>
-              {isRTL ? "٤.٩٠٠" : "4.900"}
+              {priceNumber(TIER_PRICE.essential, cur, loc)}
             </span>
-            <span className="text-xl font-medium text-[var(--land-muted)]">{isRTL ? "د.ك" : "KD"}</span>
+            <span className="text-xl font-medium text-[var(--land-muted)]">{currencySymbol(cur, loc)}</span>
             <span className="text-sm text-[var(--land-muted)]">(~$16 USD)</span>
           </div>
           <p className="mt-1 text-sm font-medium text-[var(--land-accent)]">
@@ -159,12 +168,14 @@ export default async function PricingPage({
           {isRTL ? (
             <>
               ادفع عبر K-NET، Visa، Mastercard، أو Apple Pay عبر{" "}
-              <span className="text-[var(--land-accent)]">MyFatoorah</span>. جميع المبالغ بالدينار الكويتي.
+              <span className="text-[var(--land-accent)]">MyFatoorah</span>.{" "}
+              {cur === "SAR" ? `السعر بالريال تقديري — ${chargedInKwdNote("ar")}.` : "جميع المبالغ بالدينار الكويتي."}
             </>
           ) : (
             <>
               Pay with K-NET, Visa, Mastercard, or Apple Pay via{" "}
-              <span className="text-[var(--land-accent)]">MyFatoorah</span>. All amounts in Kuwaiti Dinar.
+              <span className="text-[var(--land-accent)]">MyFatoorah</span>.{" "}
+              {cur === "SAR" ? `The riyal price is indicative — ${chargedInKwdNote("en")}.` : "All amounts in Kuwaiti Dinar."}
             </>
           )}
         </p>

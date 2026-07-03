@@ -42,7 +42,18 @@ export default clerkMiddleware(async (auth, req) => {
     });
   }
 
-  return intlMiddleware(req);
+  // Display-currency hint for price localization: Saudi visitors see SAR, all
+  // others KWD. Non-httpOnly so client components can read it; the actual charge
+  // stays KWD (see lib/currency.ts). Country from Vercel's geo header.
+  const res = intlMiddleware(req);
+  const country = (req.headers.get("x-vercel-ip-country") || "").toUpperCase();
+  res.cookies.set("cur", country === "SA" ? "SAR" : "KWD", {
+    httpOnly: false,
+    sameSite: "lax",
+    path: "/",
+    maxAge: 60 * 60 * 24 * 30,
+  });
+  return res;
 });
 
 export const config = {

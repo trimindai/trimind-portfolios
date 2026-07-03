@@ -12,6 +12,9 @@ import PreviewFrame from "@/components/preview/PreviewFrame";
 import type { PreviewFrameHandle } from "@/components/preview/PreviewFrame";
 import { toPortfolioData } from "@/lib/portfolio-data";
 import { HOSTING_ENABLED } from "@/lib/flags";
+import { useCurrency } from "@/lib/use-currency";
+import { priceLabel } from "@/lib/currency";
+import { PRICE_KWD } from "@/lib/pricing";
 
 type DeviceMode = "desktop" | "tablet" | "mobile";
 type PreviewView = "cv" | "live";
@@ -27,6 +30,8 @@ export default function PreviewPage() {
   const searchParams = useSearchParams();
   // Boolean-only server check — keeps the admin allowlist out of the bundle.
   const isAdminQuery = useQuery(api.users.isAdmin);
+  const cur = useCurrency();
+  const entryPrice = priceLabel(PRICE_KWD, cur, locale === "ar" ? "ar" : "en");
 
   const portfolio = useQuery(api.portfolios.get, {
     id: id as Id<"portfolios">,
@@ -160,7 +165,7 @@ export default function PreviewPage() {
     portfolio.status === "paid" ||
     portfolio.status === "published";
   const justPaid = searchParams.get("paid") === "1";
-  const getPdfLabel = locale === "ar" ? "احصل على PDF — ٤.٩٠٠ د.ك" : "Get PDF — 4.900 KD";
+  const getPdfLabel = locale === "ar" ? `احصل على PDF — ${entryPrice}` : `Get PDF — ${entryPrice}`;
   const downloadLabel = locale === "ar" ? "حمّل PDF" : "Download PDF";
 
   // Mobile-only CTA: a thumb-reachable bottom pill. Hidden on md+, where the
@@ -395,8 +400,8 @@ export default function PreviewPage() {
               </h3>
               <p className="mt-2 text-sm text-[var(--land-body)]">
                 {locale === "ar"
-                  ? "ادفع 4.900 د.ك في السنة لعرض وتحميل PDF الاحترافي"
-                  : "Pay 4.900 KD per year to view and download your professional PDF"}
+                  ? `ادفع ${entryPrice} في السنة لعرض وتحميل PDF الاحترافي`
+                  : `Pay ${entryPrice} per year to view and download your professional PDF`}
               </p>
               <Link
                 href={`/dashboard/${id}/publish`}

@@ -21,6 +21,12 @@ import { LandingFloating } from "@/components/landing/LandingFloating";
 import { TemplateShowcase } from "@/components/landing/TemplateShowcase";
 import { HeroCtaActions } from "@/components/landing/HeroCtaActions";
 import { TIER_PRICE } from "@/lib/pricing";
+import { priceNumber, priceLabel, currencySymbol } from "@/lib/currency";
+import { getCurrency } from "@/lib/currency-server";
+
+// Prices are localized per visitor from the 'cur' cookie (SA → SAR), so this
+// page must render per-request rather than as cached static HTML.
+export const dynamic = "force-dynamic";
 
 export default async function LandingPage({
   params,
@@ -33,12 +39,15 @@ export default async function LandingPage({
   setRequestLocale(locale);
   const tc = await getTranslations("common");
   const isRTL = locale === "ar";
+  const loc = isRTL ? "ar" : "en";
+  const cur = await getCurrency();
+  const entry = priceLabel(TIER_PRICE.essential, cur, loc); // "4.900 KD" / "SAR 59" / "٥٩ ر.س"
 
   const faqs = isRTL
     ? [
         {
           q: "هل يحتاج البورتفوليو إلى تجديد سنوي؟",
-          a: "نعم. إنها خطة سنوية بسيطة: دفعة واحدة في السنة (تبدأ من ٤.٩٠٠ دك) تُبقي صفحتك حيّة مع الاستضافة. بدون رسوم شهرية، وملف PDF الذي تنزّله يبقى لك دائمًا.",
+          a: `نعم. إنها خطة سنوية بسيطة: دفعة واحدة في السنة (تبدأ من ${entry}) تُبقي صفحتك حيّة مع الاستضافة. بدون رسوم شهرية، وملف PDF الذي تنزّله يبقى لك دائمًا.`,
         },
         {
           q: "هل يمكنني التعديل بعد النشر؟",
@@ -78,7 +87,7 @@ export default async function LandingPage({
     : [
         {
           q: "Do I need to renew yearly?",
-          a: "Yes. It's a simple annual plan: one payment a year (from 4.900 KD) keeps your page live with hosting included. No monthly fees, and any PDF you download is yours to keep.",
+          a: `Yes. It's a simple annual plan: one payment a year (from ${entry}) keeps your page live with hosting included. No monthly fees, and any PDF you download is yours to keep.`,
         },
         {
           q: HOSTING_ENABLED ? "Can I edit after publishing?" : "Can I edit my portfolio?",
@@ -256,7 +265,7 @@ export default async function LandingPage({
           <HeroCtaActions locale={locale} />
           {/* pay message — quiet, directly below the CTA */}
           <span className="mt-3 text-xs text-gray-400">
-            {isRTL ? "ادفع ٤.٩ د.ك فقط عند التصدير" : "Pay just 4.9 KD only on export"}
+            {isRTL ? `ادفع ${entry} فقط عند التصدير` : `Pay just ${entry} only on export`}
           </span>
           <Link
             href="/templates"
@@ -283,12 +292,12 @@ export default async function LandingPage({
             {(isRTL
               ? [
                   { num: "+١٣٠", label: "سيرة ذاتية" },
-                  { num: "٤.٩", label: "د.ك فقط" },
+                  { num: priceNumber(TIER_PRICE.essential, cur, "ar"), label: `${currencySymbol(cur, "ar")} فقط` },
                   { num: "~١٠", label: "ثوانٍ" },
                 ]
               : [
                   { num: "130+", label: "CVs built" },
-                  { num: "4.9", label: "KD only" },
+                  { num: priceNumber(TIER_PRICE.essential, cur, "en"), label: `${currencySymbol(cur, "en")} only` },
                   { num: "~10", label: "seconds" },
                 ]
             ).map((s, i) => (
@@ -472,16 +481,16 @@ export default async function LandingPage({
             </div>
             <div className="mt-12 grid items-stretch gap-5 sm:grid-cols-2 lg:grid-cols-4">
               {[
-                { key: "free", en: "Free Preview", ar: "معاينة مجانية", price: "0", arPrice: "٠", once: false,
+                { key: "free", en: "Free Preview", ar: "معاينة مجانية", price: "0", arPrice: "٠", kwd: 0, once: false,
                   feats: isRTL ? ["رفع ومعاينة", "سيرة PDF بعلامة مائية", "قالب واحد، حتى ٣ تعديلات"] : ["Upload & preview", "Watermarked PDF", "1 template, up to 3 edits"],
                   highlight: false, cta: isRTL ? "ابدأ مجانًا" : "Start free" },
-                { key: "essential", en: "CV Essential", ar: "السيرة الأساسية", price: "4.900", arPrice: "٤.٩٠٠", once: true,
+                { key: "essential", en: "CV Essential", ar: "السيرة الأساسية", price: "4.900", arPrice: "٤.٩٠٠", kwd: TIER_PRICE.essential, once: true,
                   feats: isRTL ? ["سيرة PDF نهائية (بدون علامة)", "٥ قوالب + ألوان وخطوط", "عربي/إنجليزي، تعديلات سهلة"] : ["Final ATS PDF (no watermark)", "5 templates + colours & fonts", "EN/AR, easy edits"],
                   highlight: true, cta: isRTL ? "اختر الأساسية" : "Choose Essential" },
-                { key: "pro", en: "Portfolio Pro", ar: "بورتفوليو برو", price: "9.900", arPrice: "٩.٩٠٠", once: true,
+                { key: "pro", en: "Portfolio Pro", ar: "بورتفوليو برو", price: "9.900", arPrice: "٩.٩٠٠", kwd: TIER_PRICE.pro, once: true,
                   feats: isRTL ? ["كل مزايا الأساسية", "صفحة حيّة /p/اسمك + QR", "استضافة لمدة سنة"] : ["Everything in Essential", "Live /p/<name> page + QR", "1 year hosting"],
                   highlight: false, cta: isRTL ? "اختر برو" : "Choose Pro" },
-                { key: "pro_review", en: "Pro + Expert Review", ar: "برو + مراجعة خبير", price: "24.900", arPrice: "٢٤.٩٠٠", once: true,
+                { key: "pro_review", en: "Pro + Expert Review", ar: "برو + مراجعة خبير", price: "24.900", arPrice: "٢٤.٩٠٠", kwd: TIER_PRICE.pro_review, once: true,
                   feats: isRTL ? ["كل مزايا برو", "مراجعة بشرية + ملاحظات ATS", "مراجعة واحدة خلال ٤٨ ساعة"] : ["Everything in Pro", "Human review + ATS notes", "1 revision within 48h"],
                   highlight: false, cta: isRTL ? "اختر برو + مراجعة" : "Choose Pro + Review" },
               ].map((t) => (
@@ -504,8 +513,8 @@ export default async function LandingPage({
                   )}
                   <h3 className="text-base font-bold tracking-tight">{isRTL ? t.ar : t.en}</h3>
                   <div className="mt-2 flex items-baseline gap-1">
-                    <span className="text-3xl font-extrabold tracking-tighter text-[var(--land-accent)]">{isRTL ? t.arPrice : t.price}</span>
-                    <span className="text-sm font-medium text-[var(--land-muted)]">{isRTL ? "دك" : "KD"}</span>
+                    <span className="text-3xl font-extrabold tracking-tighter text-[var(--land-accent)]">{cur === "SAR" && t.kwd > 0 ? priceNumber(t.kwd, cur, loc) : isRTL ? t.arPrice : t.price}</span>
+                    <span className="text-sm font-medium text-[var(--land-muted)]">{cur === "SAR" ? currencySymbol(cur, loc) : isRTL ? "دك" : "KD"}</span>
                   </div>
                   <p className="mt-0.5 text-xs text-[var(--land-muted)]">
                     {t.once ? (isRTL ? "سنوياً" : "per year") : (isRTL ? "بدون دفع" : "no payment")}
@@ -543,8 +552,8 @@ export default async function LandingPage({
             </div>
             <p className="mt-4 text-center text-xs text-[var(--land-muted)]">
               {isRTL
-                ? "ترقية لاحقًا؟ تدفع الفرق فقط — من الأساسية إلى برو بـ ٥.٠٠٠ دك."
-                : "Upgrade later? Pay only the difference — Essential → Pro for 5.000 KD."}
+                ? `ترقية لاحقًا؟ تدفع الفرق فقط — من الأساسية إلى برو بـ ${priceLabel(5.0, cur, "ar")}.`
+                : `Upgrade later? Pay only the difference — Essential → Pro for ${priceLabel(5.0, cur, "en")}.`}
             </p>
           </div>
         </section>

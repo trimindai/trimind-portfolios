@@ -1,6 +1,8 @@
 import { Link } from "@/i18n/navigation";
 import { TEMPLATES, isTemplateAvailableFor } from "@/lib/templates";
 import { PRICE_KWD } from "@/lib/pricing";
+import { priceLabel as fmtPrice } from "@/lib/currency";
+import { getCurrency } from "@/lib/currency-server";
 import { ADMIN_EMAILS } from "@/lib/admin";
 import { currentUser } from "@clerk/nextjs/server";
 import Image from "next/image";
@@ -40,6 +42,9 @@ const AR_TEMPLATE: Record<
     targets: ["مهندس برمجيات", "مطوّر متكامل", "مطوّر واجهات أمامية"],
   },
 };
+
+// Per-visitor currency (SA → SAR) from the 'cur' cookie → render per-request.
+export const dynamic = "force-dynamic";
 
 const MOCKUP_IMAGES: Record<string, string> = {
   general: "/landing/mockup-corporate-2026a.jpg",
@@ -85,9 +90,8 @@ export default async function TemplatesPage({ params, searchParams }: PageProps)
     isAdmin = false;
   }
 
-  const priceLabel = isAr
-    ? `${PRICE_KWD.toFixed(3)} دك`
-    : `${PRICE_KWD.toFixed(3)} KD`;
+  const cur = await getCurrency();
+  const priceLabel = fmtPrice(PRICE_KWD, cur, isAr ? "ar" : "en");
 
   const t = {
     title: isAr ? "اختر القالب المناسب لك" : "Pick the right template",

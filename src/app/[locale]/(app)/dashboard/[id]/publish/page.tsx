@@ -20,6 +20,8 @@ import {
 import { useUser } from "@clerk/nextjs";
 import { HOSTING_ENABLED } from "@/lib/flags";
 import { track, GA_CURRENCY, GA_VALUE } from "@/lib/ga";
+import { useCurrency } from "@/lib/use-currency";
+import { priceNumber, priceLabel, currencySymbol } from "@/lib/currency";
 
 function slugify(name: string): string {
   return name
@@ -67,16 +69,24 @@ function HostingPublishPage() {
   // Selected bundled tier (Free Preview = the watermarked draft, not bought here).
   const [tier, setTier] = useState<"essential" | "pro" | "pro_review">("pro");
   const L = (en: string, ar: string) => (locale === "ar" ? ar : en);
+  const cur = useCurrency();
+  const loc = locale === "ar" ? "ar" : "en";
+  // Display amount for the selected tier in the visitor's currency (KWD default,
+  // SAR for Saudi). The actual charge stays KWD — see lib/currency.ts.
+  const showPrice = (kwd: number) =>
+    cur === "SAR" ? priceNumber(kwd, cur, loc) : kwd.toFixed(3);
   const TIERS = [
     {
       key: "essential" as const,
       price: "4.900",
+      kwd: 4.9,
       name: L("CV Essential", "السيرة الأساسية"),
       sub: L("ATS PDF, watermark off — no live page", "PDF احترافي بدون علامة — بدون صفحة"),
     },
     {
       key: "pro" as const,
       price: "9.900",
+      kwd: 9.9,
       name: L("Portfolio Pro", "بورتفوليو برو"),
       sub: L("PDF + live page + QR + 1 year hosting", "PDF + صفحة مباشرة + QR + استضافة لمدة سنة"),
       star: true,
@@ -84,6 +94,7 @@ function HostingPublishPage() {
     {
       key: "pro_review" as const,
       price: "24.900",
+      kwd: 24.9,
       name: L("Pro + Expert Review", "برو + مراجعة خبير"),
       sub: L("Pro + human CV review (48h)", "برو + مراجعة بشرية (٤٨ ساعة)"),
     },
@@ -417,8 +428,8 @@ function HostingPublishPage() {
           >
             {publishing ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
             {L(
-              "Upgrade to Pro — 5.000 KWD (live page + QR)",
-              "ترقية إلى برو — ٥٫٠٠٠ د.ك (صفحة مباشرة + QR)"
+              `Upgrade to Pro — ${priceLabel(5.0, cur, "en")} (live page + QR)`,
+              `ترقية إلى برو — ${priceLabel(5.0, cur, "ar")} (صفحة مباشرة + QR)`
             )}
           </button>
           {error && <p className="mt-3 text-sm text-red-400">{error}</p>}
@@ -552,10 +563,10 @@ function HostingPublishPage() {
                     </span>
                     <span className="shrink-0 text-end">
                       <span className="block text-lg font-bold text-[var(--land-bright)]">
-                        {tplan.price}
+                        {showPrice(tplan.kwd)}
                       </span>
                       <span className="block text-[10px] text-[var(--land-muted)]">
-                        {L("KWD · per year", "د.ك · سنوياً")}
+                        {`${currencySymbol(cur, loc)} · ${L("per year", "سنوياً")}`}
                       </span>
                     </span>
                   </button>
@@ -690,9 +701,11 @@ function HostingPublishPage() {
                   : L("Publishing…", "جارٍ النشر…")}
               </>
             ) : portfolio.status === "draft" && !isAdmin ? (
-              `${L("Pay", "ادفع")} ${
-                TIERS.find((x) => x.key === tier)?.price ?? ""
-              } KWD`
+              `${L("Pay", "ادفع")} ${priceLabel(
+                TIERS.find((x) => x.key === tier)?.kwd ?? 0,
+                cur,
+                loc
+              )}`
             ) : (
               tc("publish")
             )}
