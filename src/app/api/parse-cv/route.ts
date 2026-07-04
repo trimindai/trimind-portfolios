@@ -26,6 +26,7 @@ import {
   type ORMessage,
 } from "@/lib/openrouter";
 import { buildUserContent, type Img } from "@/lib/cv-content";
+import { sendMetaEvent } from "@/lib/metaCapi";
 
 export const maxDuration = 120; // CV parse can take a few seconds on cold start
 
@@ -156,6 +157,9 @@ export async function POST(req: NextRequest) {
     const trial = await enforceFreeTier(userId, AI_COST.parseCv);
     if (trial) return trial;
 
+    // Funnel: parse request accepted (pre-LLM). Fire-and-forget — never throws.
+    sendMetaEvent("StartCV", req, { externalId: userId });
+
     let locale: "en" | "ar" = "en";
     let content: ORMessage["content"];
     let instructions: string | undefined;
@@ -266,6 +270,9 @@ export async function POST(req: NextRequest) {
         ...(patch as any),
       });
     }
+
+    // Funnel: CV parsed + portfolio auto-built. Fire-and-forget — never throws.
+    sendMetaEvent("CVGenerated", req, { externalId: userId });
 
     return NextResponse.json({ portfolioId, data: cv });
   } catch (error) {

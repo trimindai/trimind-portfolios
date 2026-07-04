@@ -8,8 +8,10 @@ import { cn } from "@/lib/utils";
 import { Providers } from "../providers";
 import { GoogleAnalytics } from "@next/third-parties/google";
 import { Analytics } from "@vercel/analytics/next";
+import Script from "next/script";
 
 const GA_ID = process.env.NEXT_PUBLIC_GA_ID;
+const META_PIXEL_ID = process.env.NEXT_PUBLIC_META_PIXEL_ID;
 
 const geist = Geist({ subsets: ["latin"], variable: "--font-sans" });
 // Arabic UI font. ponytail: --font-sans stays Geist so English never renders in
@@ -124,6 +126,36 @@ export default async function LocaleLayout({
         {GA_ID ? <GoogleAnalytics gaId={GA_ID} /> : null}
         {/* Vercel Web Analytics — visitor + page-view counts in the Vercel dashboard. */}
         <Analytics />
+        {/* Meta Pixel — base snippet (init + PageView). Client twin of the
+            server-side CAPI events in src/lib/metaCapi.ts; also sets the _fbp
+            cookie CAPI uses for match quality. Renders only when
+            NEXT_PUBLIC_META_PIXEL_ID is set, so preview builds stay clean. */}
+        {META_PIXEL_ID ? (
+          <>
+            <Script id="meta-pixel" strategy="afterInteractive">
+              {`!function(f,b,e,v,n,t,s)
+{if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];
+s.parentNode.insertBefore(t,s)}(window, document,'script',
+'https://connect.facebook.net/en_US/fbevents.js');
+fbq('init', '${META_PIXEL_ID}');
+fbq('track', 'PageView');`}
+            </Script>
+            <noscript>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                height="1"
+                width="1"
+                style={{ display: "none" }}
+                alt=""
+                src={`https://www.facebook.com/tr?id=${META_PIXEL_ID}&ev=PageView&noscript=1`}
+              />
+            </noscript>
+          </>
+        ) : null}
       </body>
     </html>
   );

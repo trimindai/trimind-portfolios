@@ -9,6 +9,7 @@ import { toPortfolioData } from "@/lib/portfolio-data";
 import { renderCvPdf } from "@/lib/template-engine";
 import { portfolioQrDataUrl } from "@/lib/qr";
 import { enforceUserRateLimit } from "@/lib/ratelimit";
+import { sendMetaEvent } from "@/lib/metaCapi";
 
 // Chromium (bundled by @sparticuz) needs the full Node runtime, not edge.
 export const runtime = "nodejs";
@@ -101,6 +102,12 @@ export async function GET(
     const pdf = await page.pdf({
       printBackground: true,
       preferCSSPageSize: true,
+    });
+
+    // Funnel: PDF actually served (200). Fire-and-forget — never throws.
+    sendMetaEvent("DownloadCV", req, {
+      externalId: userId,
+      email: portfolio.basics?.email || null,
     });
 
     const name = (portfolio.basics?.fullName || "cv")
