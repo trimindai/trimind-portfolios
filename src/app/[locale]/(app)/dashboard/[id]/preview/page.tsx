@@ -176,15 +176,13 @@ export default function PreviewPage() {
 
   // Get PDF CTA — same action/label logic, rendered twice: in the toolbar on
   // md+ and as the bottom pill on mobile. `extra` carries the variant classes.
+  // canDownload FIRST: a paid/admin user's primary action is downloading their
+  // PDF, and printCv → /api/pdf is the ONLY working download trigger. When
+  // HOSTING_ENABLED hid this behind the publish link, the publish page's own
+  // "Download" button pointed back here → an infinite preview⇄publish loop and
+  // a paid user could never actually get the file.
   const renderCta = (extra: string) =>
-    HOSTING_ENABLED ? (
-      <Link
-        href={`/dashboard/${id}/publish`}
-        className={`inline-flex items-center justify-center gap-2 rounded-lg bg-[var(--land-accent)] px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-[var(--land-accent-hover)] ${extra}`}
-      >
-        {tc("publish")}
-      </Link>
-    ) : canDownload ? (
+    canDownload ? (
       <button
         onClick={printCv}
         disabled={downloading}

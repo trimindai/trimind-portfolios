@@ -414,13 +414,13 @@ function HostingPublishPage() {
               "تم الدفع ✓ — حمّل ملف PDF بدون علامة مائية."
             )}
           </p>
-          <Link
-            href={`/dashboard/${id}/preview?paid=1`}
+          <a
+            href={`/api/pdf/${id}?locale=${locale}`}
             className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-lg bg-[var(--land-accent)] px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-[var(--land-accent-hover)]"
           >
             <Download className="h-4 w-4" />
             {L("Download CV PDF", "حمّل ملف PDF")}
-          </Link>
+          </a>
           <button
             onClick={() => upgradeToPro()}
             disabled={publishing}
@@ -489,13 +489,13 @@ function HostingPublishPage() {
 
           {/* Download PDF — paying also unlocks the print-ready PDF (carrying the
               QR that points back at this live page), so offer it right here. */}
-          <Link
-            href={`/dashboard/${id}/preview?paid=1`}
+          <a
+            href={`/api/pdf/${id}?locale=${locale}`}
             className="mt-3 inline-flex w-full items-center justify-center gap-2 rounded-lg border border-[var(--land-border)] bg-[var(--land-surface-raised)] px-6 py-3 text-sm font-medium text-[var(--land-bright)] transition-colors hover:bg-[var(--land-border)]"
           >
             <Download className="h-4 w-4" />
             {t("downloadPdf")}
-          </Link>
+          </a>
 
           {/* Back to dashboard */}
           <Link
