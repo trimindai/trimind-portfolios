@@ -15,6 +15,7 @@ import { HOSTING_ENABLED } from "@/lib/flags";
 import { useCurrency } from "@/lib/use-currency";
 import { priceLabel } from "@/lib/currency";
 import { PRICE_KWD } from "@/lib/pricing";
+import { pdfCtaMode } from "@/lib/pdf-cta";
 
 type DeviceMode = "desktop" | "tablet" | "mobile";
 type PreviewView = "cv" | "live";
@@ -182,7 +183,7 @@ export default function PreviewPage() {
   // "Download" button pointed back here → an infinite preview⇄publish loop and
   // a paid user could never actually get the file.
   const renderCta = (extra: string) =>
-    canDownload ? (
+    pdfCtaMode(canDownload) === "download" ? (
       <button
         onClick={printCv}
         disabled={downloading}
