@@ -17,6 +17,7 @@ import { api } from "@convex/_generated/api";
 import { Id } from "@convex/_generated/dataModel";
 import { openrouterChat, type ORMessage } from "@/lib/openrouter";
 import { TEMPLATE_IDS } from "@/lib/cv-schema";
+import { resolveTarget, toStringList } from "@/lib/cv-chat-fields";
 
 export const maxDuration = 120;
 
@@ -124,6 +125,27 @@ const TOOLS = [
   {
     type: "function",
     function: {
+      name: "setField",
+      description:
+        "Set a field to an EXACT value the user dictated — use this (NOT rewriteField) " +
+        "whenever the user gives specific text or a factual value like a date, year, name, " +
+        "title, company or number. Also use it to fill a field that is currently empty. " +
+        "path is 'summary', 'basics.<field>' (e.g. basics.fullName), or '<section>.<index>.<field>' " +
+        "e.g. 'education.0.year', 'experience.0.title', 'experience.0.description'. For list fields " +
+        "(experience.<i>.highlights, skills.<i>.items) pass one line per entry. value is the exact text.",
+      parameters: {
+        type: "object",
+        properties: {
+          path: { type: "string" },
+          value: { type: "string" },
+        },
+        required: ["path", "value"],
+      },
+    },
+  },
+  {
+    type: "function",
+    function: {
       name: "addItem",
       description:
         "Add one item to a list section. section ∈ experience|projects|skills|education|certifications|languages|endorsements. item is an object matching that section's shape.",
@@ -166,6 +188,30 @@ const TOOLS = [
   },
 ];
 
+const clip = (s: unknown, n = 80): string => {
+  const str = typeof s === "string" ? s : "";
+  return str.length > n ? `${str.slice(0, n)}…` : str;
+};
+
+// A compact, per-index outline of the editable text so the model can target the
+// right path (e.g. education.0.year) and see current values — without this it
+// only had item counts and had to guess indices/fields.
+function outline(p: any): string {
+  const lines: string[] = [];
+  const b = p.basics || {};
+  lines.push(`basics: fullName="${clip(b.fullName)}" title="${clip(b.title)}" summary="${clip(b.summary || b.bio)}"`);
+  const show = (section: string, fmt: (it: any) => string) => {
+    const list = Array.isArray(p[section]) ? p[section] : [];
+    list.forEach((it: any, i: number) => lines.push(`${section}.${i}: ${fmt(it)}`));
+  };
+  show("experience", (it) => `title="${clip(it.title)}" company="${clip(it.company)}" dates="${clip(it.startDate)}–${clip(it.endDate)}" description="${clip(it.description)}" highlights=${(it.highlights || []).length}`);
+  show("education", (it) => `degree="${clip(it.degree)}" institution="${clip(it.institution)}" year="${clip(it.year)}"`);
+  show("certifications", (it) => `name="${clip(it.name)}" issuer="${clip(it.issuer)}" year="${clip(it.year)}"`);
+  show("languages", (it) => `name="${clip(it.name)}" level="${clip(it.level)}"`);
+  show("projects", (it) => `title="${clip(it.title)}"`);
+  return lines.join("\n");
+}
+
 function summarize(p: any): string {
   const c = p.customization || {};
   const counts = ARRAY_SECTIONS.map(
@@ -179,6 +225,7 @@ function summarize(p: any): string {
     `fonts={heading:${c.fontFamily || "default"}, body:${c.bodyFont || "default"}}`,
     `hiddenSections=[${(c.hiddenSections || []).join(", ")}]`,
     `itemCounts={${counts}}`,
+    `content:\n${outline(p)}`,
   ].join("\n");
 }
 
@@ -356,7 +403,8 @@ export async function POST(req: NextRequest) {
           case "rewriteField": {
             const path = String(args.path || "");
             const instruction = String(args.instruction || "");
-            if (path === "summary" || path === "bio" || path === "basics.summary") {
+            const t = resolveTarget(path);
+            if (t.kind === "summary") {
               const basics = (patch.basics as any) || { ...portfolio.basics };
               const next = await rewrite(
                 basics.summary || basics.bio || "",
@@ -367,29 +415,68 @@ export async function POST(req: NextRequest) {
               basics.bio = next;
               patch.basics = basics;
               applied.push("summary");
-            } else {
-              const m = path.match(/^(\w+)\.(\d+)\.(\w+)$/);
-              if (m && (ARRAY_SECTIONS as readonly string[]).includes(m[1])) {
-                const [, section, idxStr, field] = m;
-                const list = arr(section)!;
-                const i = Number(idxStr);
-                if (list[i] && typeof list[i][field] !== "undefined") {
-                  list[i] = {
-                    ...list[i],
-                    [field]: await rewrite(
-                      String(list[i][field] || ""),
-                      `${section} ${field}`,
-                      instruction
-                    ),
-                  };
-                  patch[section] = list;
-                  applied.push(path);
-                } else {
-                  result = `no field at ${path}`;
-                }
+            } else if (t.kind === "basics") {
+              const basics = (patch.basics as any) || { ...portfolio.basics };
+              basics[t.field] = await rewrite(
+                String(basics[t.field] || ""),
+                `basics ${t.field}`,
+                instruction
+              );
+              patch.basics = basics;
+              applied.push(path);
+            } else if (t.kind === "item" && !t.isArray) {
+              // Allow rewriting a field that doesn't exist yet (undefined → "").
+              const list = arr(t.section)!;
+              if (!list[t.index]) {
+                result = `no item at ${t.section}[${t.index}]`;
               } else {
-                result = `unsupported path '${path}'`;
+                list[t.index] = {
+                  ...list[t.index],
+                  [t.field]: await rewrite(
+                    String(list[t.index][t.field] || ""),
+                    `${t.section} ${t.field}`,
+                    instruction
+                  ),
+                };
+                patch[t.section] = list;
+                applied.push(path);
               }
+            } else if (t.kind === "item") {
+              result = `use setField for the list field '${path}'`;
+            } else {
+              result = t.reason;
+            }
+            break;
+          }
+          case "setField": {
+            const path = String(args.path || "");
+            const value = String(args.value ?? "").slice(0, 4000);
+            const t = resolveTarget(path);
+            if (t.kind === "summary") {
+              const basics = (patch.basics as any) || { ...portfolio.basics };
+              basics.summary = value;
+              basics.bio = value;
+              patch.basics = basics;
+              applied.push("summary");
+            } else if (t.kind === "basics") {
+              const basics = (patch.basics as any) || { ...portfolio.basics };
+              basics[t.field] = value;
+              patch.basics = basics;
+              applied.push(path);
+            } else if (t.kind === "item") {
+              const list = arr(t.section)!;
+              if (!list[t.index]) {
+                result = `no item at ${t.section}[${t.index}]`;
+              } else {
+                list[t.index] = {
+                  ...list[t.index],
+                  [t.field]: t.isArray ? toStringList(value) : value,
+                };
+                patch[t.section] = list;
+                applied.push(path);
+              }
+            } else {
+              result = t.reason;
             }
             break;
           }
